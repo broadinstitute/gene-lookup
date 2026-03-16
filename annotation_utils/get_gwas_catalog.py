@@ -1,25 +1,28 @@
 # download the GWAS catalog and parse gene disease relationships for the subset of records where the MONDO term is a rare disease term
 
+import io
 import pandas as pd
 import requests
 import os
+import zipfile
 
 from annotation_utils.cache_utils import cache_data_table
 from annotation_utils.get_mondo_ontology import get_mondo_ontology
 
-GWAS_CATALOG_URL = "https://www.ebi.ac.uk/gwas/api/search/downloads/alternative"
+GWAS_CATALOG_URL = "https://ftp.ebi.ac.uk/pub/databases/gwas/releases/latest/gwas-catalog-associations_ontology-annotated-full.zip"
 
 @cache_data_table
 def _download_gwas_catalog():
-    """
-    Download the GWAS catalog and return it as a pandas DataFrame
-    """
+    """Download the GWAS catalog and return it as a pandas DataFrame."""
     import time as _time
 
     for attempt in range(1, 4):
         try:
             print(f"Downloading GWAS catalog (attempt {attempt})")
-            return pd.read_table(GWAS_CATALOG_URL)
+            r = requests.get(GWAS_CATALOG_URL, timeout=120)
+            r.raise_for_status()
+            with zipfile.ZipFile(io.BytesIO(r.content)) as zf:
+                return pd.read_table(zf.open(zf.namelist()[0]))
         except Exception as e:
             if attempt < 3:
                 print(f"  Failed: {e}. Retrying in 30 seconds...")

@@ -2,8 +2,6 @@ name: Generate Combined Gene Table
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 2 * * 0,3'  # Twice weekly: Sundays and Wednesdays at 2 AM UTC
 
 jobs:
   generate-gene-table:
@@ -94,7 +92,7 @@ jobs:
         OMIM_KEY: ${{ secrets.OMIM_KEY }}
         HADOOP_CONF_DIR: /tmp/hadoop-conf
       run: |
-        python3 annotation_utils/generate_combined_gene_table.py --skip-gwas
+        python3 annotation_utils/generate_combined_gene_table.py
 
     - name: Add phenotype summary using AI
       env:

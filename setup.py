@@ -4,8 +4,10 @@ import unittest
 from setuptools import find_packages, setup
 from setuptools.command.build_py import build_py
 
-with open("README.md", "rt") as fh:
-    long_description = fh.read()
+long_description = ""
+if os.path.exists("README.md"):
+    with open("README.md", "rt") as fh:
+        long_description = fh.read()
 
 with open("requirements.txt", "rt") as f:
     requirements = [r.strip() for r in f.readlines()]

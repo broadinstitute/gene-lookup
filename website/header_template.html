@@ -1,0 +1,895 @@
+<head>
+<title>Gene Lookup</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.5.0/semantic.min.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.5.0/semantic.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/igv@3.4.0/dist/igv.min.js"></script>
+
+{% include "styles_for_all_pages.html" %}
+
+{% include "utils_for_igv.html" %}
+
+<script>
+
+    // BigQuery config
+    const PROJECT_ID = 'cmg-analysis'
+    const COMPLETE_TABLE_ID = `\`cmg-analysis.gene_lookup.combined_gene_disease_association_table\``
+
+    const SHOW_COLUMNS_VALUE_DELIMITER = ','
+
+    const IGV_LOCUS_PADDING = 5000
+
+    const REFERENCE_REGION_REGEXP = /^[\s]*(?:chr)?([XYMTt0-9]+):([\d,]+)[\p{Dash_Punctuation}]([\d,]+)[\s]*$/iu
+    const CHROM_TO_CHROM_INDEX = {
+        "X":  23, "chrX": 23,
+        "Y":  24, "chrY": 24,
+        "MT": 25, "M": 25, "chrMT": 25, "chrM": 25,
+    }
+    for (let i = 1; i <= 22; i++) {
+        CHROM_TO_CHROM_INDEX[`${i}`] = i
+        CHROM_TO_CHROM_INDEX[`chr${i}`] = i
+    }
+
+    // BigQuery column descriptions - generated from global_constants.py via Jinja2
+    const BIGQUERY_COLUMN_DESCRIPTIONS = {{ column_descriptions | tojson }}
+
+    const BIGQUERY_COLUMN_GROUPS = {{ column_groups | tojson }}
+
+    // Help texts for UI columns - starts with BigQuery descriptions, then adds/overrides
+    const RESULTS_TABLE_COLUMN_HELP_TEXTS = {
+        ...BIGQUERY_COLUMN_DESCRIPTIONS,
+    }
+
+    // Disease category color mapping
+    const DISEASE_CATEGORY_COLORS = {
+        'NEUROLOGICAL': '#6B4C9A',
+        'CARDIOVASCULAR': '#DC3545',
+        'METABOLIC': '#FD7E14',
+        'IMMUNOLOGICAL': '#20C997',
+        'OPHTHALMOLOGICAL': '#0DCAF0',
+        'DERMATOLOGICAL': '#D63384',
+        'MUSCULOSKELETAL': '#6F42C1',
+        'HEMATOLOGICAL': '#E83E8C',
+        'RENAL': '#198754',
+        'ENDOCRINE': '#FFC107',
+        'HEPATIC': '#795548',
+        'PULMONARY': '#17A2B8',
+        'GASTROINTESTINAL': '#FF8C00',
+        'ONCOLOGICAL': '#343A40',
+        'DEVELOPMENTAL': '#0D6EFD',
+        'MULTISYSTEMIC': '#6610F2',
+        'AUDIOLOGICAL': '#2196F3',
+        'DENTAL': '#8D6E63',
+        'PSYCHIATRIC': '#9C27B0',
+        'OTHER': '#6C757D',
+    }
+
+    const DEFAULT_SORT_COLUMN = 'gene_symbol'
+    const DEFAULT_SORT_DIRECTION = 'ASC'
+
+    REFERENCE_BASE_URL = "https://storage.googleapis.com/tgg-viewer/ref/GRCh38"
+
+    const REFERENCE_TRACKS = [
+        ["igv_gencode", "Gencode v49", `${REFERENCE_BASE_URL}/gencode_v49/gencode.v49.GRCh38.sorted.txt.gz`],
+        ["igv_refseq", "RefSeq genes", `${REFERENCE_BASE_URL}/ncbiRefSeq.txt.gz`],
+        ["igv_haploinsuf", "ClinGen haploinsufficiency track", `${REFERENCE_BASE_URL}/clingen/ClinGen_haploinsufficiency_gene_GRCh38.sorted.bed.gz`],
+        ["igv_triplosens", "ClinGen triplosensitivity track", `${REFERENCE_BASE_URL}/clingen/ClinGen_triplosensitivity_gene_GRCh38.sorted.bed.gz`],
+        ["igv_segdups", "SegDups > 1000bp", `${REFERENCE_BASE_URL}/segdups/segdups.gtf.gz`],
+        ["igv_36k_map", "36-mer mappability", `${REFERENCE_BASE_URL}/mappability/GRCh38_no_alt_analysis_set_GCA_000001405.15-k36_m2.bw`],
+        ["igv_100k_map", "100-mer mappability", `${REFERENCE_BASE_URL}/mappability/GRCh38_no_alt_analysis_set_GCA_000001405.15-k100_m2.bw`],
+        ["igv_repeatmask", "UCSC RepeatMasker", `${REFERENCE_BASE_URL}/hg38.RepeatMasker.bed.gz`],
+    ]
+
+    const ALL_AVAILABLE_TRACKS = REFERENCE_TRACKS
+
+    // persistent page state (added to the URL)
+    let DEFAULT_GLOBAL_PAGE_STATE = {
+        currentPage: 1,
+        pageSize: 100,
+
+        sc: DEFAULT_SORT_COLUMN,
+        sd: DEFAULT_SORT_DIRECTION,
+
+        showIGV: 0,
+        igvLoc: 'chr7:117465784-117715971',
+
+        showRs: 0,  //show results table
+        searchQuery: '',
+        showAdvFilters: 0,
+
+        // Custom filters: compact format "col|op|val,col|op|val"
+        customFilters: '',
+
+        // Custom track URLs
+        igv_custom_track_url_1: '',
+        igv_custom_track_url_2: '',
+        igv_custom_track_url_3: '',
+    }
+
+    // set default IGV.js tracks
+    ALL_AVAILABLE_TRACKS.forEach((rt) => {
+        DEFAULT_GLOBAL_PAGE_STATE[rt[0]] = 0
+    })
+    DEFAULT_GLOBAL_PAGE_STATE['igv_gencode'] = 1
+
+    // Mapping from internal state names to abbreviated URL param names
+    const URL_PARAM_ALIASES = {
+        'searchQuery': 'q',
+        'customFilters': 'cf',
+        'igv_custom_track_url_1': 'igv_ct_url1',
+        'igv_custom_track_url_2': 'igv_ct_url2',
+        'igv_custom_track_url_3': 'igv_ct_url3',
+    }
+
+    // Reverse mapping from URL param names to internal state names
+    const URL_PARAM_REVERSE_ALIASES = Object.fromEntries(
+        Object.entries(URL_PARAM_ALIASES).map(([k, v]) => [v, k])
+    )
+
+    const writePersistentPageStateToUrl = () => {
+        // Create object with only non-default values
+        const nonDefaultParams = {}
+        for (const [key, value] of Object.entries(GLOBAL_PAGE_STATE)) {
+            if (value !== DEFAULT_GLOBAL_PAGE_STATE[key]) {
+                // Use abbreviated URL param name if available
+                const urlKey = URL_PARAM_ALIASES[key] || key
+                nonDefaultParams[urlKey] = value
+            }
+        }
+
+        // Convert to URL hash using jQuery's param method
+        const hash = '#' + $.param(nonDefaultParams)
+
+        // Get current hash to check if state has changed
+        const currentHash = window.location.hash
+        if (currentHash !== hash) {
+            // Update URL and add to browser history
+            window.history.pushState(null, '', hash)
+        }
+    }
+
+
+    const queryBigQuery = async (query, startIndex=null, pageSize=null, exportToFileFormat=null) => {
+        try {
+            const url = `https://us-central1-cmg-analysis.cloudfunctions.net/query_gene_lookup_db`
+            console.log("Page state:", GLOBAL_PAGE_STATE)
+            console.log(exportToFileFormat ? `Exporting to ${exportToFileFormat}:`: `Sending query:`, query.replace(/[\n\r\s]+/g, ' '))
+            const requestBody = {
+                sql: query,
+                export_to_file_format: exportToFileFormat,
+                start_index: startIndex,
+                page_size: pageSize,
+            }
+
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestBody),
+            })
+
+            if (!response.ok) {
+                throw new Error(`BigQuery API error: ${response.status} ${response.statusText}`)
+            }
+
+            return await response.json()
+        } catch (error) {
+            console.error('Error querying BigQuery:', error)
+            throw new Error(`BigQuery query error: ${error.message || 'Unknown error'}`)
+        }
+    }
+
+    const getDiseaseCategory = (category) => {
+        if (!category) return ''
+        const categories = category.split(';').map(c => c.trim()).filter(c => c)
+        return categories.map(cat => {
+            const color = DISEASE_CATEGORY_COLORS[cat.toUpperCase()] || DISEASE_CATEGORY_COLORS['OTHER']
+            return `<span class="ui mini label" style="background-color: ${color}; color: white; margin: 1px;">${cat}</span>`
+        }).join(' ')
+    }
+
+    const getSourcesBadges = (sourcesStr) => {
+        if (!sourcesStr) return ''
+        // Format is like "3: OMIM, ClinGen, GenCC"
+        const match = sourcesStr.match(/^(\d+):\s*(.*)$/)
+        if (!match) return sourcesStr
+
+        const count = match[1]
+        const sourcesList = match[2].split(',').map(s => s.trim())
+
+        const sourceColors = {
+            'OMIM': '#e74c3c',
+            'ClinGen': '#3498db',
+            'GenCC': '#2ecc71',
+            'PanelApp_UK': '#9b59b6',
+            'PanelApp_AU': '#8e44ad',
+            'Decipher': '#f39c12',
+            'ClinVar': '#1abc9c',
+            'Fridman': '#e67e22',
+        }
+
+        const badges = sourcesList.map(src => {
+            const color = sourceColors[src] || '#95a5a6'
+            return `<span class="ui mini label" style="background-color: ${color}; color: white; margin: 1px;">${src}</span>`
+        }).join(' ')
+
+        return `<span class="show-popup action-link" data-html="${badges}">${count} sources</span>`
+    }
+
+    const getTruncatedText = (text, maxLen=80) => {
+        if (!text) return ''
+        if (text.length <= maxLen) return text
+        const escapedFull = text.replace(/"/g, '&quot;').replace(/'/g, '&#39;')
+        return `<span class="show-popup" data-html="<div style='max-width:400px'>${escapedFull}</div>">${text.substring(0, maxLen)}...</span>`
+    }
+
+    let TABLE_COLUMNS = {
+        gene_symbol: {
+            displayName: 'Gene',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['gene_symbol'],
+            getValue: (row) => {
+                const symbol = row['gene_symbol'] || row['hgnc_gene_id'] || row['ensembl_gene_id'] || ''
+                const hgncId = row['hgnc_gene_id'] || ''
+                const geneId = row['ensembl_gene_id'] || ''
+                if (hgncId) {
+                    return `<a href="gene.html#hgnc_gene_id=${encodeURIComponent(hgncId)}" class="action-link" style="font-weight: bold;">${symbol}</a>`
+                }
+                if (geneId) {
+                    return `<a href="gene.html#ensembl_gene_id=${encodeURIComponent(geneId)}" class="action-link" style="font-weight: bold;">${symbol}</a>`
+                }
+                return `<span style="font-weight: bold;">${symbol}</span>`
+            },
+            getSortColumns: () => ['gene_symbol'],
+            getRequiredColumns: () => ['gene_symbol', 'hgnc_gene_id', 'ensembl_gene_id'],
+        },
+        disease_category: {
+            displayName: 'Category',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['disease_category'],
+            getValue: (row) => getDiseaseCategory(row['disease_category']),
+            getSortColumns: () => ['disease_category'],
+            getRequiredColumns: () => ['disease_category'],
+        },
+        inheritance: {
+            displayName: 'Inheritance',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['inheritance'],
+            getValue: (row) => row['inheritance'] || '',
+            getSortColumns: () => ['inheritance'],
+            getRequiredColumns: () => ['inheritance'],
+        },
+        sources: {
+            displayName: 'Sources',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['sources'],
+            getValue: (row) => getSourcesBadges(row['sources']),
+            getSortColumns: () => ['sources'],
+            getRequiredColumns: () => ['sources'],
+        },
+        LLM_phenotype_summary: {
+            displayName: 'Phenotype Summary',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['LLM_phenotype_summary'],
+            getValue: (row) => getTruncatedText(row['LLM_phenotype_summary'], 80),
+            getSortColumns: () => ['LLM_phenotype_summary'],
+            getRequiredColumns: () => ['LLM_phenotype_summary'],
+        },
+        pLI_v4: {
+            displayName: 'pLI',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['pLI_v4'],
+            defaultSortDirection: 'DESC',
+            getValue: (row) => {
+                if (row['pLI_v4'] == null) return ''
+                const val = row['pLI_v4']
+                const style = val >= 0.9 ? 'color: #c0392b; font-weight: bold;' : ''
+                return `<span style="${style}">${val.toFixed(2)}</span>`
+            },
+            getSortColumns: () => ['pLI_v4'],
+            getRequiredColumns: () => ['pLI_v4'],
+        },
+        lof_oe_ci_upper_v4: {
+            displayName: 'LOEUF',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['lof_oe_ci_upper_v4'],
+            getValue: (row) => {
+                if (row['lof_oe_ci_upper_v4'] == null) return ''
+                const val = row['lof_oe_ci_upper_v4']
+                const style = val <= 0.35 ? 'color: #c0392b; font-weight: bold;' : ''
+                return `<span style="${style}">${val.toFixed(2)}</span>`
+            },
+            getSortColumns: () => ['lof_oe_ci_upper_v4'],
+            getRequiredColumns: () => ['lof_oe_ci_upper_v4'],
+        },
+        CLINGEN_classification: {
+            displayName: 'ClinGen',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['CLINGEN_classification'],
+            getValue: (row) => {
+                const val = row['CLINGEN_classification']
+                if (!val) return ''
+                const classColors = {
+                    'Definitive': '#28a745',
+                    'Strong': '#218838',
+                    'Moderate': '#ffc107',
+                    'Limited': '#fd7e14',
+                }
+                const color = classColors[val] || '#6c757d'
+                return `<span class="ui mini label" style="background-color: ${color}; color: white;">${val}</span>`
+            },
+            getSortColumns: () => ['CLINGEN_classification'],
+            getRequiredColumns: () => ['CLINGEN_classification'],
+        },
+        ensembl_gene_id: {
+            displayName: 'Ensembl Gene ID',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['ensembl_gene_id'],
+            getValue: (row) => row['ensembl_gene_id'] || '',
+            getSortColumns: () => ['ensembl_gene_id'],
+            getRequiredColumns: () => ['ensembl_gene_id'],
+        },
+        gene_aliases: {
+            displayName: 'Gene Aliases',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['gene_aliases'],
+            getValue: (row) => row['gene_aliases'] || '',
+            getSortColumns: () => ['gene_aliases'],
+            getRequiredColumns: () => ['gene_aliases'],
+        },
+        hgnc_gene_id: {
+            displayName: 'HGNC Gene ID',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['hgnc_gene_id'],
+            getValue: (row) => row['hgnc_gene_id'] || '',
+            getSortColumns: () => ['hgnc_gene_id'],
+            getRequiredColumns: () => ['hgnc_gene_id'],
+        },
+        chrom: {
+            displayName: 'Chrom',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['chrom'],
+            getValue: (row) => row['chrom'] || '',
+            getSortColumns: () => ['chrom'],
+            getRequiredColumns: () => ['chrom'],
+        },
+        start: {
+            displayName: 'Start',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['start'],
+            getValue: (row) => row['start'] != null ? row['start'].toLocaleString() : '',
+            getSortColumns: () => ['start'],
+            getRequiredColumns: () => ['start'],
+        },
+        end: {
+            displayName: 'End',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['end'],
+            getValue: (row) => row['end'] != null ? row['end'].toLocaleString() : '',
+            getSortColumns: () => ['end'],
+            getRequiredColumns: () => ['end'],
+        },
+        clingen_curation: {
+            displayName: 'ClinGen Curation',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['clingen_curation'],
+            getValue: (row) => getTruncatedText(row['clingen_curation'], 80),
+            getSortColumns: () => ['clingen_curation'],
+            getRequiredColumns: () => ['clingen_curation'],
+        },
+        pLI_v2: {
+            displayName: 'pLI (v2)',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['pLI_v2'],
+            defaultSortDirection: 'DESC',
+            getValue: (row) => row['pLI_v2'] != null ? row['pLI_v2'].toFixed(2) : '',
+            getSortColumns: () => ['pLI_v2'],
+            getRequiredColumns: () => ['pLI_v2'],
+        },
+        mis_oe_ci_upper_v4: {
+            displayName: 'MOEUF (v4)',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['mis_oe_ci_upper_v4'],
+            getValue: (row) => row['mis_oe_ci_upper_v4'] != null ? row['mis_oe_ci_upper_v4'].toFixed(2) : '',
+            getSortColumns: () => ['mis_oe_ci_upper_v4'],
+            getRequiredColumns: () => ['mis_oe_ci_upper_v4'],
+        },
+        OMIM_mim_number: {
+            displayName: 'OMIM MIM #',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['OMIM_mim_number'],
+            getValue: (row) => {
+                if (!row['OMIM_mim_number']) return ''
+                return row['OMIM_mim_number'].split(';').map(mim =>
+                    `<a href="https://omim.org/entry/${mim.trim()}" target="_blank" class="action-link">${mim.trim()}</a>`
+                ).join('; ')
+            },
+            getSortColumns: () => ['OMIM_mim_number'],
+            getRequiredColumns: () => ['OMIM_mim_number'],
+        },
+        OMIM_phenotype_mim_number: {
+            displayName: 'OMIM Phenotype MIM #',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['OMIM_phenotype_mim_number'],
+            getValue: (row) => row['OMIM_phenotype_mim_number'] || '',
+            getSortColumns: () => ['OMIM_phenotype_mim_number'],
+            getRequiredColumns: () => ['OMIM_phenotype_mim_number'],
+        },
+        OMIM_inheritance: {
+            displayName: 'OMIM Inheritance',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['OMIM_inheritance'],
+            getValue: (row) => row['OMIM_inheritance'] || '',
+            getSortColumns: () => ['OMIM_inheritance'],
+            getRequiredColumns: () => ['OMIM_inheritance'],
+        },
+        OMIM_phenotype_description: {
+            displayName: 'OMIM Phenotype',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['OMIM_phenotype_description'],
+            getValue: (row) => getTruncatedText(row['OMIM_phenotype_description'], 80),
+            getSortColumns: () => ['OMIM_phenotype_description'],
+            getRequiredColumns: () => ['OMIM_phenotype_description'],
+        },
+        CLINGEN_disease_label: {
+            displayName: 'ClinGen Disease',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['CLINGEN_disease_label'],
+            getValue: (row) => getTruncatedText(row['CLINGEN_disease_label'], 80),
+            getSortColumns: () => ['CLINGEN_disease_label'],
+            getRequiredColumns: () => ['CLINGEN_disease_label'],
+        },
+        CLINGEN_disease_mondo_id: {
+            displayName: 'ClinGen MONDO ID',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['CLINGEN_disease_mondo_id'],
+            getValue: (row) => row['CLINGEN_disease_mondo_id'] || '',
+            getSortColumns: () => ['CLINGEN_disease_mondo_id'],
+            getRequiredColumns: () => ['CLINGEN_disease_mondo_id'],
+        },
+        CLINGEN_inheritance: {
+            displayName: 'ClinGen Inheritance',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['CLINGEN_inheritance'],
+            getValue: (row) => row['CLINGEN_inheritance'] || '',
+            getSortColumns: () => ['CLINGEN_inheritance'],
+            getRequiredColumns: () => ['CLINGEN_inheritance'],
+        },
+        CLINGEN_haploinsufficient: {
+            displayName: 'ClinGen Haploinsufficiency',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['CLINGEN_haploinsufficient'],
+            getValue: (row) => row['CLINGEN_haploinsufficient'] || '',
+            getSortColumns: () => ['CLINGEN_haploinsufficient'],
+            getRequiredColumns: () => ['CLINGEN_haploinsufficient'],
+        },
+        GENCC_disease_name: {
+            displayName: 'GenCC Disease',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['GENCC_disease_name'],
+            getValue: (row) => getTruncatedText(row['GENCC_disease_name'], 80),
+            getSortColumns: () => ['GENCC_disease_name'],
+            getRequiredColumns: () => ['GENCC_disease_name'],
+        },
+        GENCC_classification: {
+            displayName: 'GenCC Classification',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['GENCC_classification'],
+            getValue: (row) => row['GENCC_classification'] || '',
+            getSortColumns: () => ['GENCC_classification'],
+            getRequiredColumns: () => ['GENCC_classification'],
+        },
+        GENCC_inheritance: {
+            displayName: 'GenCC Inheritance',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['GENCC_inheritance'],
+            getValue: (row) => row['GENCC_inheritance'] || '',
+            getSortColumns: () => ['GENCC_inheritance'],
+            getRequiredColumns: () => ['GENCC_inheritance'],
+        },
+        PANEL_APP_UK_confidence: {
+            displayName: 'PanelApp UK Confidence',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['PANEL_APP_UK_confidence'],
+            getValue: (row) => row['PANEL_APP_UK_confidence'] || '',
+            getSortColumns: () => ['PANEL_APP_UK_confidence'],
+            getRequiredColumns: () => ['PANEL_APP_UK_confidence'],
+        },
+        PANEL_APP_UK_penetrance: {
+            displayName: 'PanelApp UK Penetrance',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['PANEL_APP_UK_penetrance'],
+            getValue: (row) => row['PANEL_APP_UK_penetrance'] || '',
+            getSortColumns: () => ['PANEL_APP_UK_penetrance'],
+            getRequiredColumns: () => ['PANEL_APP_UK_penetrance'],
+        },
+        PANEL_APP_UK_mode_of_pathogenicity: {
+            displayName: 'PanelApp UK Pathogenicity',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['PANEL_APP_UK_mode_of_pathogenicity'],
+            getValue: (row) => row['PANEL_APP_UK_mode_of_pathogenicity'] || '',
+            getSortColumns: () => ['PANEL_APP_UK_mode_of_pathogenicity'],
+            getRequiredColumns: () => ['PANEL_APP_UK_mode_of_pathogenicity'],
+        },
+        PANEL_APP_UK_inheritance: {
+            displayName: 'PanelApp UK Inheritance',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['PANEL_APP_UK_inheritance'],
+            getValue: (row) => row['PANEL_APP_UK_inheritance'] || '',
+            getSortColumns: () => ['PANEL_APP_UK_inheritance'],
+            getRequiredColumns: () => ['PANEL_APP_UK_inheritance'],
+        },
+        PANEL_APP_UK_evidence: {
+            displayName: 'PanelApp UK Evidence',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['PANEL_APP_UK_evidence'],
+            getValue: (row) => row['PANEL_APP_UK_evidence'] || '',
+            getSortColumns: () => ['PANEL_APP_UK_evidence'],
+            getRequiredColumns: () => ['PANEL_APP_UK_evidence'],
+        },
+        PANEL_APP_UK_phenotypes: {
+            displayName: 'PanelApp UK Phenotypes',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['PANEL_APP_UK_phenotypes'],
+            getValue: (row) => getTruncatedText(row['PANEL_APP_UK_phenotypes'], 80),
+            getSortColumns: () => ['PANEL_APP_UK_phenotypes'],
+            getRequiredColumns: () => ['PANEL_APP_UK_phenotypes'],
+        },
+        PANEL_APP_UK_panel_name: {
+            displayName: 'PanelApp UK Panel',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['PANEL_APP_UK_panel_name'],
+            getValue: (row) => getTruncatedText(row['PANEL_APP_UK_panel_name'], 80),
+            getSortColumns: () => ['PANEL_APP_UK_panel_name'],
+            getRequiredColumns: () => ['PANEL_APP_UK_panel_name'],
+        },
+        PANEL_APP_AU_confidence: {
+            displayName: 'PanelApp AU Confidence',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['PANEL_APP_AU_confidence'],
+            getValue: (row) => row['PANEL_APP_AU_confidence'] || '',
+            getSortColumns: () => ['PANEL_APP_AU_confidence'],
+            getRequiredColumns: () => ['PANEL_APP_AU_confidence'],
+        },
+        PANEL_APP_AU_penetrance: {
+            displayName: 'PanelApp AU Penetrance',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['PANEL_APP_AU_penetrance'],
+            getValue: (row) => row['PANEL_APP_AU_penetrance'] || '',
+            getSortColumns: () => ['PANEL_APP_AU_penetrance'],
+            getRequiredColumns: () => ['PANEL_APP_AU_penetrance'],
+        },
+        PANEL_APP_AU_mode_of_pathogenicity: {
+            displayName: 'PanelApp AU Pathogenicity',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['PANEL_APP_AU_mode_of_pathogenicity'],
+            getValue: (row) => row['PANEL_APP_AU_mode_of_pathogenicity'] || '',
+            getSortColumns: () => ['PANEL_APP_AU_mode_of_pathogenicity'],
+            getRequiredColumns: () => ['PANEL_APP_AU_mode_of_pathogenicity'],
+        },
+        PANEL_APP_AU_inheritance: {
+            displayName: 'PanelApp AU Inheritance',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['PANEL_APP_AU_inheritance'],
+            getValue: (row) => row['PANEL_APP_AU_inheritance'] || '',
+            getSortColumns: () => ['PANEL_APP_AU_inheritance'],
+            getRequiredColumns: () => ['PANEL_APP_AU_inheritance'],
+        },
+        PANEL_APP_AU_evidence: {
+            displayName: 'PanelApp AU Evidence',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['PANEL_APP_AU_evidence'],
+            getValue: (row) => row['PANEL_APP_AU_evidence'] || '',
+            getSortColumns: () => ['PANEL_APP_AU_evidence'],
+            getRequiredColumns: () => ['PANEL_APP_AU_evidence'],
+        },
+        PANEL_APP_AU_phenotypes: {
+            displayName: 'PanelApp AU Phenotypes',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['PANEL_APP_AU_phenotypes'],
+            getValue: (row) => getTruncatedText(row['PANEL_APP_AU_phenotypes'], 80),
+            getSortColumns: () => ['PANEL_APP_AU_phenotypes'],
+            getRequiredColumns: () => ['PANEL_APP_AU_phenotypes'],
+        },
+        PANEL_APP_AU_panel_name: {
+            displayName: 'PanelApp AU Panel',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['PANEL_APP_AU_panel_name'],
+            getValue: (row) => getTruncatedText(row['PANEL_APP_AU_panel_name'], 80),
+            getSortColumns: () => ['PANEL_APP_AU_panel_name'],
+            getRequiredColumns: () => ['PANEL_APP_AU_panel_name'],
+        },
+        DECIPHER_inheritance: {
+            displayName: 'Decipher Inheritance',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['DECIPHER_inheritance'],
+            getValue: (row) => row['DECIPHER_inheritance'] || '',
+            getSortColumns: () => ['DECIPHER_inheritance'],
+            getRequiredColumns: () => ['DECIPHER_inheritance'],
+        },
+        DECIPHER_disease_names: {
+            displayName: 'Decipher Disease',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['DECIPHER_disease_names'],
+            getValue: (row) => getTruncatedText(row['DECIPHER_disease_names'], 80),
+            getSortColumns: () => ['DECIPHER_disease_names'],
+            getRequiredColumns: () => ['DECIPHER_disease_names'],
+        },
+        CLINVAR_phenotypes: {
+            displayName: 'ClinVar Phenotypes',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['CLINVAR_phenotypes'],
+            getValue: (row) => getTruncatedText(row['CLINVAR_phenotypes'], 80),
+            getSortColumns: () => ['CLINVAR_phenotypes'],
+            getRequiredColumns: () => ['CLINVAR_phenotypes'],
+        },
+        CLINVAR_clinical_significance: {
+            displayName: 'ClinVar Significance',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['CLINVAR_clinical_significance'],
+            getValue: (row) => row['CLINVAR_clinical_significance'] || '',
+            getSortColumns: () => ['CLINVAR_clinical_significance'],
+            getRequiredColumns: () => ['CLINVAR_clinical_significance'],
+        },
+        CLINVAR_stars: {
+            displayName: 'ClinVar Stars',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['CLINVAR_stars'],
+            getValue: (row) => row['CLINVAR_stars'] || '',
+            getSortColumns: () => ['CLINVAR_stars'],
+            getRequiredColumns: () => ['CLINVAR_stars'],
+        },
+        CLINVAR_variant_consequences: {
+            displayName: 'ClinVar Consequences',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['CLINVAR_variant_consequences'],
+            getValue: (row) => row['CLINVAR_variant_consequences'] || '',
+            getSortColumns: () => ['CLINVAR_variant_consequences'],
+            getRequiredColumns: () => ['CLINVAR_variant_consequences'],
+        },
+        FRIDMAN_omim_phenotype_id: {
+            displayName: 'Fridman OMIM ID',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['FRIDMAN_omim_phenotype_id'],
+            getValue: (row) => row['FRIDMAN_omim_phenotype_id'] || '',
+            getSortColumns: () => ['FRIDMAN_omim_phenotype_id'],
+            getRequiredColumns: () => ['FRIDMAN_omim_phenotype_id'],
+        },
+        FRIDMAN_phenotype_category: {
+            displayName: 'Fridman Category',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['FRIDMAN_phenotype_category'],
+            getValue: (row) => row['FRIDMAN_phenotype_category'] || '',
+            getSortColumns: () => ['FRIDMAN_phenotype_category'],
+            getRequiredColumns: () => ['FRIDMAN_phenotype_category'],
+        },
+        FRIDMAN_inheritance: {
+            displayName: 'Fridman Inheritance',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['FRIDMAN_inheritance'],
+            getValue: (row) => row['FRIDMAN_inheritance'] || '',
+            getSortColumns: () => ['FRIDMAN_inheritance'],
+            getRequiredColumns: () => ['FRIDMAN_inheritance'],
+        },
+    }
+
+    /**
+     * Build a WHERE clause for a search query.
+     * Supports: gene name/alias, HGNC ID, Ensembl gene ID, genomic region, disease/phenotype text,
+     * and comma-separated lists of the above.
+     */
+    const buildSearchWhereClause = (rawQuery) => {
+        if (!rawQuery || !rawQuery.trim()) return ''
+
+        // Check for comma-separated list of queries
+        const queries = rawQuery.split(',').map(q => q.trim()).filter(q => q)
+        if (queries.length > 1) {
+            const clauses = queries.map(q => buildSingleSearchWhereClause(q)).filter(c => c)
+            if (clauses.length === 0) return ''
+            return `(${clauses.join(' OR ')})`
+        }
+
+        return buildSingleSearchWhereClause(rawQuery.trim())
+    }
+
+    const buildSingleSearchWhereClause = (q) => {
+        if (!q) return ''
+
+        // Genomic region: chr1:12345-67890
+        const regionMatch = q.match(REFERENCE_REGION_REGEXP)
+        if (regionMatch) {
+            const chrom = regionMatch[1].startsWith('chr') ? regionMatch[1] : `chr${regionMatch[1]}`
+            const start = parseInt(regionMatch[2].replace(/,/g, ''))
+            const end = parseInt(regionMatch[3].replace(/,/g, ''))
+            return `(chrom = '${chrom}' AND start < ${end} AND end > ${start})`
+        }
+
+        // HGNC gene ID: HGNC:1234
+        if (/^HGNC:\d+$/i.test(q)) {
+            return `(UPPER(hgnc_gene_id) = UPPER('${q}'))`
+        }
+
+        // Ensembl gene ID: ENSG00000000001
+        if (/^ENSG\d+/i.test(q)) {
+            return `(UPPER(ensembl_gene_id) = UPPER('${q}'))`
+        }
+
+        // Gene name/alias (short alphanumeric tokens that look like gene symbols)
+        if (/^[A-Za-z0-9\-]+$/.test(q) && q.length <= 30) {
+            return `(UPPER(gene_symbol) = UPPER('${q}') OR UPPER(gene_aliases) LIKE UPPER('%${q}%'))`
+        }
+
+        // Otherwise treat as disease/phenotype free-text search
+        const phenotypeColumns = [
+            'LLM_phenotype_summary',
+            'OMIM_phenotype_description',
+            'CLINGEN_disease_label',
+            'GENCC_disease_name',
+            'PANEL_APP_UK_phenotypes',
+            'PANEL_APP_AU_phenotypes',
+            'DECIPHER_disease_names',
+            'CLINVAR_phenotypes',
+        ]
+        const textClauses = phenotypeColumns.map(col => `UPPER(${col}) LIKE UPPER('%${q}%')`)
+        return `(${textClauses.join(' OR ')})`
+    }
+
+    /**
+     * Build a WHERE clause for custom filters.
+     * Custom filters are stored in GLOBAL_PAGE_STATE.customFilters as "col|op|val,col|op|val"
+     */
+    const buildCustomFiltersWhereClause = () => {
+        const filtersStr = GLOBAL_PAGE_STATE.customFilters
+        if (!filtersStr || !filtersStr.trim()) return ''
+
+        const clauses = []
+        for (const filterStr of filtersStr.split(',')) {
+            const parts = filterStr.split('|')
+            if (parts.length !== 3) continue
+
+            const [col, op, val] = parts
+
+            // Validate column name exists in TABLE_COLUMNS or BIGQUERY_COLUMN_DESCRIPTIONS
+            if (!BIGQUERY_COLUMN_DESCRIPTIONS[col] && !TABLE_COLUMNS[col]) continue
+
+            // Build SQL clause based on operator
+            switch (op) {
+                case 'eq':
+                    clauses.push(`${col} = '${val}'`)
+                    break
+                case 'neq':
+                    clauses.push(`${col} != '${val}'`)
+                    break
+                case 'gt':
+                    clauses.push(`${col} > ${val}`)
+                    break
+                case 'gte':
+                    clauses.push(`${col} >= ${val}`)
+                    break
+                case 'lt':
+                    clauses.push(`${col} < ${val}`)
+                    break
+                case 'lte':
+                    clauses.push(`${col} <= ${val}`)
+                    break
+                case 'contains':
+                    clauses.push(`UPPER(${col}) LIKE UPPER('%${val}%')`)
+                    break
+                case 'not_contains':
+                    clauses.push(`(${col} IS NULL OR UPPER(${col}) NOT LIKE UPPER('%${val}%'))`)
+                    break
+                case 'is_null':
+                    clauses.push(`${col} IS NULL`)
+                    break
+                case 'is_not_null':
+                    clauses.push(`${col} IS NOT NULL`)
+                    break
+            }
+        }
+
+        return clauses.join(' AND ')
+    }
+
+    /**
+     * Build the complete SQL query for the current search + filters + sort + pagination.
+     */
+    const buildSearchQuery = (selectColumns) => {
+        const whereClauses = []
+
+        // Search query
+        const searchClause = buildSearchWhereClause(GLOBAL_PAGE_STATE.searchQuery)
+        if (searchClause) whereClauses.push(searchClause)
+
+        // Custom filters
+        const customClause = buildCustomFiltersWhereClause()
+        if (customClause) whereClauses.push(customClause)
+
+        const whereStr = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : ''
+
+        // Sort
+        const sortColumn = GLOBAL_PAGE_STATE.sc || DEFAULT_SORT_COLUMN
+        const sortDirection = GLOBAL_PAGE_STATE.sd || DEFAULT_SORT_DIRECTION
+
+        // Build sort expression from the TABLE_COLUMNS definition
+        let sortExpression = sortColumn
+        if (TABLE_COLUMNS[sortColumn] && TABLE_COLUMNS[sortColumn].getSortColumns) {
+            sortExpression = TABLE_COLUMNS[sortColumn].getSortColumns().join(` ${sortDirection}, `)
+        }
+
+        const query = `SELECT ${selectColumns} FROM ${COMPLETE_TABLE_ID} ${whereStr} ORDER BY ${sortExpression} ${sortDirection}`
+        return query
+    }
+
+    /**
+     * Perform the search: build query, send to BigQuery, return results.
+     */
+    const performSearch = async () => {
+        // Gather all required columns from visible TABLE_COLUMNS
+        const visibleColumns = getVisibleColumns()
+        const requiredColumnsSet = new Set()
+        for (const colKey of visibleColumns) {
+            if (TABLE_COLUMNS[colKey] && TABLE_COLUMNS[colKey].getRequiredColumns) {
+                for (const rc of TABLE_COLUMNS[colKey].getRequiredColumns()) {
+                    requiredColumnsSet.add(rc)
+                }
+            }
+        }
+
+        const selectColumns = requiredColumnsSet.size > 0 ? Array.from(requiredColumnsSet).join(', ') : '*'
+
+        const startIndex = (GLOBAL_PAGE_STATE.currentPage - 1) * GLOBAL_PAGE_STATE.pageSize
+        const query = buildSearchQuery(selectColumns)
+
+        return await queryBigQuery(query, startIndex, GLOBAL_PAGE_STATE.pageSize)
+    }
+
+    /**
+     * Get the list of currently visible column keys based on GLOBAL_PAGE_STATE.
+     * Default visible columns if none specified.
+     */
+    const DEFAULT_VISIBLE_COLUMNS = [
+        'gene_symbol',
+        'disease_category',
+        'inheritance',
+        'sources',
+        'LLM_phenotype_summary',
+        'pLI_v4',
+        'lof_oe_ci_upper_v4',
+        'CLINGEN_classification',
+    ]
+
+    const getVisibleColumns = () => {
+        if (GLOBAL_PAGE_STATE.showColumns) {
+            return GLOBAL_PAGE_STATE.showColumns.split(SHOW_COLUMNS_VALUE_DELIMITER).filter(c => c)
+        }
+        return DEFAULT_VISIBLE_COLUMNS
+    }
+
+</script>
+</head>
+
+<!-- modal dialog for selecting IGV tracks -->
+<div class="ui modal" id="igv-track-selection-dialog">
+    <i class="close icon"></i>
+    <div class="header" style="white-space: nowrap;">
+        Select IGV Tracks
+    </div>
+    <div class="content" style="padding-top:0px; max-height: 70vh; overflow-y: auto;">
+        <div class="ui form">
+            <table class="ui stackable table igv-track-selection-table">
+                <tr>
+                    <td colspan="2" style="padding: 10px 25px !important">
+                        <table class="igv-checkbox-container-table" id="igv-reference-tracks-checkboxes">
+                            <tr>
+                                <th class="igv-checkbox-container-header-row">Reference Tracks</th>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="padding: 10px 25px !important">
+                        <table class="igv-checkbox-container-table" id="igv-custom-tracks" style="width: 100%;">
+                            <tr>
+                                <th class="igv-checkbox-container-header-row">Custom Tracks <i class="question circle icon link" style="margin-left: 15px;" data-html="These inputs allow you to load your own custom tracks into IGV.js. They accept BED, BAM, VCF, GFF, BigWig, or any other IGV.js-compatible data format. The data file (and index) just have to be online at a publicly-accessible &nbsp;https://, &nbsp;gs://, &nbsp;or s3:// &nbsp; URL."></i></th>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <div class="actions">
+        <div class="ui deny button">
+            Cancel
+        </div>
+        <div id="igv-tracks-modal-apply-button" class="ui positive right labeled icon button">
+            Apply
+            <i class="checkmark icon"></i>
+        </div>
+    </div>
+</div>
+
+<div class="ui modal" id="about-modal">
+    <i class="close icon"></i>
+    <div class="header">
+        About Gene Lookup
+    </div>
+    <div class="content" style="font-size: 1.1em; height: 100%">
+        <iframe src="about.html" style="width: 100%; height: 100%; border: 0px; min-height: 380px"></iframe>
+    </div>
+</div>
+
+
+<!-- FAQ modal dialog -->
+<div class="ui modal" id="faq-modal" style="height: 80%; min-height:75%">
+    <i class="close icon"></i>
+    <div class="header">
+        Frequently Asked Questions
+    </div>
+    <div class="content" style="font-size: 1.1em; height: 100%">
+        <iframe src="FAQ.html" style="width: 100%; height: 100%; border: 0px"></iframe>
+    </div>
+</div>
+
+<!-- downloads modal dialog -->
+<div class="ui modal" id="downloads-modal" style="height: 88%; min-height: 88%">
+    <i class="close icon"></i>
+    <div class="header">
+        Downloads
+    </div>
+    <div class="content" style="font-size: 1.1em; height: 100%;">
+        <iframe src="downloads.html" style="width: 100%; height: 100%; border: 0px;"></iframe>
+    </div>
+</div>

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html>
+    {% include "header_template.html" %}
+<body>
+<style>
+    .locus-info-label {
+        font-weight: bold;
+        padding-right: 10px;
+        white-space: nowrap;
+    }
+
+    .locus-info-table {
+        font-size: 1.12em;
+        border-collapse: separate;
+        border-spacing: 12px 6px;
+    }
+
+    .left-col {
+        display: flex;
+        padding-right: 20px;
+        justify-content: flex-end;    /* horizontal centering */
+    }
+    .right-col {
+        display: flex;
+        padding-left: 20px;
+        justify-content: flex-start;    /* horizontal centering */
+    }
+
+    .source-section {
+        border-top: 1px dashed #ccc;
+        padding: 23px 20px 15px 15px;
+    }
+
+    .source-section h4 {
+        margin-top: 0;
+    }
+
+    .phenotype-summary-card {
+        background: #f8f9fa;
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        padding: 20px 24px;
+        font-size: 1.05em;
+        line-height: 1.6;
+    }
+</style>
+<div class="ui stackable grid">
+
+    {% include "body_header_template.html" %}
+
+    <div class="ui row" style="padding-bottom: 0;">
+        <div class="three wide column"></div>
+        <div class="ten wide column">
+            <div id="error-message" class="ui negative message" style="display: none">
+                <i class="close icon"></i>
+                <div class="header">Error</div>
+                <p id="error-text"></p>
+            </div>
+        </div>
+        <div class="three wide column"></div>
+    </div>
+
+    <div class="ui row" style="padding-bottom: 0;">
+        <div class="three wide column"></div>
+        <div class="ten wide column">
+            <div id="show-igv-divider">
+                <span id="show-igv-divider-text">Show IGV.js<i class="chevron down icon"></i></span>
+                <span id="hide-igv-divider-text" style="display: none">Hide IGV.js<i class="chevron up icon"></i></span>
+            </div>
+        </div>
+        <div class="three wide column"></div>
+    </div>
+    <div class="ui row">
+        <div class="two wide column"></div>
+        <div class="six wide column" style="min-width: 600px !important;">
+            <div id="locus-page-row1-box1" class="left-col"></div>
+        </div>
+        <div class="six wide column">
+            <div id="locus-page-row1-box2" class="right-col"></div>
+        </div>
+        <div class="two wide column"></div>
+    </div>
+    <div class="ui row">
+        <div class="three wide column"></div>
+        <div class="ten wide column">
+            <div id="phenotype-summary-section"></div>
+        </div>
+        <div class="three wide column"></div>
+    </div>
+    <div class="ui row">
+        <div class="three wide column"></div>
+        <div class="ten wide column">
+            <div id="source-omim"></div>
+        </div>
+        <div class="three wide column"></div>
+    </div>
+    <div class="ui row">
+        <div class="three wide column"></div>
+        <div class="ten wide column">
+            <div id="source-clingen"></div>
+        </div>
+        <div class="three wide column"></div>
+    </div>
+    <div class="ui row">
+        <div class="three wide column"></div>
+        <div class="ten wide column">
+            <div id="source-gencc"></div>
+        </div>
+        <div class="three wide column"></div>
+    </div>
+    <div class="ui row">
+        <div class="three wide column"></div>
+        <div class="ten wide column">
+            <div id="source-panelapp-uk"></div>
+        </div>
+        <div class="three wide column"></div>
+    </div>
+    <div class="ui row">
+        <div class="three wide column"></div>
+        <div class="ten wide column">
+            <div id="source-panelapp-au"></div>
+        </div>
+        <div class="three wide column"></div>
+    </div>
+    <div class="ui row">
+        <div class="three wide column"></div>
+        <div class="ten wide column">
+            <div id="source-decipher"></div>
+        </div>
+        <div class="three wide column"></div>
+    </div>
+    <div class="ui row">
+        <div class="three wide column"></div>
+        <div class="ten wide column">
+            <div id="source-clinvar"></div>
+        </div>
+        <div class="three wide column"></div>
+    </div>
+    <div class="ui row">
+        <div class="three wide column"></div>
+        <div class="ten wide column">
+            <div id="source-fridman"></div>
+        </div>
+        <div class="three wide column"></div>
+    </div>
+</div>
+<div style="min-height: 50px;"></div>
+
+<script>
+    // Add back link and page title above IGV (outside igv-row so it's always visible)
+    $('#igv-row').before(`
+        <div class="ui row" style="padding-bottom: 0;">
+            <div class="two wide column"></div>
+            <div class="twelve wide column" style="padding: 10px 20px 5px 20px; display: flex; align-items: center;">
+                <a id="back-to-search-link" href="index.html" style="font-size: 1.1em; white-space: nowrap;">&lt; Back to search page</a>
+                <div id="locus-page-title" style="flex: 1; text-align: center; font-size: 1.3em; font-weight: 600;"></div>
+                <div style="width: 140px;"></div>
+            </div>
+            <div class="two wide column"></div>
+        </div>
+    `)
+
+    $('body').css('cursor', 'wait')
+
+    // Gene page-specific settings of the DEFAULT_GLOBAL_PAGE_STATE
+    DEFAULT_GLOBAL_PAGE_STATE['hgnc_gene_id'] = ''
+    DEFAULT_GLOBAL_PAGE_STATE['ensembl_gene_id'] = ''
+
+    let GLOBAL_PAGE_STATE = JSON.parse(JSON.stringify(DEFAULT_GLOBAL_PAGE_STATE))
+
+    const readAndApplyPersistentPageStateFromUrl = async () => {
+        GLOBAL_PAGE_STATE = JSON.parse(JSON.stringify(DEFAULT_GLOBAL_PAGE_STATE))
+
+        const urlArgs = window.location.hash.substring(1)
+        if (!urlArgs) return
+
+        const params = new URLSearchParams(urlArgs)
+        for (const [urlKey, value] of params.entries()) {
+            const key = URL_PARAM_REVERSE_ALIASES[urlKey] || urlKey
+            if (key in DEFAULT_GLOBAL_PAGE_STATE && value != null) {
+                GLOBAL_PAGE_STATE[key] = value === 'true' ? true :
+                                        value === 'false' ? false :
+                                        !isNaN(value) ? Number(value) : value
+            }
+        }
+        // hgnc_gene_id contains a colon (e.g. "HGNC:1100") so it gets parsed as NaN — force it back to a string
+        if (params.has('hgnc_gene_id')) {
+            GLOBAL_PAGE_STATE['hgnc_gene_id'] = params.get('hgnc_gene_id')
+        }
+        // ensembl_gene_id (ENSG...) may also be parsed incorrectly — force it back to a string
+        if (params.has('ensembl_gene_id')) {
+            GLOBAL_PAGE_STATE['ensembl_gene_id'] = params.get('ensembl_gene_id')
+        }
+
+        console.log("Starting to initialize page. GLOBAL_PAGE_STATE:", GLOBAL_PAGE_STATE)
+
+        // igv
+        if (GLOBAL_PAGE_STATE['showIGV'] === 1) {
+            $('#igv-row').show()
+            $('#show-igv-divider-text').hide()
+            $('#hide-igv-divider-text').show()
+            await updateIgv()
+        }
+
+        // Restore custom track URLs
+        for (let i = 1; i <= 3; i++) {
+            $(`#igv-custom-track-url-${i}`).val(GLOBAL_PAGE_STATE[`igv_custom_track_url_${i}`] || '')
+        }
+
+        await performSearch()
+    }
+
+    $('#show-igv-divider').click(async () => {
+        GLOBAL_PAGE_STATE['showIGV'] = (GLOBAL_PAGE_STATE['showIGV'] === 1) ? 0 : 1
+        writePersistentPageStateToUrl()
+
+        if (GLOBAL_PAGE_STATE['showIGV'] === 1) {
+            $('#igv-row').show()
+            $('#show-igv-divider-text').hide()
+            $('#hide-igv-divider-text').show()
+            await updateIgv()
+        } else {
+            $('#igv-row').slideUp(500, () => {
+                $('#hide-igv-divider-text').hide()
+                $('#show-igv-divider-text').show()
+            })
+        }
+    })
+
+    const displayError = (message) => {
+        $('#error-text').text(message)
+        $('#error-message').show()
+    }
+
+    const hasAnyValue = (...values) => values.some(v => v != null && v !== '')
+
+    const displaySearchResults = () => {
+        const row = window.searchResults.rows[0]
+
+        const geneSymbol = row['gene_symbol'] || ''
+        const hgncId = row['hgnc_gene_id'] || ''
+        const geneId = row['ensembl_gene_id'] || ''
+        const displayName = geneSymbol || hgncId || geneId || 'Unknown'
+        const chrom = row['chrom'] || ''
+        const start = row['start']
+        const end = row['end']
+        const coordinates = (chrom && start != null && end != null) ? `${chrom}:${start.toLocaleString()}-${end.toLocaleString()}` : ''
+
+        // Set page title
+        document.title = `Gene Lookup: ${displayName}`
+        $('#locus-page-title').text(`Gene Page: ${displayName}`)
+
+        // Update back link
+        const urlArgs = window.location.hash.substring(1)
+        $('#back-to-search-link').attr('href', `index.html#${urlArgs}`)
+
+        // --- Left column (row1-box1) ---
+        let box1 = '<table class="locus-info-table">'
+        box1 += `<tr><td class="locus-info-label">Gene Symbol:</td><td style="font-weight: bold; font-size: 1.1em;">${geneSymbol}</td></tr>`
+        box1 += `<tr><td class="locus-info-label">HGNC ID:</td><td>${hgncId ? `<a href="https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/${hgncId}" target="_blank" class="action-link">${hgncId}</a>` : ''}</td></tr>`
+        box1 += `<tr><td class="locus-info-label">Gene ID:</td><td>${geneId ? `<a href="https://ensembl.org/Homo_sapiens/Gene/Summary?g=${geneId}" target="_blank" class="action-link">${geneId}</a>` : ''}</td></tr>`
+        box1 += `<tr><td class="locus-info-label">Aliases:</td><td>${row['gene_aliases'] || ''}</td></tr>`
+        box1 += `<tr><td class="locus-info-label">Coordinates (hg38):</td><td>${coordinates}</td></tr>`
+        box1 += `<tr><td class="locus-info-label">Disease Category:</td><td>${getDiseaseCategory(row['disease_category'])}</td></tr>`
+        box1 += '</table>'
+        $('#locus-page-row1-box1').html(box1)
+
+        // --- Right column (row1-box2) ---
+        let box2 = '<table class="locus-info-table">'
+        box2 += `<tr><td class="locus-info-label">Inheritance:</td><td>${row['inheritance'] || ''}</td></tr>`
+        box2 += `<tr><td class="locus-info-label">Sources:</td><td>${getSourcesBadges(row['sources'])}</td></tr>`
+
+        // Constraint scores
+        const pliV2 = row['pLI_v2'] != null ? row['pLI_v2'].toFixed(2) : ''
+        const pliV4 = row['pLI_v4'] != null ? (() => { const v = row['pLI_v4']; const s = v >= 0.9 ? 'color: #c0392b; font-weight: bold;' : ''; return `<span style="${s}">${v.toFixed(2)}</span>` })() : ''
+        const loeuf = row['lof_oe_ci_upper_v4'] != null ? (() => { const v = row['lof_oe_ci_upper_v4']; const s = v <= 0.35 ? 'color: #c0392b; font-weight: bold;' : ''; return `<span style="${s}">${v.toFixed(2)}</span>` })() : ''
+        const moeuf = row['mis_oe_ci_upper_v4'] != null ? row['mis_oe_ci_upper_v4'].toFixed(2) : ''
+
+        box2 += `<tr><td class="locus-info-label">pLI (v2):</td><td>${pliV2}</td></tr>`
+        box2 += `<tr><td class="locus-info-label">pLI (v4):</td><td>${pliV4}</td></tr>`
+        box2 += `<tr><td class="locus-info-label">LOEUF (v4):</td><td>${loeuf}</td></tr>`
+        box2 += `<tr><td class="locus-info-label">Missense O/E (v4):</td><td>${moeuf}</td></tr>`
+
+        // ClinGen curation summary
+        box2 += `<tr><td class="locus-info-label">ClinGen Curation:</td><td>${getTruncatedText(row['clingen_curation'], 60)}</td></tr>`
+        box2 += '</table>'
+        $('#locus-page-row1-box2').html(box2)
+
+        // --- AI Phenotype Summary ---
+        if (row['LLM_phenotype_summary']) {
+            $('#phenotype-summary-section').html(`
+                <div class="source-section">
+                    <h4>AI Phenotype Summary</h4>
+                    <div class="phenotype-summary-card">${row['LLM_phenotype_summary']}</div>
+                </div>
+            `)
+        }
+
+        // --- Source: OMIM ---
+        if (hasAnyValue(row['OMIM_mim_number'], row['OMIM_phenotype_mim_number'], row['OMIM_inheritance'], row['OMIM_phenotype_description'])) {
+            let html = '<div class="source-section"><h4>OMIM</h4><table class="locus-info-table">'
+            const mimLinks = (row['OMIM_mim_number'] || '').split(';').map(m => m.trim()).filter(m => m).map(m =>
+                `<a href="https://omim.org/entry/${m}" target="_blank" class="action-link">${m}</a>`
+            ).join('; ')
+            html += `<tr><td class="locus-info-label">MIM #:</td><td>${mimLinks}</td></tr>`
+            html += `<tr><td class="locus-info-label">Phenotype MIM #:</td><td>${row['OMIM_phenotype_mim_number'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Inheritance:</td><td>${row['OMIM_inheritance'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Phenotype:</td><td style="white-space: normal;">${row['OMIM_phenotype_description'] || ''}</td></tr>`
+            html += '</table></div>'
+            $('#source-omim').html(html)
+        }
+
+        // --- Source: ClinGen ---
+        if (hasAnyValue(row['CLINGEN_disease_label'], row['CLINGEN_disease_mondo_id'], row['CLINGEN_inheritance'], row['CLINGEN_classification'], row['CLINGEN_haploinsufficient'])) {
+            let html = '<div class="source-section"><h4>ClinGen</h4><table class="locus-info-table">'
+            html += `<tr><td class="locus-info-label">Disease:</td><td style="white-space: normal;">${row['CLINGEN_disease_label'] || ''}</td></tr>`
+            const mondoId = row['CLINGEN_disease_mondo_id'] || ''
+            const mondoLink = mondoId ? `<a href="https://monarchinitiative.org/${mondoId}" target="_blank" class="action-link">${mondoId}</a>` : ''
+            html += `<tr><td class="locus-info-label">MONDO ID:</td><td>${mondoLink}</td></tr>`
+            html += `<tr><td class="locus-info-label">Inheritance:</td><td>${row['CLINGEN_inheritance'] || ''}</td></tr>`
+            // Classification badge
+            const classVal = row['CLINGEN_classification'] || ''
+            if (classVal) {
+                const classColors = { 'Definitive': '#28a745', 'Strong': '#218838', 'Moderate': '#ffc107', 'Limited': '#fd7e14' }
+                const color = classColors[classVal] || '#6c757d'
+                html += `<tr><td class="locus-info-label">Classification:</td><td><span class="ui mini label" style="background-color: ${color}; color: white;">${classVal}</span></td></tr>`
+            }
+            html += `<tr><td class="locus-info-label">Haploinsufficiency:</td><td>${row['CLINGEN_haploinsufficient'] || ''}</td></tr>`
+            html += '</table></div>'
+            $('#source-clingen').html(html)
+        }
+
+        // --- Source: GenCC ---
+        if (hasAnyValue(row['GENCC_disease_name'], row['GENCC_classification'], row['GENCC_inheritance'])) {
+            let html = '<div class="source-section"><h4>GenCC</h4><table class="locus-info-table">'
+            html += `<tr><td class="locus-info-label">Disease:</td><td style="white-space: normal;">${row['GENCC_disease_name'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Classification:</td><td>${row['GENCC_classification'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Inheritance:</td><td>${row['GENCC_inheritance'] || ''}</td></tr>`
+            html += '</table></div>'
+            $('#source-gencc').html(html)
+        }
+
+        // --- Source: PanelApp UK ---
+        if (hasAnyValue(row['PANEL_APP_UK_confidence'], row['PANEL_APP_UK_penetrance'], row['PANEL_APP_UK_mode_of_pathogenicity'], row['PANEL_APP_UK_inheritance'], row['PANEL_APP_UK_evidence'], row['PANEL_APP_UK_phenotypes'], row['PANEL_APP_UK_panel_name'])) {
+            let html = '<div class="source-section"><h4>PanelApp UK</h4><table class="locus-info-table">'
+            html += `<tr><td class="locus-info-label">Confidence:</td><td>${row['PANEL_APP_UK_confidence'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Penetrance:</td><td>${row['PANEL_APP_UK_penetrance'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Pathogenicity:</td><td>${row['PANEL_APP_UK_mode_of_pathogenicity'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Inheritance:</td><td>${row['PANEL_APP_UK_inheritance'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Evidence:</td><td style="white-space: normal;">${row['PANEL_APP_UK_evidence'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Phenotypes:</td><td style="white-space: normal;">${row['PANEL_APP_UK_phenotypes'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Panel:</td><td style="white-space: normal;">${row['PANEL_APP_UK_panel_name'] || ''}</td></tr>`
+            html += '</table></div>'
+            $('#source-panelapp-uk').html(html)
+        }
+
+        // --- Source: PanelApp AU ---
+        if (hasAnyValue(row['PANEL_APP_AU_confidence'], row['PANEL_APP_AU_penetrance'], row['PANEL_APP_AU_mode_of_pathogenicity'], row['PANEL_APP_AU_inheritance'], row['PANEL_APP_AU_evidence'], row['PANEL_APP_AU_phenotypes'], row['PANEL_APP_AU_panel_name'])) {
+            let html = '<div class="source-section"><h4>PanelApp AU</h4><table class="locus-info-table">'
+            html += `<tr><td class="locus-info-label">Confidence:</td><td>${row['PANEL_APP_AU_confidence'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Penetrance:</td><td>${row['PANEL_APP_AU_penetrance'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Pathogenicity:</td><td>${row['PANEL_APP_AU_mode_of_pathogenicity'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Inheritance:</td><td>${row['PANEL_APP_AU_inheritance'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Evidence:</td><td style="white-space: normal;">${row['PANEL_APP_AU_evidence'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Phenotypes:</td><td style="white-space: normal;">${row['PANEL_APP_AU_phenotypes'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Panel:</td><td style="white-space: normal;">${row['PANEL_APP_AU_panel_name'] || ''}</td></tr>`
+            html += '</table></div>'
+            $('#source-panelapp-au').html(html)
+        }
+
+        // --- Source: Decipher ---
+        if (hasAnyValue(row['DECIPHER_inheritance'], row['DECIPHER_disease_names'])) {
+            let html = '<div class="source-section"><h4>Decipher</h4><table class="locus-info-table">'
+            html += `<tr><td class="locus-info-label">Inheritance:</td><td>${row['DECIPHER_inheritance'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Disease Names:</td><td style="white-space: normal;">${row['DECIPHER_disease_names'] || ''}</td></tr>`
+            html += '</table></div>'
+            $('#source-decipher').html(html)
+        }
+
+        // --- Source: ClinVar ---
+        if (hasAnyValue(row['CLINVAR_phenotypes'], row['CLINVAR_clinical_significance'], row['CLINVAR_stars'], row['CLINVAR_variant_consequences'])) {
+            let html = '<div class="source-section"><h4>ClinVar</h4><table class="locus-info-table">'
+            html += `<tr><td class="locus-info-label">Phenotypes:</td><td style="white-space: normal;">${row['CLINVAR_phenotypes'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Clinical Significance:</td><td>${row['CLINVAR_clinical_significance'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Stars:</td><td>${row['CLINVAR_stars'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Variant Consequences:</td><td>${row['CLINVAR_variant_consequences'] || ''}</td></tr>`
+            html += '</table></div>'
+            $('#source-clinvar').html(html)
+        }
+
+        // --- Source: Fridman ---
+        if (hasAnyValue(row['FRIDMAN_omim_phenotype_id'], row['FRIDMAN_phenotype_category'], row['FRIDMAN_inheritance'])) {
+            let html = '<div class="source-section"><h4>Fridman</h4><table class="locus-info-table">'
+            html += `<tr><td class="locus-info-label">OMIM Phenotype ID:</td><td>${row['FRIDMAN_omim_phenotype_id'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Phenotype Category:</td><td>${row['FRIDMAN_phenotype_category'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Inheritance:</td><td>${row['FRIDMAN_inheritance'] || ''}</td></tr>`
+            html += '</table></div>'
+            $('#source-fridman').html(html)
+        }
+
+        $('.question').popup({ on: 'click' })
+        $('.show-popup').popup({ on: 'click', hoverable: true })
+    }
+
+    const performSearch = async () => {
+        $('#error-message').hide()
+
+        try {
+            $('body').css('cursor', 'wait')
+
+            const hgncGeneId = GLOBAL_PAGE_STATE['hgnc_gene_id']
+            const ensgGeneId = GLOBAL_PAGE_STATE['ensembl_gene_id']
+            if (!hgncGeneId && !ensgGeneId) {
+                displayError('Missing gene identifier in URL (eg. #hgnc_gene_id=HGNC:1100 or #ensembl_gene_id=ENSG00000139618)')
+                return
+            }
+
+            // Set page title immediately with whatever identifier we have
+            const lookupId = hgncGeneId || ensgGeneId
+            document.title = `Gene Lookup: ${lookupId}`
+            $('#locus-page-title').text(`Gene Page: ${lookupId}`)
+
+            let query
+            if (hgncGeneId) {
+                query = `SELECT * FROM ${COMPLETE_TABLE_ID} WHERE hgnc_gene_id = '${hgncGeneId}'`
+            } else {
+                query = `SELECT * FROM ${COMPLETE_TABLE_ID} WHERE ensembl_gene_id = '${ensgGeneId}'`
+            }
+
+            window.searchResults = await queryBigQuery(query, 0, 1, null)
+
+            console.log("Search results:", window.searchResults)
+
+            if (!window.searchResults.rows || window.searchResults.rows.length === 0) {
+                console.error("ERROR: gene not found", lookupId)
+                displayError(`Gene not found: ${lookupId}`)
+                return
+            }
+
+            displaySearchResults()
+
+            // Initialize IGV with gene coordinates if not already set by URL
+            const row = window.searchResults.rows[0]
+            if (row['chrom'] && row['start'] != null && row['end'] != null) {
+                const igvStart = Math.max(0, row['start'] - IGV_LOCUS_PADDING)
+                const igvEnd = row['end'] + IGV_LOCUS_PADDING
+                if (GLOBAL_PAGE_STATE['igvLoc'] === DEFAULT_GLOBAL_PAGE_STATE['igvLoc']) {
+                    GLOBAL_PAGE_STATE['igvLoc'] = `${row['chrom']}:${igvStart}-${igvEnd}`
+                }
+            }
+
+        } catch (error) {
+            console.error('Error performing search:', error)
+            displayError('Error performing search: ' + error.message)
+        } finally {
+            $('body').css('cursor', 'default')
+        }
+    }
+
+    // Initialize modals
+    ['about', 'faq', 'downloads'].forEach(prefix => {
+        $(`#${prefix}-link`).click((e) => {
+            e.preventDefault()
+            $(`#${prefix}-modal`).modal('show')
+        })
+    })
+
+    // Handle browser forward & back buttons
+    window.addEventListener('popstate', readAndApplyPersistentPageStateFromUrl)
+
+    // Init UI elements
+    $('.ui.button').popup()
+    $(".ui.checkbox").checkbox()
+
+    $(document).ready(async () => {
+        await readAndApplyPersistentPageStateFromUrl()
+        console.log("Done initializing page. GLOBAL_PAGE_STATE:", GLOBAL_PAGE_STATE)
+        $('body').css('cursor', 'default')
+    })
+
+</script>
+
+</body>
+</html>

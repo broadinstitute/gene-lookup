@@ -1,0 +1,1803 @@
+<!DOCTYPE html>
+<html>
+
+{% include "header_template.html" %}
+
+<body>
+<!-- modal dialog for selecting results table columns -->
+<div class="ui modal" id="results-table-column-settings-dialog">
+    <i class="close icon"></i>
+    <div class="header">
+        Results Table Columns
+    </div>
+    <div class="content">
+        <div class="ui form">
+            <table class="ui stackable table results-table-column-settings-checkboxes" style="border: 0px !important"></table>
+        </div>
+    </div>
+    <div class="actions">
+        <div id="results-table-column-settings-cancel-button" class="ui deny button">Cancel</div>
+        <div id="results-table-column-settings-apply-button" class="ui positive right labeled icon button">
+            Apply
+            <i class="checkmark icon"></i>
+        </div>
+    </div>
+</div>
+
+<!-- modal dialog for selecting columns to export -->
+<div class="ui modal" id="export-column-dialog">
+    <i class="close icon"></i>
+    <div class="header" id="export-dialog-title">
+        TSV export options
+    </div>
+    <div class="content">
+        <div class="ui form">
+            <!-- Column checkboxes -->
+            <div id="export-column-section">
+                <label style="font-weight: 700; margin-bottom: 0.5em; display: block;">Columns to include:</label>
+                <div class="export-column-checkboxes-flex-container" id="export-column-checkboxes"></div>
+            </div>
+        </div>
+    </div>
+    <div class="actions">
+        <div id="export-dialog-cancel-button" class="ui deny button">Cancel</div>
+        <div id="export-dialog-download-button" class="ui positive right labeled icon button">
+            Download
+            <i class="download icon"></i>
+        </div>
+    </div>
+</div>
+
+<!-- modal dialog for selecting custom filter columns -->
+<div class="ui modal" id="custom-filter-column-dialog">
+    <i class="close icon"></i>
+    <div class="header">
+        Select custom filter column(s)
+    </div>
+    <div class="content">
+        <div class="ui form">
+            <div class="export-column-checkboxes-flex-container" id="custom-filter-column-checkboxes"></div>
+        </div>
+    </div>
+    <div class="actions">
+        <div id="custom-filter-dialog-cancel-button" class="ui deny button">Cancel</div>
+        <div id="custom-filter-dialog-add-button" class="ui positive right labeled icon button">
+            Add Filters
+            <i class="filter icon"></i>
+        </div>
+    </div>
+</div>
+
+<div class="ui grid">
+
+    {% include "body_header_template.html" %}
+
+    <div class="ui row">
+        <div class="three wide column"></div>
+        <div class="ten wide column">
+            <div id="show-igv-divider">
+                <span id="show-igv-divider-text">Show IGV.js<i class="chevron down icon"></i></span>
+                <span id="hide-igv-divider-text" style="display: none">Hide IGV.js<i class="chevron up icon"></i></span>
+            </div>
+
+            <form id="search-form" class="ui form">
+                <div class="field">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5em;">
+                        <label style="margin: 0; font-weight: 700 !important;">Search by gene, disease, or region:</label>
+                        <span style="margin-right: 145px; font-weight: 400 !important; color: #888; font-size: 0.9em;">
+                            Examples: &nbsp; <a href="index.html?#showRs=1&q=BRCA1">
+                                BRCA1
+                            </a>, <a href="index.html?#showRs=1&q=cardiomyopathy">
+                                cardiomyopathy
+                            </a>, <a href="index.html?#showRs=1&q=chr1%3A1000000-2000000">
+                                chr1:1000000-2000000
+                            </a>
+                        </span>
+                    </div>
+                    <div class="ui action input">
+                        <input type="text" id="search-query" name="search-query" placeholder="Search by gene (BRCA1), disease (cardiomyopathy), or region (chr1:1000000-2000000)">
+                        <button id="filter-button" class="ui basic icon button" type="button" data-html="Show or hide additional filters" data-position="top center"><i class="filter icon rotated" style="transition: transform 0.3s;"></i></button>
+                        <button id="search-button" class="ui primary button" type="submit">Search</button>
+                    </div>
+                </div>
+            </form>
+
+            <!-- Advanced Search Wrapper -->
+            <div id="advanced-search-wrapper" style="padding-top: 20px">
+                <!-- Form error message -->
+                <div id="form-error-message" class="ui error message" style="display: none; margin-bottom: 1em;"></div>
+
+                <!-- Advanced Search (Initially Hidden) -->
+                <form id="advanced-search-form" class="ui form" style="display:none">
+
+                    <div class="field" style="padding-top: 5px">
+                        <label>Inheritance Mode
+                            <i class="question circle icon link" style="margin-left: 5px;" data-html="Filter by inheritance mode. AD = Autosomal Dominant, AR = Autosomal Recessive, XL = X-Linked."></i>
+                        </label>
+                        <div class="checkbox-group" style="padding-bottom: 15px">
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="keepAD">
+                                <label>AD</label>
+                            </div>
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="keepAR">
+                                <label>AR</label>
+                            </div>
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="keepXL">
+                                <label>XL</label>
+                            </div>
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="keepMito">
+                                <label>Mitochondrial</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field" style="padding-top: 5px">
+                        <label>Source Filter
+                            <i class="question circle icon link" style="margin-left: 5px;" data-html="Filter results to only include genes reported by the selected source(s)."></i>
+                        </label>
+                        <div class="checkbox-group" style="padding-bottom: 15px">
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="keepOMIM">
+                                <label>OMIM</label>
+                            </div>
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="keepClinGen">
+                                <label>ClinGen</label>
+                            </div>
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="keepGenCC">
+                                <label>GenCC</label>
+                            </div>
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="keepPanelAppUK">
+                                <label>PanelApp UK</label>
+                            </div>
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="keepPanelAppAU">
+                                <label>PanelApp AU</label>
+                            </div>
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="keepDecipher">
+                                <label>Decipher</label>
+                            </div>
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="keepClinVar">
+                                <label>ClinVar</label>
+                            </div>
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="keepFridman">
+                                <label>Fridman</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="two fields" style="padding-top: 5px">
+                        <div class="field" style="max-width: 250px;">
+                            <label>Minimum Number of Sources
+                                <i class="question circle icon link" style="margin-left: 5px;" data-html="Only show genes that appear in at least this many sources."></i>
+                            </label>
+                            <input type="number" id="min-sources-input" name="minSources" placeholder="e.g., 2" min="1" max="8" style="width: 80px;">
+                        </div>
+                    </div>
+
+                    <div class="field" style="padding-top: 5px">
+                        <label>Constraint Scores
+                            <i class="question circle icon link" style="margin-left: 5px;" data-html="Filter by gene constraint scores from gnomAD. pLI measures probability of loss-of-function intolerance. LOEUF is the loss-of-function observed/expected upper bound fraction. Missense O/E is the missense observed/expected ratio."></i>
+                        </label>
+                        <div style="display: flex; gap: 30px; flex-wrap: wrap;">
+                            <div style="display: flex; align-items: center; gap: 5px;">
+                                <span>pLI (v4) &ge;</span>
+                                <input type="text" id="pli-threshold" name="pliThreshold" placeholder="e.g., 0.9" style="width: 80px;">
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 5px;">
+                                <span>LOEUF &le;</span>
+                                <input type="text" id="loeuf-threshold" name="loeufThreshold" placeholder="e.g., 0.35" style="width: 80px;">
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 5px;">
+                                <span>Missense O/E &le;</span>
+                                <input type="text" id="moeuf-threshold" name="moeufThreshold" placeholder="e.g., 0.8" style="width: 80px;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="two fields" style="padding-top: 5px">
+                        <div class="field" style="max-width: 350px;">
+                            <label>ClinGen Classification
+                                <i class="question circle icon link" style="margin-left: 5px;" data-html="Filter by ClinGen gene-disease validity classification. Only show genes with at least this level of evidence."></i>
+                            </label>
+                            <div class="ui selection dropdown" id="clingen-classification-dropdown" style="min-width: 220px;">
+                                <input type="hidden" name="clingenClassification">
+                                <i class="dropdown icon"></i>
+                                <div class="default text">Any classification</div>
+                                <div class="menu">
+                                    <div class="item" data-value="">Any</div>
+                                    <div class="item" data-value="Definitive">Definitive</div>
+                                    <div class="item" data-value="Strong">Strong</div>
+                                    <div class="item" data-value="Moderate">Moderate</div>
+                                    <div class="item" data-value="Limited">Limited</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field" style="max-width: 350px;">
+                            <label>Disease Category
+                                <i class="question circle icon link" style="margin-left: 5px;" data-html="Filter by disease category (e.g., Neurological, Cardiovascular, etc.)."></i>
+                            </label>
+                            <div class="ui selection dropdown" id="disease-category-dropdown" style="min-width: 220px;">
+                                <input type="hidden" name="diseaseCategory">
+                                <i class="dropdown icon"></i>
+                                <div class="default text">Any category</div>
+                                <div class="menu">
+                                    <div class="item" data-value="">Any</div>
+                                    <div class="item" data-value="NEUROLOGICAL">Neurological</div>
+                                    <div class="item" data-value="CARDIOVASCULAR">Cardiovascular</div>
+                                    <div class="item" data-value="METABOLIC">Metabolic</div>
+                                    <div class="item" data-value="IMMUNOLOGICAL">Immunological</div>
+                                    <div class="item" data-value="OPHTHALMOLOGICAL">Ophthalmological</div>
+                                    <div class="item" data-value="DERMATOLOGICAL">Dermatological</div>
+                                    <div class="item" data-value="MUSCULOSKELETAL">Musculoskeletal</div>
+                                    <div class="item" data-value="HEMATOLOGICAL">Hematological</div>
+                                    <div class="item" data-value="RENAL">Renal</div>
+                                    <div class="item" data-value="ENDOCRINE">Endocrine</div>
+                                    <div class="item" data-value="HEPATIC">Hepatic</div>
+                                    <div class="item" data-value="PULMONARY">Pulmonary</div>
+                                    <div class="item" data-value="GASTROINTESTINAL">Gastrointestinal</div>
+                                    <div class="item" data-value="ONCOLOGICAL">Oncological</div>
+                                    <div class="item" data-value="DEVELOPMENTAL">Developmental</div>
+                                    <div class="item" data-value="MULTISYSTEMIC">Multisystemic</div>
+                                    <div class="item" data-value="AUDIOLOGICAL">Audiological</div>
+                                    <div class="item" data-value="DENTAL">Dental</div>
+                                    <div class="item" data-value="PSYCHIATRIC">Psychiatric</div>
+                                    <div class="item" data-value="OTHER">Other</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="custom-filter-rows"></div>
+                    <a href="#" id="add-custom-filter-link">Add Custom Filter...</a>
+                </form>
+            </div>
+        </div>
+        <div class="three wide column"></div>
+    </div>
+    <div class="ui row">
+        <div class="one wide column"></div>
+        <div class="fourteen wide column">
+            <!-- Results Area -->
+            <div id="results-area" style="position: relative; z-index: 100;">
+                <div id="loading-container" style="display: none">
+                    <div id="loading-indicator" class="loading-indicator">
+                        <div class="ui small active inline loader"></div>
+                        <span>Loading...</span>
+                    </div>
+                </div>
+                <div class="pagination-container top-pagination"></div>
+                <div id="results-table"></div>
+                <div class="pagination-container bottom-pagination"></div>
+                <div id="error-message" class="ui negative message" style="display: none">
+                    <i class="close icon"></i>
+                    <div class="header">Error</div>
+                    <p id="error-text"></p>
+                </div>
+            </div>
+        </div>
+        <div class="one wide column"></div>
+    </div>
+</div>
+
+<script>
+
+    $('body').css('cursor', 'wait')
+
+    const RESULTS_TABLE_COLUMN_NAMES = Object.keys(TABLE_COLUMNS)
+
+    // Index page-specific settings of the DEFAULT_GLOBAL_PAGE_STATE
+    DEFAULT_GLOBAL_PAGE_STATE['showColumns'] = DEFAULT_VISIBLE_COLUMNS.join(SHOW_COLUMNS_VALUE_DELIMITER)
+
+    // Advanced filter state keys
+    DEFAULT_GLOBAL_PAGE_STATE['keepAD'] = 0
+    DEFAULT_GLOBAL_PAGE_STATE['keepAR'] = 0
+    DEFAULT_GLOBAL_PAGE_STATE['keepXL'] = 0
+    DEFAULT_GLOBAL_PAGE_STATE['keepMito'] = 0
+    DEFAULT_GLOBAL_PAGE_STATE['keepOMIM'] = 0
+    DEFAULT_GLOBAL_PAGE_STATE['keepClinGen'] = 0
+    DEFAULT_GLOBAL_PAGE_STATE['keepGenCC'] = 0
+    DEFAULT_GLOBAL_PAGE_STATE['keepPanelAppUK'] = 0
+    DEFAULT_GLOBAL_PAGE_STATE['keepPanelAppAU'] = 0
+    DEFAULT_GLOBAL_PAGE_STATE['keepDecipher'] = 0
+    DEFAULT_GLOBAL_PAGE_STATE['keepClinVar'] = 0
+    DEFAULT_GLOBAL_PAGE_STATE['keepFridman'] = 0
+    DEFAULT_GLOBAL_PAGE_STATE['minSources'] = ''
+    DEFAULT_GLOBAL_PAGE_STATE['pliThreshold'] = ''
+    DEFAULT_GLOBAL_PAGE_STATE['loeufThreshold'] = ''
+    DEFAULT_GLOBAL_PAGE_STATE['moeufThreshold'] = ''
+    DEFAULT_GLOBAL_PAGE_STATE['clingenClassification'] = ''
+    DEFAULT_GLOBAL_PAGE_STATE['diseaseCategory'] = ''
+
+    // Copy the default persistent page state
+    let GLOBAL_PAGE_STATE = JSON.parse(JSON.stringify(DEFAULT_GLOBAL_PAGE_STATE))
+
+    const RESULTS_TABLE_COLUMN_SELECTION_CHECKBOXES = RESULTS_TABLE_COLUMN_NAMES
+
+    // Columns that can be used for filtering in the UI, with their display names and group
+    const CUSTOM_FILTER_COLUMNS = {{ custom_filter_columns_json }}
+
+    // Columns available for TSV/JSON export with their display names and group
+    const EXPORT_COLUMN_OPTIONS = {{ exportable_columns_json }}
+
+    // Store pending export type when showing the dialog
+    let pendingExportType = null
+
+    const escapeHtml = (s) => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')
+
+    const readAndApplyPersistentPageStateFromUrl = async () => {
+        GLOBAL_PAGE_STATE = JSON.parse(JSON.stringify(DEFAULT_GLOBAL_PAGE_STATE))
+
+        const hash = window.location.hash.substring(1)
+        if (!hash) return
+
+        const params = new URLSearchParams(hash)
+
+        for (const [urlKey, value] of params.entries()) {
+            // Convert abbreviated URL param name to internal state name if needed
+            const key = URL_PARAM_REVERSE_ALIASES[urlKey] || urlKey
+            if (key in DEFAULT_GLOBAL_PAGE_STATE && value != null) {
+                // Convert string values to appropriate types
+                GLOBAL_PAGE_STATE[key] = value === 'true' ? true :
+                                        value === 'false' ? false :
+                                        !isNaN(value) ? Number(value) : value
+                if (key === 'showColumns') {
+                    let names = value.split(SHOW_COLUMNS_VALUE_DELIMITER)
+                    // Validate: drop any unrecognized column names
+                    names = names.filter(name => RESULTS_TABLE_COLUMN_NAMES.includes(name))
+                    GLOBAL_PAGE_STATE[key] = names.length > 0
+                        ? names.join(SHOW_COLUMNS_VALUE_DELIMITER)
+                        : DEFAULT_GLOBAL_PAGE_STATE[key]
+                } else if (key === 'customFilters') {
+                    GLOBAL_PAGE_STATE[key] = `${value}` // convert to string
+                }
+            }
+        }
+        console.log("Starting to initialize page. GLOBAL_PAGE_STATE:", GLOBAL_PAGE_STATE)
+
+        // igv
+        if (GLOBAL_PAGE_STATE['showIGV'] === 1) {
+            $('#igv-row').show()
+            $('#show-igv-divider-text').hide()
+            $('#hide-igv-divider-text').show()
+            await updateIgv()
+        }
+
+        // advanced search wrapper
+        if (GLOBAL_PAGE_STATE['showAdvFilters'] === 1) {
+            $('#advanced-search-form').show()
+            $('#filter-button .filter.icon').removeClass('rotated')
+        }
+
+        // search
+        $('#search-query').val(GLOBAL_PAGE_STATE['searchQuery'])
+
+        // Restore inheritance checkboxes
+        $('input[name="keepAD"]').prop('checked', GLOBAL_PAGE_STATE['keepAD'] === 1)
+        $('input[name="keepAR"]').prop('checked', GLOBAL_PAGE_STATE['keepAR'] === 1)
+        $('input[name="keepXL"]').prop('checked', GLOBAL_PAGE_STATE['keepXL'] === 1)
+        $('input[name="keepMito"]').prop('checked', GLOBAL_PAGE_STATE['keepMito'] === 1)
+
+        // Restore source checkboxes
+        $('input[name="keepOMIM"]').prop('checked', GLOBAL_PAGE_STATE['keepOMIM'] === 1)
+        $('input[name="keepClinGen"]').prop('checked', GLOBAL_PAGE_STATE['keepClinGen'] === 1)
+        $('input[name="keepGenCC"]').prop('checked', GLOBAL_PAGE_STATE['keepGenCC'] === 1)
+        $('input[name="keepPanelAppUK"]').prop('checked', GLOBAL_PAGE_STATE['keepPanelAppUK'] === 1)
+        $('input[name="keepPanelAppAU"]').prop('checked', GLOBAL_PAGE_STATE['keepPanelAppAU'] === 1)
+        $('input[name="keepDecipher"]').prop('checked', GLOBAL_PAGE_STATE['keepDecipher'] === 1)
+        $('input[name="keepClinVar"]').prop('checked', GLOBAL_PAGE_STATE['keepClinVar'] === 1)
+        $('input[name="keepFridman"]').prop('checked', GLOBAL_PAGE_STATE['keepFridman'] === 1)
+
+        // Restore numeric/text filters
+        $('input[name="minSources"]').val(GLOBAL_PAGE_STATE['minSources'])
+        $('input[name="pliThreshold"]').val(GLOBAL_PAGE_STATE['pliThreshold'])
+        $('input[name="loeufThreshold"]').val(GLOBAL_PAGE_STATE['loeufThreshold'])
+        $('input[name="moeufThreshold"]').val(GLOBAL_PAGE_STATE['moeufThreshold'])
+
+        // Restore dropdowns
+        if (GLOBAL_PAGE_STATE['clingenClassification']) {
+            $('#clingen-classification-dropdown').dropdown('set selected', GLOBAL_PAGE_STATE['clingenClassification'])
+        }
+        if (GLOBAL_PAGE_STATE['diseaseCategory']) {
+            $('#disease-category-dropdown').dropdown('set selected', GLOBAL_PAGE_STATE['diseaseCategory'])
+        }
+
+        // Restore custom filters from URL
+        $('#custom-filter-rows').empty()
+        deserializeAndCreateCustomFilters(GLOBAL_PAGE_STATE['customFilters'])
+
+        // Restore custom track URLs
+        for (let i = 1; i <= 3; i++) {
+            $(`#igv-custom-track-url-${i}`).val(GLOBAL_PAGE_STATE[`igv_custom_track_url_${i}`] || '')
+        }
+
+        if (GLOBAL_PAGE_STATE['showRs'] === 1) {
+            await performSearch(false)
+        }
+    }
+
+
+    $('#show-igv-divider').click(async () => {
+        GLOBAL_PAGE_STATE['showIGV'] = (GLOBAL_PAGE_STATE['showIGV'] === 1) ? 0 : 1
+        writePersistentPageStateToUrl()
+
+        if (GLOBAL_PAGE_STATE['showIGV'] === 1) {
+            $('#igv-row').show()
+            $('#show-igv-divider-text').hide()
+            $('#hide-igv-divider-text').show()
+            await updateIgv()
+            updateIgvNavButtons()
+        } else {
+            $('#igv-row').slideUp(500, () => {
+                $('#hide-igv-divider-text').hide()
+                $('#show-igv-divider-text').show()
+            })
+            updateIgvNavButtons()
+        }
+    })
+
+    // IGV navigation button handlers
+    $('#igv-nav-prev').click(async () => {
+        if (window.igvNavActive && window.igvNavIndex > 0) {
+            await navigateIgvToResult(window.igvNavIndex - 1)
+        }
+    })
+
+    $('#igv-nav-next').click(async () => {
+        if (!window.searchResults) return
+        if (!window.igvNavActive) {
+            // First click after page change: navigate to row 0 of current page
+            await navigateIgvToResult(0)
+        } else if (window.igvNavIndex < window.searchResults.rows.length - 1) {
+            await navigateIgvToResult(window.igvNavIndex + 1)
+        }
+    })
+
+    $('#igv-nav-jump-to-table').click(() => {
+        const rows = $('#results-table tbody tr')
+        if (rows.length > window.igvNavIndex) {
+            const targetRow = $(rows[window.igvNavIndex])
+            targetRow[0].scrollIntoView({ behavior: 'smooth', block: 'center' })
+            targetRow.removeClass('highlight-blink')
+            void targetRow[0].offsetWidth
+            targetRow.addClass('highlight-blink')
+            setTimeout(() => {
+                targetRow.removeClass('highlight-blink')
+            }, 2500)
+        }
+    })
+
+
+    const updatePaginationControls = () => {
+
+        const $topPagination = $('.top-pagination')
+        const $bottomPagination = $('.bottom-pagination')
+
+        const currentPage = GLOBAL_PAGE_STATE['currentPage']
+        const pageSize = GLOBAL_PAGE_STATE['pageSize']
+        const totalResults = window.searchResults.total_results
+
+        if (totalResults > 0) {
+            $topPagination.show()
+            $bottomPagination.show()
+        } else {
+            $topPagination.hide()
+            $bottomPagination.hide()
+            return
+        }
+
+        const nFirstRowOnPage = (currentPage - 1) * pageSize + 1
+        const nLastRowOnPage = Math.min(nFirstRowOnPage + pageSize - 1, totalResults)
+
+        const totalPages = parseInt(Math.ceil(totalResults / pageSize))
+
+        const paginationHtml = `
+                <div class="total-results">
+                    Showing ${nFirstRowOnPage.toLocaleString()}-${nLastRowOnPage.toLocaleString()} out of ${totalResults.toLocaleString()}
+                </div>
+                <div class="export-selector">
+                    <span class="export-label"><b>Export to:</b></span>
+                    <div class="ui selection dropdown export-dropdown" id="export-dropdown" style="min-width: 120px">
+                        <input type="hidden" name="export-format">
+                        <i class="dropdown icon"></i>
+                        <div class="default text">Select format</div>
+                        <div class="menu">
+                            <div class="item" data-value="tsv">TSV</div>
+                            <div class="item" data-value="bed">BED</div>
+                            <div class="item" data-value="json">JSON</div>
+                        </div>
+                    </div>
+                    <i class="question circle icon export-help-icon" data-html="Export all ${totalResults.toLocaleString()} search results to a file in the selected format"></i>
+                </div>
+                <div class="page-size-selector">
+                    <span>Page size:</span>
+                    <div class="ui selection dropdown page-size-select" style="min-width: 80px">
+                        <input type="hidden" name="page-size">
+                        <i class="dropdown icon"></i>
+                        <div class="text">${pageSize}</div>
+                        <div class="menu">
+                            <div class="item" data-value="10">10</div>
+                            <div class="item" data-value="20">20</div>
+                            <div class="item" data-value="50">50</div>
+                            <div class="item" data-value="100">100</div>
+                            <div class="item" data-value="200">200</div>
+                            <div class="item" data-value="500">500</div>
+                            <div class="item" data-value="1000">1000</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="pagination-controls">
+                    <button class="ui icon button first-page ${currentPage === 1 ? 'disabled' : ''}" title="First page">
+                        <i class="angle double left icon"></i>
+                    </button>
+                    <button class="ui icon button prev-page ${currentPage === 1 ? 'disabled' : ''}"
+                            title="Previous page">
+                        <i class="angle left icon"></i>
+                    </button>
+                    <div class="page-input-container">
+                        <span>Page</span>
+                        <input type="number" class="page-number-input" min="1" max="${totalPages}" value="${currentPage}">
+                        <span class="total-pages">of ${totalPages.toLocaleString()}</span>
+                    </div>
+                    <button class="ui icon button next-page ${currentPage === totalPages ? 'disabled' : ''}"
+                            title="Next page">
+                        <i class="angle right icon"></i>
+                    </button>
+                    <button class="ui icon button last-page ${currentPage === totalPages ? 'disabled' : ''}"
+                            title="Last page">
+                        <i class="angle double right icon"></i>
+                    </button>
+                </div>
+            `
+
+        $topPagination.html(paginationHtml)
+        $bottomPagination.html(paginationHtml)
+
+        $('.export-help-icon').popup({ on: 'click' })
+
+        // Add click handlers for all pagination containers
+        $('.pagination-container').each(function() {
+            const $container = $(this)
+
+            $container.find('.page-size-select').dropdown({
+                onChange: (value) => {
+                    const newPageSize = parseInt(value)
+                    if (newPageSize !== GLOBAL_PAGE_STATE['pageSize']) {
+                        GLOBAL_PAGE_STATE['pageSize'] = newPageSize
+                        GLOBAL_PAGE_STATE['currentPage'] = 1
+                        writePersistentPageStateToUrl()
+                        performSearch(true)
+                    }
+                },
+                onShow: function() {
+                    $(this).css('z-index', 1001)
+                },
+                onHide: function() {
+                    $(this).css('z-index', '')
+                }
+            })
+
+            $container.find('.first-page').click(function() {
+                if (!$(this).hasClass('disabled')) {
+                    GLOBAL_PAGE_STATE['currentPage'] = 1
+                    writePersistentPageStateToUrl()
+                    performSearch(true)
+                }
+            })
+
+            $container.find('.prev-page').click(function() {
+                if (!$(this).hasClass('disabled')) {
+                    GLOBAL_PAGE_STATE['currentPage'] -= 1
+                    writePersistentPageStateToUrl()
+                    performSearch(true)
+                }
+            })
+
+            $container.find('.next-page').click(function() {
+                if (!$(this).hasClass('disabled')) {
+                    GLOBAL_PAGE_STATE['currentPage'] += 1
+                    writePersistentPageStateToUrl()
+                    performSearch(true)
+                }
+            })
+
+            $container.find('.last-page').click(function() {
+                if (!$(this).hasClass('disabled')) {
+                    GLOBAL_PAGE_STATE['currentPage'] = totalPages
+                    writePersistentPageStateToUrl()
+                    performSearch(true)
+                }
+            })
+
+            $container.find('.page-number-input').on('change keypress', function(e) {
+                if (e.type === 'change' || e.which === 13) {
+                    const newPage = parseInt($(this).val())
+                    if (newPage !== currentPage) {
+                        GLOBAL_PAGE_STATE['currentPage'] = Math.max(1, Math.min(newPage, totalPages))
+                        writePersistentPageStateToUrl()
+                        performSearch(true)
+                    }
+
+                    if (e.type === 'keypress') {
+                        e.preventDefault()
+                    }
+                }
+            })
+        })
+
+        $('.export-dropdown').dropdown({
+            onShow: function() {
+                $(this).css('z-index', 10001)
+            },
+            onHide: function() {
+                $(this).css('z-index', '')
+            },
+            onChange: async (value) => {
+                if (!value) return
+
+                $('.export-dropdown').dropdown('clear')
+
+                if (value === 'tsv' || value === 'json') {
+                    showExportOptionsDialog(value, {showColumns: true})
+                } else {
+                    // BED: export directly without column dialog
+                    showExportOptionsDialog(value, {showColumns: false})
+                }
+            }
+        })
+    }
+
+    const showExportOptionsDialog = (exportType, {showColumns = false} = {}) => {
+        pendingExportType = exportType
+
+        // Set dialog title
+        const FORMAT_NAMES = {
+            tsv: 'TSV', json: 'JSON', bed: 'BED',
+        }
+        $('#export-dialog-title').text(`${FORMAT_NAMES[exportType] || exportType} export options`)
+
+        // Toggle compact class for dialogs without column checkboxes
+        $('#export-column-dialog').toggleClass('compact-export-dialog', !showColumns)
+
+        // Show/hide sections
+        $('#export-column-section').toggle(showColumns)
+
+        if (showColumns) {
+            // Get currently visible columns in the results table
+            const visibleColumnNames = GLOBAL_PAGE_STATE['showColumns'].split(SHOW_COLUMNS_VALUE_DELIMITER)
+
+            // Load saved export column selections from localStorage, or fall back to visible table columns
+            const savedSelections = localStorage.getItem('exportColumnSelections_geneLookup')
+            const preSelectedExportColumns = savedSelections
+                ? new Set(JSON.parse(savedSelections))
+                : new Set(visibleColumnNames.flatMap(columnName =>
+                    TABLE_COLUMNS[columnName] ? TABLE_COLUMNS[columnName].getRequiredColumns() : []))
+
+            // Build checkboxes grouped by category
+            const checkboxesContainer = $('#export-column-checkboxes')
+            checkboxesContainer.empty()
+
+            // Group columns by their group property
+            const groupedColumns = {}
+            EXPORT_COLUMN_OPTIONS.forEach(opt => {
+                if (!groupedColumns[opt.group]) {
+                    groupedColumns[opt.group] = []
+                }
+                groupedColumns[opt.group].push(opt)
+            })
+
+            // Create HTML for each group in the specified order
+            BIGQUERY_COLUMN_GROUPS.filter(groupName => groupedColumns[groupName]).forEach(groupName => {
+                const columns = groupedColumns[groupName]
+                const groupDiv = $(`<div class="export-column-group">
+                    <div class="export-column-group-header">${groupName}</div>
+                    <div class="export-column-group-items"></div>
+                </div>`)
+
+                const itemsContainer = groupDiv.find('.export-column-group-items')
+
+                columns.forEach(opt => {
+                    const isChecked = preSelectedExportColumns.has(opt.name) ? 'checked' : ''
+                    const escapedDescription = opt.description
+                        ? opt.description.replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                        : ''
+                    const helpIcon = opt.description
+                        ? `<span class="export-column-help-icon" data-tooltip="${escapedDescription}" data-position="top center">(?)</span>`
+                        : ''
+                    const checkboxHtml = `
+                        <div class="export-column-checkbox-item">
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="export_col_${opt.name}" data-column-name="${opt.name}" ${isChecked}>
+                                <label>${opt.displayName}</label>
+                            </div>
+                            ${helpIcon}
+                        </div>
+                    `
+                    itemsContainer.append(checkboxHtml)
+                })
+
+                checkboxesContainer.append(groupDiv)
+            })
+
+            // Initialize Semantic UI checkboxes
+            $('#export-column-checkboxes .ui.checkbox').checkbox()
+        }
+
+        // Show the dialog
+        $('#export-column-dialog').modal('show')
+    }
+
+    // --- Custom Filter Logic ---
+
+    let customFilterNextId = 0
+
+    const CUSTOM_FILTER_GROUP_ORDER = BIGQUERY_COLUMN_GROUPS
+
+    const getCustomFilterColumnInfo = (columnName) => {
+        return CUSTOM_FILTER_COLUMNS.find(c => c.name === columnName)
+    }
+
+    const getOperatorsForType = (colType) => {
+        if (colType === 'INTEGER' || colType === 'FLOAT') {
+            return [
+                { value: '=', label: '=' },
+                { value: '!=', label: '\u2260' },
+                { value: '>', label: '>' },
+                { value: '<', label: '<' },
+                { value: '>=', label: '\u2265' },
+                { value: '<=', label: '\u2264' },
+                { value: 'IS NULL', label: 'IS NULL' },
+                { value: 'IS NOT NULL', label: 'IS NOT NULL' },
+            ]
+        }
+        // STRING
+        return [
+            { value: '=', label: '=' },
+            { value: '!=', label: '\u2260' },
+            { value: 'LIKE', label: 'LIKE' },
+            { value: 'IS NULL', label: 'IS NULL' },
+            { value: 'IS NOT NULL', label: 'IS NOT NULL' },
+        ]
+    }
+
+    const LIKE_HELP_TEXT = ' The LIKE operator does pattern matching. Use % to match any sequence of characters and _ to match any single character. For example, "SCN_A" would match "SCN2A", "SCN3A", etc, while "SCN%" would match any name that starts with "SCN".'
+
+    const updateFilterTooltip = ($row) => {
+        const fieldValue = $row.find('.custom-filter-field').dropdown('get value')
+        const opValue = $row.find('.custom-filter-op').dropdown('get value')
+        const info = getCustomFilterColumnInfo(fieldValue)
+        const $helpIcon = $row.find('.custom-filter-help-icon')
+        let text = info ? (info.description || '') : ''
+        if (opValue === 'LIKE' && text) text += LIKE_HELP_TEXT
+        else if (opValue === 'LIKE') text = LIKE_HELP_TEXT.trim()
+        if (text) {
+            const escaped = text.replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            $helpIcon.attr('data-tooltip', escaped).show()
+        } else {
+            $helpIcon.hide()
+        }
+    }
+
+    const getPlaceholderForType = (colType) => {
+        if (colType === 'FLOAT') return 'e.g., 0.5'
+        if (colType === 'INTEGER') return 'e.g., 3'
+        return 'e.g., value'
+    }
+
+    const buildColumnDropdownMenu = () => {
+        const grouped = {}
+        CUSTOM_FILTER_COLUMNS.forEach(col => {
+            const group = col.group
+            if (!grouped[group]) grouped[group] = []
+            grouped[group].push(col)
+        })
+
+        let menuHtml = ''
+        CUSTOM_FILTER_GROUP_ORDER.filter(g => grouped[g]).forEach((groupName, idx) => {
+            if (idx > 0) menuHtml += '<div class="divider"></div>'
+            menuHtml += `<div class="header">${groupName}</div>`
+            grouped[groupName].forEach(col => {
+                menuHtml += `<div class="item" data-value="${escapeHtml(col.name)}">${escapeHtml(col.displayName)}</div>`
+            })
+        })
+        return menuHtml
+    }
+
+    const addCustomFilterRow = (columnName) => {
+        const filterId = customFilterNextId++
+        const colInfo = columnName ? getCustomFilterColumnInfo(columnName) : null
+        const colType = colInfo ? colInfo.type : 'STRING'
+        const operators = getOperatorsForType(colType)
+        const placeholder = getPlaceholderForType(colType)
+        const escapedDescription = colInfo && colInfo.description
+            ? colInfo.description.replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            : ''
+
+        const operatorOptions = operators.map(op =>
+            `<div class="item" data-value="${op.value}">${op.label}</div>`
+        ).join('')
+
+        const rowHtml = `
+        <div class="custom-filter-row" data-filter-id="${filterId}">
+            <div class="ui selection search dropdown custom-filter-field" style="min-width: 220px;">
+                <input type="hidden" name="customFilterField_${filterId}">
+                <i class="dropdown icon"></i>
+                <div class="default text">Select column</div>
+                <div class="menu">${buildColumnDropdownMenu()}</div>
+            </div>
+            <div class="ui selection dropdown custom-filter-op" style="min-width: 100px;">
+                <input type="hidden" name="customFilterOp_${filterId}">
+                <i class="dropdown icon"></i>
+                <div class="default text">Op</div>
+                <div class="menu">${operatorOptions}</div>
+            </div>
+            <input type="text" class="custom-filter-value" placeholder="${placeholder}" style="max-width: 300px; flex-grow: 1;">
+            <span class="custom-filter-help-icon" data-tooltip="${escapedDescription}" data-position="top center"${!escapedDescription ? ' style="display:none"' : ''}>(?)</span>
+            <i class="close icon custom-filter-delete"></i>
+        </div>
+        `
+
+        $('#custom-filter-rows').append(rowHtml)
+        const $row = $(`.custom-filter-row[data-filter-id="${filterId}"]`)
+
+        // Initialize dropdowns
+        $row.find('.custom-filter-field').dropdown({
+            onShow: function() { $(this).css('z-index', 10001) },
+            onHide: function() { $(this).css('z-index', '') },
+            onChange: function(value) {
+                const info = getCustomFilterColumnInfo(value)
+                if (!info) return
+                const ops = getOperatorsForType(info.type)
+                const $opDropdown = $row.find('.custom-filter-op')
+
+                // Rebuild operator menu
+                const newMenu = ops.map(op =>
+                    `<div class="item" data-value="${op.value}">${op.label}</div>`
+                ).join('')
+                $opDropdown.find('.menu').html(newMenu)
+                $opDropdown.dropdown('clear')
+                $opDropdown.dropdown('refresh')
+
+                // Update placeholder
+                $row.find('.custom-filter-value').attr('placeholder', getPlaceholderForType(info.type))
+
+                // Update help icon
+                updateFilterTooltip($row)
+            }
+        })
+
+        $row.find('.custom-filter-op').dropdown({
+            onShow: function() { $(this).css('z-index', 10001) },
+            onHide: function() { $(this).css('z-index', '') },
+            onChange: function(value) {
+                if (value === 'IS NULL' || value === 'IS NOT NULL') {
+                    $row.find('.custom-filter-value').hide()
+                } else {
+                    $row.find('.custom-filter-value').show()
+                }
+                updateFilterTooltip($row)
+            }
+        })
+
+        // Set initial column value if provided
+        if (columnName) {
+            $row.find('.custom-filter-field').dropdown('set selected', columnName)
+        }
+
+        // Delete button
+        $row.find('.custom-filter-delete').click(function() {
+            $row.remove()
+        })
+
+        // Initialize tooltip
+        $row.find('.custom-filter-help-icon').popup({ on: 'hover' })
+
+        return $row
+    }
+
+    const showCustomFilterColumnDialog = () => {
+        // Get currently active filter columns
+        const activeColumns = new Set()
+        $('#custom-filter-rows .custom-filter-row').each(function() {
+            const val = $(this).find('.custom-filter-field').dropdown('get value')
+            if (val) activeColumns.add(val)
+        })
+
+        // Build grouped checkboxes
+        const checkboxesContainer = $('#custom-filter-column-checkboxes')
+        checkboxesContainer.empty()
+
+        const grouped = {}
+        CUSTOM_FILTER_COLUMNS.forEach(col => {
+            const group = col.group
+            if (!grouped[group]) grouped[group] = []
+            grouped[group].push(col)
+        })
+
+        CUSTOM_FILTER_GROUP_ORDER.filter(g => grouped[g]).forEach(groupName => {
+            const columns = grouped[groupName]
+            const groupDiv = $(`<div class="export-column-group">
+                <div class="export-column-group-header">${groupName}</div>
+                <div class="export-column-group-items"></div>
+            </div>`)
+
+            const itemsContainer = groupDiv.find('.export-column-group-items')
+
+            columns.forEach(col => {
+                const isChecked = activeColumns.has(col.name) ? 'checked' : ''
+                const escapedDescription = col.description
+                    ? col.description.replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+                    : ''
+                const helpIcon = col.description
+                    ? `<span class="export-column-help-icon" data-tooltip="${escapedDescription}" data-position="top center">(?)</span>`
+                    : ''
+                const checkboxHtml = `
+                    <div class="export-column-checkbox-item">
+                        <div class="ui checkbox">
+                            <input type="checkbox" name="cf_col_${col.name}" data-column-name="${col.name}" ${isChecked}>
+                            <label>${col.displayName}</label>
+                        </div>
+                        ${helpIcon}
+                    </div>
+                `
+                itemsContainer.append(checkboxHtml)
+            })
+
+            checkboxesContainer.append(groupDiv)
+        })
+
+        // Initialize checkboxes and tooltips
+        $('#custom-filter-column-checkboxes .ui.checkbox').checkbox()
+        $('#custom-filter-column-checkboxes .export-column-help-icon').popup({ on: 'hover' })
+
+        $('#custom-filter-column-dialog').modal('show')
+    }
+
+    // Wire the "Add Custom Filter..." link
+    $('#add-custom-filter-link').click(function(e) {
+        e.preventDefault()
+        showCustomFilterColumnDialog()
+    })
+
+    // "Add Filters" button handler in modal
+    $('#custom-filter-dialog-add-button').click(function() {
+        const checkedColumns = new Set()
+        $('#custom-filter-column-checkboxes input[type="checkbox"]:checked').each(function() {
+            checkedColumns.add($(this).data('column-name'))
+        })
+
+        // Get currently existing filter column names
+        const existingColumns = new Map()
+        $('#custom-filter-rows .custom-filter-row').each(function() {
+            const val = $(this).find('.custom-filter-field').dropdown('get value')
+            if (val) existingColumns.set(val, $(this))
+        })
+
+        // Remove rows for columns that were unchecked
+        existingColumns.forEach(($row, colName) => {
+            if (!checkedColumns.has(colName)) {
+                $row.remove()
+            }
+        })
+
+        // Add rows for newly checked columns
+        checkedColumns.forEach(colName => {
+            if (!existingColumns.has(colName)) {
+                addCustomFilterRow(colName)
+            }
+        })
+
+        $('#custom-filter-column-dialog').modal('hide')
+    })
+
+    const serializeCustomFilters = () => {
+        const parts = []
+        $('#custom-filter-rows .custom-filter-row').each(function() {
+            const col = $(this).find('.custom-filter-field').dropdown('get value')
+            const op = $(this).find('.custom-filter-op').dropdown('get value')
+            const val = $(this).find('.custom-filter-value').val()
+            if (col && op) {
+                parts.push(`${col}|${op}|${encodeURIComponent(val || '')}`)
+            }
+        })
+        return parts.join(';')
+    }
+
+    const deserializeAndCreateCustomFilters = (serialized) => {
+        if (!serialized) return
+        const parts = serialized.split(';')
+        parts.forEach(part => {
+            const segments = part.split('|')
+            if (segments.length < 2) return
+            const col = segments[0]
+            const op = segments[1]
+            let val
+            try {
+                val = decodeURIComponent(segments.slice(2).join('|'))
+            } catch (e) {
+                val = segments.slice(2).join('|')
+            }
+            const $row = addCustomFilterRow(col)
+            // Set operator and value after a brief delay to let dropdown initialize
+            setTimeout(() => {
+                $row.find('.custom-filter-op').dropdown('set selected', op)
+                $row.find('.custom-filter-value').val(val)
+                if (op === 'IS NULL' || op === 'IS NOT NULL') {
+                    $row.find('.custom-filter-value').hide()
+                }
+            }, 50)
+        })
+    }
+
+    // --- End Custom Filter Logic ---
+
+    const performExport = async (value, selectedColumns = null) => {
+        let fileFormat
+        if (value === 'json') {
+            fileFormat = 'JSON'
+        } else if (value === 'bed') {
+            fileFormat = 'BED'
+        } else if (value === 'tsv') {
+            fileFormat = 'TSV'
+        } else {
+            throw new Error(`Invalid export-dropdown value: ${value}`)
+        }
+
+        let selectClause
+        if (value === 'bed') {
+            selectClause = `chrom, start, end, gene_symbol`
+        } else if ((value === 'tsv' || value === 'json') && selectedColumns && selectedColumns.length > 0) {
+            const columnExpressions = selectedColumns.map(colName => {
+                const colOption = EXPORT_COLUMN_OPTIONS.find(opt => opt.name === colName)
+                return colOption ? colOption.column : colName
+            })
+            selectClause = columnExpressions.join(', ')
+        } else {
+            selectClause = '*'
+        }
+
+        try {
+            $('body').css('cursor', 'wait')
+
+            const sortColumn = GLOBAL_PAGE_STATE['sc'] || DEFAULT_SORT_COLUMN
+            const sortDirection = GLOBAL_PAGE_STATE['sd'] || DEFAULT_SORT_DIRECTION
+            let sortExpression = sortColumn
+            if (TABLE_COLUMNS[sortColumn] && TABLE_COLUMNS[sortColumn].getSortColumns) {
+                sortExpression = TABLE_COLUMNS[sortColumn].getSortColumns().join(` ${sortDirection}, `)
+            }
+
+            const conditions = buildAllConditions()
+            const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : ''
+            const query = `SELECT ${selectClause} FROM ${COMPLETE_TABLE_ID} ${whereClause} ORDER BY ${sortExpression} ${sortDirection}`
+
+            const results = await queryBigQuery(query, null, null, fileFormat)
+
+            if (results.public_urls) {
+                if (results.public_urls.length > 1) {
+                    if (!confirm(`The requested export is very large, so it was split into ${results.public_urls.length} separate files. Would you like to download them?`)) {
+                        return;
+                    }
+                }
+                for (const url of results.public_urls) {
+                    console.log('Downloading URL:', url)
+                    const $link = $('<a>')
+                        .attr('href', url)
+                        .appendTo('body')
+                    $link[0].click()
+
+                    await new Promise(resolve => setTimeout(resolve, 2000))
+
+                    if (!window.downloadLinks) {
+                        window.downloadLinks = []
+                    }
+                    window.downloadLinks.push($link)
+
+                    if (window.downloadLinks.length === 1) {
+                        setTimeout(() => {
+                            window.downloadLinks.forEach($link => {
+                                $link.remove()
+                            })
+                            window.downloadLinks = []
+                        }, 2*60*1000)
+                    }
+                }
+            }
+
+        } catch (error) {
+            console.error('Error exporting data:', error)
+            alert('Error exporting data: ' + error.message)
+        } finally {
+            $('body').css('cursor', 'default')
+        }
+    }
+
+    // Handle export dialog download button
+    $('#export-dialog-download-button').click(async () => {
+        if (!pendingExportType) return
+
+        let selectedColumns = null
+        if (pendingExportType === 'tsv' || pendingExportType === 'json') {
+            // Collect selected columns
+            selectedColumns = []
+            $('#export-column-checkboxes input[type="checkbox"]:checked').each(function() {
+                const columnName = $(this).data('column-name')
+                if (columnName) {
+                    selectedColumns.push(columnName)
+                }
+            })
+
+            if (selectedColumns.length === 0) {
+                alert('Please select at least one column to export.')
+                return
+            }
+
+            // Save selections to localStorage
+            localStorage.setItem('exportColumnSelections_geneLookup', JSON.stringify(selectedColumns))
+        }
+
+        // Hide the dialog
+        $('#export-column-dialog').modal('hide')
+
+        // Perform the export
+        await performExport(pendingExportType, selectedColumns)
+
+        pendingExportType = null
+    })
+
+    // Handle export dialog cancel button
+    $('#export-dialog-cancel-button').click(() => {
+        pendingExportType = null
+        $('#export-column-dialog').modal('hide')
+    })
+
+
+    // IGV navigation state
+    window.igvNavIndex = 0
+    window.igvNavActive = false
+
+    // Update IGV navigation buttons visibility and state
+    const updateIgvNavButtons = () => {
+        const hasResults = window.searchResults && window.searchResults.rows && window.searchResults.rows.length > 1
+        const igvVisible = GLOBAL_PAGE_STATE['showIGV'] === 1
+
+        if (hasResults && igvVisible) {
+            $('#igv-nav-container').show()
+            const totalResults = window.searchResults.total_results
+            const startIndex = GLOBAL_PAGE_STATE['pageSize'] * (GLOBAL_PAGE_STATE['currentPage'] - 1)
+
+            if (window.igvNavActive) {
+                $('#igv-nav-index').text(`${startIndex + window.igvNavIndex + 1} of ${totalResults}`)
+                $('#igv-nav-prev').prop('disabled', window.igvNavIndex <= 0)
+            } else {
+                $('#igv-nav-index').text(`- of ${totalResults}`)
+                $('#igv-nav-prev').prop('disabled', true)
+            }
+            $('#igv-nav-next').prop('disabled', window.igvNavIndex >= window.searchResults.rows.length - 1 && window.igvNavActive)
+        } else {
+            $('#igv-nav-container').hide()
+        }
+    }
+
+    // Navigate IGV to a specific result index
+    const navigateIgvToResult = async (index) => {
+        if (!window.searchResults || !window.searchResults.rows) return
+        if (index < 0 || index >= window.searchResults.rows.length) return
+
+        const row = window.searchResults.rows[index]
+        const chrom = row['chrom']
+        const start = row['start']
+        const end = row['end']
+        if (!chrom || start == null || end == null) return
+
+        const paddedStart = Math.max(0, start - IGV_LOCUS_PADDING)
+        const paddedEnd = end + IGV_LOCUS_PADDING
+        const locus = `${chrom}:${paddedStart}-${paddedEnd}`
+
+        window.igvNavIndex = index
+        window.igvNavActive = true
+        GLOBAL_PAGE_STATE['igvLoc'] = locus
+        writePersistentPageStateToUrl()
+
+        if (window.igvBrowser) {
+            await window.igvBrowser.search(locus)
+        }
+
+        updateIgvNavButtons()
+    }
+
+    const displayError = (message) => {
+        $('#error-text').text(message)
+        $('#error-message').show()
+        $('#results-table').empty()
+    }
+
+    const displaySearchResults = () => {
+
+        const results = window.searchResults
+        const sortColumn = GLOBAL_PAGE_STATE['sc']
+        const sortDirection = GLOBAL_PAGE_STATE['sd']
+        const visibleColumns = GLOBAL_PAGE_STATE['showColumns'].split(SHOW_COLUMNS_VALUE_DELIMITER)
+
+        const resultsTableElement = $('#results-table')
+
+        resultsTableElement.removeClass('loading')
+        if (!results.rows || results.rows.length === 0) {
+            resultsTableElement.html('<div class="no-results">No matching results found</div>')
+            $('.pagination-container').hide()
+            return
+        }
+
+        let tableHtml = '<table class="ui celled sortable table"><thead><tr>'
+        tableHtml += `<th style="width: 1%; padding: 2px 4px; text-align: center; vertical-align: middle;">
+            <button id="results-table-settings-button" class="ui primary basic grey button" style="height:25px; width:30px; padding:0; border-radius:5px; background-color: #FCFCFF !important; display: inline-flex; align-items: center; justify-content: center;" data-tooltip="Column descriptions and settings">
+                <i class="setting icon" style="margin: 0;"></i>
+            </button>
+        </th>`
+
+        RESULTS_TABLE_COLUMN_NAMES.forEach((columnName) => {
+            if (visibleColumns.includes(columnName)) {
+                const columnObject = TABLE_COLUMNS[columnName]
+                const isSorted = columnName === sortColumn
+                let icon = '<i class="sort icon"></i>'
+                if (isSorted) {
+                    icon = sortDirection === 'ASC' ? '<i class="sort up icon"></i>' : '<i class="sort down icon"></i>'
+                }
+                tableHtml += `<th class="${isSorted ? 'sorted' : ''} results-table-sortable-header" data-column="${columnName}">${columnObject.displayName} ${icon}</th>`
+            }
+        })
+
+        tableHtml += '</tr></thead><tbody>'
+
+        const startIndex = GLOBAL_PAGE_STATE['pageSize'] * (GLOBAL_PAGE_STATE['currentPage'] - 1)
+
+        results.rows.forEach((row, index) => {
+            tableHtml += `<tr>`
+            tableHtml += `<td style="text-align: center; white-space: nowrap; padding: 3px 5px;">
+                <span style="font-weight: bold;">#${(startIndex + index + 1).toLocaleString()}</span>
+            </td>`
+
+            RESULTS_TABLE_COLUMN_NAMES.forEach((columnName) => {
+                if (visibleColumns.includes(columnName)) {
+                    const columnObject = TABLE_COLUMNS[columnName]
+                    let value
+                    if (!columnObject || !columnObject.getValue) {
+                        value = row[columnName]
+                    } else {
+                        value = columnObject.getValue(row)
+                    }
+
+                    const cellStyle = columnObject?.getCellStyle ? columnObject.getCellStyle(row) : ''
+                    tableHtml += `<td style="padding: 3px 5px 3px 10px;${cellStyle}">${value != null ? value : ''}</td>`
+                }
+            })
+
+            // Gene detail page link — prefer hgnc_gene_id, fall back to ensembl_gene_id
+            const hgncId = row['hgnc_gene_id'] || ''
+            const geneIdForLink = row['ensembl_gene_id'] || ''
+            if (hgncId) {
+                tableHtml += `<td style="padding: 8px 10px; white-space: nowrap; text-align: right;"><a href="gene.html#hgnc_gene_id=${encodeURIComponent(hgncId)}" class="ui basic mini button" style="padding: 5px 10px; color: #2185d0; font-weight: 500; border: 1px solid #2185d0; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">gene &gt;</a></td>`
+            } else if (geneIdForLink) {
+                tableHtml += `<td style="padding: 8px 10px; white-space: nowrap; text-align: right;"><a href="gene.html#ensembl_gene_id=${encodeURIComponent(geneIdForLink)}" class="ui basic mini button" style="padding: 5px 10px; color: #2185d0; font-weight: 500; border: 1px solid #2185d0; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">gene &gt;</a></td>`
+            } else {
+                tableHtml += `<td></td>`
+            }
+            tableHtml += '</tr>'
+        })
+        tableHtml += '</tbody></table>'
+        resultsTableElement.html(tableHtml)
+
+        // Add click handlers for sortable headers
+        resultsTableElement.find('.results-table-sortable-header').click(function() {
+            const column = $(this).data('column')
+            if (column === sortColumn) {
+                if (sortDirection === 'ASC') {
+                    if (!TABLE_COLUMNS[column]?.defaultSortDirection || TABLE_COLUMNS[column]?.defaultSortDirection == 'ASC') {
+                        GLOBAL_PAGE_STATE['sd'] = 'DESC'
+                    } else {
+                        GLOBAL_PAGE_STATE['sc'] = DEFAULT_SORT_COLUMN
+                        GLOBAL_PAGE_STATE['sd'] = DEFAULT_SORT_DIRECTION
+                    }
+                } else if (sortDirection === 'DESC') {
+                    if (TABLE_COLUMNS[column]?.defaultSortDirection == 'DESC') {
+                        GLOBAL_PAGE_STATE['sd'] = 'ASC'
+                    } else {
+                        GLOBAL_PAGE_STATE['sc'] = DEFAULT_SORT_COLUMN
+                        GLOBAL_PAGE_STATE['sd'] = DEFAULT_SORT_DIRECTION
+                    }
+                }
+            } else {
+                GLOBAL_PAGE_STATE['sc'] = column
+                GLOBAL_PAGE_STATE['sd'] = TABLE_COLUMNS[column]?.defaultSortDirection || 'ASC'
+            }
+
+            performSearch(true)
+        })
+
+        // init popups
+        $('.show-popup').popup({ on: 'click', hoverable: true })
+
+        // init click handler for "Column settings" modal
+        $('#results-table-settings-button').click((e) => {
+            e.preventDefault()
+
+            // Clear existing checkboxes
+            $('.results-table-column-settings-checkboxes tr').remove()
+
+            // Create a flex container div
+            $('.results-table-column-settings-checkboxes').html('<div class="results-table-column-settings-checkbox-flex-container"></div>')
+
+            const visibleColumns = GLOBAL_PAGE_STATE['showColumns'].split(SHOW_COLUMNS_VALUE_DELIMITER)
+            const checkboxes = RESULTS_TABLE_COLUMN_SELECTION_CHECKBOXES.map((columnName) => {
+                const isChecked = visibleColumns.includes(columnName)
+                return `
+                    <div class="results-table-column-settings-checkbox-item">
+                        <div class="ui checkbox" style="display: inline-block; padding-right: 10px">
+                            <input type="checkbox" name="show_column_${columnName}" ${isChecked ? 'checked' : ''}>
+                            <label>${TABLE_COLUMNS[columnName]?.displayName || ''}</label>
+                        </div>
+                        ${TABLE_COLUMNS[columnName]?.helpText ? `<i class="question circle icon" data-html="${TABLE_COLUMNS[columnName].helpText}"></i>` : ''}
+                    </div>`
+            }).join('')
+
+            $('.results-table-column-settings-checkbox-flex-container').append(checkboxes)
+
+            // Initialize checkboxes
+            $('.results-table-column-settings-checkboxes .ui.checkbox').checkbox()
+            $('#results-table-column-settings-dialog').modal('show')
+            $('.question').popup({ on: 'click' })
+        })
+
+        // handle Apply button click in column settings dialog
+        $('#results-table-column-settings-apply-button').click(() => {
+            const selectedColumns = []
+            $('.results-table-column-settings-checkboxes input[type="checkbox"]').each(function() {
+                if ($(this).prop('checked')) {
+                    const columnName = $(this).attr('name').replace('show_column_', '')
+                    selectedColumns.push(columnName)
+                }
+            })
+
+            GLOBAL_PAGE_STATE['showColumns'] = selectedColumns.join(SHOW_COLUMNS_VALUE_DELIMITER)
+            writePersistentPageStateToUrl()
+            performSearch(true)
+
+            $('#results-table-column-settings-dialog').modal('hide')
+        })
+
+        $('#results-table-column-settings-cancel-button').click(() => {
+            $('#results-table-column-settings-dialog').modal('hide')
+        })
+
+        // Add click handlers for IGV buttons
+        $('.row-igv-button').click(async function() {
+            const chrom = $(this).data('chrom')
+            const start = $(this).data('start')
+            const end = $(this).data('end')
+            if (!chrom || start == null || end == null) return
+            const rowIndex = $(this).closest('tr').index()
+
+            const paddedStart = Math.max(0, parseInt(start) - IGV_LOCUS_PADDING)
+            const paddedEnd = parseInt(end) + IGV_LOCUS_PADDING
+            const locus = `${chrom}:${paddedStart}-${paddedEnd}`
+
+            window.igvNavIndex = rowIndex
+            window.igvNavActive = true
+
+            try {
+                $('body').css('cursor', 'wait')
+
+                GLOBAL_PAGE_STATE['igvLoc'] = locus
+
+                if (GLOBAL_PAGE_STATE['showIGV'] !== 1) {
+                    GLOBAL_PAGE_STATE['showIGV'] = 1
+                    writePersistentPageStateToUrl()
+
+                    $('#igv-row').show()
+                    $('#show-igv-divider-text').hide()
+                    $('#hide-igv-divider-text').show()
+                }
+
+                $('#igv-row')[0].scrollIntoView({ behavior: 'smooth' })
+
+                if (!window.igvBrowser) {
+                    await updateIgv()
+                } else {
+                    writePersistentPageStateToUrl()
+                    await window.igvBrowser.search(locus)
+                }
+
+                updateIgvNavButtons()
+            } finally {
+                $('body').css('cursor', 'default')
+            }
+        })
+
+        GLOBAL_PAGE_STATE['showRs'] = 1
+        writePersistentPageStateToUrl()
+    }
+
+    /**
+     * Build all search and filter conditions as an array of SQL WHERE clause strings.
+     */
+    const buildAllConditions = () => {
+        const conditions = []
+
+        // Search query
+        const searchClause = buildSearchWhereClause(GLOBAL_PAGE_STATE['searchQuery'])
+        if (searchClause) conditions.push(searchClause)
+
+        // Custom filters from custom filter rows
+        const customClause = buildCustomFiltersWhereClause()
+        if (customClause) conditions.push(customClause)
+
+        if (GLOBAL_PAGE_STATE['showAdvFilters'] === 1) {
+            // Inheritance mode filter
+            const inheritanceClauses = []
+            if ($('input[name="keepAD"]').prop('checked')) inheritanceClauses.push("UPPER(inheritance) LIKE '%AD%'")
+            if ($('input[name="keepAR"]').prop('checked')) inheritanceClauses.push("UPPER(inheritance) LIKE '%AR%'")
+            if ($('input[name="keepXL"]').prop('checked')) inheritanceClauses.push("UPPER(inheritance) LIKE '%XL%'")
+            if ($('input[name="keepMito"]').prop('checked')) inheritanceClauses.push("UPPER(inheritance) LIKE '%MITOCHONDRIAL%'")
+            if (inheritanceClauses.length > 0) {
+                conditions.push(`(${inheritanceClauses.join(' OR ')})`)
+            }
+
+            // Source filter
+            const sourceClauses = []
+            if ($('input[name="keepOMIM"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%OMIM%'")
+            if ($('input[name="keepClinGen"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%CLINGEN%'")
+            if ($('input[name="keepGenCC"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%GENCC%'")
+            if ($('input[name="keepPanelAppUK"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%PANELAPP_UK%'")
+            if ($('input[name="keepPanelAppAU"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%PANELAPP_AU%'")
+            if ($('input[name="keepDecipher"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%DECIPHER%'")
+            if ($('input[name="keepClinVar"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%CLINVAR%'")
+            if ($('input[name="keepFridman"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%FRIDMAN%'")
+            if (sourceClauses.length > 0) {
+                conditions.push(`(${sourceClauses.join(' OR ')})`)
+            }
+
+            // Minimum number of sources
+            const minSources = $('input[name="minSources"]').val()
+            if (minSources && parseInt(minSources) > 0) {
+                conditions.push(`CAST(SPLIT(sources, ':')[OFFSET(0)] AS INT64) >= ${parseInt(minSources)}`)
+            }
+
+            // Constraint score filters
+            const pliThreshold = $('input[name="pliThreshold"]').val()
+            if (pliThreshold && !isNaN(parseFloat(pliThreshold))) {
+                conditions.push(`pLI_v4 >= ${parseFloat(pliThreshold)}`)
+            }
+
+            const loeufThreshold = $('input[name="loeufThreshold"]').val()
+            if (loeufThreshold && !isNaN(parseFloat(loeufThreshold))) {
+                conditions.push(`lof_oe_ci_upper_v4 <= ${parseFloat(loeufThreshold)}`)
+            }
+
+            const moeufThreshold = $('input[name="moeufThreshold"]').val()
+            if (moeufThreshold && !isNaN(parseFloat(moeufThreshold))) {
+                conditions.push(`mis_oe_ci_upper_v4 <= ${parseFloat(moeufThreshold)}`)
+            }
+
+            // ClinGen classification filter
+            const clingenClassification = $('#clingen-classification-dropdown').dropdown('get value')
+            if (clingenClassification) {
+                const classificationOrder = ['Definitive', 'Strong', 'Moderate', 'Limited']
+                const minIndex = classificationOrder.indexOf(clingenClassification)
+                if (minIndex >= 0) {
+                    const allowedValues = classificationOrder.slice(0, minIndex + 1).map(v => `'${v}'`).join(', ')
+                    conditions.push(`CLINGEN_classification IN (${allowedValues})`)
+                }
+            }
+
+            // Disease category filter
+            const diseaseCategory = $('#disease-category-dropdown').dropdown('get value')
+            if (diseaseCategory) {
+                conditions.push(`UPPER(disease_category) LIKE UPPER('%${diseaseCategory}%')`)
+            }
+
+            // Custom filter rows (advanced)
+            const allowedFilterColumns = new Set(CUSTOM_FILTER_COLUMNS.map(c => c.name))
+            const allowedFilterOps = new Set(['=', '!=', '>', '<', '>=', '<=', 'LIKE', 'IS NULL', 'IS NOT NULL'])
+            $('#custom-filter-rows .custom-filter-row').each(function() {
+                const columnName = $(this).find('.custom-filter-field').dropdown('get value')
+                const operator = $(this).find('.custom-filter-op').dropdown('get value')
+                const value = $(this).find('.custom-filter-value').val()
+
+                if (!columnName || !operator) return
+                if (!allowedFilterColumns.has(columnName) || !allowedFilterOps.has(operator)) return
+
+                const colInfo = getCustomFilterColumnInfo(columnName)
+                const colType = colInfo ? colInfo.type : 'STRING'
+
+                if (operator === 'IS NULL' || operator === 'IS NOT NULL') {
+                    conditions.push(`${columnName} ${operator}`)
+                } else if (operator === 'LIKE') {
+                    const escapedValue = value.replace(/'/g, "''")
+                    conditions.push(`${columnName} LIKE '${escapedValue}'`)
+                } else if (colType === 'STRING') {
+                    const escapedValue = value.replace(/'/g, "''")
+                    conditions.push(`${columnName} ${operator} '${escapedValue}'`)
+                } else {
+                    conditions.push(`${columnName} ${operator} ${Number(value)}`)
+                }
+            })
+        }
+
+        return conditions
+    }
+
+    const performSearch = async (showTableWhileLoading = false) => {
+        // Remove any error messages and no results message
+        $('#error-message').hide()
+        $('.no-results').hide()
+        $('.top-pagination').hide()
+        $('#loading-container').show()
+
+        // Add loading state to table without emptying it
+        if (showTableWhileLoading) {
+            $('.bottom-pagination').show()
+            $('#results-table').addClass('loading')
+        } else {
+            $('#results-table').hide()
+            $('.bottom-pagination').hide()
+        }
+
+        try {
+            $('body').css('cursor', 'wait')
+
+            // Gather search query from UI
+            GLOBAL_PAGE_STATE['searchQuery'] = $('#search-query').val()
+
+            // Build conditions
+            const conditions = buildAllConditions()
+
+            // Retrieve all required columns for the visible columns
+            const requiredColumnsSet = new Set(['hgnc_gene_id', 'ensembl_gene_id', 'chrom', 'start', 'end'])
+
+            const visibleColumns = GLOBAL_PAGE_STATE['showColumns'].split(SHOW_COLUMNS_VALUE_DELIMITER)
+            RESULTS_TABLE_COLUMN_NAMES.forEach((columnName) => {
+                if (visibleColumns.includes(columnName)) {
+                    const columnObject = TABLE_COLUMNS[columnName]
+                    if (columnObject && columnObject.getRequiredColumns) {
+                        columnObject.getRequiredColumns().forEach(col => requiredColumnsSet.add(col))
+                    }
+                }
+            })
+
+            const selectColumns = Array.from(requiredColumnsSet).join(', ')
+
+            const sortColumn = GLOBAL_PAGE_STATE['sc'] || DEFAULT_SORT_COLUMN
+            const sortDirection = GLOBAL_PAGE_STATE['sd'] || DEFAULT_SORT_DIRECTION
+
+            let sortExpression = sortColumn
+            if (TABLE_COLUMNS[sortColumn] && TABLE_COLUMNS[sortColumn].getSortColumns) {
+                sortExpression = TABLE_COLUMNS[sortColumn].getSortColumns().join(` ${sortDirection}, `)
+            }
+
+            const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : ''
+            const query = `SELECT ${selectColumns} FROM ${COMPLETE_TABLE_ID} ${whereClause} ORDER BY ${sortExpression} ${sortDirection}`
+
+            const startIndex = GLOBAL_PAGE_STATE['pageSize'] * (GLOBAL_PAGE_STATE['currentPage'] - 1)
+            const pageSize = GLOBAL_PAGE_STATE['pageSize']
+
+            window.searchResults = await queryBigQuery(query, startIndex, pageSize)
+
+            // Reset navigation index for new search results
+            window.igvNavIndex = 0
+            window.igvNavActive = false
+
+            // Remove loading indicator
+            $('#loading-container').hide()
+
+            // Save advanced filter state
+            GLOBAL_PAGE_STATE['keepAD'] = $('input[name="keepAD"]').prop('checked') ? 1 : 0
+            GLOBAL_PAGE_STATE['keepAR'] = $('input[name="keepAR"]').prop('checked') ? 1 : 0
+            GLOBAL_PAGE_STATE['keepXL'] = $('input[name="keepXL"]').prop('checked') ? 1 : 0
+            GLOBAL_PAGE_STATE['keepMito'] = $('input[name="keepMito"]').prop('checked') ? 1 : 0
+            GLOBAL_PAGE_STATE['keepOMIM'] = $('input[name="keepOMIM"]').prop('checked') ? 1 : 0
+            GLOBAL_PAGE_STATE['keepClinGen'] = $('input[name="keepClinGen"]').prop('checked') ? 1 : 0
+            GLOBAL_PAGE_STATE['keepGenCC'] = $('input[name="keepGenCC"]').prop('checked') ? 1 : 0
+            GLOBAL_PAGE_STATE['keepPanelAppUK'] = $('input[name="keepPanelAppUK"]').prop('checked') ? 1 : 0
+            GLOBAL_PAGE_STATE['keepPanelAppAU'] = $('input[name="keepPanelAppAU"]').prop('checked') ? 1 : 0
+            GLOBAL_PAGE_STATE['keepDecipher'] = $('input[name="keepDecipher"]').prop('checked') ? 1 : 0
+            GLOBAL_PAGE_STATE['keepClinVar'] = $('input[name="keepClinVar"]').prop('checked') ? 1 : 0
+            GLOBAL_PAGE_STATE['keepFridman'] = $('input[name="keepFridman"]').prop('checked') ? 1 : 0
+            GLOBAL_PAGE_STATE['minSources'] = $('input[name="minSources"]').val()
+            GLOBAL_PAGE_STATE['pliThreshold'] = $('input[name="pliThreshold"]').val()
+            GLOBAL_PAGE_STATE['loeufThreshold'] = $('input[name="loeufThreshold"]').val()
+            GLOBAL_PAGE_STATE['moeufThreshold'] = $('input[name="moeufThreshold"]').val()
+            GLOBAL_PAGE_STATE['clingenClassification'] = $('#clingen-classification-dropdown').dropdown('get value')
+            GLOBAL_PAGE_STATE['diseaseCategory'] = $('#disease-category-dropdown').dropdown('get value')
+            GLOBAL_PAGE_STATE['customFilters'] = serializeCustomFilters()
+            writePersistentPageStateToUrl()
+
+            displaySearchResults()
+
+            updatePaginationControls()
+            updateIgvNavButtons()
+
+        } catch (error) {
+            console.error('Error performing search:', error)
+            $('#loading-container').hide()
+            displayError('Error performing search: ' + error.message)
+        } finally {
+            $('body').css('cursor', 'default')
+            $('#results-table').show()
+            $('#results-table').removeClass('loading')
+        }
+    }
+
+    // "About", "FAQ", "Downloads" modal links
+    ['faq', 'downloads', 'about'].forEach(prefix => {
+        $(`#${prefix}-link`).click((e) => {
+            e.preventDefault()
+            $(`#${prefix}-modal`).modal('show')
+        })
+    })
+
+    const toggleAdvancedSearch = () => {
+        GLOBAL_PAGE_STATE['showAdvFilters'] = (GLOBAL_PAGE_STATE['showAdvFilters'] === 1) ? 0 : 1
+        writePersistentPageStateToUrl()
+
+        if (GLOBAL_PAGE_STATE['showAdvFilters'] === 1) {
+            $('#advanced-search-form').slideDown(300)
+            $('#filter-button .filter.icon').removeClass('rotated')
+        } else {
+            $('#advanced-search-form').slideUp(300)
+            $('#filter-button .filter.icon').addClass('rotated')
+        }
+    }
+
+    // "filter" button click handler
+    $('#filter-button').click(toggleAdvancedSearch)
+
+    // Validate custom filters
+    const validateForm = () => {
+        // Validate constraint score inputs
+        const pliThreshold = $('input[name="pliThreshold"]').val()
+        if (pliThreshold && (isNaN(parseFloat(pliThreshold)) || parseFloat(pliThreshold) < 0 || parseFloat(pliThreshold) > 1)) {
+            if (GLOBAL_PAGE_STATE['showAdvFilters'] !== 1) toggleAdvancedSearch()
+            $('#form-error-message').html(`<b>ERROR:</b> The pLI threshold '${escapeHtml(pliThreshold)}' must be a number between 0 and 1`).show()
+            return false
+        }
+
+        const loeufThreshold = $('input[name="loeufThreshold"]').val()
+        if (loeufThreshold && (isNaN(parseFloat(loeufThreshold)) || parseFloat(loeufThreshold) < 0)) {
+            if (GLOBAL_PAGE_STATE['showAdvFilters'] !== 1) toggleAdvancedSearch()
+            $('#form-error-message').html(`<b>ERROR:</b> The LOEUF threshold '${escapeHtml(loeufThreshold)}' is invalid`).show()
+            return false
+        }
+
+        const moeufThreshold = $('input[name="moeufThreshold"]').val()
+        if (moeufThreshold && (isNaN(parseFloat(moeufThreshold)) || parseFloat(moeufThreshold) < 0)) {
+            if (GLOBAL_PAGE_STATE['showAdvFilters'] !== 1) toggleAdvancedSearch()
+            $('#form-error-message').html(`<b>ERROR:</b> The Missense O/E threshold '${escapeHtml(moeufThreshold)}' is invalid`).show()
+            return false
+        }
+
+        // Validate custom filters
+        let customFilterValid = true
+        $('#custom-filter-rows .custom-filter-row').each(function() {
+            const $row = $(this)
+            const col = $row.find('.custom-filter-field').dropdown('get value')
+            const op = $row.find('.custom-filter-op').dropdown('get value')
+            const val = $row.find('.custom-filter-value').val()
+            const colInfo = col ? getCustomFilterColumnInfo(col) : null
+            const displayName = colInfo ? colInfo.displayName : 'unknown'
+
+            if (!col) {
+                if (GLOBAL_PAGE_STATE['showAdvFilters'] !== 1) toggleAdvancedSearch()
+                $('#form-error-message').html('<b>ERROR:</b> Please select a column for all custom filters').show()
+                $row.addClass('error')
+                customFilterValid = false
+                return false
+            }
+            if (!colInfo) {
+                if (GLOBAL_PAGE_STATE['showAdvFilters'] !== 1) toggleAdvancedSearch()
+                $('#form-error-message').html(`<b>ERROR:</b> Unknown filter column: <i>${escapeHtml(col)}</i>`).show()
+                $row.addClass('error')
+                customFilterValid = false
+                return false
+            }
+            if (!op) {
+                if (GLOBAL_PAGE_STATE['showAdvFilters'] !== 1) toggleAdvancedSearch()
+                $('#form-error-message').html(`<b>ERROR:</b> Please select an operator for the <i>${displayName}</i> custom filter`).show()
+                $row.addClass('error')
+                customFilterValid = false
+                return false
+            }
+            if (op !== 'IS NULL' && op !== 'IS NOT NULL' && !val) {
+                if (GLOBAL_PAGE_STATE['showAdvFilters'] !== 1) toggleAdvancedSearch()
+                $('#form-error-message').html(`<b>ERROR:</b> Please enter a value for the <i>${displayName}</i> custom filter`).show()
+                $row.addClass('error')
+                customFilterValid = false
+                return false
+            }
+            if (op !== 'IS NULL' && op !== 'IS NOT NULL' && colInfo && (colInfo.type === 'INTEGER' || colInfo.type === 'FLOAT') && (val.trim() === '' || !isFinite(Number(val)))) {
+                if (GLOBAL_PAGE_STATE['showAdvFilters'] !== 1) toggleAdvancedSearch()
+                $('#form-error-message').html(`<b>ERROR:</b> The value '${escapeHtml(val)}' is not a valid number for the <i>${displayName}</i> filter`).show()
+                $row.addClass('error')
+                customFilterValid = false
+                return false
+            }
+            $row.removeClass('error')
+        })
+        if (!customFilterValid) return false
+
+        // Clear any form errors
+        $('#form-error-message').hide()
+        $('.field.error').removeClass('error')
+        $('.custom-filter-row.error').removeClass('error')
+        return true
+    }
+
+    const handleSearch = async (event) => {
+        event.preventDefault()
+
+        if (!validateForm()) {
+            return;
+        }
+
+        GLOBAL_PAGE_STATE['currentPage'] = 1
+
+        // Update igvLoc if the search query is a genomic region
+        const searchQuery = $('#search-query').val()
+        if (searchQuery) {
+            const regionMatch = searchQuery.trim().match(REFERENCE_REGION_REGEXP)
+            if (regionMatch) {
+                GLOBAL_PAGE_STATE['igvLoc'] = searchQuery.trim()
+            }
+        }
+
+        await performSearch(false)
+    }
+
+    $('#search-form').submit(handleSearch)
+    $('#advanced-search-form').submit(handleSearch)
+    $('#advanced-search-form').find('input').keypress((e) => {
+        if (e.which === 13) {
+            e.preventDefault()
+            handleSearch(e)
+        }
+    })
+
+    // Initialize dropdowns
+    $('#clingen-classification-dropdown').dropdown({
+        onShow: function() { $(this).css('z-index', 10001) },
+        onHide: function() { $(this).css('z-index', '') },
+    })
+
+    $('#disease-category-dropdown').dropdown({
+        onShow: function() { $(this).css('z-index', 10001) },
+        onHide: function() { $(this).css('z-index', '') },
+    })
+
+    // handle browser forward & back buttons
+    window.addEventListener('popstate', readAndApplyPersistentPageStateFromUrl)
+
+    // init ui elements
+    $('.ui.button').popup()
+    $(".ui.checkbox").checkbox()
+    $('.question').popup({ on: 'click' })
+
+
+    $(document).ready(async () => {
+
+        await readAndApplyPersistentPageStateFromUrl()
+
+        console.log("Done initializing page. GLOBAL_PAGE_STATE:", GLOBAL_PAGE_STATE)
+        $('body').css('cursor', 'default')
+    })
+
+</script>
+
+</body>
+</html>

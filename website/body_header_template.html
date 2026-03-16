@@ -1,0 +1,31 @@
+<div class="ui row" id="header-stripe">
+    <div class="three wide column page-grid-margin" style="padding: 0px !important"></div>
+    <div class="three wide column" id="header-title">
+        <a href="index.html">Gene Lookup for Rare Disease Analysis</a>
+    </div>
+    <div class="seven wide column" id="header-nav" style="min-width: 700px">
+        {% if data_last_updated_date %}<span style="color: rgba(255, 255, 255, 0.6); font-size: calc(1em - 2px); white-space: nowrap">Updated: {{ data_last_updated_date }}</span>{% endif %}
+        <a href="#" id="about-link" style="padding-left: 40px">About</a>
+        <a href="#" id="faq-link">FAQ</a>
+        <a href="#" id="downloads-link">Downloads</a>
+        <a href="https://github.com/broadinstitute/annotation-utils/issues" target="_blank">Issues</a>
+        <a href="https://github.com/broadinstitute/annotation-utils" target="_blank" id="github-icon" title="View on GitHub"><i class="github icon"></i></a>
+    </div>
+    <div class="three wide column page-grid-margin" style="padding: 0px !important"></div>
+</div>
+
+<div class="ui row" id="igv-row">
+    <div class="sixteen wide column">
+        <div id="igv-nav-container" style="display: none;">
+            <a id="igv-nav-jump-to-table" class="action-link" style="margin-right: 15px;">Jump to table</a>
+            <button id="igv-nav-prev" class="ui basic button" disabled>
+                <i class="chevron left icon"></i> Prev
+            </button>
+            <span id="igv-nav-index">1 of 1</span>
+            <button id="igv-nav-next" class="ui basic button" disabled>
+                Next <i class="chevron right icon"></i>
+            </button>
+        </div>
+        <div id="igv-viewport"></div>
+    </div>
+</div>

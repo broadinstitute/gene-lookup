@@ -1,0 +1,130 @@
+name: Generate Combined Gene Table
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 2 * * 0,3'  # Twice weekly: Sundays and Wednesdays at 2 AM UTC
+
+jobs:
+  generate-gene-table:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Set up Java 11
+      uses: actions/setup-java@v4
+      with:
+        distribution: 'temurin'
+        java-version: '11'
+
+    - name: Set up Python 3.9
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.9'
+
+    - name: Cache pip dependencies
+      uses: actions/cache@v4
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - name: Restore annotation data cache
+      uses: actions/cache/restore@v4
+      with:
+        path: ~/.annotations
+        key: annotations-cache-${{ github.run_id }}
+        restore-keys: |
+          annotations-cache-
+
+    - name: Restore LLM response cache
+      uses: actions/cache/restore@v4
+      with:
+        path: .cache/llm_response_cache.db
+        key: llm-cache-${{ github.run_id }}
+        restore-keys: |
+          llm-cache-
+
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v2
+      with:
+        credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e .
+
+    - name: Install GCS connector for Hail
+      run: |
+        # Download GCS connector into Spark's jars directory so Hail picks it up automatically
+        SPARK_HOME=$(python3 -c "import pyspark; print(pyspark.__path__[0])")
+        curl -sL "https://storage.googleapis.com/hadoop-lib/gcs/gcs-connector-hadoop3-latest.jar" \
+          -o "$SPARK_HOME/jars/gcs-connector-hadoop3-latest.jar"
+
+        # Configure Hadoop to use the GCS connector with application default credentials
+        mkdir -p /tmp/hadoop-conf
+        cat > /tmp/hadoop-conf/core-site.xml << 'EOF'
+        <?xml version="1.0"?>
+        <configuration>
+          <property>
+            <name>fs.gs.impl</name>
+            <value>com.google.cloud.hadoop.fs.gcs.GoogleHadoopFileSystem</value>
+          </property>
+          <property>
+            <name>fs.AbstractFileSystem.gs.impl</name>
+            <value>com.google.cloud.hadoop.fs.gcs.GoogleHadoopFS</value>
+          </property>
+          <property>
+            <name>google.cloud.auth.type</name>
+            <value>APPLICATION_DEFAULT</value>
+          </property>
+        </configuration>
+        EOF
+
+    - name: Clear stale GenCC cache (schema changed)
+      run: rm -f ~/.annotations/gencc_table.*.tsv.gz
+
+    - name: Generate combined gene table
+      env:
+        OMIM_KEY: ${{ secrets.OMIM_KEY }}
+        HADOOP_CONF_DIR: /tmp/hadoop-conf
+      run: |
+        python3 annotation_utils/generate_combined_gene_table.py --skip-gwas
+
+    - name: Add phenotype summary using AI
+      env:
+        GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      run: |
+        python3 annotation_utils/add_phenotype_summary_using_AI.py combined_mendelian_gene_disease_table.tsv.gz
+
+    - name: Upload to BigQuery
+      run: |
+        python3 annotation_utils/load_bigquery.py combined_mendelian_gene_disease_table_with_phenotype_summary.tsv.gz
+
+    - name: Upload generated files as artifacts
+      uses: actions/upload-artifact@v4
+      if: always()
+      with:
+        name: gene-table-outputs
+        path: |
+          combined_mendelian_gene_disease_table_with_phenotype_summary.tsv.gz
+        retention-days: 30
+
+    - name: Save annotation data cache
+      uses: actions/cache/save@v4
+      if: always()
+      with:
+        path: ~/.annotations
+        key: annotations-cache-${{ github.run_id }}
+
+    - name: Save LLM response cache
+      uses: actions/cache/save@v4
+      if: always()
+      with:
+        path: .cache/llm_response_cache.db
+        key: llm-cache-${{ github.run_id }}

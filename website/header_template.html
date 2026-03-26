@@ -1,4 +1,6 @@
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Gene Lookup</title>
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.5.0/semantic.min.css">
@@ -69,7 +71,7 @@
     const DEFAULT_SORT_COLUMN = 'gene_symbol'
     const DEFAULT_SORT_DIRECTION = 'ASC'
 
-    REFERENCE_BASE_URL = "https://storage.googleapis.com/tgg-viewer/ref/GRCh38"
+    const REFERENCE_BASE_URL = "https://storage.googleapis.com/tgg-viewer/ref/GRCh38"
 
     const REFERENCE_TRACKS = [
         ["igv_gencode", "Gencode v49", `${REFERENCE_BASE_URL}/gencode_v49/gencode.v49.GRCh38.sorted.txt.gz`],
@@ -127,6 +129,8 @@
     const URL_PARAM_REVERSE_ALIASES = Object.fromEntries(
         Object.entries(URL_PARAM_ALIASES).map(([k, v]) => [v, k])
     )
+    // Support common query-string variant used by external links
+    URL_PARAM_REVERSE_ALIASES['search-query'] = 'searchQuery'
 
     const writePersistentPageStateToUrl = () => {
         // Create object with only non-default values
@@ -182,6 +186,8 @@
         }
     }
 
+    const escapeSqlString = (s) => String(s).replace(/'/g, "''")
+
     const getDiseaseCategory = (category) => {
         if (!category) return ''
         const categories = category.split(';').map(c => c.trim()).filter(c => c)
@@ -208,7 +214,7 @@
             'PanelApp_AU': '#8e44ad',
             'Decipher': '#f39c12',
             'ClinVar': '#1abc9c',
-            'Fridman': '#e67e22',
+            'Fridman 2025': '#e67e22',
         }
 
         const badges = sourcesList.map(src => {
@@ -337,26 +343,26 @@
             getSortColumns: () => ['hgnc_gene_id'],
             getRequiredColumns: () => ['hgnc_gene_id'],
         },
-        chrom: {
+        gene_chrom: {
             displayName: 'Chrom',
-            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['chrom'],
-            getValue: (row) => row['chrom'] || '',
-            getSortColumns: () => ['chrom'],
-            getRequiredColumns: () => ['chrom'],
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['gene_chrom'],
+            getValue: (row) => row['gene_chrom'] || '',
+            getSortColumns: () => ['gene_chrom'],
+            getRequiredColumns: () => ['gene_chrom'],
         },
-        start: {
+        gene_start: {
             displayName: 'Start',
-            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['start'],
-            getValue: (row) => row['start'] != null ? row['start'].toLocaleString() : '',
-            getSortColumns: () => ['start'],
-            getRequiredColumns: () => ['start'],
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['gene_start'],
+            getValue: (row) => row['gene_start'] != null ? row['gene_start'].toLocaleString() : '',
+            getSortColumns: () => ['gene_start'],
+            getRequiredColumns: () => ['gene_start'],
         },
-        end: {
+        gene_end: {
             displayName: 'End',
-            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['end'],
-            getValue: (row) => row['end'] != null ? row['end'].toLocaleString() : '',
-            getSortColumns: () => ['end'],
-            getRequiredColumns: () => ['end'],
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['gene_end'],
+            getValue: (row) => row['gene_end'] != null ? row['gene_end'].toLocaleString() : '',
+            getSortColumns: () => ['gene_end'],
+            getRequiredColumns: () => ['gene_end'],
         },
         clingen_curation: {
             displayName: 'ClinGen Curation',
@@ -603,21 +609,21 @@
             getRequiredColumns: () => ['CLINVAR_variant_consequences'],
         },
         FRIDMAN_omim_phenotype_id: {
-            displayName: 'Fridman OMIM ID',
+            displayName: 'Fridman 2025 OMIM ID',
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['FRIDMAN_omim_phenotype_id'],
             getValue: (row) => row['FRIDMAN_omim_phenotype_id'] || '',
             getSortColumns: () => ['FRIDMAN_omim_phenotype_id'],
             getRequiredColumns: () => ['FRIDMAN_omim_phenotype_id'],
         },
         FRIDMAN_phenotype_category: {
-            displayName: 'Fridman Category',
+            displayName: 'Fridman 2025 Category',
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['FRIDMAN_phenotype_category'],
             getValue: (row) => row['FRIDMAN_phenotype_category'] || '',
             getSortColumns: () => ['FRIDMAN_phenotype_category'],
             getRequiredColumns: () => ['FRIDMAN_phenotype_category'],
         },
         FRIDMAN_inheritance: {
-            displayName: 'Fridman Inheritance',
+            displayName: 'Fridman 2025 Inheritance',
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['FRIDMAN_inheritance'],
             getValue: (row) => row['FRIDMAN_inheritance'] || '',
             getSortColumns: () => ['FRIDMAN_inheritance'],
@@ -653,22 +659,24 @@
             const chrom = regionMatch[1].startsWith('chr') ? regionMatch[1] : `chr${regionMatch[1]}`
             const start = parseInt(regionMatch[2].replace(/,/g, ''))
             const end = parseInt(regionMatch[3].replace(/,/g, ''))
-            return `(chrom = '${chrom}' AND start < ${end} AND end > ${start})`
+            return `(gene_chrom = '${chrom}' AND gene_start < ${end} AND gene_end > ${start})`
         }
 
         // HGNC gene ID: HGNC:1234
+        const escapedQ = escapeSqlString(q)
+
         if (/^HGNC:\d+$/i.test(q)) {
-            return `(UPPER(hgnc_gene_id) = UPPER('${q}'))`
+            return `(UPPER(hgnc_gene_id) = UPPER('${escapedQ}'))`
         }
 
         // Ensembl gene ID: ENSG00000000001
         if (/^ENSG\d+/i.test(q)) {
-            return `(UPPER(ensembl_gene_id) = UPPER('${q}'))`
+            return `(UPPER(ensembl_gene_id) = UPPER('${escapedQ}'))`
         }
 
         // Gene name/alias (short alphanumeric tokens that look like gene symbols)
         if (/^[A-Za-z0-9\-]+$/.test(q) && q.length <= 30) {
-            return `(UPPER(gene_symbol) = UPPER('${q}') OR UPPER(gene_aliases) LIKE UPPER('%${q}%'))`
+            return `(UPPER(gene_symbol) = UPPER('${escapedQ}') OR UPPER(gene_aliases) LIKE UPPER('%${escapedQ}%'))`
         }
 
         // Otherwise treat as disease/phenotype free-text search
@@ -682,123 +690,57 @@
             'DECIPHER_disease_names',
             'CLINVAR_phenotypes',
         ]
-        const textClauses = phenotypeColumns.map(col => `UPPER(${col}) LIKE UPPER('%${q}%')`)
+        const textClauses = phenotypeColumns.map(col => `UPPER(${col}) LIKE UPPER('%${escapedQ}%')`)
         return `(${textClauses.join(' OR ')})`
     }
 
     /**
      * Build a WHERE clause for custom filters.
-     * Custom filters are stored in GLOBAL_PAGE_STATE.customFilters as "col|op|val,col|op|val"
+     * Custom filters are stored in GLOBAL_PAGE_STATE.customFilters as "col|op|val;col|op|val"
+     * where op is a SQL operator (=, !=, >, <, >=, <=, LIKE, IS NULL, IS NOT NULL).
      */
     const buildCustomFiltersWhereClause = () => {
         const filtersStr = GLOBAL_PAGE_STATE.customFilters
         if (!filtersStr || !filtersStr.trim()) return ''
 
+        const allowedOps = new Set(['=', '!=', '>', '<', '>=', '<=', 'LIKE', 'IS NULL', 'IS NOT NULL'])
         const clauses = []
-        for (const filterStr of filtersStr.split(',')) {
+        for (const filterStr of filtersStr.split(';')) {
             const parts = filterStr.split('|')
-            if (parts.length !== 3) continue
+            if (parts.length < 2) continue
 
-            const [col, op, val] = parts
+            const col = parts[0]
+            const op = parts[1]
+            let val
+            try {
+                val = decodeURIComponent(parts.slice(2).join('|'))
+            } catch (e) {
+                val = parts.slice(2).join('|')
+            }
 
-            // Validate column name exists in TABLE_COLUMNS or BIGQUERY_COLUMN_DESCRIPTIONS
+            // Validate column name and operator
             if (!BIGQUERY_COLUMN_DESCRIPTIONS[col] && !TABLE_COLUMNS[col]) continue
+            if (!allowedOps.has(op)) continue
 
-            // Build SQL clause based on operator
-            switch (op) {
-                case 'eq':
-                    clauses.push(`${col} = '${val}'`)
-                    break
-                case 'neq':
-                    clauses.push(`${col} != '${val}'`)
-                    break
-                case 'gt':
-                    clauses.push(`${col} > ${val}`)
-                    break
-                case 'gte':
-                    clauses.push(`${col} >= ${val}`)
-                    break
-                case 'lt':
-                    clauses.push(`${col} < ${val}`)
-                    break
-                case 'lte':
-                    clauses.push(`${col} <= ${val}`)
-                    break
-                case 'contains':
-                    clauses.push(`UPPER(${col}) LIKE UPPER('%${val}%')`)
-                    break
-                case 'not_contains':
-                    clauses.push(`(${col} IS NULL OR UPPER(${col}) NOT LIKE UPPER('%${val}%'))`)
-                    break
-                case 'is_null':
-                    clauses.push(`${col} IS NULL`)
-                    break
-                case 'is_not_null':
-                    clauses.push(`${col} IS NOT NULL`)
-                    break
+            if (op === 'IS NULL' || op === 'IS NOT NULL') {
+                clauses.push(`${col} ${op}`)
+            } else if (op === 'LIKE') {
+                const escapedValue = val.replace(/'/g, "''")
+                clauses.push(`${col} LIKE '${escapedValue}'`)
+            } else {
+                const colInfo = BIGQUERY_COLUMN_DESCRIPTIONS[col]
+                if (colInfo && (val.trim() !== '' && isFinite(Number(val)))) {
+                    clauses.push(`${col} ${op} ${Number(val)}`)
+                } else {
+                    const escapedValue = val.replace(/'/g, "''")
+                    clauses.push(`${col} ${op} '${escapedValue}'`)
+                }
             }
         }
 
         return clauses.join(' AND ')
     }
 
-    /**
-     * Build the complete SQL query for the current search + filters + sort + pagination.
-     */
-    const buildSearchQuery = (selectColumns) => {
-        const whereClauses = []
-
-        // Search query
-        const searchClause = buildSearchWhereClause(GLOBAL_PAGE_STATE.searchQuery)
-        if (searchClause) whereClauses.push(searchClause)
-
-        // Custom filters
-        const customClause = buildCustomFiltersWhereClause()
-        if (customClause) whereClauses.push(customClause)
-
-        const whereStr = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : ''
-
-        // Sort
-        const sortColumn = GLOBAL_PAGE_STATE.sc || DEFAULT_SORT_COLUMN
-        const sortDirection = GLOBAL_PAGE_STATE.sd || DEFAULT_SORT_DIRECTION
-
-        // Build sort expression from the TABLE_COLUMNS definition
-        let sortExpression = sortColumn
-        if (TABLE_COLUMNS[sortColumn] && TABLE_COLUMNS[sortColumn].getSortColumns) {
-            sortExpression = TABLE_COLUMNS[sortColumn].getSortColumns().join(` ${sortDirection}, `)
-        }
-
-        const query = `SELECT ${selectColumns} FROM ${COMPLETE_TABLE_ID} ${whereStr} ORDER BY ${sortExpression} ${sortDirection}`
-        return query
-    }
-
-    /**
-     * Perform the search: build query, send to BigQuery, return results.
-     */
-    const performSearch = async () => {
-        // Gather all required columns from visible TABLE_COLUMNS
-        const visibleColumns = getVisibleColumns()
-        const requiredColumnsSet = new Set()
-        for (const colKey of visibleColumns) {
-            if (TABLE_COLUMNS[colKey] && TABLE_COLUMNS[colKey].getRequiredColumns) {
-                for (const rc of TABLE_COLUMNS[colKey].getRequiredColumns()) {
-                    requiredColumnsSet.add(rc)
-                }
-            }
-        }
-
-        const selectColumns = requiredColumnsSet.size > 0 ? Array.from(requiredColumnsSet).join(', ') : '*'
-
-        const startIndex = (GLOBAL_PAGE_STATE.currentPage - 1) * GLOBAL_PAGE_STATE.pageSize
-        const query = buildSearchQuery(selectColumns)
-
-        return await queryBigQuery(query, startIndex, GLOBAL_PAGE_STATE.pageSize)
-    }
-
-    /**
-     * Get the list of currently visible column keys based on GLOBAL_PAGE_STATE.
-     * Default visible columns if none specified.
-     */
     const DEFAULT_VISIBLE_COLUMNS = [
         'gene_symbol',
         'disease_category',
@@ -810,12 +752,6 @@
         'CLINGEN_classification',
     ]
 
-    const getVisibleColumns = () => {
-        if (GLOBAL_PAGE_STATE.showColumns) {
-            return GLOBAL_PAGE_STATE.showColumns.split(SHOW_COLUMNS_VALUE_DELIMITER).filter(c => c)
-        }
-        return DEFAULT_VISIBLE_COLUMNS
-    }
 
 </script>
 </head>
@@ -883,13 +819,3 @@
     </div>
 </div>
 
-<!-- downloads modal dialog -->
-<div class="ui modal" id="downloads-modal" style="height: 88%; min-height: 88%">
-    <i class="close icon"></i>
-    <div class="header">
-        Downloads
-    </div>
-    <div class="content" style="font-size: 1.1em; height: 100%;">
-        <iframe src="downloads.html" style="width: 100%; height: 100%; border: 0px;"></iframe>
-    </div>
-</div>

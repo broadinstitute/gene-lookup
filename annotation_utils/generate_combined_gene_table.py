@@ -574,13 +574,14 @@ if include_Fridman:
 # add gene chrom, start, end
 df_gene_chrom_start_end = pd.DataFrame(get_gene_metadata().values())
 df_gene_chrom_start_end = df_gene_chrom_start_end[["gene.stable_id", "chrom", "start", "end"]]
+df_gene_chrom_start_end.rename(columns={"chrom": "gene_chrom", "start": "gene_start", "end": "gene_end"}, inplace=True)
 df_gene_chrom_start_end.set_index("gene.stable_id", inplace=True)
 missing_gene_ids = set(df_combined.index) - set(df_gene_chrom_start_end.index)
 if len(missing_gene_ids) > 0:
-    print(f"WARNING: chrom/start/end not available for {len(missing_gene_ids):,d} genes: {', '.join(list(missing_gene_ids)[:20])}" + (", ..." if len(missing_gene_ids) > 20 else ""))
+    print(f"WARNING: gene_chrom/gene_start/gene_end not available for {len(missing_gene_ids):,d} genes: {', '.join(list(missing_gene_ids)[:20])}" + (", ..." if len(missing_gene_ids) > 20 else ""))
 df_combined = pd.merge(df_combined, df_gene_chrom_start_end, how="left", left_index=True, right_index=True)
-df_combined["start"] = df_combined["start"].fillna(0).astype(int)
-df_combined["end"] = df_combined["end"].fillna(0).astype(int)
+df_combined["gene_start"] = df_combined["gene_start"].fillna(0).astype(int)
+df_combined["gene_end"] = df_combined["gene_end"].fillna(0).astype(int)
 
 # add constraint scores
 before = list(df_combined.index)

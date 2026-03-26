@@ -68,7 +68,7 @@
     </div>
 </div>
 
-<div class="ui grid">
+<div class="ui stackable grid">
 
     {% include "body_header_template.html" %}
 
@@ -169,7 +169,7 @@
                             </div>
                             <div class="ui checkbox">
                                 <input type="checkbox" name="keepFridman">
-                                <label>Fridman</label>
+                                <label>Fridman 2025</label>
                             </div>
                         </div>
                     </div>
@@ -334,18 +334,12 @@
 
     const escapeHtml = (s) => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')
 
-    const readAndApplyPersistentPageStateFromUrl = async () => {
-        GLOBAL_PAGE_STATE = JSON.parse(JSON.stringify(DEFAULT_GLOBAL_PAGE_STATE))
-
-        const hash = window.location.hash.substring(1)
-        if (!hash) return
-
-        const params = new URLSearchParams(hash)
-
+    const applyParamsToState = (params, {preferExisting = false} = {}) => {
         for (const [urlKey, value] of params.entries()) {
             // Convert abbreviated URL param name to internal state name if needed
             const key = URL_PARAM_REVERSE_ALIASES[urlKey] || urlKey
             if (key in DEFAULT_GLOBAL_PAGE_STATE && value != null) {
+                if (preferExisting && GLOBAL_PAGE_STATE[key] !== DEFAULT_GLOBAL_PAGE_STATE[key]) continue
                 // Convert string values to appropriate types
                 GLOBAL_PAGE_STATE[key] = value === 'true' ? true :
                                         value === 'false' ? false :
@@ -360,6 +354,26 @@
                 } else if (key === 'customFilters') {
                     GLOBAL_PAGE_STATE[key] = `${value}` // convert to string
                 }
+            }
+        }
+    }
+
+    const readAndApplyPersistentPageStateFromUrl = async () => {
+        GLOBAL_PAGE_STATE = JSON.parse(JSON.stringify(DEFAULT_GLOBAL_PAGE_STATE))
+
+        const hash = window.location.hash.substring(1)
+        if (hash) {
+            const hashParams = new URLSearchParams(hash)
+            applyParamsToState(hashParams)
+        }
+
+        // Also accept query-string params (e.g. ?search-query=CACNA1C)
+        const queryParams = new URLSearchParams(window.location.search)
+        if ([...queryParams.keys()].length > 0) {
+            applyParamsToState(queryParams, {preferExisting: true})
+            const hasQuerySearch = queryParams.has('q') || queryParams.has('search-query') || queryParams.has('searchQuery')
+            if (hasQuerySearch && GLOBAL_PAGE_STATE['searchQuery']) {
+                GLOBAL_PAGE_STATE['showRs'] = 1
             }
         }
         console.log("Starting to initialize page. GLOBAL_PAGE_STATE:", GLOBAL_PAGE_STATE)
@@ -1054,7 +1068,7 @@
 
         let selectClause
         if (value === 'bed') {
-            selectClause = `chrom, start, end, gene_symbol`
+            selectClause = 'gene_chrom, gene_start, gene_end, gene_symbol'
         } else if ((value === 'tsv' || value === 'json') && selectedColumns && selectedColumns.length > 0) {
             const columnExpressions = selectedColumns.map(colName => {
                 const colOption = EXPORT_COLUMN_OPTIONS.find(opt => opt.name === colName)
@@ -1193,9 +1207,9 @@
         if (index < 0 || index >= window.searchResults.rows.length) return
 
         const row = window.searchResults.rows[index]
-        const chrom = row['chrom']
-        const start = row['start']
-        const end = row['end']
+        const chrom = row['gene_chrom']
+        const start = row['gene_start']
+        const end = row['gene_end']
         if (!chrom || start == null || end == null) return
 
         const paddedStart = Math.max(0, start - IGV_LOCUS_PADDING)
@@ -1502,33 +1516,6 @@
             if (diseaseCategory) {
                 conditions.push(`UPPER(disease_category) LIKE UPPER('%${diseaseCategory}%')`)
             }
-
-            // Custom filter rows (advanced)
-            const allowedFilterColumns = new Set(CUSTOM_FILTER_COLUMNS.map(c => c.name))
-            const allowedFilterOps = new Set(['=', '!=', '>', '<', '>=', '<=', 'LIKE', 'IS NULL', 'IS NOT NULL'])
-            $('#custom-filter-rows .custom-filter-row').each(function() {
-                const columnName = $(this).find('.custom-filter-field').dropdown('get value')
-                const operator = $(this).find('.custom-filter-op').dropdown('get value')
-                const value = $(this).find('.custom-filter-value').val()
-
-                if (!columnName || !operator) return
-                if (!allowedFilterColumns.has(columnName) || !allowedFilterOps.has(operator)) return
-
-                const colInfo = getCustomFilterColumnInfo(columnName)
-                const colType = colInfo ? colInfo.type : 'STRING'
-
-                if (operator === 'IS NULL' || operator === 'IS NOT NULL') {
-                    conditions.push(`${columnName} ${operator}`)
-                } else if (operator === 'LIKE') {
-                    const escapedValue = value.replace(/'/g, "''")
-                    conditions.push(`${columnName} LIKE '${escapedValue}'`)
-                } else if (colType === 'STRING') {
-                    const escapedValue = value.replace(/'/g, "''")
-                    conditions.push(`${columnName} ${operator} '${escapedValue}'`)
-                } else {
-                    conditions.push(`${columnName} ${operator} ${Number(value)}`)
-                }
-            })
         }
 
         return conditions
@@ -1553,14 +1540,15 @@
         try {
             $('body').css('cursor', 'wait')
 
-            // Gather search query from UI
+            // Gather search query and custom filters from UI before building conditions
             GLOBAL_PAGE_STATE['searchQuery'] = $('#search-query').val()
+            GLOBAL_PAGE_STATE['customFilters'] = serializeCustomFilters()
 
             // Build conditions
             const conditions = buildAllConditions()
 
             // Retrieve all required columns for the visible columns
-            const requiredColumnsSet = new Set(['hgnc_gene_id', 'ensembl_gene_id', 'chrom', 'start', 'end'])
+            const requiredColumnsSet = new Set(['hgnc_gene_id', 'ensembl_gene_id', 'gene_chrom', 'gene_start', 'gene_end'])
 
             const visibleColumns = GLOBAL_PAGE_STATE['showColumns'].split(SHOW_COLUMNS_VALUE_DELIMITER)
             RESULTS_TABLE_COLUMN_NAMES.forEach((columnName) => {
@@ -1616,7 +1604,6 @@
             GLOBAL_PAGE_STATE['moeufThreshold'] = $('input[name="moeufThreshold"]').val()
             GLOBAL_PAGE_STATE['clingenClassification'] = $('#clingen-classification-dropdown').dropdown('get value')
             GLOBAL_PAGE_STATE['diseaseCategory'] = $('#disease-category-dropdown').dropdown('get value')
-            GLOBAL_PAGE_STATE['customFilters'] = serializeCustomFilters()
             writePersistentPageStateToUrl()
 
             displaySearchResults()
@@ -1636,7 +1623,7 @@
     }
 
     // "About", "FAQ", "Downloads" modal links
-    ['faq', 'downloads', 'about'].forEach(prefix => {
+    ['faq', 'about'].forEach(prefix => {
         $(`#${prefix}-link`).click((e) => {
             e.preventDefault()
             $(`#${prefix}-modal`).modal('show')

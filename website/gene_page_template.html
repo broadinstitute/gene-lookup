@@ -168,28 +168,39 @@
 
     let GLOBAL_PAGE_STATE = JSON.parse(JSON.stringify(DEFAULT_GLOBAL_PAGE_STATE))
 
-    const readAndApplyPersistentPageStateFromUrl = async () => {
-        GLOBAL_PAGE_STATE = JSON.parse(JSON.stringify(DEFAULT_GLOBAL_PAGE_STATE))
-
-        const urlArgs = window.location.hash.substring(1)
-        if (!urlArgs) return
-
-        const params = new URLSearchParams(urlArgs)
+    const applyParamsToState = (params, {preferExisting = false} = {}) => {
         for (const [urlKey, value] of params.entries()) {
             const key = URL_PARAM_REVERSE_ALIASES[urlKey] || urlKey
             if (key in DEFAULT_GLOBAL_PAGE_STATE && value != null) {
+                if (preferExisting && GLOBAL_PAGE_STATE[key] !== DEFAULT_GLOBAL_PAGE_STATE[key]) continue
                 GLOBAL_PAGE_STATE[key] = value === 'true' ? true :
                                         value === 'false' ? false :
                                         !isNaN(value) ? Number(value) : value
             }
         }
+    }
+
+    const readAndApplyPersistentPageStateFromUrl = async () => {
+        GLOBAL_PAGE_STATE = JSON.parse(JSON.stringify(DEFAULT_GLOBAL_PAGE_STATE))
+
+        const urlArgs = window.location.hash.substring(1)
+        const hashParams = new URLSearchParams(urlArgs)
+        const queryParams = new URLSearchParams(window.location.search)
+
+        if ([...hashParams.keys()].length > 0) {
+            applyParamsToState(hashParams)
+        }
+        if ([...queryParams.keys()].length > 0) {
+            applyParamsToState(queryParams, {preferExisting: true})
+        }
+
         // hgnc_gene_id contains a colon (e.g. "HGNC:1100") so it gets parsed as NaN — force it back to a string
-        if (params.has('hgnc_gene_id')) {
-            GLOBAL_PAGE_STATE['hgnc_gene_id'] = params.get('hgnc_gene_id')
+        if (hashParams.has('hgnc_gene_id') || queryParams.has('hgnc_gene_id')) {
+            GLOBAL_PAGE_STATE['hgnc_gene_id'] = (hashParams.get('hgnc_gene_id') || queryParams.get('hgnc_gene_id'))
         }
         // ensembl_gene_id (ENSG...) may also be parsed incorrectly — force it back to a string
-        if (params.has('ensembl_gene_id')) {
-            GLOBAL_PAGE_STATE['ensembl_gene_id'] = params.get('ensembl_gene_id')
+        if (hashParams.has('ensembl_gene_id') || queryParams.has('ensembl_gene_id')) {
+            GLOBAL_PAGE_STATE['ensembl_gene_id'] = (hashParams.get('ensembl_gene_id') || queryParams.get('ensembl_gene_id'))
         }
 
         console.log("Starting to initialize page. GLOBAL_PAGE_STATE:", GLOBAL_PAGE_STATE)
@@ -241,9 +252,9 @@
         const hgncId = row['hgnc_gene_id'] || ''
         const geneId = row['ensembl_gene_id'] || ''
         const displayName = geneSymbol || hgncId || geneId || 'Unknown'
-        const chrom = row['chrom'] || ''
-        const start = row['start']
-        const end = row['end']
+        const chrom = row['gene_chrom'] || ''
+        const start = row['gene_start']
+        const end = row['gene_end']
         const coordinates = (chrom && start != null && end != null) ? `${chrom}:${start.toLocaleString()}-${end.toLocaleString()}` : ''
 
         // Set page title
@@ -422,9 +433,9 @@
 
             let query
             if (hgncGeneId) {
-                query = `SELECT * FROM ${COMPLETE_TABLE_ID} WHERE hgnc_gene_id = '${hgncGeneId}'`
+                query = `SELECT * FROM ${COMPLETE_TABLE_ID} WHERE hgnc_gene_id = '${escapeSqlString(hgncGeneId)}'`
             } else {
-                query = `SELECT * FROM ${COMPLETE_TABLE_ID} WHERE ensembl_gene_id = '${ensgGeneId}'`
+                query = `SELECT * FROM ${COMPLETE_TABLE_ID} WHERE ensembl_gene_id = '${escapeSqlString(ensgGeneId)}'`
             }
 
             window.searchResults = await queryBigQuery(query, 0, 1, null)
@@ -441,11 +452,11 @@
 
             // Initialize IGV with gene coordinates if not already set by URL
             const row = window.searchResults.rows[0]
-            if (row['chrom'] && row['start'] != null && row['end'] != null) {
-                const igvStart = Math.max(0, row['start'] - IGV_LOCUS_PADDING)
-                const igvEnd = row['end'] + IGV_LOCUS_PADDING
+            if (row['gene_chrom'] && row['gene_start'] != null && row['gene_end'] != null) {
+                const igvStart = Math.max(0, row['gene_start'] - IGV_LOCUS_PADDING)
+                const igvEnd = row['gene_end'] + IGV_LOCUS_PADDING
                 if (GLOBAL_PAGE_STATE['igvLoc'] === DEFAULT_GLOBAL_PAGE_STATE['igvLoc']) {
-                    GLOBAL_PAGE_STATE['igvLoc'] = `${row['chrom']}:${igvStart}-${igvEnd}`
+                    GLOBAL_PAGE_STATE['igvLoc'] = `${row['gene_chrom']}:${igvStart}-${igvEnd}`
                 }
             }
 
@@ -458,7 +469,7 @@
     }
 
     // Initialize modals
-    ['about', 'faq', 'downloads'].forEach(prefix => {
+    ['about', 'faq'].forEach(prefix => {
         $(`#${prefix}-link`).click((e) => {
             e.preventDefault()
             $(`#${prefix}-modal`).modal('show')

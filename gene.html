@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
     <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Gene Lookup</title>
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.5.0/semantic.min.css">
@@ -32,7 +34,7 @@
     #header-title a {
         color: white;
         font-size: 22px;
-        font-family: 'Arial Narrow Bold', sans-serif;
+        font-family: 'Arial Narrow', sans-serif;
         white-space: nowrap;
         font-weight: 700;
         vertical-align: middle;
@@ -44,7 +46,7 @@
 
     #header-nav {
         display: flex;
-        justify-content: right;
+        justify-content: flex-end;
         vertical-align: middle;
         gap: 1.5em;
         font-size: 1.15em;
@@ -500,7 +502,7 @@
         padding: 5px 0;
     }
 
-    #results-table-column-settings-dialog.ui.modal, #faq-modal.ui.modal, #downloads-modal.ui.modal, #about-modal.ui.modal {
+    #results-table-column-settings-dialog.ui.modal, #faq-modal.ui.modal, #about-modal.ui.modal {
         width: 70% !important;
     }
 
@@ -848,9 +850,9 @@
     }
 
     // BigQuery column descriptions - generated from global_constants.py via Jinja2
-    const BIGQUERY_COLUMN_DESCRIPTIONS = {"CLINGEN_classification": "ClinGen gene-disease validity classification (Definitive, Strong, Moderate, or Limited).", "CLINGEN_disease_label": "Disease name(s) from ClinGen gene-disease validity curation (semicolon-separated if multiple).", "CLINGEN_disease_mondo_id": "MONDO disease ID(s) from ClinGen (semicolon-separated if multiple).", "CLINGEN_haploinsufficient": "ClinGen haploinsufficiency classification for this gene.", "CLINGEN_inheritance": "Mode of inheritance from ClinGen (semicolon-separated if multiple).", "CLINVAR_clinical_significance": "Clinical significance categories from ClinVar for variants in this gene.", "CLINVAR_phenotypes": "Phenotype(s) from ClinVar for pathogenic/likely pathogenic variants in this gene.", "CLINVAR_stars": "ClinVar review status gold stars for variants in this gene.", "CLINVAR_variant_consequences": "Major variant consequence types from ClinVar for pathogenic/likely pathogenic variants in this gene.", "DECIPHER_disease_names": "Disease name(s) from DECIPHER (semicolon-separated if multiple).", "DECIPHER_inheritance": "Mode of inheritance from DECIPHER (semicolon-separated if multiple).", "FRIDMAN_inheritance": "Inheritance mode from Fridman et al. 2025 (AR or AR-AD).", "FRIDMAN_omim_phenotype_id": "OMIM phenotype ID(s) from Fridman et al. 2025 list of recessive disease genes.", "FRIDMAN_phenotype_category": "Disorder group from Fridman et al. 2025 (semicolon-separated if multiple).", "GENCC_classification": "Gene-disease classification(s) from GenCC (semicolon-separated if multiple).", "GENCC_disease_name": "Disease name(s) from GenCC (semicolon-separated if multiple).", "GENCC_inheritance": "Mode of inheritance from GenCC (semicolon-separated if multiple).", "LLM_phenotype_summary": "LLM-generated concise summary of phenotypes from all sources.", "OMIM_inheritance": "Inheritance mode(s) from OMIM (semicolon-separated if multiple).", "OMIM_mim_number": "OMIM gene MIM number(s) (semicolon-separated if multiple).", "OMIM_phenotype_description": "Phenotype description(s) from OMIM (semicolon-separated if multiple).", "OMIM_phenotype_mim_number": "OMIM phenotype MIM number(s) (semicolon-separated if multiple).", "PANEL_APP_AU_confidence": "PanelApp Australia confidence level(s) for this gene (semicolon-separated if multiple panels).", "PANEL_APP_AU_evidence": "Evidence level from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_inheritance": "Mode of inheritance from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_mode_of_pathogenicity": "Mode of pathogenicity from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_panel_name": "Panel name(s) from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_penetrance": "Penetrance from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_phenotypes": "Phenotype(s) from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_UK_confidence": "PanelApp UK confidence level(s) for this gene (semicolon-separated if multiple panels).", "PANEL_APP_UK_evidence": "Evidence level from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_inheritance": "Mode of inheritance from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_mode_of_pathogenicity": "Mode of pathogenicity from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_panel_name": "Panel name(s) from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_penetrance": "Penetrance from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_phenotypes": "Phenotype(s) from PanelApp UK (semicolon-separated if multiple panels).", "chrom": "Chromosome name.", "clingen_curation": "LLM-generated summary of ClinGen gene curation information.", "disease_category": "LLM-assigned disease category (e.g., NEUROLOGICAL, CARDIOVASCULAR).", "end": "Gene end coordinate (GRCh38).", "gene_aliases": "Alternative gene symbols from HGNC (uppercase, comma-separated).", "gene_id": "Ensembl gene ID (ENSG).", "gene_symbol": "HGNC-approved gene symbol (uppercase).", "hgnc_gene_id": "HGNC gene ID (e.g., HGNC:1234).", "inheritance": "Summarized inheritance modes across all sources (semicolon-separated).", "lof_oe_ci_upper_v4": "Upper bound of the 90% confidence interval for the loss-of-function observed/expected ratio from gnomAD v4 (LOEUF).", "mis_oe_ci_upper_v4": "Upper bound of the 90% confidence interval for the missense observed/expected ratio from gnomAD v4 (MOEUF).", "pLI_v2": "Probability of loss-of-function intolerance from gnomAD v2.", "pLI_v4": "Probability of loss-of-function intolerance from gnomAD v4.", "sources": "Number and list of sources that include this gene (e.g., \u00273: OMIM, ClinGen, GenCC\u0027).", "start": "Gene start coordinate (GRCh38)."}
+    const BIGQUERY_COLUMN_DESCRIPTIONS = {"CLINGEN_classification": "ClinGen gene-disease validity classification (Definitive, Strong, Moderate, or Limited).", "CLINGEN_disease_label": "Disease name(s) from ClinGen gene-disease validity curation (semicolon-separated if multiple).", "CLINGEN_disease_mondo_id": "MONDO disease ID(s) from ClinGen (semicolon-separated if multiple).", "CLINGEN_haploinsufficient": "ClinGen haploinsufficiency classification for this gene.", "CLINGEN_inheritance": "Mode of inheritance from ClinGen (semicolon-separated if multiple).", "CLINVAR_clinical_significance": "Clinical significance categories from ClinVar for variants in this gene.", "CLINVAR_phenotypes": "Phenotype(s) from ClinVar for pathogenic/likely pathogenic variants in this gene.", "CLINVAR_stars": "ClinVar review status gold stars for variants in this gene.", "CLINVAR_variant_consequences": "Major variant consequence types from ClinVar for pathogenic/likely pathogenic variants in this gene.", "DECIPHER_disease_names": "Disease name(s) from DECIPHER (semicolon-separated if multiple).", "DECIPHER_inheritance": "Mode of inheritance from DECIPHER (semicolon-separated if multiple).", "FRIDMAN_inheritance": "Inheritance mode from Fridman et al. 2025 (AR or AR-AD).", "FRIDMAN_omim_phenotype_id": "OMIM phenotype ID(s) from Fridman et al. 2025 list of recessive disease genes.", "FRIDMAN_phenotype_category": "Disorder group from Fridman et al. 2025 (semicolon-separated if multiple).", "GENCC_classification": "Gene-disease classification(s) from GenCC (semicolon-separated if multiple).", "GENCC_disease_name": "Disease name(s) from GenCC (semicolon-separated if multiple).", "GENCC_inheritance": "Mode of inheritance from GenCC (semicolon-separated if multiple).", "LLM_phenotype_summary": "LLM-generated concise summary of phenotypes from all sources.", "OMIM_inheritance": "Inheritance mode(s) from OMIM (semicolon-separated if multiple).", "OMIM_mim_number": "OMIM gene MIM number(s) (semicolon-separated if multiple).", "OMIM_phenotype_description": "Phenotype description(s) from OMIM (semicolon-separated if multiple).", "OMIM_phenotype_mim_number": "OMIM phenotype MIM number(s) (semicolon-separated if multiple).", "PANEL_APP_AU_confidence": "PanelApp Australia confidence level(s) for this gene (semicolon-separated if multiple panels).", "PANEL_APP_AU_evidence": "Evidence level from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_inheritance": "Mode of inheritance from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_mode_of_pathogenicity": "Mode of pathogenicity from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_panel_name": "Panel name(s) from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_penetrance": "Penetrance from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_phenotypes": "Phenotype(s) from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_UK_confidence": "PanelApp UK confidence level(s) for this gene (semicolon-separated if multiple panels).", "PANEL_APP_UK_evidence": "Evidence level from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_inheritance": "Mode of inheritance from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_mode_of_pathogenicity": "Mode of pathogenicity from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_panel_name": "Panel name(s) from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_penetrance": "Penetrance from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_phenotypes": "Phenotype(s) from PanelApp UK (semicolon-separated if multiple panels).", "clingen_curation": "LLM-generated summary of ClinGen gene curation information.", "disease_category": "LLM-assigned disease category (e.g., NEUROLOGICAL, CARDIOVASCULAR).", "ensembl_gene_id": "Ensembl gene ID (ENSG).", "gene_aliases": "Alternative gene symbols from HGNC (uppercase, comma-separated).", "gene_chrom": "Chromosome name.", "gene_end": "Gene end coordinate (GRCh38).", "gene_start": "Gene start coordinate (GRCh38).", "gene_symbol": "HGNC-approved gene symbol (uppercase).", "hgnc_gene_id": "HGNC gene ID (e.g., HGNC:1234).", "inheritance": "Summarized inheritance modes across all sources (semicolon-separated).", "lof_oe_ci_upper_v4": "Upper bound of the 90% confidence interval for the loss-of-function observed/expected ratio from gnomAD v4 (LOEUF).", "mis_oe_ci_upper_v4": "Upper bound of the 90% confidence interval for the missense observed/expected ratio from gnomAD v4 (MOEUF).", "pLI_v2": "Probability of loss-of-function intolerance from gnomAD v2.", "pLI_v4": "Probability of loss-of-function intolerance from gnomAD v4.", "sources": "Number and list of sources that include this gene (e.g., \u00273: OMIM, ClinGen, GenCC\u0027)."}
 
-    const BIGQUERY_COLUMN_GROUPS = ["Core", "AI Summary", "Sources", "Constraint", "OMIM", "ClinGen", "GenCC", "PanelApp UK", "PanelApp AU", "Decipher", "ClinVar", "Fridman"]
+    const BIGQUERY_COLUMN_GROUPS = ["Core", "AI Summary", "Sources", "Constraint", "OMIM", "ClinGen", "GenCC", "PanelApp UK", "PanelApp AU", "Decipher", "ClinVar", "Fridman 2025"]
 
     // Help texts for UI columns - starts with BigQuery descriptions, then adds/overrides
     const RESULTS_TABLE_COLUMN_HELP_TEXTS = {
@@ -884,7 +886,7 @@
     const DEFAULT_SORT_COLUMN = 'gene_symbol'
     const DEFAULT_SORT_DIRECTION = 'ASC'
 
-    REFERENCE_BASE_URL = "https://storage.googleapis.com/tgg-viewer/ref/GRCh38"
+    const REFERENCE_BASE_URL = "https://storage.googleapis.com/tgg-viewer/ref/GRCh38"
 
     const REFERENCE_TRACKS = [
         ["igv_gencode", "Gencode v49", `${REFERENCE_BASE_URL}/gencode_v49/gencode.v49.GRCh38.sorted.txt.gz`],
@@ -942,6 +944,8 @@
     const URL_PARAM_REVERSE_ALIASES = Object.fromEntries(
         Object.entries(URL_PARAM_ALIASES).map(([k, v]) => [v, k])
     )
+    // Support common query-string variant used by external links
+    URL_PARAM_REVERSE_ALIASES['search-query'] = 'searchQuery'
 
     const writePersistentPageStateToUrl = () => {
         // Create object with only non-default values
@@ -997,6 +1001,8 @@
         }
     }
 
+    const escapeSqlString = (s) => String(s).replace(/'/g, "''")
+
     const getDiseaseCategory = (category) => {
         if (!category) return ''
         const categories = category.split(';').map(c => c.trim()).filter(c => c)
@@ -1023,7 +1029,7 @@
             'PanelApp_AU': '#8e44ad',
             'Decipher': '#f39c12',
             'ClinVar': '#1abc9c',
-            'Fridman': '#e67e22',
+            'Fridman 2025': '#e67e22',
         }
 
         const badges = sourcesList.map(src => {
@@ -1046,19 +1052,19 @@
             displayName: 'Gene',
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['gene_symbol'],
             getValue: (row) => {
-                const symbol = row['gene_symbol'] || row['hgnc_gene_id'] || row['gene_id'] || ''
+                const symbol = row['gene_symbol'] || row['hgnc_gene_id'] || row['ensembl_gene_id'] || ''
                 const hgncId = row['hgnc_gene_id'] || ''
-                const geneId = row['gene_id'] || ''
+                const geneId = row['ensembl_gene_id'] || ''
                 if (hgncId) {
                     return `<a href="gene.html#hgnc_gene_id=${encodeURIComponent(hgncId)}" class="action-link" style="font-weight: bold;">${symbol}</a>`
                 }
                 if (geneId) {
-                    return `<a href="gene.html#gene_id=${encodeURIComponent(geneId)}" class="action-link" style="font-weight: bold;">${symbol}</a>`
+                    return `<a href="gene.html#ensembl_gene_id=${encodeURIComponent(geneId)}" class="action-link" style="font-weight: bold;">${symbol}</a>`
                 }
                 return `<span style="font-weight: bold;">${symbol}</span>`
             },
             getSortColumns: () => ['gene_symbol'],
-            getRequiredColumns: () => ['gene_symbol', 'hgnc_gene_id', 'gene_id'],
+            getRequiredColumns: () => ['gene_symbol', 'hgnc_gene_id', 'ensembl_gene_id'],
         },
         disease_category: {
             displayName: 'Category',
@@ -1131,12 +1137,12 @@
             getSortColumns: () => ['CLINGEN_classification'],
             getRequiredColumns: () => ['CLINGEN_classification'],
         },
-        gene_id: {
+        ensembl_gene_id: {
             displayName: 'Ensembl Gene ID',
-            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['gene_id'],
-            getValue: (row) => row['gene_id'] || '',
-            getSortColumns: () => ['gene_id'],
-            getRequiredColumns: () => ['gene_id'],
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['ensembl_gene_id'],
+            getValue: (row) => row['ensembl_gene_id'] || '',
+            getSortColumns: () => ['ensembl_gene_id'],
+            getRequiredColumns: () => ['ensembl_gene_id'],
         },
         gene_aliases: {
             displayName: 'Gene Aliases',
@@ -1152,26 +1158,26 @@
             getSortColumns: () => ['hgnc_gene_id'],
             getRequiredColumns: () => ['hgnc_gene_id'],
         },
-        chrom: {
+        gene_chrom: {
             displayName: 'Chrom',
-            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['chrom'],
-            getValue: (row) => row['chrom'] || '',
-            getSortColumns: () => ['chrom'],
-            getRequiredColumns: () => ['chrom'],
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['gene_chrom'],
+            getValue: (row) => row['gene_chrom'] || '',
+            getSortColumns: () => ['gene_chrom'],
+            getRequiredColumns: () => ['gene_chrom'],
         },
-        start: {
+        gene_start: {
             displayName: 'Start',
-            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['start'],
-            getValue: (row) => row['start'] != null ? row['start'].toLocaleString() : '',
-            getSortColumns: () => ['start'],
-            getRequiredColumns: () => ['start'],
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['gene_start'],
+            getValue: (row) => row['gene_start'] != null ? row['gene_start'].toLocaleString() : '',
+            getSortColumns: () => ['gene_start'],
+            getRequiredColumns: () => ['gene_start'],
         },
-        end: {
+        gene_end: {
             displayName: 'End',
-            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['end'],
-            getValue: (row) => row['end'] != null ? row['end'].toLocaleString() : '',
-            getSortColumns: () => ['end'],
-            getRequiredColumns: () => ['end'],
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['gene_end'],
+            getValue: (row) => row['gene_end'] != null ? row['gene_end'].toLocaleString() : '',
+            getSortColumns: () => ['gene_end'],
+            getRequiredColumns: () => ['gene_end'],
         },
         clingen_curation: {
             displayName: 'ClinGen Curation',
@@ -1418,21 +1424,21 @@
             getRequiredColumns: () => ['CLINVAR_variant_consequences'],
         },
         FRIDMAN_omim_phenotype_id: {
-            displayName: 'Fridman OMIM ID',
+            displayName: 'Fridman 2025 OMIM ID',
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['FRIDMAN_omim_phenotype_id'],
             getValue: (row) => row['FRIDMAN_omim_phenotype_id'] || '',
             getSortColumns: () => ['FRIDMAN_omim_phenotype_id'],
             getRequiredColumns: () => ['FRIDMAN_omim_phenotype_id'],
         },
         FRIDMAN_phenotype_category: {
-            displayName: 'Fridman Category',
+            displayName: 'Fridman 2025 Category',
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['FRIDMAN_phenotype_category'],
             getValue: (row) => row['FRIDMAN_phenotype_category'] || '',
             getSortColumns: () => ['FRIDMAN_phenotype_category'],
             getRequiredColumns: () => ['FRIDMAN_phenotype_category'],
         },
         FRIDMAN_inheritance: {
-            displayName: 'Fridman Inheritance',
+            displayName: 'Fridman 2025 Inheritance',
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['FRIDMAN_inheritance'],
             getValue: (row) => row['FRIDMAN_inheritance'] || '',
             getSortColumns: () => ['FRIDMAN_inheritance'],
@@ -1468,22 +1474,24 @@
             const chrom = regionMatch[1].startsWith('chr') ? regionMatch[1] : `chr${regionMatch[1]}`
             const start = parseInt(regionMatch[2].replace(/,/g, ''))
             const end = parseInt(regionMatch[3].replace(/,/g, ''))
-            return `(chrom = '${chrom}' AND start < ${end} AND end > ${start})`
+            return `(gene_chrom = '${chrom}' AND gene_start < ${end} AND gene_end > ${start})`
         }
 
         // HGNC gene ID: HGNC:1234
+        const escapedQ = escapeSqlString(q)
+
         if (/^HGNC:\d+$/i.test(q)) {
-            return `(UPPER(hgnc_gene_id) = UPPER('${q}'))`
+            return `(UPPER(hgnc_gene_id) = UPPER('${escapedQ}'))`
         }
 
         // Ensembl gene ID: ENSG00000000001
         if (/^ENSG\d+/i.test(q)) {
-            return `(UPPER(gene_id) = UPPER('${q}'))`
+            return `(UPPER(ensembl_gene_id) = UPPER('${escapedQ}'))`
         }
 
         // Gene name/alias (short alphanumeric tokens that look like gene symbols)
         if (/^[A-Za-z0-9\-]+$/.test(q) && q.length <= 30) {
-            return `(UPPER(gene_symbol) = UPPER('${q}') OR UPPER(gene_aliases) LIKE UPPER('%${q}%'))`
+            return `(UPPER(gene_symbol) = UPPER('${escapedQ}') OR UPPER(gene_aliases) LIKE UPPER('%${escapedQ}%'))`
         }
 
         // Otherwise treat as disease/phenotype free-text search
@@ -1497,123 +1505,57 @@
             'DECIPHER_disease_names',
             'CLINVAR_phenotypes',
         ]
-        const textClauses = phenotypeColumns.map(col => `UPPER(${col}) LIKE UPPER('%${q}%')`)
+        const textClauses = phenotypeColumns.map(col => `UPPER(${col}) LIKE UPPER('%${escapedQ}%')`)
         return `(${textClauses.join(' OR ')})`
     }
 
     /**
      * Build a WHERE clause for custom filters.
-     * Custom filters are stored in GLOBAL_PAGE_STATE.customFilters as "col|op|val,col|op|val"
+     * Custom filters are stored in GLOBAL_PAGE_STATE.customFilters as "col|op|val;col|op|val"
+     * where op is a SQL operator (=, !=, >, <, >=, <=, LIKE, IS NULL, IS NOT NULL).
      */
     const buildCustomFiltersWhereClause = () => {
         const filtersStr = GLOBAL_PAGE_STATE.customFilters
         if (!filtersStr || !filtersStr.trim()) return ''
 
+        const allowedOps = new Set(['=', '!=', '>', '<', '>=', '<=', 'LIKE', 'IS NULL', 'IS NOT NULL'])
         const clauses = []
-        for (const filterStr of filtersStr.split(',')) {
+        for (const filterStr of filtersStr.split(';')) {
             const parts = filterStr.split('|')
-            if (parts.length !== 3) continue
+            if (parts.length < 2) continue
 
-            const [col, op, val] = parts
+            const col = parts[0]
+            const op = parts[1]
+            let val
+            try {
+                val = decodeURIComponent(parts.slice(2).join('|'))
+            } catch (e) {
+                val = parts.slice(2).join('|')
+            }
 
-            // Validate column name exists in TABLE_COLUMNS or BIGQUERY_COLUMN_DESCRIPTIONS
+            // Validate column name and operator
             if (!BIGQUERY_COLUMN_DESCRIPTIONS[col] && !TABLE_COLUMNS[col]) continue
+            if (!allowedOps.has(op)) continue
 
-            // Build SQL clause based on operator
-            switch (op) {
-                case 'eq':
-                    clauses.push(`${col} = '${val}'`)
-                    break
-                case 'neq':
-                    clauses.push(`${col} != '${val}'`)
-                    break
-                case 'gt':
-                    clauses.push(`${col} > ${val}`)
-                    break
-                case 'gte':
-                    clauses.push(`${col} >= ${val}`)
-                    break
-                case 'lt':
-                    clauses.push(`${col} < ${val}`)
-                    break
-                case 'lte':
-                    clauses.push(`${col} <= ${val}`)
-                    break
-                case 'contains':
-                    clauses.push(`UPPER(${col}) LIKE UPPER('%${val}%')`)
-                    break
-                case 'not_contains':
-                    clauses.push(`(${col} IS NULL OR UPPER(${col}) NOT LIKE UPPER('%${val}%'))`)
-                    break
-                case 'is_null':
-                    clauses.push(`${col} IS NULL`)
-                    break
-                case 'is_not_null':
-                    clauses.push(`${col} IS NOT NULL`)
-                    break
+            if (op === 'IS NULL' || op === 'IS NOT NULL') {
+                clauses.push(`${col} ${op}`)
+            } else if (op === 'LIKE') {
+                const escapedValue = val.replace(/'/g, "''")
+                clauses.push(`${col} LIKE '${escapedValue}'`)
+            } else {
+                const colInfo = BIGQUERY_COLUMN_DESCRIPTIONS[col]
+                if (colInfo && (val.trim() !== '' && isFinite(Number(val)))) {
+                    clauses.push(`${col} ${op} ${Number(val)}`)
+                } else {
+                    const escapedValue = val.replace(/'/g, "''")
+                    clauses.push(`${col} ${op} '${escapedValue}'`)
+                }
             }
         }
 
         return clauses.join(' AND ')
     }
 
-    /**
-     * Build the complete SQL query for the current search + filters + sort + pagination.
-     */
-    const buildSearchQuery = (selectColumns) => {
-        const whereClauses = []
-
-        // Search query
-        const searchClause = buildSearchWhereClause(GLOBAL_PAGE_STATE.searchQuery)
-        if (searchClause) whereClauses.push(searchClause)
-
-        // Custom filters
-        const customClause = buildCustomFiltersWhereClause()
-        if (customClause) whereClauses.push(customClause)
-
-        const whereStr = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : ''
-
-        // Sort
-        const sortColumn = GLOBAL_PAGE_STATE.sc || DEFAULT_SORT_COLUMN
-        const sortDirection = GLOBAL_PAGE_STATE.sd || DEFAULT_SORT_DIRECTION
-
-        // Build sort expression from the TABLE_COLUMNS definition
-        let sortExpression = sortColumn
-        if (TABLE_COLUMNS[sortColumn] && TABLE_COLUMNS[sortColumn].getSortColumns) {
-            sortExpression = TABLE_COLUMNS[sortColumn].getSortColumns().join(` ${sortDirection}, `)
-        }
-
-        const query = `SELECT ${selectColumns} FROM ${COMPLETE_TABLE_ID} ${whereStr} ORDER BY ${sortExpression} ${sortDirection}`
-        return query
-    }
-
-    /**
-     * Perform the search: build query, send to BigQuery, return results.
-     */
-    const performSearch = async () => {
-        // Gather all required columns from visible TABLE_COLUMNS
-        const visibleColumns = getVisibleColumns()
-        const requiredColumnsSet = new Set()
-        for (const colKey of visibleColumns) {
-            if (TABLE_COLUMNS[colKey] && TABLE_COLUMNS[colKey].getRequiredColumns) {
-                for (const rc of TABLE_COLUMNS[colKey].getRequiredColumns()) {
-                    requiredColumnsSet.add(rc)
-                }
-            }
-        }
-
-        const selectColumns = requiredColumnsSet.size > 0 ? Array.from(requiredColumnsSet).join(', ') : '*'
-
-        const startIndex = (GLOBAL_PAGE_STATE.currentPage - 1) * GLOBAL_PAGE_STATE.pageSize
-        const query = buildSearchQuery(selectColumns)
-
-        return await queryBigQuery(query, startIndex, GLOBAL_PAGE_STATE.pageSize)
-    }
-
-    /**
-     * Get the list of currently visible column keys based on GLOBAL_PAGE_STATE.
-     * Default visible columns if none specified.
-     */
     const DEFAULT_VISIBLE_COLUMNS = [
         'gene_symbol',
         'disease_category',
@@ -1625,12 +1567,6 @@
         'CLINGEN_classification',
     ]
 
-    const getVisibleColumns = () => {
-        if (GLOBAL_PAGE_STATE.showColumns) {
-            return GLOBAL_PAGE_STATE.showColumns.split(SHOW_COLUMNS_VALUE_DELIMITER).filter(c => c)
-        }
-        return DEFAULT_VISIBLE_COLUMNS
-    }
 
 </script>
 </head>
@@ -1698,16 +1634,6 @@
     </div>
 </div>
 
-<!-- downloads modal dialog -->
-<div class="ui modal" id="downloads-modal" style="height: 88%; min-height: 88%">
-    <i class="close icon"></i>
-    <div class="header">
-        Downloads
-    </div>
-    <div class="content" style="font-size: 1.1em; height: 100%;">
-        <iframe src="downloads.html" style="width: 100%; height: 100%; border: 0px;"></iframe>
-    </div>
-</div>
 <body>
 <style>
     .locus-info-label {
@@ -1762,9 +1688,8 @@
         <span style="color: rgba(255, 255, 255, 0.6); font-size: calc(1em - 2px); white-space: nowrap">Updated: 2026-03-15</span>
         <a href="#" id="about-link" style="padding-left: 40px">About</a>
         <a href="#" id="faq-link">FAQ</a>
-        <a href="#" id="downloads-link">Downloads</a>
-        <a href="https://github.com/broadinstitute/annotation-utils/issues" target="_blank">Issues</a>
-        <a href="https://github.com/broadinstitute/annotation-utils" target="_blank" id="github-icon" title="View on GitHub"><i class="github icon"></i></a>
+        <a href="https://github.com/broadinstitute/gene-lookup/issues" target="_blank">Issues</a>
+        <a href="https://github.com/broadinstitute/gene-lookup" target="_blank" id="github-icon" title="View on GitHub"><i class="github icon"></i></a>
     </div>
     <div class="three wide column page-grid-margin" style="padding: 0px !important"></div>
 </div>
@@ -1901,32 +1826,43 @@
 
     // Gene page-specific settings of the DEFAULT_GLOBAL_PAGE_STATE
     DEFAULT_GLOBAL_PAGE_STATE['hgnc_gene_id'] = ''
-    DEFAULT_GLOBAL_PAGE_STATE['gene_id'] = ''
+    DEFAULT_GLOBAL_PAGE_STATE['ensembl_gene_id'] = ''
 
     let GLOBAL_PAGE_STATE = JSON.parse(JSON.stringify(DEFAULT_GLOBAL_PAGE_STATE))
 
-    const readAndApplyPersistentPageStateFromUrl = async () => {
-        GLOBAL_PAGE_STATE = JSON.parse(JSON.stringify(DEFAULT_GLOBAL_PAGE_STATE))
-
-        const urlArgs = window.location.hash.substring(1)
-        if (!urlArgs) return
-
-        const params = new URLSearchParams(urlArgs)
+    const applyParamsToState = (params, {preferExisting = false} = {}) => {
         for (const [urlKey, value] of params.entries()) {
             const key = URL_PARAM_REVERSE_ALIASES[urlKey] || urlKey
             if (key in DEFAULT_GLOBAL_PAGE_STATE && value != null) {
+                if (preferExisting && GLOBAL_PAGE_STATE[key] !== DEFAULT_GLOBAL_PAGE_STATE[key]) continue
                 GLOBAL_PAGE_STATE[key] = value === 'true' ? true :
                                         value === 'false' ? false :
                                         !isNaN(value) ? Number(value) : value
             }
         }
-        // hgnc_gene_id contains a colon (e.g. "HGNC:1100") so it gets parsed as NaN — force it back to a string
-        if (params.has('hgnc_gene_id')) {
-            GLOBAL_PAGE_STATE['hgnc_gene_id'] = params.get('hgnc_gene_id')
+    }
+
+    const readAndApplyPersistentPageStateFromUrl = async () => {
+        GLOBAL_PAGE_STATE = JSON.parse(JSON.stringify(DEFAULT_GLOBAL_PAGE_STATE))
+
+        const urlArgs = window.location.hash.substring(1)
+        const hashParams = new URLSearchParams(urlArgs)
+        const queryParams = new URLSearchParams(window.location.search)
+
+        if ([...hashParams.keys()].length > 0) {
+            applyParamsToState(hashParams)
         }
-        // gene_id (ENSG...) may also be parsed incorrectly — force it back to a string
-        if (params.has('gene_id')) {
-            GLOBAL_PAGE_STATE['gene_id'] = params.get('gene_id')
+        if ([...queryParams.keys()].length > 0) {
+            applyParamsToState(queryParams, {preferExisting: true})
+        }
+
+        // hgnc_gene_id contains a colon (e.g. "HGNC:1100") so it gets parsed as NaN — force it back to a string
+        if (hashParams.has('hgnc_gene_id') || queryParams.has('hgnc_gene_id')) {
+            GLOBAL_PAGE_STATE['hgnc_gene_id'] = (hashParams.get('hgnc_gene_id') || queryParams.get('hgnc_gene_id'))
+        }
+        // ensembl_gene_id (ENSG...) may also be parsed incorrectly — force it back to a string
+        if (hashParams.has('ensembl_gene_id') || queryParams.has('ensembl_gene_id')) {
+            GLOBAL_PAGE_STATE['ensembl_gene_id'] = (hashParams.get('ensembl_gene_id') || queryParams.get('ensembl_gene_id'))
         }
 
         console.log("Starting to initialize page. GLOBAL_PAGE_STATE:", GLOBAL_PAGE_STATE)
@@ -1976,11 +1912,11 @@
 
         const geneSymbol = row['gene_symbol'] || ''
         const hgncId = row['hgnc_gene_id'] || ''
-        const geneId = row['gene_id'] || ''
+        const geneId = row['ensembl_gene_id'] || ''
         const displayName = geneSymbol || hgncId || geneId || 'Unknown'
-        const chrom = row['chrom'] || ''
-        const start = row['start']
-        const end = row['end']
+        const chrom = row['gene_chrom'] || ''
+        const start = row['gene_start']
+        const end = row['gene_end']
         const coordinates = (chrom && start != null && end != null) ? `${chrom}:${start.toLocaleString()}-${end.toLocaleString()}` : ''
 
         // Set page title
@@ -2146,9 +2082,9 @@
             $('body').css('cursor', 'wait')
 
             const hgncGeneId = GLOBAL_PAGE_STATE['hgnc_gene_id']
-            const ensgGeneId = GLOBAL_PAGE_STATE['gene_id']
+            const ensgGeneId = GLOBAL_PAGE_STATE['ensembl_gene_id']
             if (!hgncGeneId && !ensgGeneId) {
-                displayError('Missing gene identifier in URL (eg. #hgnc_gene_id=HGNC:1100 or #gene_id=ENSG00000139618)')
+                displayError('Missing gene identifier in URL (eg. #hgnc_gene_id=HGNC:1100 or #ensembl_gene_id=ENSG00000139618)')
                 return
             }
 
@@ -2159,9 +2095,9 @@
 
             let query
             if (hgncGeneId) {
-                query = `SELECT * FROM ${COMPLETE_TABLE_ID} WHERE hgnc_gene_id = '${hgncGeneId}'`
+                query = `SELECT * FROM ${COMPLETE_TABLE_ID} WHERE hgnc_gene_id = '${escapeSqlString(hgncGeneId)}'`
             } else {
-                query = `SELECT * FROM ${COMPLETE_TABLE_ID} WHERE gene_id = '${ensgGeneId}'`
+                query = `SELECT * FROM ${COMPLETE_TABLE_ID} WHERE ensembl_gene_id = '${escapeSqlString(ensgGeneId)}'`
             }
 
             window.searchResults = await queryBigQuery(query, 0, 1, null)
@@ -2178,11 +2114,11 @@
 
             // Initialize IGV with gene coordinates if not already set by URL
             const row = window.searchResults.rows[0]
-            if (row['chrom'] && row['start'] != null && row['end'] != null) {
-                const igvStart = Math.max(0, row['start'] - IGV_LOCUS_PADDING)
-                const igvEnd = row['end'] + IGV_LOCUS_PADDING
+            if (row['gene_chrom'] && row['gene_start'] != null && row['gene_end'] != null) {
+                const igvStart = Math.max(0, row['gene_start'] - IGV_LOCUS_PADDING)
+                const igvEnd = row['gene_end'] + IGV_LOCUS_PADDING
                 if (GLOBAL_PAGE_STATE['igvLoc'] === DEFAULT_GLOBAL_PAGE_STATE['igvLoc']) {
-                    GLOBAL_PAGE_STATE['igvLoc'] = `${row['chrom']}:${igvStart}-${igvEnd}`
+                    GLOBAL_PAGE_STATE['igvLoc'] = `${row['gene_chrom']}:${igvStart}-${igvEnd}`
                 }
             }
 
@@ -2195,7 +2131,7 @@
     }
 
     // Initialize modals
-    ['about', 'faq', 'downloads'].forEach(prefix => {
+    ['about', 'faq'].forEach(prefix => {
         $(`#${prefix}-link`).click((e) => {
             e.preventDefault()
             $(`#${prefix}-modal`).modal('show')

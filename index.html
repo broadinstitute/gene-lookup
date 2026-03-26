@@ -2,6 +2,8 @@
 <html>
 
 <head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Gene Lookup</title>
 <link rel="icon" type="image/png" href="favicon.png">
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.5.0/semantic.min.css">
@@ -33,7 +35,7 @@
     #header-title a {
         color: white;
         font-size: 22px;
-        font-family: 'Arial Narrow Bold', sans-serif;
+        font-family: 'Arial Narrow', sans-serif;
         white-space: nowrap;
         font-weight: 700;
         vertical-align: middle;
@@ -45,7 +47,7 @@
 
     #header-nav {
         display: flex;
-        justify-content: right;
+        justify-content: flex-end;
         vertical-align: middle;
         gap: 1.5em;
         font-size: 1.15em;
@@ -501,7 +503,7 @@
         padding: 5px 0;
     }
 
-    #results-table-column-settings-dialog.ui.modal, #faq-modal.ui.modal, #downloads-modal.ui.modal, #about-modal.ui.modal {
+    #results-table-column-settings-dialog.ui.modal, #faq-modal.ui.modal, #about-modal.ui.modal {
         width: 70% !important;
     }
 
@@ -849,9 +851,9 @@
     }
 
     // BigQuery column descriptions - generated from global_constants.py via Jinja2
-    const BIGQUERY_COLUMN_DESCRIPTIONS = {"CLINGEN_classification": "ClinGen gene-disease validity classification (Definitive, Strong, Moderate, or Limited).", "CLINGEN_disease_label": "Disease name(s) from ClinGen gene-disease validity curation (semicolon-separated if multiple).", "CLINGEN_disease_mondo_id": "MONDO disease ID(s) from ClinGen (semicolon-separated if multiple).", "CLINGEN_haploinsufficient": "ClinGen haploinsufficiency classification for this gene.", "CLINGEN_inheritance": "Mode of inheritance from ClinGen (semicolon-separated if multiple).", "CLINVAR_clinical_significance": "Clinical significance categories from ClinVar for variants in this gene.", "CLINVAR_phenotypes": "Phenotype(s) from ClinVar for pathogenic/likely pathogenic variants in this gene.", "CLINVAR_stars": "ClinVar review status gold stars for variants in this gene.", "CLINVAR_variant_consequences": "Major variant consequence types from ClinVar for pathogenic/likely pathogenic variants in this gene.", "DECIPHER_disease_names": "Disease name(s) from DECIPHER (semicolon-separated if multiple).", "DECIPHER_inheritance": "Mode of inheritance from DECIPHER (semicolon-separated if multiple).", "FRIDMAN_inheritance": "Inheritance mode from Fridman et al. 2025 (AR or AR-AD).", "FRIDMAN_omim_phenotype_id": "OMIM phenotype ID(s) from Fridman et al. 2025 list of recessive disease genes.", "FRIDMAN_phenotype_category": "Disorder group from Fridman et al. 2025 (semicolon-separated if multiple).", "GENCC_classification": "Gene-disease classification(s) from GenCC (semicolon-separated if multiple).", "GENCC_disease_name": "Disease name(s) from GenCC (semicolon-separated if multiple).", "GENCC_inheritance": "Mode of inheritance from GenCC (semicolon-separated if multiple).", "LLM_phenotype_summary": "LLM-generated concise summary of phenotypes from all sources.", "OMIM_inheritance": "Inheritance mode(s) from OMIM (semicolon-separated if multiple).", "OMIM_mim_number": "OMIM gene MIM number(s) (semicolon-separated if multiple).", "OMIM_phenotype_description": "Phenotype description(s) from OMIM (semicolon-separated if multiple).", "OMIM_phenotype_mim_number": "OMIM phenotype MIM number(s) (semicolon-separated if multiple).", "PANEL_APP_AU_confidence": "PanelApp Australia confidence level(s) for this gene (semicolon-separated if multiple panels).", "PANEL_APP_AU_evidence": "Evidence level from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_inheritance": "Mode of inheritance from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_mode_of_pathogenicity": "Mode of pathogenicity from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_panel_name": "Panel name(s) from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_penetrance": "Penetrance from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_phenotypes": "Phenotype(s) from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_UK_confidence": "PanelApp UK confidence level(s) for this gene (semicolon-separated if multiple panels).", "PANEL_APP_UK_evidence": "Evidence level from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_inheritance": "Mode of inheritance from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_mode_of_pathogenicity": "Mode of pathogenicity from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_panel_name": "Panel name(s) from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_penetrance": "Penetrance from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_phenotypes": "Phenotype(s) from PanelApp UK (semicolon-separated if multiple panels).", "chrom": "Chromosome name.", "clingen_curation": "LLM-generated summary of ClinGen gene curation information.", "disease_category": "LLM-assigned disease category (e.g., NEUROLOGICAL, CARDIOVASCULAR).", "end": "Gene end coordinate (GRCh38).", "gene_aliases": "Alternative gene symbols from HGNC (uppercase, comma-separated).", "gene_id": "Ensembl gene ID (ENSG).", "gene_symbol": "HGNC-approved gene symbol (uppercase).", "hgnc_gene_id": "HGNC gene ID (e.g., HGNC:1234).", "inheritance": "Summarized inheritance modes across all sources (semicolon-separated).", "lof_oe_ci_upper_v4": "Upper bound of the 90% confidence interval for the loss-of-function observed/expected ratio from gnomAD v4 (LOEUF).", "mis_oe_ci_upper_v4": "Upper bound of the 90% confidence interval for the missense observed/expected ratio from gnomAD v4 (MOEUF).", "pLI_v2": "Probability of loss-of-function intolerance from gnomAD v2.", "pLI_v4": "Probability of loss-of-function intolerance from gnomAD v4.", "sources": "Number and list of sources that include this gene (e.g., \u00273: OMIM, ClinGen, GenCC\u0027).", "start": "Gene start coordinate (GRCh38)."}
+    const BIGQUERY_COLUMN_DESCRIPTIONS = {"CLINGEN_classification": "ClinGen gene-disease validity classification (Definitive, Strong, Moderate, or Limited).", "CLINGEN_disease_label": "Disease name(s) from ClinGen gene-disease validity curation (semicolon-separated if multiple).", "CLINGEN_disease_mondo_id": "MONDO disease ID(s) from ClinGen (semicolon-separated if multiple).", "CLINGEN_haploinsufficient": "ClinGen haploinsufficiency classification for this gene.", "CLINGEN_inheritance": "Mode of inheritance from ClinGen (semicolon-separated if multiple).", "CLINVAR_clinical_significance": "Clinical significance categories from ClinVar for variants in this gene.", "CLINVAR_phenotypes": "Phenotype(s) from ClinVar for pathogenic/likely pathogenic variants in this gene.", "CLINVAR_stars": "ClinVar review status gold stars for variants in this gene.", "CLINVAR_variant_consequences": "Major variant consequence types from ClinVar for pathogenic/likely pathogenic variants in this gene.", "DECIPHER_disease_names": "Disease name(s) from DECIPHER (semicolon-separated if multiple).", "DECIPHER_inheritance": "Mode of inheritance from DECIPHER (semicolon-separated if multiple).", "FRIDMAN_inheritance": "Inheritance mode from Fridman et al. 2025 (AR or AR-AD).", "FRIDMAN_omim_phenotype_id": "OMIM phenotype ID(s) from Fridman et al. 2025 list of recessive disease genes.", "FRIDMAN_phenotype_category": "Disorder group from Fridman et al. 2025 (semicolon-separated if multiple).", "GENCC_classification": "Gene-disease classification(s) from GenCC (semicolon-separated if multiple).", "GENCC_disease_name": "Disease name(s) from GenCC (semicolon-separated if multiple).", "GENCC_inheritance": "Mode of inheritance from GenCC (semicolon-separated if multiple).", "LLM_phenotype_summary": "LLM-generated concise summary of phenotypes from all sources.", "OMIM_inheritance": "Inheritance mode(s) from OMIM (semicolon-separated if multiple).", "OMIM_mim_number": "OMIM gene MIM number(s) (semicolon-separated if multiple).", "OMIM_phenotype_description": "Phenotype description(s) from OMIM (semicolon-separated if multiple).", "OMIM_phenotype_mim_number": "OMIM phenotype MIM number(s) (semicolon-separated if multiple).", "PANEL_APP_AU_confidence": "PanelApp Australia confidence level(s) for this gene (semicolon-separated if multiple panels).", "PANEL_APP_AU_evidence": "Evidence level from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_inheritance": "Mode of inheritance from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_mode_of_pathogenicity": "Mode of pathogenicity from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_panel_name": "Panel name(s) from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_penetrance": "Penetrance from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_phenotypes": "Phenotype(s) from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_UK_confidence": "PanelApp UK confidence level(s) for this gene (semicolon-separated if multiple panels).", "PANEL_APP_UK_evidence": "Evidence level from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_inheritance": "Mode of inheritance from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_mode_of_pathogenicity": "Mode of pathogenicity from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_panel_name": "Panel name(s) from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_penetrance": "Penetrance from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_phenotypes": "Phenotype(s) from PanelApp UK (semicolon-separated if multiple panels).", "clingen_curation": "LLM-generated summary of ClinGen gene curation information.", "disease_category": "LLM-assigned disease category (e.g., NEUROLOGICAL, CARDIOVASCULAR).", "ensembl_gene_id": "Ensembl gene ID (ENSG).", "gene_aliases": "Alternative gene symbols from HGNC (uppercase, comma-separated).", "gene_chrom": "Chromosome name.", "gene_end": "Gene end coordinate (GRCh38).", "gene_start": "Gene start coordinate (GRCh38).", "gene_symbol": "HGNC-approved gene symbol (uppercase).", "hgnc_gene_id": "HGNC gene ID (e.g., HGNC:1234).", "inheritance": "Summarized inheritance modes across all sources (semicolon-separated).", "lof_oe_ci_upper_v4": "Upper bound of the 90% confidence interval for the loss-of-function observed/expected ratio from gnomAD v4 (LOEUF).", "mis_oe_ci_upper_v4": "Upper bound of the 90% confidence interval for the missense observed/expected ratio from gnomAD v4 (MOEUF).", "pLI_v2": "Probability of loss-of-function intolerance from gnomAD v2.", "pLI_v4": "Probability of loss-of-function intolerance from gnomAD v4.", "sources": "Number and list of sources that include this gene (e.g., \u00273: OMIM, ClinGen, GenCC\u0027)."}
 
-    const BIGQUERY_COLUMN_GROUPS = ["Core", "AI Summary", "Sources", "Constraint", "OMIM", "ClinGen", "GenCC", "PanelApp UK", "PanelApp AU", "Decipher", "ClinVar", "Fridman"]
+    const BIGQUERY_COLUMN_GROUPS = ["Core", "AI Summary", "Sources", "Constraint", "OMIM", "ClinGen", "GenCC", "PanelApp UK", "PanelApp AU", "Decipher", "ClinVar", "Fridman 2025"]
 
     // Help texts for UI columns - starts with BigQuery descriptions, then adds/overrides
     const RESULTS_TABLE_COLUMN_HELP_TEXTS = {
@@ -885,7 +887,7 @@
     const DEFAULT_SORT_COLUMN = 'gene_symbol'
     const DEFAULT_SORT_DIRECTION = 'ASC'
 
-    REFERENCE_BASE_URL = "https://storage.googleapis.com/tgg-viewer/ref/GRCh38"
+    const REFERENCE_BASE_URL = "https://storage.googleapis.com/tgg-viewer/ref/GRCh38"
 
     const REFERENCE_TRACKS = [
         ["igv_gencode", "Gencode v49", `${REFERENCE_BASE_URL}/gencode_v49/gencode.v49.GRCh38.sorted.txt.gz`],
@@ -943,6 +945,8 @@
     const URL_PARAM_REVERSE_ALIASES = Object.fromEntries(
         Object.entries(URL_PARAM_ALIASES).map(([k, v]) => [v, k])
     )
+    // Support common query-string variant used by external links
+    URL_PARAM_REVERSE_ALIASES['search-query'] = 'searchQuery'
 
     const writePersistentPageStateToUrl = () => {
         // Create object with only non-default values
@@ -998,6 +1002,8 @@
         }
     }
 
+    const escapeSqlString = (s) => String(s).replace(/'/g, "''")
+
     const getDiseaseCategory = (category) => {
         if (!category) return ''
         const categories = category.split(';').map(c => c.trim()).filter(c => c)
@@ -1024,7 +1030,7 @@
             'PanelApp_AU': '#8e44ad',
             'Decipher': '#f39c12',
             'ClinVar': '#1abc9c',
-            'Fridman': '#e67e22',
+            'Fridman 2025': '#e67e22',
         }
 
         const badges = sourcesList.map(src => {
@@ -1047,19 +1053,19 @@
             displayName: 'Gene',
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['gene_symbol'],
             getValue: (row) => {
-                const symbol = row['gene_symbol'] || row['hgnc_gene_id'] || row['gene_id'] || ''
+                const symbol = row['gene_symbol'] || row['hgnc_gene_id'] || row['ensembl_gene_id'] || ''
                 const hgncId = row['hgnc_gene_id'] || ''
-                const geneId = row['gene_id'] || ''
+                const geneId = row['ensembl_gene_id'] || ''
                 if (hgncId) {
                     return `<a href="gene.html#hgnc_gene_id=${encodeURIComponent(hgncId)}" class="action-link" style="font-weight: bold;">${symbol}</a>`
                 }
                 if (geneId) {
-                    return `<a href="gene.html#gene_id=${encodeURIComponent(geneId)}" class="action-link" style="font-weight: bold;">${symbol}</a>`
+                    return `<a href="gene.html#ensembl_gene_id=${encodeURIComponent(geneId)}" class="action-link" style="font-weight: bold;">${symbol}</a>`
                 }
                 return `<span style="font-weight: bold;">${symbol}</span>`
             },
             getSortColumns: () => ['gene_symbol'],
-            getRequiredColumns: () => ['gene_symbol', 'hgnc_gene_id', 'gene_id'],
+            getRequiredColumns: () => ['gene_symbol', 'hgnc_gene_id', 'ensembl_gene_id'],
         },
         disease_category: {
             displayName: 'Category',
@@ -1132,12 +1138,12 @@
             getSortColumns: () => ['CLINGEN_classification'],
             getRequiredColumns: () => ['CLINGEN_classification'],
         },
-        gene_id: {
+        ensembl_gene_id: {
             displayName: 'Ensembl Gene ID',
-            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['gene_id'],
-            getValue: (row) => row['gene_id'] || '',
-            getSortColumns: () => ['gene_id'],
-            getRequiredColumns: () => ['gene_id'],
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['ensembl_gene_id'],
+            getValue: (row) => row['ensembl_gene_id'] || '',
+            getSortColumns: () => ['ensembl_gene_id'],
+            getRequiredColumns: () => ['ensembl_gene_id'],
         },
         gene_aliases: {
             displayName: 'Gene Aliases',
@@ -1153,26 +1159,26 @@
             getSortColumns: () => ['hgnc_gene_id'],
             getRequiredColumns: () => ['hgnc_gene_id'],
         },
-        chrom: {
+        gene_chrom: {
             displayName: 'Chrom',
-            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['chrom'],
-            getValue: (row) => row['chrom'] || '',
-            getSortColumns: () => ['chrom'],
-            getRequiredColumns: () => ['chrom'],
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['gene_chrom'],
+            getValue: (row) => row['gene_chrom'] || '',
+            getSortColumns: () => ['gene_chrom'],
+            getRequiredColumns: () => ['gene_chrom'],
         },
-        start: {
+        gene_start: {
             displayName: 'Start',
-            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['start'],
-            getValue: (row) => row['start'] != null ? row['start'].toLocaleString() : '',
-            getSortColumns: () => ['start'],
-            getRequiredColumns: () => ['start'],
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['gene_start'],
+            getValue: (row) => row['gene_start'] != null ? row['gene_start'].toLocaleString() : '',
+            getSortColumns: () => ['gene_start'],
+            getRequiredColumns: () => ['gene_start'],
         },
-        end: {
+        gene_end: {
             displayName: 'End',
-            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['end'],
-            getValue: (row) => row['end'] != null ? row['end'].toLocaleString() : '',
-            getSortColumns: () => ['end'],
-            getRequiredColumns: () => ['end'],
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['gene_end'],
+            getValue: (row) => row['gene_end'] != null ? row['gene_end'].toLocaleString() : '',
+            getSortColumns: () => ['gene_end'],
+            getRequiredColumns: () => ['gene_end'],
         },
         clingen_curation: {
             displayName: 'ClinGen Curation',
@@ -1419,21 +1425,21 @@
             getRequiredColumns: () => ['CLINVAR_variant_consequences'],
         },
         FRIDMAN_omim_phenotype_id: {
-            displayName: 'Fridman OMIM ID',
+            displayName: 'Fridman 2025 OMIM ID',
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['FRIDMAN_omim_phenotype_id'],
             getValue: (row) => row['FRIDMAN_omim_phenotype_id'] || '',
             getSortColumns: () => ['FRIDMAN_omim_phenotype_id'],
             getRequiredColumns: () => ['FRIDMAN_omim_phenotype_id'],
         },
         FRIDMAN_phenotype_category: {
-            displayName: 'Fridman Category',
+            displayName: 'Fridman 2025 Category',
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['FRIDMAN_phenotype_category'],
             getValue: (row) => row['FRIDMAN_phenotype_category'] || '',
             getSortColumns: () => ['FRIDMAN_phenotype_category'],
             getRequiredColumns: () => ['FRIDMAN_phenotype_category'],
         },
         FRIDMAN_inheritance: {
-            displayName: 'Fridman Inheritance',
+            displayName: 'Fridman 2025 Inheritance',
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['FRIDMAN_inheritance'],
             getValue: (row) => row['FRIDMAN_inheritance'] || '',
             getSortColumns: () => ['FRIDMAN_inheritance'],
@@ -1469,22 +1475,24 @@
             const chrom = regionMatch[1].startsWith('chr') ? regionMatch[1] : `chr${regionMatch[1]}`
             const start = parseInt(regionMatch[2].replace(/,/g, ''))
             const end = parseInt(regionMatch[3].replace(/,/g, ''))
-            return `(chrom = '${chrom}' AND start < ${end} AND end > ${start})`
+            return `(gene_chrom = '${chrom}' AND gene_start < ${end} AND gene_end > ${start})`
         }
 
         // HGNC gene ID: HGNC:1234
+        const escapedQ = escapeSqlString(q)
+
         if (/^HGNC:\d+$/i.test(q)) {
-            return `(UPPER(hgnc_gene_id) = UPPER('${q}'))`
+            return `(UPPER(hgnc_gene_id) = UPPER('${escapedQ}'))`
         }
 
         // Ensembl gene ID: ENSG00000000001
         if (/^ENSG\d+/i.test(q)) {
-            return `(UPPER(gene_id) = UPPER('${q}'))`
+            return `(UPPER(ensembl_gene_id) = UPPER('${escapedQ}'))`
         }
 
         // Gene name/alias (short alphanumeric tokens that look like gene symbols)
         if (/^[A-Za-z0-9\-]+$/.test(q) && q.length <= 30) {
-            return `(UPPER(gene_symbol) = UPPER('${q}') OR UPPER(gene_aliases) LIKE UPPER('%${q}%'))`
+            return `(UPPER(gene_symbol) = UPPER('${escapedQ}') OR UPPER(gene_aliases) LIKE UPPER('%${escapedQ}%'))`
         }
 
         // Otherwise treat as disease/phenotype free-text search
@@ -1498,123 +1506,57 @@
             'DECIPHER_disease_names',
             'CLINVAR_phenotypes',
         ]
-        const textClauses = phenotypeColumns.map(col => `UPPER(${col}) LIKE UPPER('%${q}%')`)
+        const textClauses = phenotypeColumns.map(col => `UPPER(${col}) LIKE UPPER('%${escapedQ}%')`)
         return `(${textClauses.join(' OR ')})`
     }
 
     /**
      * Build a WHERE clause for custom filters.
-     * Custom filters are stored in GLOBAL_PAGE_STATE.customFilters as "col|op|val,col|op|val"
+     * Custom filters are stored in GLOBAL_PAGE_STATE.customFilters as "col|op|val;col|op|val"
+     * where op is a SQL operator (=, !=, >, <, >=, <=, LIKE, IS NULL, IS NOT NULL).
      */
     const buildCustomFiltersWhereClause = () => {
         const filtersStr = GLOBAL_PAGE_STATE.customFilters
         if (!filtersStr || !filtersStr.trim()) return ''
 
+        const allowedOps = new Set(['=', '!=', '>', '<', '>=', '<=', 'LIKE', 'IS NULL', 'IS NOT NULL'])
         const clauses = []
-        for (const filterStr of filtersStr.split(',')) {
+        for (const filterStr of filtersStr.split(';')) {
             const parts = filterStr.split('|')
-            if (parts.length !== 3) continue
+            if (parts.length < 2) continue
 
-            const [col, op, val] = parts
+            const col = parts[0]
+            const op = parts[1]
+            let val
+            try {
+                val = decodeURIComponent(parts.slice(2).join('|'))
+            } catch (e) {
+                val = parts.slice(2).join('|')
+            }
 
-            // Validate column name exists in TABLE_COLUMNS or BIGQUERY_COLUMN_DESCRIPTIONS
+            // Validate column name and operator
             if (!BIGQUERY_COLUMN_DESCRIPTIONS[col] && !TABLE_COLUMNS[col]) continue
+            if (!allowedOps.has(op)) continue
 
-            // Build SQL clause based on operator
-            switch (op) {
-                case 'eq':
-                    clauses.push(`${col} = '${val}'`)
-                    break
-                case 'neq':
-                    clauses.push(`${col} != '${val}'`)
-                    break
-                case 'gt':
-                    clauses.push(`${col} > ${val}`)
-                    break
-                case 'gte':
-                    clauses.push(`${col} >= ${val}`)
-                    break
-                case 'lt':
-                    clauses.push(`${col} < ${val}`)
-                    break
-                case 'lte':
-                    clauses.push(`${col} <= ${val}`)
-                    break
-                case 'contains':
-                    clauses.push(`UPPER(${col}) LIKE UPPER('%${val}%')`)
-                    break
-                case 'not_contains':
-                    clauses.push(`(${col} IS NULL OR UPPER(${col}) NOT LIKE UPPER('%${val}%'))`)
-                    break
-                case 'is_null':
-                    clauses.push(`${col} IS NULL`)
-                    break
-                case 'is_not_null':
-                    clauses.push(`${col} IS NOT NULL`)
-                    break
+            if (op === 'IS NULL' || op === 'IS NOT NULL') {
+                clauses.push(`${col} ${op}`)
+            } else if (op === 'LIKE') {
+                const escapedValue = val.replace(/'/g, "''")
+                clauses.push(`${col} LIKE '${escapedValue}'`)
+            } else {
+                const colInfo = BIGQUERY_COLUMN_DESCRIPTIONS[col]
+                if (colInfo && (val.trim() !== '' && isFinite(Number(val)))) {
+                    clauses.push(`${col} ${op} ${Number(val)}`)
+                } else {
+                    const escapedValue = val.replace(/'/g, "''")
+                    clauses.push(`${col} ${op} '${escapedValue}'`)
+                }
             }
         }
 
         return clauses.join(' AND ')
     }
 
-    /**
-     * Build the complete SQL query for the current search + filters + sort + pagination.
-     */
-    const buildSearchQuery = (selectColumns) => {
-        const whereClauses = []
-
-        // Search query
-        const searchClause = buildSearchWhereClause(GLOBAL_PAGE_STATE.searchQuery)
-        if (searchClause) whereClauses.push(searchClause)
-
-        // Custom filters
-        const customClause = buildCustomFiltersWhereClause()
-        if (customClause) whereClauses.push(customClause)
-
-        const whereStr = whereClauses.length > 0 ? `WHERE ${whereClauses.join(' AND ')}` : ''
-
-        // Sort
-        const sortColumn = GLOBAL_PAGE_STATE.sc || DEFAULT_SORT_COLUMN
-        const sortDirection = GLOBAL_PAGE_STATE.sd || DEFAULT_SORT_DIRECTION
-
-        // Build sort expression from the TABLE_COLUMNS definition
-        let sortExpression = sortColumn
-        if (TABLE_COLUMNS[sortColumn] && TABLE_COLUMNS[sortColumn].getSortColumns) {
-            sortExpression = TABLE_COLUMNS[sortColumn].getSortColumns().join(` ${sortDirection}, `)
-        }
-
-        const query = `SELECT ${selectColumns} FROM ${COMPLETE_TABLE_ID} ${whereStr} ORDER BY ${sortExpression} ${sortDirection}`
-        return query
-    }
-
-    /**
-     * Perform the search: build query, send to BigQuery, return results.
-     */
-    const performSearch = async () => {
-        // Gather all required columns from visible TABLE_COLUMNS
-        const visibleColumns = getVisibleColumns()
-        const requiredColumnsSet = new Set()
-        for (const colKey of visibleColumns) {
-            if (TABLE_COLUMNS[colKey] && TABLE_COLUMNS[colKey].getRequiredColumns) {
-                for (const rc of TABLE_COLUMNS[colKey].getRequiredColumns()) {
-                    requiredColumnsSet.add(rc)
-                }
-            }
-        }
-
-        const selectColumns = requiredColumnsSet.size > 0 ? Array.from(requiredColumnsSet).join(', ') : '*'
-
-        const startIndex = (GLOBAL_PAGE_STATE.currentPage - 1) * GLOBAL_PAGE_STATE.pageSize
-        const query = buildSearchQuery(selectColumns)
-
-        return await queryBigQuery(query, startIndex, GLOBAL_PAGE_STATE.pageSize)
-    }
-
-    /**
-     * Get the list of currently visible column keys based on GLOBAL_PAGE_STATE.
-     * Default visible columns if none specified.
-     */
     const DEFAULT_VISIBLE_COLUMNS = [
         'gene_symbol',
         'disease_category',
@@ -1626,12 +1568,6 @@
         'CLINGEN_classification',
     ]
 
-    const getVisibleColumns = () => {
-        if (GLOBAL_PAGE_STATE.showColumns) {
-            return GLOBAL_PAGE_STATE.showColumns.split(SHOW_COLUMNS_VALUE_DELIMITER).filter(c => c)
-        }
-        return DEFAULT_VISIBLE_COLUMNS
-    }
 
 </script>
 </head>
@@ -1699,16 +1635,6 @@
     </div>
 </div>
 
-<!-- downloads modal dialog -->
-<div class="ui modal" id="downloads-modal" style="height: 88%; min-height: 88%">
-    <i class="close icon"></i>
-    <div class="header">
-        Downloads
-    </div>
-    <div class="content" style="font-size: 1.1em; height: 100%;">
-        <iframe src="downloads.html" style="width: 100%; height: 100%; border: 0px;"></iframe>
-    </div>
-</div>
 
 <body>
 <!-- modal dialog for selecting results table columns -->
@@ -1775,7 +1701,7 @@
     </div>
 </div>
 
-<div class="ui grid">
+<div class="ui stackable grid">
 
     <div class="ui row" id="header-stripe">
     <div class="three wide column page-grid-margin" style="padding: 0px !important"></div>
@@ -1786,9 +1712,8 @@
         <span style="color: rgba(255, 255, 255, 0.6); font-size: calc(1em - 2px); white-space: nowrap">Updated: 2026-03-15</span>
         <a href="#" id="about-link" style="padding-left: 40px">About</a>
         <a href="#" id="faq-link">FAQ</a>
-        <a href="#" id="downloads-link">Downloads</a>
-        <a href="https://github.com/broadinstitute/annotation-utils/issues" target="_blank">Issues</a>
-        <a href="https://github.com/broadinstitute/annotation-utils" target="_blank" id="github-icon" title="View on GitHub"><i class="github icon"></i></a>
+        <a href="https://github.com/broadinstitute/gene-lookup/issues" target="_blank">Issues</a>
+        <a href="https://github.com/broadinstitute/gene-lookup" target="_blank" id="github-icon" title="View on GitHub"><i class="github icon"></i></a>
     </div>
     <div class="three wide column page-grid-margin" style="padding: 0px !important"></div>
 </div>
@@ -1906,7 +1831,7 @@
                             </div>
                             <div class="ui checkbox">
                                 <input type="checkbox" name="keepFridman">
-                                <label>Fridman</label>
+                                <label>Fridman 2025</label>
                             </div>
                         </div>
                     </div>
@@ -2061,28 +1986,22 @@
     const RESULTS_TABLE_COLUMN_SELECTION_CHECKBOXES = RESULTS_TABLE_COLUMN_NAMES
 
     // Columns that can be used for filtering in the UI, with their display names and group
-    const CUSTOM_FILTER_COLUMNS = [{"name": "gene_symbol", "displayName": "Gene Symbol", "group": "Core", "description": "HGNC-approved gene symbol (uppercase).", "type": "STRING"}, {"name": "gene_id", "displayName": "Ensembl Gene ID", "group": "Core", "description": "Ensembl gene ID (ENSG).", "type": "STRING"}, {"name": "gene_aliases", "displayName": "Gene Aliases", "group": "Core", "description": "Alternative gene symbols from HGNC (uppercase, comma-separated).", "type": "STRING"}, {"name": "hgnc_gene_id", "displayName": "HGNC Gene ID", "group": "Core", "description": "HGNC gene ID (e.g., HGNC:1234).", "type": "STRING"}, {"name": "chrom", "displayName": "Chromosome", "group": "Core", "description": "Chromosome name.", "type": "STRING"}, {"name": "start", "displayName": "Start", "group": "Core", "description": "Gene start coordinate (GRCh38).", "type": "INTEGER"}, {"name": "end", "displayName": "End", "group": "Core", "description": "Gene end coordinate (GRCh38).", "type": "INTEGER"}, {"name": "inheritance", "displayName": "Inheritance", "group": "Core", "description": "Summarized inheritance modes across all sources (semicolon-separated).", "type": "STRING"}, {"name": "disease_category", "displayName": "Disease Category", "group": "AI Summary", "description": "LLM-assigned disease category (e.g., NEUROLOGICAL, CARDIOVASCULAR).", "type": "STRING"}, {"name": "LLM_phenotype_summary", "displayName": "Phenotype Summary", "group": "AI Summary", "description": "LLM-generated concise summary of phenotypes from all sources.", "type": "STRING"}, {"name": "clingen_curation", "displayName": "ClinGen Curation", "group": "AI Summary", "description": "LLM-generated summary of ClinGen gene curation information.", "type": "STRING"}, {"name": "sources", "displayName": "Sources", "group": "Sources", "description": "Number and list of sources that include this gene (e.g., '3: OMIM, ClinGen, GenCC').", "type": "STRING"}, {"name": "pLI_v2", "displayName": "pLI (v2)", "group": "Constraint", "description": "Probability of loss-of-function intolerance from gnomAD v2.", "type": "FLOAT"}, {"name": "pLI_v4", "displayName": "pLI (v4)", "group": "Constraint", "description": "Probability of loss-of-function intolerance from gnomAD v4.", "type": "FLOAT"}, {"name": "lof_oe_ci_upper_v4", "displayName": "LOEUF (v4)", "group": "Constraint", "description": "Upper bound of the 90% confidence interval for the loss-of-function observed/expected ratio from gnomAD v4 (LOEUF).", "type": "FLOAT"}, {"name": "mis_oe_ci_upper_v4", "displayName": "MOEUF (v4)", "group": "Constraint", "description": "Upper bound of the 90% confidence interval for the missense observed/expected ratio from gnomAD v4 (MOEUF).", "type": "FLOAT"}, {"name": "OMIM_mim_number", "displayName": "OMIM MIM Number", "group": "OMIM", "description": "OMIM gene MIM number(s) (semicolon-separated if multiple).", "type": "STRING"}, {"name": "OMIM_phenotype_mim_number", "displayName": "OMIM Phenotype MIM Number", "group": "OMIM", "description": "OMIM phenotype MIM number(s) (semicolon-separated if multiple).", "type": "STRING"}, {"name": "OMIM_inheritance", "displayName": "OMIM Inheritance", "group": "OMIM", "description": "Inheritance mode(s) from OMIM (semicolon-separated if multiple).", "type": "STRING"}, {"name": "OMIM_phenotype_description", "displayName": "OMIM Phenotype", "group": "OMIM", "description": "Phenotype description(s) from OMIM (semicolon-separated if multiple).", "type": "STRING"}, {"name": "CLINGEN_disease_label", "displayName": "ClinGen Disease", "group": "ClinGen", "description": "Disease name(s) from ClinGen gene-disease validity curation (semicolon-separated if multiple).", "type": "STRING"}, {"name": "CLINGEN_disease_mondo_id", "displayName": "ClinGen MONDO ID", "group": "ClinGen", "description": "MONDO disease ID(s) from ClinGen (semicolon-separated if multiple).", "type": "STRING"}, {"name": "CLINGEN_inheritance", "displayName": "ClinGen Inheritance", "group": "ClinGen", "description": "Mode of inheritance from ClinGen (semicolon-separated if multiple).", "type": "STRING"}, {"name": "CLINGEN_classification", "displayName": "ClinGen Classification", "group": "ClinGen", "description": "ClinGen gene-disease validity classification (Definitive, Strong, Moderate, or Limited).", "type": "STRING"}, {"name": "CLINGEN_haploinsufficient", "displayName": "ClinGen Haploinsufficiency", "group": "ClinGen", "description": "ClinGen haploinsufficiency classification for this gene.", "type": "STRING"}, {"name": "GENCC_disease_name", "displayName": "GenCC Disease", "group": "GenCC", "description": "Disease name(s) from GenCC (semicolon-separated if multiple).", "type": "STRING"}, {"name": "GENCC_classification", "displayName": "GenCC Classification", "group": "GenCC", "description": "Gene-disease classification(s) from GenCC (semicolon-separated if multiple).", "type": "STRING"}, {"name": "GENCC_inheritance", "displayName": "GenCC Inheritance", "group": "GenCC", "description": "Mode of inheritance from GenCC (semicolon-separated if multiple).", "type": "STRING"}, {"name": "PANEL_APP_UK_confidence", "displayName": "PanelApp UK Confidence", "group": "PanelApp UK", "description": "PanelApp UK confidence level(s) for this gene (semicolon-separated if multiple panels).", "type": "STRING"}, {"name": "PANEL_APP_UK_penetrance", "displayName": "PanelApp UK Penetrance", "group": "PanelApp UK", "description": "Penetrance from PanelApp UK (semicolon-separated if multiple panels).", "type": "STRING"}, {"name": "PANEL_APP_UK_mode_of_pathogenicity", "displayName": "PanelApp UK Pathogenicity", "group": "PanelApp UK", "description": "Mode of pathogenicity from PanelApp UK (semicolon-separated if multiple panels).", "type": "STRING"}, {"name": "PANEL_APP_UK_inheritance", "displayName": "PanelApp UK Inheritance", "group": "PanelApp UK", "description": "Mode of inheritance from PanelApp UK (semicolon-separated if multiple panels).", "type": "STRING"}, {"name": "PANEL_APP_UK_evidence", "displayName": "PanelApp UK Evidence", "group": "PanelApp UK", "description": "Evidence level from PanelApp UK (semicolon-separated if multiple panels).", "type": "STRING"}, {"name": "PANEL_APP_UK_phenotypes", "displayName": "PanelApp UK Phenotypes", "group": "PanelApp UK", "description": "Phenotype(s) from PanelApp UK (semicolon-separated if multiple panels).", "type": "STRING"}, {"name": "PANEL_APP_UK_panel_name", "displayName": "PanelApp UK Panel", "group": "PanelApp UK", "description": "Panel name(s) from PanelApp UK (semicolon-separated if multiple panels).", "type": "STRING"}, {"name": "PANEL_APP_AU_confidence", "displayName": "PanelApp AU Confidence", "group": "PanelApp AU", "description": "PanelApp Australia confidence level(s) for this gene (semicolon-separated if multiple panels).", "type": "STRING"}, {"name": "PANEL_APP_AU_penetrance", "displayName": "PanelApp AU Penetrance", "group": "PanelApp AU", "description": "Penetrance from PanelApp Australia (semicolon-separated if multiple panels).", "type": "STRING"}, {"name": "PANEL_APP_AU_mode_of_pathogenicity", "displayName": "PanelApp AU Pathogenicity", "group": "PanelApp AU", "description": "Mode of pathogenicity from PanelApp Australia (semicolon-separated if multiple panels).", "type": "STRING"}, {"name": "PANEL_APP_AU_inheritance", "displayName": "PanelApp AU Inheritance", "group": "PanelApp AU", "description": "Mode of inheritance from PanelApp Australia (semicolon-separated if multiple panels).", "type": "STRING"}, {"name": "PANEL_APP_AU_evidence", "displayName": "PanelApp AU Evidence", "group": "PanelApp AU", "description": "Evidence level from PanelApp Australia (semicolon-separated if multiple panels).", "type": "STRING"}, {"name": "PANEL_APP_AU_phenotypes", "displayName": "PanelApp AU Phenotypes", "group": "PanelApp AU", "description": "Phenotype(s) from PanelApp Australia (semicolon-separated if multiple panels).", "type": "STRING"}, {"name": "PANEL_APP_AU_panel_name", "displayName": "PanelApp AU Panel", "group": "PanelApp AU", "description": "Panel name(s) from PanelApp Australia (semicolon-separated if multiple panels).", "type": "STRING"}, {"name": "DECIPHER_inheritance", "displayName": "Decipher Inheritance", "group": "Decipher", "description": "Mode of inheritance from DECIPHER (semicolon-separated if multiple).", "type": "STRING"}, {"name": "DECIPHER_disease_names", "displayName": "Decipher Disease", "group": "Decipher", "description": "Disease name(s) from DECIPHER (semicolon-separated if multiple).", "type": "STRING"}, {"name": "CLINVAR_phenotypes", "displayName": "ClinVar Phenotypes", "group": "ClinVar", "description": "Phenotype(s) from ClinVar for pathogenic/likely pathogenic variants in this gene.", "type": "STRING"}, {"name": "CLINVAR_clinical_significance", "displayName": "ClinVar Significance", "group": "ClinVar", "description": "Clinical significance categories from ClinVar for variants in this gene.", "type": "STRING"}, {"name": "CLINVAR_stars", "displayName": "ClinVar Stars", "group": "ClinVar", "description": "ClinVar review status gold stars for variants in this gene.", "type": "STRING"}, {"name": "CLINVAR_variant_consequences", "displayName": "ClinVar Consequences", "group": "ClinVar", "description": "Major variant consequence types from ClinVar for pathogenic/likely pathogenic variants in this gene.", "type": "STRING"}, {"name": "FRIDMAN_omim_phenotype_id", "displayName": "Fridman OMIM ID", "group": "Fridman", "description": "OMIM phenotype ID(s) from Fridman et al. 2025 list of recessive disease genes.", "type": "STRING"}, {"name": "FRIDMAN_phenotype_category", "displayName": "Fridman Category", "group": "Fridman", "description": "Disorder group from Fridman et al. 2025 (semicolon-separated if multiple).", "type": "STRING"}, {"name": "FRIDMAN_inheritance", "displayName": "Fridman Inheritance", "group": "Fridman", "description": "Inheritance mode from Fridman et al. 2025 (AR or AR-AD).", "type": "STRING"}]
+    const CUSTOM_FILTER_COLUMNS = [{"name": "gene_symbol", "displayName": "Gene Symbol", "group": "Core", "description": "HGNC-approved gene symbol (uppercase).", "type": "STRING"}, {"name": "ensembl_gene_id", "displayName": "Ensembl Gene ID", "group": "Core", "description": "Ensembl gene ID (ENSG).", "type": "STRING"}, {"name": "gene_aliases", "displayName": "Gene Aliases", "group": "Core", "description": "Alternative gene symbols from HGNC (uppercase, comma-separated).", "type": "STRING"}, {"name": "hgnc_gene_id", "displayName": "HGNC Gene ID", "group": "Core", "description": "HGNC gene ID (e.g., HGNC:1234).", "type": "STRING"}, {"name": "gene_chrom", "displayName": "Chromosome", "group": "Core", "description": "Chromosome name.", "type": "STRING"}, {"name": "gene_start", "displayName": "Start", "group": "Core", "description": "Gene start coordinate (GRCh38).", "type": "INTEGER"}, {"name": "gene_end", "displayName": "End", "group": "Core", "description": "Gene end coordinate (GRCh38).", "type": "INTEGER"}, {"name": "inheritance", "displayName": "Inheritance", "group": "Core", "description": "Summarized inheritance modes across all sources (semicolon-separated).", "type": "STRING"}, {"name": "disease_category", "displayName": "Disease Category", "group": "AI Summary", "description": "LLM-assigned disease category (e.g., NEUROLOGICAL, CARDIOVASCULAR).", "type": "STRING"}, {"name": "LLM_phenotype_summary", "displayName": "Phenotype Summary", "group": "AI Summary", "description": "LLM-generated concise summary of phenotypes from all sources.", "type": "STRING"}, {"name": "clingen_curation", "displayName": "ClinGen Curation", "group": "AI Summary", "description": "LLM-generated summary of ClinGen gene curation information.", "type": "STRING"}, {"name": "sources", "displayName": "Sources", "group": "Sources", "description": "Number and list of sources that include this gene (e.g., '3: OMIM, ClinGen, GenCC').", "type": "STRING"}, {"name": "pLI_v2", "displayName": "pLI (v2)", "group": "Constraint", "description": "Probability of loss-of-function intolerance from gnomAD v2.", "type": "FLOAT"}, {"name": "pLI_v4", "displayName": "pLI (v4)", "group": "Constraint", "description": "Probability of loss-of-function intolerance from gnomAD v4.", "type": "FLOAT"}, {"name": "lof_oe_ci_upper_v4", "displayName": "LOEUF (v4)", "group": "Constraint", "description": "Upper bound of the 90% confidence interval for the loss-of-function observed/expected ratio from gnomAD v4 (LOEUF).", "type": "FLOAT"}, {"name": "mis_oe_ci_upper_v4", "displayName": "MOEUF (v4)", "group": "Constraint", "description": "Upper bound of the 90% confidence interval for the missense observed/expected ratio from gnomAD v4 (MOEUF).", "type": "FLOAT"}, {"name": "OMIM_mim_number", "displayName": "OMIM MIM Number", "group": "OMIM", "description": "OMIM gene MIM number(s) (semicolon-separated if multiple).", "type": "STRING"}, {"name": "OMIM_phenotype_mim_number", "displayName": "OMIM Phenotype MIM Number", "group": "OMIM", "description": "OMIM phenotype MIM number(s) (semicolon-separated if multiple).", "type": "STRING"}, {"name": "OMIM_inheritance", "displayName": "OMIM Inheritance", "group": "OMIM", "description": "Inheritance mode(s) from OMIM (semicolon-separated if multiple).", "type": "STRING"}, {"name": "OMIM_phenotype_description", "displayName": "OMIM Phenotype", "group": "OMIM", "description": "Phenotype description(s) from OMIM (semicolon-separated if multiple).", "type": "STRING"}, {"name": "CLINGEN_disease_label", "displayName": "ClinGen Disease", "group": "ClinGen", "description": "Disease name(s) from ClinGen gene-disease validity curation (semicolon-separated if multiple).", "type": "STRING"}, {"name": "CLINGEN_disease_mondo_id", "displayName": "ClinGen MONDO ID", "group": "ClinGen", "description": "MONDO disease ID(s) from ClinGen (semicolon-separated if multiple).", "type": "STRING"}, {"name": "CLINGEN_inheritance", "displayName": "ClinGen Inheritance", "group": "ClinGen", "description": "Mode of inheritance from ClinGen (semicolon-separated if multiple).", "type": "STRING"}, {"name": "CLINGEN_classification", "displayName": "ClinGen Classification", "group": "ClinGen", "description": "ClinGen gene-disease validity classification (Definitive, Strong, Moderate, or Limited).", "type": "STRING"}, {"name": "CLINGEN_haploinsufficient", "displayName": "ClinGen Haploinsufficiency", "group": "ClinGen", "description": "ClinGen haploinsufficiency classification for this gene.", "type": "STRING"}, {"name": "GENCC_disease_name", "displayName": "GenCC Disease", "group": "GenCC", "description": "Disease name(s) from GenCC (semicolon-separated if multiple).", "type": "STRING"}, {"name": "GENCC_classification", "displayName": "GenCC Classification", "group": "GenCC", "description": "Gene-disease classification(s) from GenCC (semicolon-separated if multiple).", "type": "STRING"}, {"name": "GENCC_inheritance", "displayName": "GenCC Inheritance", "group": "GenCC", "description": "Mode of inheritance from GenCC (semicolon-separated if multiple).", "type": "STRING"}, {"name": "PANEL_APP_UK_confidence", "displayName": "PanelApp UK Confidence", "group": "PanelApp UK", "description": "PanelApp UK confidence level(s) for this gene (semicolon-separated if multiple panels).", "type": "STRING"}, {"name": "PANEL_APP_UK_penetrance", "displayName": "PanelApp UK Penetrance", "group": "PanelApp UK", "description": "Penetrance from PanelApp UK (semicolon-separated if multiple panels).", "type": "STRING"}, {"name": "PANEL_APP_UK_mode_of_pathogenicity", "displayName": "PanelApp UK Pathogenicity", "group": "PanelApp UK", "description": "Mode of pathogenicity from PanelApp UK (semicolon-separated if multiple panels).", "type": "STRING"}, {"name": "PANEL_APP_UK_inheritance", "displayName": "PanelApp UK Inheritance", "group": "PanelApp UK", "description": "Mode of inheritance from PanelApp UK (semicolon-separated if multiple panels).", "type": "STRING"}, {"name": "PANEL_APP_UK_evidence", "displayName": "PanelApp UK Evidence", "group": "PanelApp UK", "description": "Evidence level from PanelApp UK (semicolon-separated if multiple panels).", "type": "STRING"}, {"name": "PANEL_APP_UK_phenotypes", "displayName": "PanelApp UK Phenotypes", "group": "PanelApp UK", "description": "Phenotype(s) from PanelApp UK (semicolon-separated if multiple panels).", "type": "STRING"}, {"name": "PANEL_APP_UK_panel_name", "displayName": "PanelApp UK Panel", "group": "PanelApp UK", "description": "Panel name(s) from PanelApp UK (semicolon-separated if multiple panels).", "type": "STRING"}, {"name": "PANEL_APP_AU_confidence", "displayName": "PanelApp AU Confidence", "group": "PanelApp AU", "description": "PanelApp Australia confidence level(s) for this gene (semicolon-separated if multiple panels).", "type": "STRING"}, {"name": "PANEL_APP_AU_penetrance", "displayName": "PanelApp AU Penetrance", "group": "PanelApp AU", "description": "Penetrance from PanelApp Australia (semicolon-separated if multiple panels).", "type": "STRING"}, {"name": "PANEL_APP_AU_mode_of_pathogenicity", "displayName": "PanelApp AU Pathogenicity", "group": "PanelApp AU", "description": "Mode of pathogenicity from PanelApp Australia (semicolon-separated if multiple panels).", "type": "STRING"}, {"name": "PANEL_APP_AU_inheritance", "displayName": "PanelApp AU Inheritance", "group": "PanelApp AU", "description": "Mode of inheritance from PanelApp Australia (semicolon-separated if multiple panels).", "type": "STRING"}, {"name": "PANEL_APP_AU_evidence", "displayName": "PanelApp AU Evidence", "group": "PanelApp AU", "description": "Evidence level from PanelApp Australia (semicolon-separated if multiple panels).", "type": "STRING"}, {"name": "PANEL_APP_AU_phenotypes", "displayName": "PanelApp AU Phenotypes", "group": "PanelApp AU", "description": "Phenotype(s) from PanelApp Australia (semicolon-separated if multiple panels).", "type": "STRING"}, {"name": "PANEL_APP_AU_panel_name", "displayName": "PanelApp AU Panel", "group": "PanelApp AU", "description": "Panel name(s) from PanelApp Australia (semicolon-separated if multiple panels).", "type": "STRING"}, {"name": "DECIPHER_inheritance", "displayName": "Decipher Inheritance", "group": "Decipher", "description": "Mode of inheritance from DECIPHER (semicolon-separated if multiple).", "type": "STRING"}, {"name": "DECIPHER_disease_names", "displayName": "Decipher Disease", "group": "Decipher", "description": "Disease name(s) from DECIPHER (semicolon-separated if multiple).", "type": "STRING"}, {"name": "CLINVAR_phenotypes", "displayName": "ClinVar Phenotypes", "group": "ClinVar", "description": "Phenotype(s) from ClinVar for pathogenic/likely pathogenic variants in this gene.", "type": "STRING"}, {"name": "CLINVAR_clinical_significance", "displayName": "ClinVar Significance", "group": "ClinVar", "description": "Clinical significance categories from ClinVar for variants in this gene.", "type": "STRING"}, {"name": "CLINVAR_stars", "displayName": "ClinVar Stars", "group": "ClinVar", "description": "ClinVar review status gold stars for variants in this gene.", "type": "STRING"}, {"name": "CLINVAR_variant_consequences", "displayName": "ClinVar Consequences", "group": "ClinVar", "description": "Major variant consequence types from ClinVar for pathogenic/likely pathogenic variants in this gene.", "type": "STRING"}, {"name": "FRIDMAN_omim_phenotype_id", "displayName": "Fridman 2025 OMIM ID", "group": "Fridman 2025", "description": "OMIM phenotype ID(s) from Fridman et al. 2025 list of recessive disease genes.", "type": "STRING"}, {"name": "FRIDMAN_phenotype_category", "displayName": "Fridman 2025 Category", "group": "Fridman 2025", "description": "Disorder group from Fridman et al. 2025 (semicolon-separated if multiple).", "type": "STRING"}, {"name": "FRIDMAN_inheritance", "displayName": "Fridman 2025 Inheritance", "group": "Fridman 2025", "description": "Inheritance mode from Fridman et al. 2025 (AR or AR-AD).", "type": "STRING"}]
 
     // Columns available for TSV/JSON export with their display names and group
-    const EXPORT_COLUMN_OPTIONS = [{"name": "gene_symbol", "displayName": "Gene Symbol", "group": "Core", "column": "gene_symbol", "description": "HGNC-approved gene symbol (uppercase)."}, {"name": "gene_id", "displayName": "Ensembl Gene ID", "group": "Core", "column": "gene_id", "description": "Ensembl gene ID (ENSG)."}, {"name": "gene_aliases", "displayName": "Gene Aliases", "group": "Core", "column": "gene_aliases", "description": "Alternative gene symbols from HGNC (uppercase, comma-separated)."}, {"name": "hgnc_gene_id", "displayName": "HGNC Gene ID", "group": "Core", "column": "hgnc_gene_id", "description": "HGNC gene ID (e.g., HGNC:1234)."}, {"name": "chrom", "displayName": "Chromosome", "group": "Core", "column": "chrom", "description": "Chromosome name."}, {"name": "start", "displayName": "Start", "group": "Core", "column": "start", "description": "Gene start coordinate (GRCh38)."}, {"name": "end", "displayName": "End", "group": "Core", "column": "end", "description": "Gene end coordinate (GRCh38)."}, {"name": "inheritance", "displayName": "Inheritance", "group": "Core", "column": "inheritance", "description": "Summarized inheritance modes across all sources (semicolon-separated)."}, {"name": "disease_category", "displayName": "Disease Category", "group": "AI Summary", "column": "disease_category", "description": "LLM-assigned disease category (e.g., NEUROLOGICAL, CARDIOVASCULAR)."}, {"name": "LLM_phenotype_summary", "displayName": "Phenotype Summary", "group": "AI Summary", "column": "LLM_phenotype_summary", "description": "LLM-generated concise summary of phenotypes from all sources."}, {"name": "clingen_curation", "displayName": "ClinGen Curation", "group": "AI Summary", "column": "clingen_curation", "description": "LLM-generated summary of ClinGen gene curation information."}, {"name": "sources", "displayName": "Sources", "group": "Sources", "column": "sources", "description": "Number and list of sources that include this gene (e.g., '3: OMIM, ClinGen, GenCC')."}, {"name": "pLI_v2", "displayName": "pLI (v2)", "group": "Constraint", "column": "pLI_v2", "description": "Probability of loss-of-function intolerance from gnomAD v2."}, {"name": "pLI_v4", "displayName": "pLI (v4)", "group": "Constraint", "column": "pLI_v4", "description": "Probability of loss-of-function intolerance from gnomAD v4."}, {"name": "lof_oe_ci_upper_v4", "displayName": "LOEUF (v4)", "group": "Constraint", "column": "lof_oe_ci_upper_v4", "description": "Upper bound of the 90% confidence interval for the loss-of-function observed/expected ratio from gnomAD v4 (LOEUF)."}, {"name": "mis_oe_ci_upper_v4", "displayName": "MOEUF (v4)", "group": "Constraint", "column": "mis_oe_ci_upper_v4", "description": "Upper bound of the 90% confidence interval for the missense observed/expected ratio from gnomAD v4 (MOEUF)."}, {"name": "OMIM_mim_number", "displayName": "OMIM MIM Number", "group": "OMIM", "column": "OMIM_mim_number", "description": "OMIM gene MIM number(s) (semicolon-separated if multiple)."}, {"name": "OMIM_phenotype_mim_number", "displayName": "OMIM Phenotype MIM Number", "group": "OMIM", "column": "OMIM_phenotype_mim_number", "description": "OMIM phenotype MIM number(s) (semicolon-separated if multiple)."}, {"name": "OMIM_inheritance", "displayName": "OMIM Inheritance", "group": "OMIM", "column": "OMIM_inheritance", "description": "Inheritance mode(s) from OMIM (semicolon-separated if multiple)."}, {"name": "OMIM_phenotype_description", "displayName": "OMIM Phenotype", "group": "OMIM", "column": "OMIM_phenotype_description", "description": "Phenotype description(s) from OMIM (semicolon-separated if multiple)."}, {"name": "CLINGEN_disease_label", "displayName": "ClinGen Disease", "group": "ClinGen", "column": "CLINGEN_disease_label", "description": "Disease name(s) from ClinGen gene-disease validity curation (semicolon-separated if multiple)."}, {"name": "CLINGEN_disease_mondo_id", "displayName": "ClinGen MONDO ID", "group": "ClinGen", "column": "CLINGEN_disease_mondo_id", "description": "MONDO disease ID(s) from ClinGen (semicolon-separated if multiple)."}, {"name": "CLINGEN_inheritance", "displayName": "ClinGen Inheritance", "group": "ClinGen", "column": "CLINGEN_inheritance", "description": "Mode of inheritance from ClinGen (semicolon-separated if multiple)."}, {"name": "CLINGEN_classification", "displayName": "ClinGen Classification", "group": "ClinGen", "column": "CLINGEN_classification", "description": "ClinGen gene-disease validity classification (Definitive, Strong, Moderate, or Limited)."}, {"name": "CLINGEN_haploinsufficient", "displayName": "ClinGen Haploinsufficiency", "group": "ClinGen", "column": "CLINGEN_haploinsufficient", "description": "ClinGen haploinsufficiency classification for this gene."}, {"name": "GENCC_disease_name", "displayName": "GenCC Disease", "group": "GenCC", "column": "GENCC_disease_name", "description": "Disease name(s) from GenCC (semicolon-separated if multiple)."}, {"name": "GENCC_classification", "displayName": "GenCC Classification", "group": "GenCC", "column": "GENCC_classification", "description": "Gene-disease classification(s) from GenCC (semicolon-separated if multiple)."}, {"name": "GENCC_inheritance", "displayName": "GenCC Inheritance", "group": "GenCC", "column": "GENCC_inheritance", "description": "Mode of inheritance from GenCC (semicolon-separated if multiple)."}, {"name": "PANEL_APP_UK_confidence", "displayName": "PanelApp UK Confidence", "group": "PanelApp UK", "column": "PANEL_APP_UK_confidence", "description": "PanelApp UK confidence level(s) for this gene (semicolon-separated if multiple panels)."}, {"name": "PANEL_APP_UK_penetrance", "displayName": "PanelApp UK Penetrance", "group": "PanelApp UK", "column": "PANEL_APP_UK_penetrance", "description": "Penetrance from PanelApp UK (semicolon-separated if multiple panels)."}, {"name": "PANEL_APP_UK_mode_of_pathogenicity", "displayName": "PanelApp UK Pathogenicity", "group": "PanelApp UK", "column": "PANEL_APP_UK_mode_of_pathogenicity", "description": "Mode of pathogenicity from PanelApp UK (semicolon-separated if multiple panels)."}, {"name": "PANEL_APP_UK_inheritance", "displayName": "PanelApp UK Inheritance", "group": "PanelApp UK", "column": "PANEL_APP_UK_inheritance", "description": "Mode of inheritance from PanelApp UK (semicolon-separated if multiple panels)."}, {"name": "PANEL_APP_UK_evidence", "displayName": "PanelApp UK Evidence", "group": "PanelApp UK", "column": "PANEL_APP_UK_evidence", "description": "Evidence level from PanelApp UK (semicolon-separated if multiple panels)."}, {"name": "PANEL_APP_UK_phenotypes", "displayName": "PanelApp UK Phenotypes", "group": "PanelApp UK", "column": "PANEL_APP_UK_phenotypes", "description": "Phenotype(s) from PanelApp UK (semicolon-separated if multiple panels)."}, {"name": "PANEL_APP_UK_panel_name", "displayName": "PanelApp UK Panel", "group": "PanelApp UK", "column": "PANEL_APP_UK_panel_name", "description": "Panel name(s) from PanelApp UK (semicolon-separated if multiple panels)."}, {"name": "PANEL_APP_AU_confidence", "displayName": "PanelApp AU Confidence", "group": "PanelApp AU", "column": "PANEL_APP_AU_confidence", "description": "PanelApp Australia confidence level(s) for this gene (semicolon-separated if multiple panels)."}, {"name": "PANEL_APP_AU_penetrance", "displayName": "PanelApp AU Penetrance", "group": "PanelApp AU", "column": "PANEL_APP_AU_penetrance", "description": "Penetrance from PanelApp Australia (semicolon-separated if multiple panels)."}, {"name": "PANEL_APP_AU_mode_of_pathogenicity", "displayName": "PanelApp AU Pathogenicity", "group": "PanelApp AU", "column": "PANEL_APP_AU_mode_of_pathogenicity", "description": "Mode of pathogenicity from PanelApp Australia (semicolon-separated if multiple panels)."}, {"name": "PANEL_APP_AU_inheritance", "displayName": "PanelApp AU Inheritance", "group": "PanelApp AU", "column": "PANEL_APP_AU_inheritance", "description": "Mode of inheritance from PanelApp Australia (semicolon-separated if multiple panels)."}, {"name": "PANEL_APP_AU_evidence", "displayName": "PanelApp AU Evidence", "group": "PanelApp AU", "column": "PANEL_APP_AU_evidence", "description": "Evidence level from PanelApp Australia (semicolon-separated if multiple panels)."}, {"name": "PANEL_APP_AU_phenotypes", "displayName": "PanelApp AU Phenotypes", "group": "PanelApp AU", "column": "PANEL_APP_AU_phenotypes", "description": "Phenotype(s) from PanelApp Australia (semicolon-separated if multiple panels)."}, {"name": "PANEL_APP_AU_panel_name", "displayName": "PanelApp AU Panel", "group": "PanelApp AU", "column": "PANEL_APP_AU_panel_name", "description": "Panel name(s) from PanelApp Australia (semicolon-separated if multiple panels)."}, {"name": "DECIPHER_inheritance", "displayName": "Decipher Inheritance", "group": "Decipher", "column": "DECIPHER_inheritance", "description": "Mode of inheritance from DECIPHER (semicolon-separated if multiple)."}, {"name": "DECIPHER_disease_names", "displayName": "Decipher Disease", "group": "Decipher", "column": "DECIPHER_disease_names", "description": "Disease name(s) from DECIPHER (semicolon-separated if multiple)."}, {"name": "CLINVAR_phenotypes", "displayName": "ClinVar Phenotypes", "group": "ClinVar", "column": "CLINVAR_phenotypes", "description": "Phenotype(s) from ClinVar for pathogenic/likely pathogenic variants in this gene."}, {"name": "CLINVAR_clinical_significance", "displayName": "ClinVar Significance", "group": "ClinVar", "column": "CLINVAR_clinical_significance", "description": "Clinical significance categories from ClinVar for variants in this gene."}, {"name": "CLINVAR_stars", "displayName": "ClinVar Stars", "group": "ClinVar", "column": "CLINVAR_stars", "description": "ClinVar review status gold stars for variants in this gene."}, {"name": "CLINVAR_variant_consequences", "displayName": "ClinVar Consequences", "group": "ClinVar", "column": "CLINVAR_variant_consequences", "description": "Major variant consequence types from ClinVar for pathogenic/likely pathogenic variants in this gene."}, {"name": "FRIDMAN_omim_phenotype_id", "displayName": "Fridman OMIM ID", "group": "Fridman", "column": "FRIDMAN_omim_phenotype_id", "description": "OMIM phenotype ID(s) from Fridman et al. 2025 list of recessive disease genes."}, {"name": "FRIDMAN_phenotype_category", "displayName": "Fridman Category", "group": "Fridman", "column": "FRIDMAN_phenotype_category", "description": "Disorder group from Fridman et al. 2025 (semicolon-separated if multiple)."}, {"name": "FRIDMAN_inheritance", "displayName": "Fridman Inheritance", "group": "Fridman", "column": "FRIDMAN_inheritance", "description": "Inheritance mode from Fridman et al. 2025 (AR or AR-AD)."}]
+    const EXPORT_COLUMN_OPTIONS = [{"name": "gene_symbol", "displayName": "Gene Symbol", "group": "Core", "column": "gene_symbol", "description": "HGNC-approved gene symbol (uppercase)."}, {"name": "ensembl_gene_id", "displayName": "Ensembl Gene ID", "group": "Core", "column": "ensembl_gene_id", "description": "Ensembl gene ID (ENSG)."}, {"name": "gene_aliases", "displayName": "Gene Aliases", "group": "Core", "column": "gene_aliases", "description": "Alternative gene symbols from HGNC (uppercase, comma-separated)."}, {"name": "hgnc_gene_id", "displayName": "HGNC Gene ID", "group": "Core", "column": "hgnc_gene_id", "description": "HGNC gene ID (e.g., HGNC:1234)."}, {"name": "gene_chrom", "displayName": "Chromosome", "group": "Core", "column": "gene_chrom", "description": "Chromosome name."}, {"name": "gene_start", "displayName": "Start", "group": "Core", "column": "gene_start", "description": "Gene start coordinate (GRCh38)."}, {"name": "gene_end", "displayName": "End", "group": "Core", "column": "gene_end", "description": "Gene end coordinate (GRCh38)."}, {"name": "inheritance", "displayName": "Inheritance", "group": "Core", "column": "inheritance", "description": "Summarized inheritance modes across all sources (semicolon-separated)."}, {"name": "disease_category", "displayName": "Disease Category", "group": "AI Summary", "column": "disease_category", "description": "LLM-assigned disease category (e.g., NEUROLOGICAL, CARDIOVASCULAR)."}, {"name": "LLM_phenotype_summary", "displayName": "Phenotype Summary", "group": "AI Summary", "column": "LLM_phenotype_summary", "description": "LLM-generated concise summary of phenotypes from all sources."}, {"name": "clingen_curation", "displayName": "ClinGen Curation", "group": "AI Summary", "column": "clingen_curation", "description": "LLM-generated summary of ClinGen gene curation information."}, {"name": "sources", "displayName": "Sources", "group": "Sources", "column": "sources", "description": "Number and list of sources that include this gene (e.g., '3: OMIM, ClinGen, GenCC')."}, {"name": "pLI_v2", "displayName": "pLI (v2)", "group": "Constraint", "column": "pLI_v2", "description": "Probability of loss-of-function intolerance from gnomAD v2."}, {"name": "pLI_v4", "displayName": "pLI (v4)", "group": "Constraint", "column": "pLI_v4", "description": "Probability of loss-of-function intolerance from gnomAD v4."}, {"name": "lof_oe_ci_upper_v4", "displayName": "LOEUF (v4)", "group": "Constraint", "column": "lof_oe_ci_upper_v4", "description": "Upper bound of the 90% confidence interval for the loss-of-function observed/expected ratio from gnomAD v4 (LOEUF)."}, {"name": "mis_oe_ci_upper_v4", "displayName": "MOEUF (v4)", "group": "Constraint", "column": "mis_oe_ci_upper_v4", "description": "Upper bound of the 90% confidence interval for the missense observed/expected ratio from gnomAD v4 (MOEUF)."}, {"name": "OMIM_mim_number", "displayName": "OMIM MIM Number", "group": "OMIM", "column": "OMIM_mim_number", "description": "OMIM gene MIM number(s) (semicolon-separated if multiple)."}, {"name": "OMIM_phenotype_mim_number", "displayName": "OMIM Phenotype MIM Number", "group": "OMIM", "column": "OMIM_phenotype_mim_number", "description": "OMIM phenotype MIM number(s) (semicolon-separated if multiple)."}, {"name": "OMIM_inheritance", "displayName": "OMIM Inheritance", "group": "OMIM", "column": "OMIM_inheritance", "description": "Inheritance mode(s) from OMIM (semicolon-separated if multiple)."}, {"name": "OMIM_phenotype_description", "displayName": "OMIM Phenotype", "group": "OMIM", "column": "OMIM_phenotype_description", "description": "Phenotype description(s) from OMIM (semicolon-separated if multiple)."}, {"name": "CLINGEN_disease_label", "displayName": "ClinGen Disease", "group": "ClinGen", "column": "CLINGEN_disease_label", "description": "Disease name(s) from ClinGen gene-disease validity curation (semicolon-separated if multiple)."}, {"name": "CLINGEN_disease_mondo_id", "displayName": "ClinGen MONDO ID", "group": "ClinGen", "column": "CLINGEN_disease_mondo_id", "description": "MONDO disease ID(s) from ClinGen (semicolon-separated if multiple)."}, {"name": "CLINGEN_inheritance", "displayName": "ClinGen Inheritance", "group": "ClinGen", "column": "CLINGEN_inheritance", "description": "Mode of inheritance from ClinGen (semicolon-separated if multiple)."}, {"name": "CLINGEN_classification", "displayName": "ClinGen Classification", "group": "ClinGen", "column": "CLINGEN_classification", "description": "ClinGen gene-disease validity classification (Definitive, Strong, Moderate, or Limited)."}, {"name": "CLINGEN_haploinsufficient", "displayName": "ClinGen Haploinsufficiency", "group": "ClinGen", "column": "CLINGEN_haploinsufficient", "description": "ClinGen haploinsufficiency classification for this gene."}, {"name": "GENCC_disease_name", "displayName": "GenCC Disease", "group": "GenCC", "column": "GENCC_disease_name", "description": "Disease name(s) from GenCC (semicolon-separated if multiple)."}, {"name": "GENCC_classification", "displayName": "GenCC Classification", "group": "GenCC", "column": "GENCC_classification", "description": "Gene-disease classification(s) from GenCC (semicolon-separated if multiple)."}, {"name": "GENCC_inheritance", "displayName": "GenCC Inheritance", "group": "GenCC", "column": "GENCC_inheritance", "description": "Mode of inheritance from GenCC (semicolon-separated if multiple)."}, {"name": "PANEL_APP_UK_confidence", "displayName": "PanelApp UK Confidence", "group": "PanelApp UK", "column": "PANEL_APP_UK_confidence", "description": "PanelApp UK confidence level(s) for this gene (semicolon-separated if multiple panels)."}, {"name": "PANEL_APP_UK_penetrance", "displayName": "PanelApp UK Penetrance", "group": "PanelApp UK", "column": "PANEL_APP_UK_penetrance", "description": "Penetrance from PanelApp UK (semicolon-separated if multiple panels)."}, {"name": "PANEL_APP_UK_mode_of_pathogenicity", "displayName": "PanelApp UK Pathogenicity", "group": "PanelApp UK", "column": "PANEL_APP_UK_mode_of_pathogenicity", "description": "Mode of pathogenicity from PanelApp UK (semicolon-separated if multiple panels)."}, {"name": "PANEL_APP_UK_inheritance", "displayName": "PanelApp UK Inheritance", "group": "PanelApp UK", "column": "PANEL_APP_UK_inheritance", "description": "Mode of inheritance from PanelApp UK (semicolon-separated if multiple panels)."}, {"name": "PANEL_APP_UK_evidence", "displayName": "PanelApp UK Evidence", "group": "PanelApp UK", "column": "PANEL_APP_UK_evidence", "description": "Evidence level from PanelApp UK (semicolon-separated if multiple panels)."}, {"name": "PANEL_APP_UK_phenotypes", "displayName": "PanelApp UK Phenotypes", "group": "PanelApp UK", "column": "PANEL_APP_UK_phenotypes", "description": "Phenotype(s) from PanelApp UK (semicolon-separated if multiple panels)."}, {"name": "PANEL_APP_UK_panel_name", "displayName": "PanelApp UK Panel", "group": "PanelApp UK", "column": "PANEL_APP_UK_panel_name", "description": "Panel name(s) from PanelApp UK (semicolon-separated if multiple panels)."}, {"name": "PANEL_APP_AU_confidence", "displayName": "PanelApp AU Confidence", "group": "PanelApp AU", "column": "PANEL_APP_AU_confidence", "description": "PanelApp Australia confidence level(s) for this gene (semicolon-separated if multiple panels)."}, {"name": "PANEL_APP_AU_penetrance", "displayName": "PanelApp AU Penetrance", "group": "PanelApp AU", "column": "PANEL_APP_AU_penetrance", "description": "Penetrance from PanelApp Australia (semicolon-separated if multiple panels)."}, {"name": "PANEL_APP_AU_mode_of_pathogenicity", "displayName": "PanelApp AU Pathogenicity", "group": "PanelApp AU", "column": "PANEL_APP_AU_mode_of_pathogenicity", "description": "Mode of pathogenicity from PanelApp Australia (semicolon-separated if multiple panels)."}, {"name": "PANEL_APP_AU_inheritance", "displayName": "PanelApp AU Inheritance", "group": "PanelApp AU", "column": "PANEL_APP_AU_inheritance", "description": "Mode of inheritance from PanelApp Australia (semicolon-separated if multiple panels)."}, {"name": "PANEL_APP_AU_evidence", "displayName": "PanelApp AU Evidence", "group": "PanelApp AU", "column": "PANEL_APP_AU_evidence", "description": "Evidence level from PanelApp Australia (semicolon-separated if multiple panels)."}, {"name": "PANEL_APP_AU_phenotypes", "displayName": "PanelApp AU Phenotypes", "group": "PanelApp AU", "column": "PANEL_APP_AU_phenotypes", "description": "Phenotype(s) from PanelApp Australia (semicolon-separated if multiple panels)."}, {"name": "PANEL_APP_AU_panel_name", "displayName": "PanelApp AU Panel", "group": "PanelApp AU", "column": "PANEL_APP_AU_panel_name", "description": "Panel name(s) from PanelApp Australia (semicolon-separated if multiple panels)."}, {"name": "DECIPHER_inheritance", "displayName": "Decipher Inheritance", "group": "Decipher", "column": "DECIPHER_inheritance", "description": "Mode of inheritance from DECIPHER (semicolon-separated if multiple)."}, {"name": "DECIPHER_disease_names", "displayName": "Decipher Disease", "group": "Decipher", "column": "DECIPHER_disease_names", "description": "Disease name(s) from DECIPHER (semicolon-separated if multiple)."}, {"name": "CLINVAR_phenotypes", "displayName": "ClinVar Phenotypes", "group": "ClinVar", "column": "CLINVAR_phenotypes", "description": "Phenotype(s) from ClinVar for pathogenic/likely pathogenic variants in this gene."}, {"name": "CLINVAR_clinical_significance", "displayName": "ClinVar Significance", "group": "ClinVar", "column": "CLINVAR_clinical_significance", "description": "Clinical significance categories from ClinVar for variants in this gene."}, {"name": "CLINVAR_stars", "displayName": "ClinVar Stars", "group": "ClinVar", "column": "CLINVAR_stars", "description": "ClinVar review status gold stars for variants in this gene."}, {"name": "CLINVAR_variant_consequences", "displayName": "ClinVar Consequences", "group": "ClinVar", "column": "CLINVAR_variant_consequences", "description": "Major variant consequence types from ClinVar for pathogenic/likely pathogenic variants in this gene."}, {"name": "FRIDMAN_omim_phenotype_id", "displayName": "Fridman 2025 OMIM ID", "group": "Fridman 2025", "column": "FRIDMAN_omim_phenotype_id", "description": "OMIM phenotype ID(s) from Fridman et al. 2025 list of recessive disease genes."}, {"name": "FRIDMAN_phenotype_category", "displayName": "Fridman 2025 Category", "group": "Fridman 2025", "column": "FRIDMAN_phenotype_category", "description": "Disorder group from Fridman et al. 2025 (semicolon-separated if multiple)."}, {"name": "FRIDMAN_inheritance", "displayName": "Fridman 2025 Inheritance", "group": "Fridman 2025", "column": "FRIDMAN_inheritance", "description": "Inheritance mode from Fridman et al. 2025 (AR or AR-AD)."}]
 
     // Store pending export type when showing the dialog
     let pendingExportType = null
 
     const escapeHtml = (s) => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')
 
-    const readAndApplyPersistentPageStateFromUrl = async () => {
-        GLOBAL_PAGE_STATE = JSON.parse(JSON.stringify(DEFAULT_GLOBAL_PAGE_STATE))
-
-        const hash = window.location.hash.substring(1)
-        if (!hash) return
-
-        const params = new URLSearchParams(hash)
-
+    const applyParamsToState = (params, {preferExisting = false} = {}) => {
         for (const [urlKey, value] of params.entries()) {
             // Convert abbreviated URL param name to internal state name if needed
             const key = URL_PARAM_REVERSE_ALIASES[urlKey] || urlKey
             if (key in DEFAULT_GLOBAL_PAGE_STATE && value != null) {
+                if (preferExisting && GLOBAL_PAGE_STATE[key] !== DEFAULT_GLOBAL_PAGE_STATE[key]) continue
                 // Convert string values to appropriate types
                 GLOBAL_PAGE_STATE[key] = value === 'true' ? true :
                                         value === 'false' ? false :
@@ -2097,6 +2016,26 @@
                 } else if (key === 'customFilters') {
                     GLOBAL_PAGE_STATE[key] = `${value}` // convert to string
                 }
+            }
+        }
+    }
+
+    const readAndApplyPersistentPageStateFromUrl = async () => {
+        GLOBAL_PAGE_STATE = JSON.parse(JSON.stringify(DEFAULT_GLOBAL_PAGE_STATE))
+
+        const hash = window.location.hash.substring(1)
+        if (hash) {
+            const hashParams = new URLSearchParams(hash)
+            applyParamsToState(hashParams)
+        }
+
+        // Also accept query-string params (e.g. ?search-query=CACNA1C)
+        const queryParams = new URLSearchParams(window.location.search)
+        if ([...queryParams.keys()].length > 0) {
+            applyParamsToState(queryParams, {preferExisting: true})
+            const hasQuerySearch = queryParams.has('q') || queryParams.has('search-query') || queryParams.has('searchQuery')
+            if (hasQuerySearch && GLOBAL_PAGE_STATE['searchQuery']) {
+                GLOBAL_PAGE_STATE['showRs'] = 1
             }
         }
         console.log("Starting to initialize page. GLOBAL_PAGE_STATE:", GLOBAL_PAGE_STATE)
@@ -2791,7 +2730,7 @@
 
         let selectClause
         if (value === 'bed') {
-            selectClause = `chrom, start, end, gene_symbol`
+            selectClause = 'gene_chrom, gene_start, gene_end, gene_symbol'
         } else if ((value === 'tsv' || value === 'json') && selectedColumns && selectedColumns.length > 0) {
             const columnExpressions = selectedColumns.map(colName => {
                 const colOption = EXPORT_COLUMN_OPTIONS.find(opt => opt.name === colName)
@@ -2930,9 +2869,9 @@
         if (index < 0 || index >= window.searchResults.rows.length) return
 
         const row = window.searchResults.rows[index]
-        const chrom = row['chrom']
-        const start = row['start']
-        const end = row['end']
+        const chrom = row['gene_chrom']
+        const start = row['gene_start']
+        const end = row['gene_end']
         if (!chrom || start == null || end == null) return
 
         const paddedStart = Math.max(0, start - IGV_LOCUS_PADDING)
@@ -3017,13 +2956,13 @@
                 }
             })
 
-            // Gene detail page link — prefer hgnc_gene_id, fall back to gene_id
+            // Gene detail page link — prefer hgnc_gene_id, fall back to ensembl_gene_id
             const hgncId = row['hgnc_gene_id'] || ''
-            const geneIdForLink = row['gene_id'] || ''
+            const geneIdForLink = row['ensembl_gene_id'] || ''
             if (hgncId) {
                 tableHtml += `<td style="padding: 8px 10px; white-space: nowrap; text-align: right;"><a href="gene.html#hgnc_gene_id=${encodeURIComponent(hgncId)}" class="ui basic mini button" style="padding: 5px 10px; color: #2185d0; font-weight: 500; border: 1px solid #2185d0; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">gene &gt;</a></td>`
             } else if (geneIdForLink) {
-                tableHtml += `<td style="padding: 8px 10px; white-space: nowrap; text-align: right;"><a href="gene.html#gene_id=${encodeURIComponent(geneIdForLink)}" class="ui basic mini button" style="padding: 5px 10px; color: #2185d0; font-weight: 500; border: 1px solid #2185d0; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">gene &gt;</a></td>`
+                tableHtml += `<td style="padding: 8px 10px; white-space: nowrap; text-align: right;"><a href="gene.html#ensembl_gene_id=${encodeURIComponent(geneIdForLink)}" class="ui basic mini button" style="padding: 5px 10px; color: #2185d0; font-weight: 500; border: 1px solid #2185d0; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">gene &gt;</a></td>`
             } else {
                 tableHtml += `<td></td>`
             }
@@ -3239,33 +3178,6 @@
             if (diseaseCategory) {
                 conditions.push(`UPPER(disease_category) LIKE UPPER('%${diseaseCategory}%')`)
             }
-
-            // Custom filter rows (advanced)
-            const allowedFilterColumns = new Set(CUSTOM_FILTER_COLUMNS.map(c => c.name))
-            const allowedFilterOps = new Set(['=', '!=', '>', '<', '>=', '<=', 'LIKE', 'IS NULL', 'IS NOT NULL'])
-            $('#custom-filter-rows .custom-filter-row').each(function() {
-                const columnName = $(this).find('.custom-filter-field').dropdown('get value')
-                const operator = $(this).find('.custom-filter-op').dropdown('get value')
-                const value = $(this).find('.custom-filter-value').val()
-
-                if (!columnName || !operator) return
-                if (!allowedFilterColumns.has(columnName) || !allowedFilterOps.has(operator)) return
-
-                const colInfo = getCustomFilterColumnInfo(columnName)
-                const colType = colInfo ? colInfo.type : 'STRING'
-
-                if (operator === 'IS NULL' || operator === 'IS NOT NULL') {
-                    conditions.push(`${columnName} ${operator}`)
-                } else if (operator === 'LIKE') {
-                    const escapedValue = value.replace(/'/g, "''")
-                    conditions.push(`${columnName} LIKE '${escapedValue}'`)
-                } else if (colType === 'STRING') {
-                    const escapedValue = value.replace(/'/g, "''")
-                    conditions.push(`${columnName} ${operator} '${escapedValue}'`)
-                } else {
-                    conditions.push(`${columnName} ${operator} ${Number(value)}`)
-                }
-            })
         }
 
         return conditions
@@ -3290,14 +3202,15 @@
         try {
             $('body').css('cursor', 'wait')
 
-            // Gather search query from UI
+            // Gather search query and custom filters from UI before building conditions
             GLOBAL_PAGE_STATE['searchQuery'] = $('#search-query').val()
+            GLOBAL_PAGE_STATE['customFilters'] = serializeCustomFilters()
 
             // Build conditions
             const conditions = buildAllConditions()
 
             // Retrieve all required columns for the visible columns
-            const requiredColumnsSet = new Set(['hgnc_gene_id', 'gene_id', 'chrom', 'start', 'end'])
+            const requiredColumnsSet = new Set(['hgnc_gene_id', 'ensembl_gene_id', 'gene_chrom', 'gene_start', 'gene_end'])
 
             const visibleColumns = GLOBAL_PAGE_STATE['showColumns'].split(SHOW_COLUMNS_VALUE_DELIMITER)
             RESULTS_TABLE_COLUMN_NAMES.forEach((columnName) => {
@@ -3353,7 +3266,6 @@
             GLOBAL_PAGE_STATE['moeufThreshold'] = $('input[name="moeufThreshold"]').val()
             GLOBAL_PAGE_STATE['clingenClassification'] = $('#clingen-classification-dropdown').dropdown('get value')
             GLOBAL_PAGE_STATE['diseaseCategory'] = $('#disease-category-dropdown').dropdown('get value')
-            GLOBAL_PAGE_STATE['customFilters'] = serializeCustomFilters()
             writePersistentPageStateToUrl()
 
             displaySearchResults()
@@ -3373,7 +3285,7 @@
     }
 
     // "About", "FAQ", "Downloads" modal links
-    ['faq', 'downloads', 'about'].forEach(prefix => {
+    ['faq', 'about'].forEach(prefix => {
         $(`#${prefix}-link`).click((e) => {
             e.preventDefault()
             $(`#${prefix}-modal`).modal('show')

@@ -16,7 +16,7 @@ GROUP_PANEL_APP_UK = "PanelApp UK"
 GROUP_PANEL_APP_AU = "PanelApp AU"
 GROUP_DECIPHER = "Decipher"
 GROUP_CLINVAR = "ClinVar"
-GROUP_FRIDMAN = "Fridman"
+GROUP_FRIDMAN = "Fridman 2025"
 
 GROUP_ORDER = [
     GROUP_CORE,
@@ -73,7 +73,7 @@ BIGQUERY_COLUMNS = [
     },
     {
         "type": "STRING",
-        "name": "chrom",
+        "name": "gene_chrom",
         "description": "Chromosome name.",
         "displayName": "Chromosome",
         "allowCustomFilter": True,
@@ -82,7 +82,7 @@ BIGQUERY_COLUMNS = [
     },
     {
         "type": "INTEGER",
-        "name": "start",
+        "name": "gene_start",
         "description": "Gene start coordinate (GRCh38).",
         "displayName": "Start",
         "allowCustomFilter": True,
@@ -91,7 +91,7 @@ BIGQUERY_COLUMNS = [
     },
     {
         "type": "INTEGER",
-        "name": "end",
+        "name": "gene_end",
         "description": "Gene end coordinate (GRCh38).",
         "displayName": "End",
         "allowCustomFilter": True,
@@ -493,7 +493,7 @@ BIGQUERY_COLUMNS = [
         "type": "STRING",
         "name": "FRIDMAN_omim_phenotype_id",
         "description": "OMIM phenotype ID(s) from Fridman et al. 2025 list of recessive disease genes.",
-        "displayName": "Fridman OMIM ID",
+        "displayName": "Fridman 2025 OMIM ID",
         "allowCustomFilter": True,
         "allowExport": True,
         "group": GROUP_FRIDMAN,
@@ -502,7 +502,7 @@ BIGQUERY_COLUMNS = [
         "type": "STRING",
         "name": "FRIDMAN_phenotype_category",
         "description": "Disorder group from Fridman et al. 2025 (semicolon-separated if multiple).",
-        "displayName": "Fridman Category",
+        "displayName": "Fridman 2025 Category",
         "allowCustomFilter": True,
         "allowExport": True,
         "group": GROUP_FRIDMAN,
@@ -511,7 +511,7 @@ BIGQUERY_COLUMNS = [
         "type": "STRING",
         "name": "FRIDMAN_inheritance",
         "description": "Inheritance mode from Fridman et al. 2025 (AR or AR-AD).",
-        "displayName": "Fridman Inheritance",
+        "displayName": "Fridman 2025 Inheritance",
         "allowCustomFilter": True,
         "allowExport": True,
         "group": GROUP_FRIDMAN,

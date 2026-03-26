@@ -1,0 +1,90 @@
+<link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.5.0/semantic.min.css">
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.5.0/semantic.min.js"></script>
+
+<style>
+    .separator {
+        border: 1px dashed #eee;
+        margin: 2em 0;
+    }
+</style>
+
+<div style="font-size: 1.2em; padding-bottom: 1em;">
+<div style="padding-bottom: 5px;"><a href="#q1"><b>Q1:</b> &nbsp; How do I use Gene Lookup?</a></div>
+<div style="padding-bottom: 5px;"><a href="#q2"><b>Q2:</b> &nbsp; What data sources are included?</a></div>
+<div style="padding-bottom: 5px;"><a href="#q3"><b>Q3:</b> &nbsp; What are the constraint scores?</a></div>
+<div style="padding-bottom: 5px;"><a href="#q4"><b>Q4:</b> &nbsp; What is the phenotype summary?</a></div>
+<div style="padding-bottom: 5px;"><a href="#q5"><b>Q5:</b> &nbsp; How do I report issues or suggest improvements?</a></div>
+
+<hr class="separator">
+<a name="q1"></a>
+<b>Q1: How do I use Gene Lookup?</b><br />
+<br />
+Gene Lookup allows you to search for genes by name, disease, or genomic region. You can also apply advanced filters for inheritance mode, data source, constraint scores, ClinGen classification, and disease category.<br />
+<br />
+<i>Example use cases:</i>
+<div style="margin-left: 20px">
+<table style="margin-top: 8px;">
+<tr>
+    <td style="vertical-align: top; white-space: nowrap; padding-right: 8px;"><a href="index.html#showRs=1&q=BRCA1" target="_blank">Example #1</a></td>
+    <td style="vertical-align: top;">Search for a specific gene like BRCA1</td>
+</tr>
+<tr>
+    <td style="vertical-align: top; white-space: nowrap;"><a href="index.html#showRs=1&q=cardiomyopathy" target="_blank">Example #2</a></td>
+    <td style="vertical-align: top;">Search for all genes associated with cardiomyopathy</td>
+</tr>
+<tr>
+    <td style="vertical-align: top; white-space: nowrap;"><a href="index.html#showRs=1&q=chr1%3A1000000-2000000" target="_blank">Example #3</a></td>
+    <td style="vertical-align: top;">Search for all disease-associated genes in a genomic region</td>
+</tr>
+</table>
+</div>
+
+<hr class="separator">
+<a name="q2"></a>
+<b>Q2: What data sources are included?</b><br />
+<br />
+Gene Lookup aggregates gene-disease association data from the following curated sources:<br />
+<br />
+<div style="margin-left: 20px">
+<ul>
+    <li><b>OMIM</b> &mdash; Online Mendelian Inheritance in Man</li>
+    <li><b>ClinGen</b> &mdash; Gene-disease validity classifications</li>
+    <li><b>GenCC</b> &mdash; Gene Curation Coalition</li>
+    <li><b>PanelApp UK</b> &mdash; Genomics England PanelApp</li>
+    <li><b>PanelApp AU</b> &mdash; Australian Genomics PanelApp</li>
+    <li><b>DECIPHER</b> &mdash; DDG2P gene-disease associations</li>
+    <li><b>ClinVar</b> &mdash; Pathogenic/likely pathogenic variant annotations</li>
+    <li><b>Fridman et al. 2025</b> &mdash; Autosomal recessive gene-disease associations</li>
+</ul>
+</div>
+Gene constraint metrics (pLI, LOEUF, Missense O/E) are from gnomAD v4.
+
+<hr class="separator">
+<a name="q3"></a>
+<b>Q3: What are the constraint scores?</b><br />
+<br />
+Constraint scores from gnomAD v4 reflect how tolerant a gene is to different types of variation:<br />
+<br />
+<div style="margin-left: 20px">
+<ul>
+    <li><b>pLI</b> &mdash; Probability of loss-of-function intolerance. Values close to 1 indicate the gene is highly intolerant to loss-of-function variants.</li>
+    <li><b>LOEUF</b> &mdash; Loss-of-function observed/expected upper bound fraction. Lower values indicate greater constraint. A threshold of &le;0.35 is commonly used to identify constrained genes.</li>
+    <li><b>Missense O/E</b> &mdash; Missense observed/expected ratio. Lower values suggest the gene is intolerant to missense variation.</li>
+</ul>
+</div>
+
+<hr class="separator">
+<a name="q4"></a>
+<b>Q4: What is the phenotype summary?</b><br />
+<br />
+The phenotype summary column contains AI-generated summaries of the disease phenotypes associated with each gene. These summaries are created by aggregating phenotype descriptions from all data sources and using a large language model to produce a concise overview. They are intended as a quick reference and should be verified against the original source data for clinical use.
+
+<hr class="separator">
+<a name="q5"></a>
+<b>Q5: How do I report issues or suggest improvements?</b><br />
+<br />
+Please open an issue on the <a href="https://github.com/broadinstitute/annotation-utils/issues" target="_blank">GitHub repository</a> or email <i>weisburd</i><i>@</i><i>broadinstitute.org</i><br />
+
+</div>
+<div style="padding-bottom: 700px;"></div>

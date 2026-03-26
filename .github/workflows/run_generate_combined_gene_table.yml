@@ -5,6 +5,9 @@ on:
     - cron: '0 3 * * 1'  # Every Monday at 3 AM UTC
   workflow_dispatch:
 
+permissions:
+  contents: write
+
 jobs:
   generate-gene-table:
     runs-on: ubuntu-latest
@@ -105,6 +108,21 @@ jobs:
     - name: Upload to BigQuery
       run: |
         python3 annotation_utils/load_bigquery.py combined_mendelian_gene_disease_table_with_phenotype_summary.tsv.gz
+
+    - name: Update website with new date and regenerate HTML
+      run: |
+        TODAY=$(date -u +%Y-%m-%d)
+        echo "{\"data_last_updated_date\": \"$TODAY\"}" > website/data_last_updated_date.json
+        pip install jinja2
+        cd website && python3 generate_website.py
+
+    - name: Commit and push updated website
+      run: |
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add website/data_last_updated_date.json index.html gene.html
+        git diff --cached --quiet || git commit -m "Update website date to $(date -u +%Y-%m-%d)"
+        git push
 
     - name: Upload generated files as artifacts
       uses: actions/upload-artifact@v4

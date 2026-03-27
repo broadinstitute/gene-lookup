@@ -640,9 +640,8 @@
         }
         $('#export-dialog-title').text(`${FORMAT_NAMES[exportType] || exportType} export options`)
 
-        {
-            // Get currently visible columns in the results table
-            const visibleColumnNames = GLOBAL_PAGE_STATE['showColumns'].split(SHOW_COLUMNS_VALUE_DELIMITER)
+        // Get currently visible columns in the results table
+        const visibleColumnNames = GLOBAL_PAGE_STATE['showColumns'].split(SHOW_COLUMNS_VALUE_DELIMITER)
 
             // Load saved export column selections from localStorage, or fall back to visible table columns
             const savedSelections = localStorage.getItem('exportColumnSelections_geneLookup')
@@ -697,9 +696,8 @@
                 checkboxesContainer.append(groupDiv)
             })
 
-            // Initialize Semantic UI checkboxes
-            $('#export-column-checkboxes .ui.checkbox').checkbox()
-        }
+        // Initialize Semantic UI checkboxes
+        $('#export-column-checkboxes .ui.checkbox').checkbox()
 
         // Show the dialog
         $('#export-column-dialog').modal('show')

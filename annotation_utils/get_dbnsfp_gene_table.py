@@ -6,8 +6,7 @@ import requests
 
 from annotation_utils.cache_utils import cache_data_table
 
-DBNSFP_KEY = os.environ.get("DBNSFP_KEY", "")
-DBNSFP_GENE_URL = f"https://dist.genos.us/academic/{DBNSFP_KEY}/dbNSFP5.3_gene.gz"
+DBNSFP_BASE_URL = "https://dist.genos.us/academic"
 
 # Columns to extract from dbNSFP, mapped to output column names
 COLUMN_RENAME_MAP = {
@@ -40,11 +39,13 @@ def is_non_empty(value):
 
 @cache_data_table
 def get_dbnsfp_gene_table():
-    if not DBNSFP_KEY:
+    dbnsfp_key = os.environ.get("DBNSFP_KEY", "")
+    if not dbnsfp_key:
         raise ValueError("DBNSFP_KEY environment variable is not set")
 
-    print(f"Downloading {DBNSFP_GENE_URL}")
-    response = requests.get(DBNSFP_GENE_URL)
+    url = f"{DBNSFP_BASE_URL}/{dbnsfp_key}/dbNSFP5.3_gene.gz"
+    print(f"Downloading {url}")
+    response = requests.get(url)
     response.raise_for_status()
     df = pd.read_table(io.BytesIO(response.content), compression="gzip", dtype=str)
     print(f"Read {len(df):,d} rows with {len(df.columns)} columns")

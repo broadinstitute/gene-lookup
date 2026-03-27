@@ -243,6 +243,7 @@ df_constraint_scores = df_constraint_scores[[
     #"mis_oe_v4",
     #"mis_oe_ci_lower_v4",
     "mis_oe_ci_upper_v4",
+    "s_het",
 ]]
 
 df_constraint_scores = df_constraint_scores.groupby("CONSTRAINT_scores_gene_id").agg({
@@ -250,6 +251,7 @@ df_constraint_scores = df_constraint_scores.groupby("CONSTRAINT_scores_gene_id")
     "pLI_v4": lambda x: safe_max(x),
     "lof_oe_ci_upper_v4": lambda x: safe_min(x),
     "mis_oe_ci_upper_v4": lambda x: safe_min(x),
+    "s_het": lambda x: safe_max(x),
 }).reset_index()
 
 df_constraint_scores.set_index("CONSTRAINT_scores_gene_id", inplace=True)
@@ -710,7 +712,7 @@ def summarize_inheritance(row):
 df_combined["inheritance"] = df_combined.apply(summarize_inheritance, axis=1)
 
 # move the gene_id, hgnc_gene_id, gene_symbol, and gene_aliases columns to the front
-initial_columns = ["ensembl_gene_id", "hgnc_gene_id", "gene_symbol", "gene_aliases", "pLI_v2", "pLI_v4", "lof_oe_ci_upper_v4", "mis_oe_ci_upper_v4", "inheritance", "sources"]
+initial_columns = ["ensembl_gene_id", "hgnc_gene_id", "gene_symbol", "gene_aliases", "pLI_v2", "pLI_v4", "lof_oe_ci_upper_v4", "mis_oe_ci_upper_v4", "s_het", "inheritance", "sources"]
 df_combined = df_combined[initial_columns + [c for c in df_combined.columns if c not in initial_columns]]
 #df_combined.sort_values(by=["sources", "gene_id"], inplace=True)
 
@@ -722,7 +724,7 @@ print(f"Wrote {len(df_combined):,d} genes to {output_path}")
 
 output_path = f"combined_mendelian_gene_disease_table.only_in_clinvar.tsv.gz"
 df_clinvar_only = df_combined[df_combined["sources"].str.replace(r"\d+: ", "", regex=True).apply(
-    lambda s: set(x.strip() for x in s.split(",")).issubset({"ClinVar", "Fridman", "dbNSFP"})
+    lambda s: "ClinVar" in {x.strip() for x in s.split(",")} and {x.strip() for x in s.split(",")}.issubset({"ClinVar", "Fridman", "dbNSFP"})
 )]
 df_clinvar_only.to_csv(output_path, sep="\t", index=False)
 print(f"Wrote {len(df_clinvar_only):,d} genes to {output_path}")

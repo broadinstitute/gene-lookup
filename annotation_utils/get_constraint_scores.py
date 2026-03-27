@@ -215,16 +215,31 @@ def _get_gnomAD_v4_constraint():
     return df
 
 
-def get_constraint_scores():
-    "Download gnomAD gene constaint tables"
+@cache_data_table
+def _get_s_het_scores():
+    """Download s_het estimates from Zeng et al. 2024 (GeneBayes).
 
+    Source: https://zenodo.org/records/7939768
+    Paper: https://doi.org/10.1038/s41588-024-01820-9
+    Scores >0.1 indicate high likelihood of extreme selection.
+    """
+    df = pd.read_table("https://zenodo.org/api/records/7939768/files/s_het_estimates.genebayes.tsv/content")
+    df = df[df["ensg"].str.startswith("ENSG")]
+    df = df[["ensg", "post_mean"]].rename(columns={"ensg": "gene_id", "post_mean": "s_het"})
+    df = df[df["s_het"].notna()]
+    df = df.drop_duplicates(subset=["gene_id"], keep="first")
+    return df
+
+
+def get_constraint_scores():
+    "Download gnomAD gene constraint tables and s_het scores"
 
     df = _get_gnomAD_v2_constraint()
     df2 = _get_gnomAD_v4_constraint()
+    df3 = _get_s_het_scores()
 
-   
-    df = df.set_index("gene_id").join(df2.set_index("gene_id"), how="outer").reset_index()
-
+    df = df.set_index("gene_id").join(df2.set_index("gene_id"), how="outer")
+    df = df.join(df3.set_index("gene_id"), how="outer").reset_index()
 
     return df
 

@@ -13,10 +13,12 @@ from annotation_utils.get_gencc_table import get_gencc_table
 from annotation_utils.get_decipher_genes import get_decipher_gene_table
 from annotation_utils.get_clinvar_table import get_clinvar_gene_disease_table
 from annotation_utils.get_constraint_scores import get_constraint_scores
+from annotation_utils.get_dbnsfp_gene_table import get_dbnsfp_gene_table
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--skip-gwas", action="store_true", help="Don't add columns related to GWAS catalog rare disease records")
 parser.add_argument("--skip-fridman", action="store_true", help="Don't add columns related to the Fridman et al. 2025 list of recessive genes")
+parser.add_argument("--skip-dbnsfp", action="store_true", help="Don't add columns related to dbNSFP gene annotations")
 parser.add_argument("--print-example-genes", action="store_true", help="Print example genes")
 parser.add_argument("--force", action="store_true", help="Force re-download of all data, even if cached")
 args = parser.parse_args()
@@ -26,6 +28,7 @@ if args.force:
 
 include_GWAS = not args.skip_gwas
 include_Fridman = not args.skip_fridman
+include_dbNSFP = not args.skip_dbnsfp
 print_example_genes = args.print_example_genes
 
 separator = "; "
@@ -390,6 +393,14 @@ if include_Fridman:
     df_fridman.set_index("FRIDMAN_gene_id", inplace=True)
 
 
+df_dbnsfp = None
+if include_dbNSFP:
+    print("Getting dbNSFP gene table")
+    df_dbnsfp = get_dbnsfp_gene_table()
+    df_dbnsfp.rename(columns={"gene_id": "DBNSFP_gene_id"}, inplace=True)
+    df_dbnsfp["InDbNSFP"] = True
+    df_dbnsfp.set_index("DBNSFP_gene_id", inplace=True)
+
 df_gwas = None
 if include_GWAS:
     print("Getting GWAS catalog rare disease records")
@@ -523,7 +534,8 @@ print(f"Merging "
       f"Decipher ({len(df_decipher):,d} rows) "
       f"ClinVar ({len(df_clinvar):,d} rows) " +
       (f"GWAS catalog ({len(df_gwas):,d} rows) " if include_GWAS else "") +
-      (f"Fridman ({len(df_fridman):,d} rows) " if include_Fridman else "")
+      (f"Fridman ({len(df_fridman):,d} rows) " if include_Fridman else "") +
+      (f"dbNSFP ({len(df_dbnsfp):,d} rows) " if include_dbNSFP else "")
 )
 
 df_omim["InOMIM"] = True
@@ -570,6 +582,12 @@ if include_Fridman:
     df_combined = pd.merge(df_combined, df_fridman, how="outer", left_index=True, right_index=True)
     assert df_combined.index.is_unique, "The merged dataframe has duplicate gene ids after merging with Fridman"
     print(f"Added {len(df_combined) - len(before):,d} genes from Fridman et al. 2025 list of recessive genes" + (f" - examples: {', '.join(list(set(df_combined.index) - set(before))[:5])}" if print_example_genes else ""))
+
+if include_dbNSFP:
+    before = list(df_combined.index)
+    df_combined = pd.merge(df_combined, df_dbnsfp, how="outer", left_index=True, right_index=True)
+    assert df_combined.index.is_unique, "The merged dataframe has duplicate gene ids after merging with dbNSFP"
+    print(f"Added {len(df_combined) - len(before):,d} genes from dbNSFP" + (f" - examples: {', '.join(list(sorted(set(df_combined.index) - set(before)))[:5])}" if print_example_genes else ""))
 
 # add gene chrom, start, end
 df_gene_chrom_start_end = pd.DataFrame(get_gene_metadata().values())
@@ -648,6 +666,8 @@ def compute_sources_string(row):
         sources.append("GWAS")
     if include_Fridman and row["InFridman"] == True:
         sources.append("Fridman")
+    if include_dbNSFP and row["InDbNSFP"] == True:
+        sources.append("dbNSFP")
     if row["pLI_v2"] >= pLI_v2_THRESHOLD:
         sources.append("pLI_v2:" + str(round(row["pLI_v2"], 2)))
     if row["pLI_v4"] >= pLI_v4_THRESHOLD:
@@ -666,6 +686,8 @@ if include_GWAS:
     df_combined.drop(columns=["InGWAS"], inplace=True)
 if include_Fridman:
     df_combined.drop(columns=["InFridman"], inplace=True)
+if include_dbNSFP:
+    df_combined.drop(columns=["InDbNSFP"], inplace=True)
 
 def summarize_inheritance(row):
     inheritance = set()
@@ -699,6 +721,8 @@ df_combined.to_csv(output_path, sep="\t", index=False)
 print(f"Wrote {len(df_combined):,d} genes to {output_path}")
 
 output_path = f"combined_mendelian_gene_disease_table.only_in_clinvar.tsv.gz"
-df_clinvar_only = df_combined[(df_combined["sources"] == "1: ClinVar") | (df_combined["sources"] == "2: ClinVar, Fridman")]
+df_clinvar_only = df_combined[df_combined["sources"].str.replace(r"\d+: ", "", regex=True).apply(
+    lambda s: set(x.strip() for x in s.split(",")).issubset({"ClinVar", "Fridman", "dbNSFP"})
+)]
 df_clinvar_only.to_csv(output_path, sep="\t", index=False)
 print(f"Wrote {len(df_clinvar_only):,d} genes to {output_path}")

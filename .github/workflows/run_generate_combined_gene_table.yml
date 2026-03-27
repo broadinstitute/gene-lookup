@@ -95,6 +95,7 @@ jobs:
     - name: Generate combined gene table
       env:
         OMIM_KEY: ${{ secrets.OMIM_KEY }}
+        DBNSFP_KEY: ${{ secrets.DBNSFP_KEY }}
         HADOOP_CONF_DIR: /tmp/hadoop-conf
       run: |
         python3 annotation_utils/generate_combined_gene_table.py

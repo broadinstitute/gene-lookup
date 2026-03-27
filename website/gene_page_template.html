@@ -156,6 +156,13 @@
         </div>
         <div class="three wide column"></div>
     </div>
+    <div class="ui row">
+        <div class="three wide column"></div>
+        <div class="ten wide column">
+            <div id="source-dbnsfp"></div>
+        </div>
+        <div class="three wide column"></div>
+    </div>
 </div>
 <div style="min-height: 50px;"></div>
 
@@ -442,6 +449,19 @@
             html += `<tr><td class="locus-info-label">Inheritance:</td><td>${row['FRIDMAN_inheritance'] || ''}</td></tr>`
             html += '</table></div>'
             $('#source-fridman').html(html)
+        }
+
+        // --- Source: dbNSFP ---
+        if (hasAnyValue(row['DBNSFP_orphanet_disorder'], row['DBNSFP_function_description'], row['DBNSFP_disease_description'], row['DBNSFP_hpo_name'], row['DBNSFP_mgi_mouse_phenotype'], row['DBNSFP_zfin_zebrafish_phenotype'])) {
+            let html = '<div class="source-section"><h4>dbNSFP</h4><table class="locus-info-table">'
+            html += `<tr><td class="locus-info-label">Orphanet Disorder:</td><td style="white-space: normal;">${row['DBNSFP_orphanet_disorder'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Function:</td><td style="white-space: normal;">${row['DBNSFP_function_description'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Disease:</td><td style="white-space: normal;">${row['DBNSFP_disease_description'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">HPO Terms:</td><td style="white-space: normal;">${row['DBNSFP_hpo_name'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Mouse Phenotype:</td><td style="white-space: normal;">${row['DBNSFP_mgi_mouse_phenotype'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Zebrafish Phenotype:</td><td style="white-space: normal;">${row['DBNSFP_zfin_zebrafish_phenotype'] || ''}</td></tr>`
+            html += '</table></div>'
+            $('#source-dbnsfp').html(html)
         }
 
         $('.question').popup({ on: 'click' })

@@ -17,7 +17,7 @@ args = parser.parse_args()
 if not args.output_path:
     args.output_path = args.combined_table.replace(".tsv", "_with_phenotype_summary.tsv")
 
-prompt_prefix1 = """You are a clinical geneticist. You have assembled known gene-disease associations from authoritative sources that include OMIM, GenCC, ClinGen, ClinVar, and PanelApp. Now, you need to condense the phenotypes described in these different sources into a single concise comma-separate list that covers the primary features or symptoms of the disease, as well as the main organ systems that are affected. For example, when the source phenotypes are:
+prompt_prefix1 = """You are a clinical geneticist. You have assembled known gene-disease associations from authoritative sources that include OMIM, GenCC, ClinGen, ClinVar, PanelApp, Orphanet, and dbNSFP. Now, you need to condense the phenotypes described in these different sources into a single concise comma-separate list that covers the primary features or symptoms of the disease, as well as the main organ systems that are affected. For example, when the source phenotypes are:
 
 OMIM: 'Congenital disorder of glycosylation, type Ie', CLINGEN: 'congenital disorder of glycosylation type 1E', PANEL APP UK: 'Congenital disorder of glycosylation, type Ie, OMIM:608799, GDP-Man:Dol-P mannosyltransferase deficiency (Disorders of m
 ultiple glycosylation and other glycosylation pathways); Congenital disorder of glycosylation, type Ie, OMIM:608799; Congenital disorder of glycosylation, type Ie, OMIM:608799; Congenital disorder of glycosylation, type Ie, OMIM:608799; Congenital
@@ -34,7 +34,7 @@ Now, try generating this type of summary for the following phenotype description
 """
 
 prompt_prefix2 = """
-You are a clinical geneticist. You have assembled known gene-disease associations from authoritative sources that include OMIM, GenCC, ClinGen, ClinVar, and PanelApp. Now, you need to select a single  
+You are a clinical geneticist. You have assembled known gene-disease associations from authoritative sources that include OMIM, GenCC, ClinGen, ClinVar, PanelApp, Orphanet, and dbNSFP. Now, you need to select a single  
 disease category that is the best match for the provided phenotypes. The possible disease categories are:
 
 'BIOCHEMICAL/METABOLIC',
@@ -85,8 +85,10 @@ def summarize_phenotypes(row, prompt_prefix=prompt_prefix1, blank_if_no_phenotyp
         ("PANEL_APP_AU", "PANEL_APP_AU_phenotypes"),
         ("CLINVAR", "CLINVAR_phenotypes"),
         ("FRIDMAN", "FRIDMAN_phenotype_category"),
+        ("ORPHANET", "DBNSFP_orphanet_disorder"),
+        ("DBNSFP_DISEASE", "DBNSFP_disease_description"),
     ]:
-        if not pd.isna(row[phenotype_column]):
+        if phenotype_column in row and not pd.isna(row[phenotype_column]):
             phenotypes.append(f"{label}: {row[phenotype_column]}")
 
     if not phenotypes:

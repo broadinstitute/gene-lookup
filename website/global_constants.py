@@ -113,27 +113,9 @@ BIGQUERY_COLUMNS = [
     # AI Summary
     {
         "type": "STRING",
-        "name": "disease_category",
-        "description": "LLM-assigned disease category (e.g., NEUROLOGICAL, CARDIOVASCULAR).",
-        "displayName": "Disease Category",
-        "allowCustomFilter": True,
-        "allowExport": True,
-        "group": GROUP_AI_SUMMARY,
-    },
-    {
-        "type": "STRING",
         "name": "LLM_phenotype_summary",
         "description": "LLM-generated concise summary of phenotypes from all sources.",
         "displayName": "Phenotype Summary",
-        "allowCustomFilter": True,
-        "allowExport": True,
-        "group": GROUP_AI_SUMMARY,
-    },
-    {
-        "type": "STRING",
-        "name": "clingen_curation",
-        "description": "LLM-generated summary of ClinGen gene curation information.",
-        "displayName": "ClinGen Curation",
         "allowCustomFilter": True,
         "allowExport": True,
         "group": GROUP_AI_SUMMARY,

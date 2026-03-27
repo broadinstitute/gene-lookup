@@ -222,39 +222,6 @@
                             </div>
                         </div>
 
-                        <div class="field" style="max-width: 350px;">
-                            <label>Disease Category
-                                <i class="question circle icon link" style="margin-left: 5px;" data-html="Filter by disease category (e.g., Neurological, Cardiovascular, etc.)."></i>
-                            </label>
-                            <div class="ui selection dropdown" id="disease-category-dropdown" style="min-width: 220px;">
-                                <input type="hidden" name="diseaseCategory">
-                                <i class="dropdown icon"></i>
-                                <div class="default text">Any category</div>
-                                <div class="menu">
-                                    <div class="item" data-value="">Any</div>
-                                    <div class="item" data-value="NEUROLOGICAL">Neurological</div>
-                                    <div class="item" data-value="CARDIOVASCULAR">Cardiovascular</div>
-                                    <div class="item" data-value="METABOLIC">Metabolic</div>
-                                    <div class="item" data-value="IMMUNOLOGICAL">Immunological</div>
-                                    <div class="item" data-value="OPHTHALMOLOGICAL">Ophthalmological</div>
-                                    <div class="item" data-value="DERMATOLOGICAL">Dermatological</div>
-                                    <div class="item" data-value="MUSCULOSKELETAL">Musculoskeletal</div>
-                                    <div class="item" data-value="HEMATOLOGICAL">Hematological</div>
-                                    <div class="item" data-value="RENAL">Renal</div>
-                                    <div class="item" data-value="ENDOCRINE">Endocrine</div>
-                                    <div class="item" data-value="HEPATIC">Hepatic</div>
-                                    <div class="item" data-value="PULMONARY">Pulmonary</div>
-                                    <div class="item" data-value="GASTROINTESTINAL">Gastrointestinal</div>
-                                    <div class="item" data-value="ONCOLOGICAL">Oncological</div>
-                                    <div class="item" data-value="DEVELOPMENTAL">Developmental</div>
-                                    <div class="item" data-value="MULTISYSTEMIC">Multisystemic</div>
-                                    <div class="item" data-value="AUDIOLOGICAL">Audiological</div>
-                                    <div class="item" data-value="DENTAL">Dental</div>
-                                    <div class="item" data-value="PSYCHIATRIC">Psychiatric</div>
-                                    <div class="item" data-value="OTHER">Other</div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
 
                     <div id="custom-filter-rows"></div>
@@ -316,7 +283,6 @@
     DEFAULT_GLOBAL_PAGE_STATE['loeufThreshold'] = ''
     DEFAULT_GLOBAL_PAGE_STATE['moeufThreshold'] = ''
     DEFAULT_GLOBAL_PAGE_STATE['clingenClassification'] = ''
-    DEFAULT_GLOBAL_PAGE_STATE['diseaseCategory'] = ''
 
     // Copy the default persistent page state
     let GLOBAL_PAGE_STATE = JSON.parse(JSON.stringify(DEFAULT_GLOBAL_PAGE_STATE))
@@ -421,10 +387,6 @@
         if (GLOBAL_PAGE_STATE['clingenClassification']) {
             $('#clingen-classification-dropdown').dropdown('set selected', GLOBAL_PAGE_STATE['clingenClassification'])
         }
-        if (GLOBAL_PAGE_STATE['diseaseCategory']) {
-            $('#disease-category-dropdown').dropdown('set selected', GLOBAL_PAGE_STATE['diseaseCategory'])
-        }
-
         // Restore custom filters from URL
         $('#custom-filter-rows').empty()
         deserializeAndCreateCustomFilters(GLOBAL_PAGE_STATE['customFilters'])
@@ -1511,11 +1473,6 @@
                 }
             }
 
-            // Disease category filter
-            const diseaseCategory = $('#disease-category-dropdown').dropdown('get value')
-            if (diseaseCategory) {
-                conditions.push(`UPPER(disease_category) LIKE UPPER('%${diseaseCategory}%')`)
-            }
         }
 
         return conditions
@@ -1603,7 +1560,6 @@
             GLOBAL_PAGE_STATE['loeufThreshold'] = $('input[name="loeufThreshold"]').val()
             GLOBAL_PAGE_STATE['moeufThreshold'] = $('input[name="moeufThreshold"]').val()
             GLOBAL_PAGE_STATE['clingenClassification'] = $('#clingen-classification-dropdown').dropdown('get value')
-            GLOBAL_PAGE_STATE['diseaseCategory'] = $('#disease-category-dropdown').dropdown('get value')
             writePersistentPageStateToUrl()
 
             displaySearchResults()
@@ -1758,11 +1714,6 @@
 
     // Initialize dropdowns
     $('#clingen-classification-dropdown').dropdown({
-        onShow: function() { $(this).css('z-index', 10001) },
-        onHide: function() { $(this).css('z-index', '') },
-    })
-
-    $('#disease-category-dropdown').dropdown({
         onShow: function() { $(this).css('z-index', 10001) },
         onHide: function() { $(this).css('z-index', '') },
     })

@@ -285,7 +285,6 @@
         box1 += `<tr><td class="locus-info-label">Gene ID:</td><td>${geneId ? `<a href="https://ensembl.org/Homo_sapiens/Gene/Summary?g=${geneId}" target="_blank" class="action-link">${geneId}</a>` : ''}</td></tr>`
         box1 += `<tr><td class="locus-info-label">Aliases:</td><td>${row['gene_aliases'] || ''}</td></tr>`
         box1 += `<tr><td class="locus-info-label">Coordinates (hg38):</td><td>${coordinates}</td></tr>`
-        box1 += `<tr><td class="locus-info-label">Disease Category:</td><td>${getDiseaseCategory(row['disease_category'])}</td></tr>`
         box1 += '</table>'
         $('#locus-page-row1-box1').html(box1)
 
@@ -305,8 +304,6 @@
         box2 += `<tr><td class="locus-info-label">LOEUF (v4):</td><td>${loeuf}</td></tr>`
         box2 += `<tr><td class="locus-info-label">Missense O/E (v4):</td><td>${moeuf}</td></tr>`
 
-        // ClinGen curation summary
-        box2 += `<tr><td class="locus-info-label">ClinGen Curation:</td><td>${getTruncatedText(row['clingen_curation'], 60)}</td></tr>`
         box2 += '</table>'
         $('#locus-page-row1-box2').html(box2)
 

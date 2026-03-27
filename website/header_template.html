@@ -44,30 +44,6 @@
         ...BIGQUERY_COLUMN_DESCRIPTIONS,
     }
 
-    // Disease category color mapping
-    const DISEASE_CATEGORY_COLORS = {
-        'NEUROLOGICAL': '#6B4C9A',
-        'CARDIOVASCULAR': '#DC3545',
-        'METABOLIC': '#FD7E14',
-        'IMMUNOLOGICAL': '#20C997',
-        'OPHTHALMOLOGICAL': '#0DCAF0',
-        'DERMATOLOGICAL': '#D63384',
-        'MUSCULOSKELETAL': '#6F42C1',
-        'HEMATOLOGICAL': '#E83E8C',
-        'RENAL': '#198754',
-        'ENDOCRINE': '#FFC107',
-        'HEPATIC': '#795548',
-        'PULMONARY': '#17A2B8',
-        'GASTROINTESTINAL': '#FF8C00',
-        'ONCOLOGICAL': '#343A40',
-        'DEVELOPMENTAL': '#0D6EFD',
-        'MULTISYSTEMIC': '#6610F2',
-        'AUDIOLOGICAL': '#2196F3',
-        'DENTAL': '#8D6E63',
-        'PSYCHIATRIC': '#9C27B0',
-        'OTHER': '#6C757D',
-    }
-
     const DEFAULT_SORT_COLUMN = 'gene_symbol'
     const DEFAULT_SORT_DIRECTION = 'ASC'
 
@@ -188,15 +164,6 @@
 
     const escapeSqlString = (s) => String(s).replace(/'/g, "''")
 
-    const getDiseaseCategory = (category) => {
-        if (!category) return ''
-        const categories = category.split(';').map(c => c.trim()).filter(c => c)
-        return categories.map(cat => {
-            const color = DISEASE_CATEGORY_COLORS[cat.toUpperCase()] || DISEASE_CATEGORY_COLORS['OTHER']
-            return `<span class="ui mini label" style="background-color: ${color}; color: white; margin: 1px;">${cat}</span>`
-        }).join(' ')
-    }
-
     const getSourcesBadges = (sourcesStr) => {
         if (!sourcesStr) return ''
         // Format is like "3: OMIM, ClinGen, GenCC"
@@ -241,13 +208,6 @@
             },
             getSortColumns: () => ['gene_symbol'],
             getRequiredColumns: () => ['gene_symbol', 'hgnc_gene_id', 'ensembl_gene_id'],
-        },
-        disease_category: {
-            displayName: 'Category',
-            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['disease_category'],
-            getValue: (row) => getDiseaseCategory(row['disease_category']),
-            getSortColumns: () => ['disease_category'],
-            getRequiredColumns: () => ['disease_category'],
         },
         inheritance: {
             displayName: 'Inheritance',
@@ -354,13 +314,6 @@
             getValue: (row) => row['gene_end'] != null ? row['gene_end'].toLocaleString() : '',
             getSortColumns: () => ['gene_end'],
             getRequiredColumns: () => ['gene_end'],
-        },
-        clingen_curation: {
-            displayName: 'ClinGen Curation',
-            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['clingen_curation'],
-            getValue: (row) => getTruncatedText(row['clingen_curation'], 80),
-            getSortColumns: () => ['clingen_curation'],
-            getRequiredColumns: () => ['clingen_curation'],
         },
         pLI_v2: {
             displayName: 'pLI (v2)',
@@ -730,7 +683,6 @@
 
     const DEFAULT_VISIBLE_COLUMNS = [
         'gene_symbol',
-        'disease_category',
         'inheritance',
         'sources',
         'LLM_phenotype_summary',

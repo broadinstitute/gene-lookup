@@ -622,32 +622,25 @@
 
                 $('.export-dropdown').dropdown('clear')
 
-                if (value === 'tsv' || value === 'json') {
-                    showExportOptionsDialog(value, {showColumns: true})
+                if (value === 'bed') {
+                    await performExport(value)
                 } else {
-                    // BED: export directly without column dialog
-                    showExportOptionsDialog(value, {showColumns: false})
+                    showExportOptionsDialog(value)
                 }
             }
         })
     }
 
-    const showExportOptionsDialog = (exportType, {showColumns = false} = {}) => {
+    const showExportOptionsDialog = (exportType) => {
         pendingExportType = exportType
 
         // Set dialog title
         const FORMAT_NAMES = {
-            tsv: 'TSV', json: 'JSON', bed: 'BED',
+            tsv: 'TSV', json: 'JSON',
         }
         $('#export-dialog-title').text(`${FORMAT_NAMES[exportType] || exportType} export options`)
 
-        // Toggle compact class for dialogs without column checkboxes
-        $('#export-column-dialog').toggleClass('compact-export-dialog', !showColumns)
-
-        // Show/hide sections
-        $('#export-column-section').toggle(showColumns)
-
-        if (showColumns) {
+        {
             // Get currently visible columns in the results table
             const visibleColumnNames = GLOBAL_PAGE_STATE['showColumns'].split(SHOW_COLUMNS_VALUE_DELIMITER)
 

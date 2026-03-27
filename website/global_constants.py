@@ -6,8 +6,7 @@ as the single source of truth for column documentation across the project.
 
 # Export group names for organizing columns in the export dialog
 GROUP_CORE = "Core"
-GROUP_AI_SUMMARY = "AI Summary"
-GROUP_SOURCES = "Sources"
+GROUP_DATA_SUMMARY = "Data Summary"
 GROUP_CONSTRAINT = "Constraint"
 GROUP_OMIM = "OMIM"
 GROUP_CLINGEN = "ClinGen"
@@ -21,8 +20,7 @@ GROUP_DBNSFP = "dbNSFP"
 
 GROUP_ORDER = [
     GROUP_CORE,
-    GROUP_AI_SUMMARY,
-    GROUP_SOURCES,
+    GROUP_DATA_SUMMARY,
     GROUP_CONSTRAINT,
     GROUP_OMIM,
     GROUP_CLINGEN,
@@ -118,7 +116,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "Phenotype Summary",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_AI_SUMMARY,
+        "group": GROUP_DATA_SUMMARY,
     },
 
     # Sources
@@ -129,7 +127,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "Sources",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_SOURCES,
+        "group": GROUP_DATA_SUMMARY,
     },
 
     # Constraint

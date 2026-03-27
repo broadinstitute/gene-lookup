@@ -202,9 +202,17 @@ def query_gene_lookup_db(request):
 
     sql = str(sql).strip()
 
-    pattern = rf"SELECT\s+(.+)\s+FROM[\s`]+{BIGQUERY_PROJECT}\.{BIGQUERY_DATASET}"
-    if not re.search(pattern, sql, re.IGNORECASE | re.DOTALL):
-        response_dict = {"error": f"Invalid SQL query: {sql}. It must be a SELECT from the expected project and dataset and must pass the validation regexp."}
+    # Validate that the query is a SELECT from the expected project/dataset
+    select_pattern = rf"^SELECT\s+.+\s+FROM[\s`]+{re.escape(BIGQUERY_PROJECT)}\.{re.escape(BIGQUERY_DATASET)}\."
+    if not re.search(select_pattern, sql, re.IGNORECASE | re.DOTALL):
+        response_dict = {"error": f"Invalid SQL query: {sql}. It must be a SELECT from the expected project and dataset."}
+        print(f"ERROR: {response_dict['error']}")
+        return jsonify(response_dict), 400, response_headers
+
+    # Block SQL keywords that could be used for injection (UNION, subqueries, DML, DDL, etc.)
+    forbidden_pattern = r"\b(UNION|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|TRUNCATE|EXEC|EXECUTE|CALL|INTO\s+OUTFILE|INFORMATION_SCHEMA)\b"
+    if re.search(forbidden_pattern, sql, re.IGNORECASE):
+        response_dict = {"error": f"SQL query contains forbidden keywords: {sql}"}
         print(f"ERROR: {response_dict['error']}")
         return jsonify(response_dict), 400, response_headers
 

@@ -103,6 +103,7 @@ jobs:
     - name: Add phenotype summary using AI
       env:
         GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        LLM_RESPONSE_CACHE_DB_PATH: ${{ github.workspace }}/.cache/llm_response_cache.db
       run: |
         python3 annotation_utils/add_phenotype_summary_using_AI.py combined_mendelian_gene_disease_table.tsv.gz
 

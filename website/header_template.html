@@ -170,17 +170,17 @@
         const match = sourcesStr.match(/^(\d+):\s*(.*)$/)
         if (!match) return sourcesStr
 
-        const count = match[1]
         const sourcesList = match[2].split(',').map(s => s.trim())
 
         const pastelColors = ['#e8d5d5', '#d5dfe8', '#d5e8db', '#e8e2d5', '#ddd5e8', '#d5e8e6', '#e8d5e0', '#e0e8d5']
 
-        const badges = sourcesList.map((src, i) => {
-            const bg = pastelColors[i % pastelColors.length]
-            return `<span class="ui mini label" style="background-color: ${bg}; color: #333; margin: 1px;">${src}</span>`
-        }).join(' ')
+        const makeBadge = (src, i) => `<span class="ui mini label" style="background-color: ${pastelColors[i % pastelColors.length]}; color: #333; margin: 1px;">${src}</span>`
 
-        return `<span class="show-popup action-link" data-html="${badges.replace(/"/g, '&quot;')}">${count} sources</span>`
+        const inlineBadges = sourcesList.slice(0, 2).map(makeBadge).join(' ')
+        if (sourcesList.length <= 2) return inlineBadges
+
+        const allBadges = sourcesList.map(makeBadge).join(' ')
+        return `${inlineBadges} <span class="show-popup action-link" data-html="${allBadges.replace(/"/g, '&quot;')}">(+${sourcesList.length - 2} more)</span>`
     }
 
     const getTruncatedText = (text, maxLen=80) => {

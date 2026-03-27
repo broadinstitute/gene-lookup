@@ -990,8 +990,8 @@
         const inlineBadges = sourcesList.slice(0, 2).map(makeBadge).join(' ')
         if (sourcesList.length <= 2) return inlineBadges
 
-        const allBadges = sourcesList.map(makeBadge).join(' ')
-        return `${inlineBadges} <span class="show-popup action-link" data-html="${allBadges.replace(/"/g, '&quot;')}">(+${sourcesList.length - 2} more)</span>`
+        const remainingBadges = sourcesList.slice(2).map((src, i) => makeBadge(src, i + 2)).join(' ')
+        return `${inlineBadges} <span class="show-popup action-link" data-html="${remainingBadges.replace(/"/g, '&quot;')}">(+${sourcesList.length - 2} more)</span>`
     }
 
     const getTruncatedText = (text, maxLen=80) => {

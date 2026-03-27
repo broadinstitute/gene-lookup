@@ -206,23 +206,14 @@
         const count = match[1]
         const sourcesList = match[2].split(',').map(s => s.trim())
 
-        const sourceColors = {
-            'OMIM': '#e74c3c',
-            'ClinGen': '#3498db',
-            'GenCC': '#2ecc71',
-            'PanelApp_UK': '#9b59b6',
-            'PanelApp_AU': '#8e44ad',
-            'Decipher': '#f39c12',
-            'ClinVar': '#1abc9c',
-            'Fridman 2025': '#e67e22',
-        }
+        const pastelColors = ['#e8d5d5', '#d5dfe8', '#d5e8db', '#e8e2d5', '#ddd5e8', '#d5e8e6', '#e8d5e0', '#e0e8d5']
 
-        const badges = sourcesList.map(src => {
-            const color = sourceColors[src] || '#95a5a6'
-            return `<span class="ui mini label" style="background-color: ${color}; color: white; margin: 1px;">${src}</span>`
+        const badges = sourcesList.map((src, i) => {
+            const bg = pastelColors[i % pastelColors.length]
+            return `<span class="ui mini label" style="background-color: ${bg}; color: #333; margin: 1px;">${src}</span>`
         }).join(' ')
 
-        return `<span class="show-popup action-link" data-html="${badges}">${count} sources</span>`
+        return `<span class="show-popup action-link" data-html="${badges.replace(/"/g, '&quot;')}">${count} sources</span>`
     }
 
     const getTruncatedText = (text, maxLen=80) => {
@@ -674,12 +665,7 @@
             return `(UPPER(ensembl_gene_id) = UPPER('${escapedQ}'))`
         }
 
-        // Gene name/alias (short alphanumeric tokens that look like gene symbols)
-        if (/^[A-Za-z0-9\-]+$/.test(q) && q.length <= 30) {
-            return `(UPPER(gene_symbol) = UPPER('${escapedQ}') OR UPPER(gene_aliases) LIKE UPPER('%${escapedQ}%'))`
-        }
-
-        // Otherwise treat as disease/phenotype free-text search
+        // Always search both gene name/alias and disease/phenotype text
         const phenotypeColumns = [
             'LLM_phenotype_summary',
             'OMIM_phenotype_description',
@@ -691,7 +677,8 @@
             'CLINVAR_phenotypes',
         ]
         const textClauses = phenotypeColumns.map(col => `UPPER(${col}) LIKE UPPER('%${escapedQ}%')`)
-        return `(${textClauses.join(' OR ')})`
+        const geneClause = `UPPER(gene_symbol) = UPPER('${escapedQ}') OR UPPER(gene_aliases) LIKE UPPER('%${escapedQ}%')`
+        return `(${geneClause} OR ${textClauses.join(' OR ')})`
     }
 
     /**

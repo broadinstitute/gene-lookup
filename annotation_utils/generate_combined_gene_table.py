@@ -705,7 +705,7 @@ def summarize_inheritance(row):
         columns.append("FRIDMAN_inheritance")
     for column in columns:
         if column in row and isinstance(row[column], str):
-            inheritance.update({i.strip() for i in row[column].split(";") if i.strip() != ""})
+            inheritance.update({i.strip() for i in row[column].split(";") if i.strip() and i.strip().lower() != "unknown"})
 
     return "" if len(inheritance) == 0 else "; ".join(sorted(inheritance))
 

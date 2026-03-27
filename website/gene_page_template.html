@@ -35,6 +35,12 @@
         margin-top: 0;
     }
 
+    #external-links a {
+        font-weight: bold;
+        margin-right: 18px;
+        white-space: nowrap;
+    }
+
     .phenotype-summary-card {
         background: #f8f9fa;
         border: 1px solid #e0e0e0;
@@ -79,6 +85,13 @@
             <div id="locus-page-row1-box2" class="right-col"></div>
         </div>
         <div class="two wide column"></div>
+    </div>
+    <div class="ui row" style="padding-bottom: 0;">
+        <div class="three wide column"></div>
+        <div class="ten wide column">
+            <div id="external-links"></div>
+        </div>
+        <div class="three wide column"></div>
     </div>
     <div class="ui row">
         <div class="three wide column"></div>
@@ -255,7 +268,7 @@
         const chrom = row['gene_chrom'] || ''
         const start = row['gene_start']
         const end = row['gene_end']
-        const coordinates = (chrom && start != null && end != null) ? `${chrom}:${start.toLocaleString()}-${end.toLocaleString()}` : ''
+        const coordinates = (chrom && start != null && end != null) ? `${chrom.startsWith('chr') ? '' : 'chr'}${chrom}:${start}-${end}` : ''
 
         // Set page title
         document.title = `Gene Lookup: ${displayName}`
@@ -296,6 +309,31 @@
         box2 += `<tr><td class="locus-info-label">ClinGen Curation:</td><td>${getTruncatedText(row['clingen_curation'], 60)}</td></tr>`
         box2 += '</table>'
         $('#locus-page-row1-box2').html(box2)
+
+        // --- External Resource Links ---
+        const externalLinks = []
+        const link = (label, url) => `<a href="${url}" target="_blank">${label}</a>`
+        const mimNumbers = (row['OMIM_mim_number'] || '').split(';').map(m => m.trim()).filter(m => m)
+        if (mimNumbers.length > 0) externalLinks.push(link('OMIM', `https://omim.org/entry/${mimNumbers[0]}`))
+        if (geneSymbol) {
+            const allNames = [geneSymbol, ...(row['gene_aliases'] || '').split(',').map(s => s.trim()).filter(s => s)]
+            externalLinks.push(link('PubMed', `https://www.ncbi.nlm.nih.gov/pubmed/?term=(${allNames.join(' OR ')})`))
+        }
+        if (geneId) externalLinks.push(link('GeneCards', `https://www.genecards.org/cgi-bin/carddisp.pl?gene=${geneId}`))
+        if (geneId) externalLinks.push(link('Protein Atlas', `https://www.proteinatlas.org/${geneId}/tissue`))
+        if (geneId) externalLinks.push(link('NCBI Gene', `https://www.ncbi.nlm.nih.gov/gene/?term=${geneId}`))
+        if (geneId) externalLinks.push(link('GTEx Portal', `https://www.gtexportal.org/home/gene/${geneId}`))
+        if (geneSymbol) externalLinks.push(link('Monarch', `https://monarchinitiative.org/explore?search=${geneSymbol}#search`))
+        if (geneId) externalLinks.push(link('Decipher', `https://www.deciphergenomics.org/gene/${geneId}/overview/protein-genomic-info`))
+        if (geneId) externalLinks.push(link('UniProt', `https://www.uniprot.org/uniprot?query=${geneId}+AND(reviewed:true)+AND(organism_id:9606)`))
+        if (geneSymbol) externalLinks.push(link('Geno2MP', `https://geno2mp.gs.washington.edu/Geno2MP/#/gene/${geneSymbol}/gene/0/0/0`))
+        if (geneId) externalLinks.push(link('gnomAD', `https://gnomad.broadinstitute.org/gene/${geneId}?dataset=gnomad_r4`))
+        if (geneSymbol) externalLinks.push(link('primAD', `https://primad.basespace.illumina.com/gene/${geneSymbol}`))
+        if (geneSymbol) externalLinks.push(link('KEGG', `https://www.kegg.jp/kegg-bin/search_pathway_text?keyword=${geneSymbol}&viewImage=true`))
+        if (hgncId) externalLinks.push(link('ClinGen', `https://search.clinicalgenome.org/kb/gene-dosage/${hgncId}`))
+        if (geneSymbol) externalLinks.push(link('ClinVar', `https://www.ncbi.nlm.nih.gov/clinvar?term=${geneSymbol}[gene]`))
+        if (geneSymbol) externalLinks.push(link('HGMD', `https://my.qiagendigitalinsights.com/bbp/view/hgmd/pro/gene.php?gene=${geneSymbol}`))
+        $('#external-links').html(externalLinks.join(''))
 
         // --- AI Phenotype Summary ---
         if (row['LLM_phenotype_summary']) {

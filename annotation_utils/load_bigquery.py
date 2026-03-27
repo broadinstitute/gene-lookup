@@ -18,6 +18,10 @@ def main():
     df = pd.read_table(args.tsv_path)
     print(f"Read {len(df)} rows and {len(df.columns)} columns")
 
+    # Fill NaN in string columns with empty strings to avoid pyarrow type errors
+    string_cols = df.select_dtypes(include=["object"]).columns
+    df[string_cols] = df[string_cols].fillna("")
+
     client = bigquery.Client(project=PROJECT_ID)
 
     # Create dataset if it doesn't exist

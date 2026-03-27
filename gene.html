@@ -850,37 +850,13 @@
     }
 
     // BigQuery column descriptions - generated from global_constants.py via Jinja2
-    const BIGQUERY_COLUMN_DESCRIPTIONS = {"CLINGEN_classification": "ClinGen gene-disease validity classification (Definitive, Strong, Moderate, or Limited).", "CLINGEN_disease_label": "Disease name(s) from ClinGen gene-disease validity curation (semicolon-separated if multiple).", "CLINGEN_disease_mondo_id": "MONDO disease ID(s) from ClinGen (semicolon-separated if multiple).", "CLINGEN_haploinsufficient": "ClinGen haploinsufficiency classification for this gene.", "CLINGEN_inheritance": "Mode of inheritance from ClinGen (semicolon-separated if multiple).", "CLINVAR_clinical_significance": "Clinical significance categories from ClinVar for variants in this gene.", "CLINVAR_phenotypes": "Phenotype(s) from ClinVar for pathogenic/likely pathogenic variants in this gene.", "CLINVAR_stars": "ClinVar review status gold stars for variants in this gene.", "CLINVAR_variant_consequences": "Major variant consequence types from ClinVar for pathogenic/likely pathogenic variants in this gene.", "DBNSFP_disease_description": "Disease description from dbNSFP/UniProt.", "DBNSFP_essential_gene": "Essential gene annotation from dbNSFP (E=essential, N=non-essential).", "DBNSFP_function_description": "Gene function description from dbNSFP/UniProt.", "DBNSFP_hpo_id": "Human Phenotype Ontology (HPO) ID(s) from dbNSFP (semicolon-separated if multiple).", "DBNSFP_hpo_name": "Human Phenotype Ontology (HPO) term name(s) from dbNSFP (semicolon-separated if multiple).", "DBNSFP_known_rec_info": "Known recessive disease gene information from dbNSFP.", "DBNSFP_mgi_mouse_phenotype": "Mouse phenotype(s) from MGI via dbNSFP (semicolon-separated if multiple).", "DBNSFP_orphanet_association_type": "Orphanet gene-disease association type(s) from dbNSFP (semicolon-separated if multiple).", "DBNSFP_orphanet_disorder": "Orphanet disorder name(s) from dbNSFP (semicolon-separated if multiple).", "DBNSFP_orphanet_disorder_id": "Orphanet disorder ID(s) from dbNSFP (semicolon-separated if multiple).", "DBNSFP_p_rec": "Probability of being a recessive disease gene from dbNSFP.", "DBNSFP_pathway_kegg": "KEGG pathway(s) from dbNSFP (semicolon-separated if multiple).", "DBNSFP_pathway_uniprot": "UniProt pathway(s) from dbNSFP (semicolon-separated if multiple).", "DBNSFP_zfin_zebrafish_phenotype": "Zebrafish phenotype tag(s) from ZFIN via dbNSFP (semicolon-separated if multiple).", "DECIPHER_disease_names": "Disease name(s) from DECIPHER (semicolon-separated if multiple).", "DECIPHER_inheritance": "Mode of inheritance from DECIPHER (semicolon-separated if multiple).", "FRIDMAN_inheritance": "Inheritance mode from Fridman et al. 2025 (AR or AR-AD).", "FRIDMAN_omim_phenotype_id": "OMIM phenotype ID(s) from Fridman et al. 2025 list of recessive disease genes.", "FRIDMAN_phenotype_category": "Disorder group from Fridman et al. 2025 (semicolon-separated if multiple).", "GENCC_classification": "Gene-disease classification(s) from GenCC (semicolon-separated if multiple).", "GENCC_disease_name": "Disease name(s) from GenCC (semicolon-separated if multiple).", "GENCC_inheritance": "Mode of inheritance from GenCC (semicolon-separated if multiple).", "LLM_phenotype_summary": "LLM-generated concise summary of phenotypes from all sources.", "OMIM_inheritance": "Inheritance mode(s) from OMIM (semicolon-separated if multiple).", "OMIM_mim_number": "OMIM gene MIM number(s) (semicolon-separated if multiple).", "OMIM_phenotype_description": "Phenotype description(s) from OMIM (semicolon-separated if multiple).", "OMIM_phenotype_mim_number": "OMIM phenotype MIM number(s) (semicolon-separated if multiple).", "PANEL_APP_AU_confidence": "PanelApp Australia confidence level(s) for this gene (semicolon-separated if multiple panels).", "PANEL_APP_AU_evidence": "Evidence level from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_inheritance": "Mode of inheritance from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_mode_of_pathogenicity": "Mode of pathogenicity from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_panel_name": "Panel name(s) from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_penetrance": "Penetrance from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_phenotypes": "Phenotype(s) from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_UK_confidence": "PanelApp UK confidence level(s) for this gene (semicolon-separated if multiple panels).", "PANEL_APP_UK_evidence": "Evidence level from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_inheritance": "Mode of inheritance from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_mode_of_pathogenicity": "Mode of pathogenicity from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_panel_name": "Panel name(s) from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_penetrance": "Penetrance from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_phenotypes": "Phenotype(s) from PanelApp UK (semicolon-separated if multiple panels).", "clingen_curation": "LLM-generated summary of ClinGen gene curation information.", "disease_category": "LLM-assigned disease category (e.g., NEUROLOGICAL, CARDIOVASCULAR).", "ensembl_gene_id": "Ensembl gene ID (ENSG).", "gene_aliases": "Alternative gene symbols from HGNC (uppercase, comma-separated).", "gene_chrom": "Chromosome name.", "gene_end": "Gene end coordinate (GRCh38).", "gene_start": "Gene start coordinate (GRCh38).", "gene_symbol": "HGNC-approved gene symbol (uppercase).", "hgnc_gene_id": "HGNC gene ID (e.g., HGNC:1234).", "inheritance": "Summarized inheritance modes across all sources (semicolon-separated).", "lof_oe_ci_upper_v4": "Upper bound of the 90% confidence interval for the loss-of-function observed/expected ratio from gnomAD v4 (LOEUF).", "mis_oe_ci_upper_v4": "Upper bound of the 90% confidence interval for the missense observed/expected ratio from gnomAD v4 (MOEUF).", "pLI_v2": "Probability of loss-of-function intolerance from gnomAD v2.", "pLI_v4": "Probability of loss-of-function intolerance from gnomAD v4.", "s_het": "Gene constraint score from GeneBayes (Zeng et al. 2024). Scores \u003e0.1 indicate high likelihood of extreme selection.", "sources": "Number and list of sources that include this gene (e.g., \u00273: OMIM, ClinGen, GenCC\u0027)."}
+    const BIGQUERY_COLUMN_DESCRIPTIONS = {"CLINGEN_classification": "ClinGen gene-disease validity classification (Definitive, Strong, Moderate, or Limited).", "CLINGEN_disease_label": "Disease name(s) from ClinGen gene-disease validity curation (semicolon-separated if multiple).", "CLINGEN_disease_mondo_id": "MONDO disease ID(s) from ClinGen (semicolon-separated if multiple).", "CLINGEN_haploinsufficient": "ClinGen haploinsufficiency classification for this gene.", "CLINGEN_inheritance": "Mode of inheritance from ClinGen (semicolon-separated if multiple).", "CLINVAR_clinical_significance": "Clinical significance categories from ClinVar for variants in this gene.", "CLINVAR_phenotypes": "Phenotype(s) from ClinVar for pathogenic/likely pathogenic variants in this gene.", "CLINVAR_stars": "ClinVar review status gold stars for variants in this gene.", "CLINVAR_variant_consequences": "Major variant consequence types from ClinVar for pathogenic/likely pathogenic variants in this gene.", "DBNSFP_disease_description": "Disease description from dbNSFP/UniProt.", "DBNSFP_essential_gene": "Essential gene annotation from dbNSFP (E=essential, N=non-essential).", "DBNSFP_function_description": "Gene function description from dbNSFP/UniProt.", "DBNSFP_hpo_id": "Human Phenotype Ontology (HPO) ID(s) from dbNSFP (semicolon-separated if multiple).", "DBNSFP_hpo_name": "Human Phenotype Ontology (HPO) term name(s) from dbNSFP (semicolon-separated if multiple).", "DBNSFP_known_rec_info": "Known recessive disease gene information from dbNSFP.", "DBNSFP_mgi_mouse_phenotype": "Mouse phenotype(s) from MGI via dbNSFP (semicolon-separated if multiple).", "DBNSFP_orphanet_association_type": "Orphanet gene-disease association type(s) from dbNSFP (semicolon-separated if multiple).", "DBNSFP_orphanet_disorder": "Orphanet disorder name(s) from dbNSFP (semicolon-separated if multiple).", "DBNSFP_orphanet_disorder_id": "Orphanet disorder ID(s) from dbNSFP (semicolon-separated if multiple).", "DBNSFP_p_rec": "Probability of being a recessive disease gene from dbNSFP.", "DBNSFP_pathway_kegg": "KEGG pathway(s) from dbNSFP (semicolon-separated if multiple).", "DBNSFP_pathway_uniprot": "UniProt pathway(s) from dbNSFP (semicolon-separated if multiple).", "DBNSFP_zfin_zebrafish_phenotype": "Zebrafish phenotype tag(s) from ZFIN via dbNSFP (semicolon-separated if multiple).", "DECIPHER_disease_names": "Disease name(s) from DECIPHER (semicolon-separated if multiple).", "DECIPHER_inheritance": "Mode of inheritance from DECIPHER (semicolon-separated if multiple).", "FRIDMAN_inheritance": "Inheritance mode from Fridman et al. 2025 (AR or AR-AD).", "FRIDMAN_omim_phenotype_id": "OMIM phenotype ID(s) from Fridman et al. 2025 list of recessive disease genes.", "FRIDMAN_phenotype_category": "Disorder group from Fridman et al. 2025 (semicolon-separated if multiple).", "GENCC_classification": "Gene-disease classification(s) from GenCC (semicolon-separated if multiple).", "GENCC_disease_name": "Disease name(s) from GenCC (semicolon-separated if multiple).", "GENCC_inheritance": "Mode of inheritance from GenCC (semicolon-separated if multiple).", "LLM_phenotype_summary": "LLM-generated concise summary of phenotypes from all sources.", "OMIM_inheritance": "Inheritance mode(s) from OMIM (semicolon-separated if multiple).", "OMIM_mim_number": "OMIM gene MIM number(s) (semicolon-separated if multiple).", "OMIM_phenotype_description": "Phenotype description(s) from OMIM (semicolon-separated if multiple).", "OMIM_phenotype_mim_number": "OMIM phenotype MIM number(s) (semicolon-separated if multiple).", "PANEL_APP_AU_confidence": "PanelApp Australia confidence level(s) for this gene (semicolon-separated if multiple panels).", "PANEL_APP_AU_evidence": "Evidence level from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_inheritance": "Mode of inheritance from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_mode_of_pathogenicity": "Mode of pathogenicity from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_panel_name": "Panel name(s) from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_penetrance": "Penetrance from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_phenotypes": "Phenotype(s) from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_UK_confidence": "PanelApp UK confidence level(s) for this gene (semicolon-separated if multiple panels).", "PANEL_APP_UK_evidence": "Evidence level from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_inheritance": "Mode of inheritance from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_mode_of_pathogenicity": "Mode of pathogenicity from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_panel_name": "Panel name(s) from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_penetrance": "Penetrance from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_phenotypes": "Phenotype(s) from PanelApp UK (semicolon-separated if multiple panels).", "ensembl_gene_id": "Ensembl gene ID (ENSG).", "gene_aliases": "Alternative gene symbols from HGNC (uppercase, comma-separated).", "gene_chrom": "Chromosome name.", "gene_end": "Gene end coordinate (GRCh38).", "gene_start": "Gene start coordinate (GRCh38).", "gene_symbol": "HGNC-approved gene symbol (uppercase).", "hgnc_gene_id": "HGNC gene ID (e.g., HGNC:1234).", "inheritance": "Summarized inheritance modes across all sources (semicolon-separated).", "lof_oe_ci_upper_v4": "Upper bound of the 90% confidence interval for the loss-of-function observed/expected ratio from gnomAD v4 (LOEUF).", "mis_oe_ci_upper_v4": "Upper bound of the 90% confidence interval for the missense observed/expected ratio from gnomAD v4 (MOEUF).", "pLI_v2": "Probability of loss-of-function intolerance from gnomAD v2.", "pLI_v4": "Probability of loss-of-function intolerance from gnomAD v4.", "s_het": "Gene constraint score from GeneBayes (Zeng et al. 2024). Scores \u003e0.1 indicate high likelihood of extreme selection.", "sources": "Number and list of sources that include this gene (e.g., \u00273: OMIM, ClinGen, GenCC\u0027)."}
 
     const BIGQUERY_COLUMN_GROUPS = ["Core", "AI Summary", "Sources", "Constraint", "OMIM", "ClinGen", "GenCC", "PanelApp UK", "PanelApp AU", "Decipher", "ClinVar", "Fridman 2025", "dbNSFP"]
 
     // Help texts for UI columns - starts with BigQuery descriptions, then adds/overrides
     const RESULTS_TABLE_COLUMN_HELP_TEXTS = {
         ...BIGQUERY_COLUMN_DESCRIPTIONS,
-    }
-
-    // Disease category color mapping
-    const DISEASE_CATEGORY_COLORS = {
-        'NEUROLOGICAL': '#6B4C9A',
-        'CARDIOVASCULAR': '#DC3545',
-        'METABOLIC': '#FD7E14',
-        'IMMUNOLOGICAL': '#20C997',
-        'OPHTHALMOLOGICAL': '#0DCAF0',
-        'DERMATOLOGICAL': '#D63384',
-        'MUSCULOSKELETAL': '#6F42C1',
-        'HEMATOLOGICAL': '#E83E8C',
-        'RENAL': '#198754',
-        'ENDOCRINE': '#FFC107',
-        'HEPATIC': '#795548',
-        'PULMONARY': '#17A2B8',
-        'GASTROINTESTINAL': '#FF8C00',
-        'ONCOLOGICAL': '#343A40',
-        'DEVELOPMENTAL': '#0D6EFD',
-        'MULTISYSTEMIC': '#6610F2',
-        'AUDIOLOGICAL': '#2196F3',
-        'DENTAL': '#8D6E63',
-        'PSYCHIATRIC': '#9C27B0',
-        'OTHER': '#6C757D',
     }
 
     const DEFAULT_SORT_COLUMN = 'gene_symbol'
@@ -1003,15 +979,6 @@
 
     const escapeSqlString = (s) => String(s).replace(/'/g, "''")
 
-    const getDiseaseCategory = (category) => {
-        if (!category) return ''
-        const categories = category.split(';').map(c => c.trim()).filter(c => c)
-        return categories.map(cat => {
-            const color = DISEASE_CATEGORY_COLORS[cat.toUpperCase()] || DISEASE_CATEGORY_COLORS['OTHER']
-            return `<span class="ui mini label" style="background-color: ${color}; color: white; margin: 1px;">${cat}</span>`
-        }).join(' ')
-    }
-
     const getSourcesBadges = (sourcesStr) => {
         if (!sourcesStr) return ''
         // Format is like "3: OMIM, ClinGen, GenCC"
@@ -1056,13 +1023,6 @@
             },
             getSortColumns: () => ['gene_symbol'],
             getRequiredColumns: () => ['gene_symbol', 'hgnc_gene_id', 'ensembl_gene_id'],
-        },
-        disease_category: {
-            displayName: 'Category',
-            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['disease_category'],
-            getValue: (row) => getDiseaseCategory(row['disease_category']),
-            getSortColumns: () => ['disease_category'],
-            getRequiredColumns: () => ['disease_category'],
         },
         inheritance: {
             displayName: 'Inheritance',
@@ -1169,13 +1129,6 @@
             getValue: (row) => row['gene_end'] != null ? row['gene_end'].toLocaleString() : '',
             getSortColumns: () => ['gene_end'],
             getRequiredColumns: () => ['gene_end'],
-        },
-        clingen_curation: {
-            displayName: 'ClinGen Curation',
-            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['clingen_curation'],
-            getValue: (row) => getTruncatedText(row['clingen_curation'], 80),
-            getSortColumns: () => ['clingen_curation'],
-            getRequiredColumns: () => ['clingen_curation'],
         },
         pLI_v2: {
             displayName: 'pLI (v2)',
@@ -1545,7 +1498,6 @@
 
     const DEFAULT_VISIBLE_COLUMNS = [
         'gene_symbol',
-        'disease_category',
         'inheritance',
         'sources',
         'LLM_phenotype_summary',
@@ -1941,7 +1893,6 @@
         box1 += `<tr><td class="locus-info-label">Gene ID:</td><td>${geneId ? `<a href="https://ensembl.org/Homo_sapiens/Gene/Summary?g=${geneId}" target="_blank" class="action-link">${geneId}</a>` : ''}</td></tr>`
         box1 += `<tr><td class="locus-info-label">Aliases:</td><td>${row['gene_aliases'] || ''}</td></tr>`
         box1 += `<tr><td class="locus-info-label">Coordinates (hg38):</td><td>${coordinates}</td></tr>`
-        box1 += `<tr><td class="locus-info-label">Disease Category:</td><td>${getDiseaseCategory(row['disease_category'])}</td></tr>`
         box1 += '</table>'
         $('#locus-page-row1-box1').html(box1)
 
@@ -1961,8 +1912,6 @@
         box2 += `<tr><td class="locus-info-label">LOEUF (v4):</td><td>${loeuf}</td></tr>`
         box2 += `<tr><td class="locus-info-label">Missense O/E (v4):</td><td>${moeuf}</td></tr>`
 
-        // ClinGen curation summary
-        box2 += `<tr><td class="locus-info-label">ClinGen Curation:</td><td>${getTruncatedText(row['clingen_curation'], 60)}</td></tr>`
         box2 += '</table>'
         $('#locus-page-row1-box2').html(box2)
 

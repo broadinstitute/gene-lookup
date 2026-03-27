@@ -31,8 +31,12 @@
 <!-- modal dialog for selecting columns to export -->
 <div class="ui modal" id="export-column-dialog">
     <i class="close icon"></i>
-    <div class="header" id="export-dialog-title">
-        TSV export options
+    <div class="header" id="export-dialog-title" style="display: flex; justify-content: space-between; align-items: center;">
+        <span>TSV export options</span>
+        <span style="font-size: 14px; font-weight: normal;">
+            <a href="#" id="export-columns-clear-all" class="action-link" style="margin-right: 15px;">clear all</a>
+            <a href="#" id="export-columns-select-all" class="action-link">select all</a>
+        </span>
     </div>
     <div class="content">
         <div class="ui form">
@@ -1090,6 +1094,16 @@
             $('body').css('cursor', 'default')
         }
     }
+
+    $('#export-columns-select-all').click((e) => {
+        e.preventDefault()
+        $('#export-column-checkboxes .ui.checkbox').checkbox('check')
+    })
+
+    $('#export-columns-clear-all').click((e) => {
+        e.preventDefault()
+        $('#export-column-checkboxes .ui.checkbox').checkbox('uncheck')
+    })
 
     // Handle export dialog download button
     $('#export-dialog-download-button').click(async () => {

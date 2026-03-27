@@ -6,7 +6,6 @@ as the single source of truth for column documentation across the project.
 
 # Export group names for organizing columns in the export dialog
 GROUP_CORE = "Core"
-GROUP_DATA_SUMMARY = "Data Summary"
 GROUP_CONSTRAINT = "Constraint"
 GROUP_OMIM_CLINVAR = "OMIM & ClinVar"
 GROUP_CLINGEN_GENCC = "ClinGen & GenCC"
@@ -17,7 +16,6 @@ GROUP_DBNSFP = "dbNSFP"
 
 GROUP_ORDER = [
     GROUP_CORE,
-    GROUP_DATA_SUMMARY,
     GROUP_CONSTRAINT,
     GROUP_OMIM_CLINVAR,
     GROUP_CLINGEN_GENCC,
@@ -110,7 +108,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "Phenotype Summary",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_DATA_SUMMARY,
+        "group": GROUP_CORE,
     },
 
     # Sources
@@ -121,7 +119,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "Sources",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_DATA_SUMMARY,
+        "group": GROUP_CORE,
     },
 
     # Constraint
@@ -510,7 +508,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "Orphanet Disorder ID",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_DBNSFP,
+        "group": GROUP_DECIPHER_OTHER,
     },
     {
         "type": "STRING",
@@ -519,7 +517,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "Orphanet Disorder",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_DBNSFP,
+        "group": GROUP_DECIPHER_OTHER,
     },
     {
         "type": "STRING",
@@ -528,7 +526,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "Orphanet Association Type",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_DBNSFP,
+        "group": GROUP_DECIPHER_OTHER,
     },
     {
         "type": "STRING",

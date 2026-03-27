@@ -8,28 +8,22 @@ as the single source of truth for column documentation across the project.
 GROUP_CORE = "Core"
 GROUP_DATA_SUMMARY = "Data Summary"
 GROUP_CONSTRAINT = "Constraint"
-GROUP_OMIM = "OMIM"
-GROUP_CLINGEN = "ClinGen"
-GROUP_GENCC = "GenCC"
+GROUP_OMIM_CLINVAR = "OMIM & ClinVar"
+GROUP_CLINGEN_GENCC = "ClinGen & GenCC"
 GROUP_PANEL_APP_UK = "PanelApp UK"
 GROUP_PANEL_APP_AU = "PanelApp AU"
-GROUP_DECIPHER = "Decipher"
-GROUP_CLINVAR = "ClinVar"
-GROUP_FRIDMAN = "Fridman 2025"
+GROUP_DECIPHER_OTHER = "Decipher & Other Sources"
 GROUP_DBNSFP = "dbNSFP"
 
 GROUP_ORDER = [
     GROUP_CORE,
     GROUP_DATA_SUMMARY,
     GROUP_CONSTRAINT,
-    GROUP_OMIM,
-    GROUP_CLINGEN,
-    GROUP_GENCC,
+    GROUP_OMIM_CLINVAR,
+    GROUP_CLINGEN_GENCC,
     GROUP_PANEL_APP_UK,
     GROUP_PANEL_APP_AU,
-    GROUP_DECIPHER,
-    GROUP_CLINVAR,
-    GROUP_FRIDMAN,
+    GROUP_DECIPHER_OTHER,
     GROUP_DBNSFP,
 ]
 
@@ -185,7 +179,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "OMIM MIM Number",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_OMIM,
+        "group": GROUP_OMIM_CLINVAR,
     },
     {
         "type": "STRING",
@@ -194,7 +188,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "OMIM Phenotype MIM Number",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_OMIM,
+        "group": GROUP_OMIM_CLINVAR,
     },
     {
         "type": "STRING",
@@ -203,7 +197,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "OMIM Inheritance",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_OMIM,
+        "group": GROUP_OMIM_CLINVAR,
     },
     {
         "type": "STRING",
@@ -212,7 +206,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "OMIM Phenotype",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_OMIM,
+        "group": GROUP_OMIM_CLINVAR,
     },
 
     # ClinGen
@@ -223,7 +217,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "ClinGen Disease",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_CLINGEN,
+        "group": GROUP_CLINGEN_GENCC,
     },
     {
         "type": "STRING",
@@ -232,7 +226,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "ClinGen MONDO ID",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_CLINGEN,
+        "group": GROUP_CLINGEN_GENCC,
     },
     {
         "type": "STRING",
@@ -241,7 +235,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "ClinGen Inheritance",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_CLINGEN,
+        "group": GROUP_CLINGEN_GENCC,
     },
     {
         "type": "STRING",
@@ -250,7 +244,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "ClinGen Classification",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_CLINGEN,
+        "group": GROUP_CLINGEN_GENCC,
     },
     {
         "type": "STRING",
@@ -259,7 +253,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "ClinGen Haploinsufficiency",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_CLINGEN,
+        "group": GROUP_CLINGEN_GENCC,
     },
 
     # GenCC
@@ -270,7 +264,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "GenCC Disease",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_GENCC,
+        "group": GROUP_CLINGEN_GENCC,
     },
     {
         "type": "STRING",
@@ -279,7 +273,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "GenCC Classification",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_GENCC,
+        "group": GROUP_CLINGEN_GENCC,
     },
     {
         "type": "STRING",
@@ -288,7 +282,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "GenCC Inheritance",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_GENCC,
+        "group": GROUP_CLINGEN_GENCC,
     },
 
     # PanelApp UK
@@ -429,7 +423,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "Decipher Inheritance",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_DECIPHER,
+        "group": GROUP_DECIPHER_OTHER,
     },
     {
         "type": "STRING",
@@ -438,7 +432,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "Decipher Disease",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_DECIPHER,
+        "group": GROUP_DECIPHER_OTHER,
     },
 
     # ClinVar
@@ -449,7 +443,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "ClinVar Phenotypes",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_CLINVAR,
+        "group": GROUP_OMIM_CLINVAR,
     },
     {
         "type": "STRING",
@@ -458,7 +452,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "ClinVar Significance",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_CLINVAR,
+        "group": GROUP_OMIM_CLINVAR,
     },
     {
         "type": "STRING",
@@ -467,7 +461,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "ClinVar Stars",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_CLINVAR,
+        "group": GROUP_OMIM_CLINVAR,
     },
     {
         "type": "STRING",
@@ -476,7 +470,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "ClinVar Consequences",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_CLINVAR,
+        "group": GROUP_OMIM_CLINVAR,
     },
 
     # Fridman
@@ -487,7 +481,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "Fridman 2025 OMIM ID",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_FRIDMAN,
+        "group": GROUP_DECIPHER_OTHER,
     },
     {
         "type": "STRING",
@@ -496,7 +490,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "Fridman 2025 Category",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_FRIDMAN,
+        "group": GROUP_DECIPHER_OTHER,
     },
     {
         "type": "STRING",
@@ -505,7 +499,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "Fridman 2025 Inheritance",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_FRIDMAN,
+        "group": GROUP_DECIPHER_OTHER,
     },
 
     # dbNSFP

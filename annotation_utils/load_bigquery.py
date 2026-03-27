@@ -14,13 +14,32 @@ def main():
     parser.add_argument("tsv_path", help="Path to the TSV file (can be gzipped)")
     args = parser.parse_args()
 
+    FLOAT_COLUMNS = {
+        "pLI_v2", "pLI_v4", "lof_oe_ci_upper_v4", "mis_oe_ci_upper_v4",
+        "s_het", "CLINVAR_stars", "GWAS_p_value", "GWAS_odds_ratio_or_beta",
+        "DBNSFP_p_rec",
+    }
+    INT_COLUMNS = {"gene_start", "gene_end"}
+
+    # Read column names to build dtype dict
+    all_columns = pd.read_table(args.tsv_path, nrows=0).columns
+    dtypes = {}
+    for col in all_columns:
+        if col in FLOAT_COLUMNS:
+            dtypes[col] = "float64"
+        elif col in INT_COLUMNS:
+            dtypes[col] = "Int64"
+        else:
+            dtypes[col] = "str"
+
     print(f"Reading {args.tsv_path}")
-    df = pd.read_table(args.tsv_path)
+    df = pd.read_table(args.tsv_path, dtype=dtypes, keep_default_na=False, na_values=[""])
     print(f"Read {len(df)} rows and {len(df.columns)} columns")
 
     # Fill NaN in string columns with empty strings to avoid pyarrow type errors
-    string_cols = df.select_dtypes(include=["object"]).columns
-    df[string_cols] = df[string_cols].fillna("")
+    for col in df.columns:
+        if df[col].dtype == "object":
+            df[col] = df[col].fillna("")
 
     client = bigquery.Client(project=PROJECT_ID)
 

@@ -1575,8 +1575,12 @@
 <!-- modal dialog for selecting results table columns -->
 <div class="ui modal" id="results-table-column-settings-dialog">
     <i class="close icon"></i>
-    <div class="header">
+    <div class="header" style="display: flex; justify-content: space-between; align-items: center;">
         Results Table Columns
+        <span style="font-size: 14px; font-weight: normal;">
+            <a href="#" id="results-columns-clear-all" class="action-link" style="margin-right: 15px;">clear all</a>
+            <a href="#" id="results-columns-select-all" class="action-link">select all</a>
+        </span>
     </div>
     <div class="content">
         <div class="ui form">
@@ -2918,6 +2922,16 @@
             $('.results-table-column-settings-checkboxes .ui.checkbox').checkbox()
             $('#results-table-column-settings-dialog').modal('show')
             $('.question').popup({ on: 'click' })
+        })
+
+        $('#results-columns-select-all').click((e) => {
+            e.preventDefault()
+            $('.results-table-column-settings-checkboxes .ui.checkbox').checkbox('check')
+        })
+
+        $('#results-columns-clear-all').click((e) => {
+            e.preventDefault()
+            $('.results-table-column-settings-checkboxes .ui.checkbox').checkbox('uncheck')
         })
 
         // handle Apply button click in column settings dialog

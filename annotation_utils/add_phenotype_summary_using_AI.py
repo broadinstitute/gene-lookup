@@ -181,7 +181,7 @@ else:
 initial_columns = [
     "ensembl_gene_id", "hgnc_gene_id", "gene_symbol", "gene_aliases",  "pLI_v2", "pLI_v4", "lof_oe_ci_upper_v4", "mis_oe_ci_upper_v4", "s_het",
     "inheritance",  "disease_category", "clingen_curation", "LLM_phenotype_summary", "sources",
-    "chrom", "start", "end",
+    "gene_chrom", "gene_start", "gene_end",
 ]
 
 df = df[initial_columns + [c for c in df.columns if c not in initial_columns]]

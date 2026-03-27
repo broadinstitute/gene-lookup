@@ -44,7 +44,7 @@ def get_dbnsfp_gene_table():
         raise ValueError("DBNSFP_KEY environment variable is not set")
 
     url = f"{DBNSFP_BASE_URL}/{dbnsfp_key}/dbNSFP5.3_gene.gz"
-    print(f"Downloading {url}")
+    print(f"Downloading dbNSFP5.3 gene table from {DBNSFP_BASE_URL}/...")
     response = requests.get(url)
     response.raise_for_status()
     df = pd.read_table(io.BytesIO(response.content), compression="gzip", dtype=str)

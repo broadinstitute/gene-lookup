@@ -600,7 +600,7 @@
         // Genomic region: chr1:12345-67890
         const regionMatch = q.match(REFERENCE_REGION_REGEXP)
         if (regionMatch) {
-            const chrom = regionMatch[1].startsWith('chr') ? regionMatch[1] : `chr${regionMatch[1]}`
+            const chrom = regionMatch[1]
             const start = parseInt(regionMatch[2].replace(/,/g, ''))
             const end = parseInt(regionMatch[3].replace(/,/g, ''))
             return `(gene_chrom = '${chrom}' AND gene_start < ${end} AND gene_end > ${start})`

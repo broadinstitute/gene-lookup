@@ -339,11 +339,11 @@
         if (geneSymbol) externalLinks.push(link('HGMD', `https://my.qiagendigitalinsights.com/bbp/view/hgmd/pro/gene.php?gene=${geneSymbol}`))
         $('#external-links').html(externalLinks.join(''))
 
-        // --- AI Phenotype Summary ---
+        // --- Phenotype Summary ---
         if (row['LLM_phenotype_summary']) {
             $('#phenotype-summary-section').html(`
                 <div class="source-section">
-                    <h4>AI Phenotype Summary</h4>
+                    <h4>Phenotype Summary</h4>
                     <div class="phenotype-summary-card">${row['LLM_phenotype_summary']}</div>
                 </div>
             `)

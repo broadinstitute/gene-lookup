@@ -15,15 +15,14 @@
         border-spacing: 12px 6px;
     }
 
-    .left-col {
+    .locus-info-row1 {
         display: flex;
-        padding-right: 20px;
-        justify-content: flex-end;    /* horizontal centering */
+        flex-wrap: wrap;
+        gap: 40px;
     }
-    .right-col {
-        display: flex;
-        padding-left: 20px;
-        justify-content: flex-start;    /* horizontal centering */
+    .locus-info-row1 > div {
+        flex: 1;
+        min-width: 500px;
     }
 
     .source-section {
@@ -33,6 +32,10 @@
 
     .source-section h4 {
         margin-top: 0;
+    }
+
+    #external-links {
+        padding-left: 15px;
     }
 
     #external-links a {
@@ -77,14 +80,14 @@
         <div class="three wide column"></div>
     </div>
     <div class="ui row">
-        <div class="two wide column"></div>
-        <div class="six wide column" style="min-width: 600px !important;">
-            <div id="locus-page-row1-box1" class="left-col"></div>
+        <div class="three wide column"></div>
+        <div class="ten wide column">
+            <div class="locus-info-row1">
+                <div id="locus-page-row1-box1"></div>
+                <div id="locus-page-row1-box2"></div>
+            </div>
         </div>
-        <div class="six wide column">
-            <div id="locus-page-row1-box2" class="right-col"></div>
-        </div>
-        <div class="two wide column"></div>
+        <div class="three wide column"></div>
     </div>
     <div class="ui row" style="padding-bottom: 0;">
         <div class="three wide column"></div>
@@ -321,32 +324,33 @@
         $('#locus-page-row1-box2').html(box2)
 
         // --- External Resource Links ---
-        const externalLinks = []
+        const externalLinksLine1 = []
+        const externalLinksLine2 = []
         const link = (label, url) => `<a href="${url}" target="_blank">${label}</a>`
         const mimNumbers = (row['OMIM_mim_number'] || '').split(';').map(m => m.trim()).filter(m => m)
-        if (mimNumbers.length > 0) externalLinks.push(link('OMIM', `https://omim.org/entry/${mimNumbers[0]}`))
-        if (geneSymbol) externalLinks.push(link('PanelAppUK', `https://panelapp.genomicsengland.co.uk/panels/entities/${geneSymbol}`))
-        if (geneSymbol) externalLinks.push(link('PanelAppAU', `https://panelapp-aus.org/panels/entities/${geneSymbol}`))
-        if (hgncId) externalLinks.push(link('ClinGen', `https://search.clinicalgenome.org/kb/gene-dosage/${hgncId}`))
-        if (hgncId) externalLinks.push(link('GenCC', `https://search.thegencc.org/genes/${hgncId}`))
-        if (geneId) externalLinks.push(link('Decipher', `https://www.deciphergenomics.org/gene/${geneId}/overview/protein-genomic-info`))
-        if (geneId) externalLinks.push(link('gnomAD', `https://gnomad.broadinstitute.org/gene/${geneId}?dataset=gnomad_r4`))
-        if (geneSymbol) externalLinks.push(link('ClinVar', `https://www.ncbi.nlm.nih.gov/clinvar?term=${geneSymbol}[gene]`))
-        if (geneSymbol) externalLinks.push(link('HGMD', `https://my.qiagendigitalinsights.com/bbp/view/hgmd/pro/gene.php?gene=${geneSymbol}`))
+        if (mimNumbers.length > 0) externalLinksLine1.push(link('OMIM', `https://omim.org/entry/${mimNumbers[0]}`))
+        if (geneSymbol) externalLinksLine1.push(link('PanelAppUK', `https://panelapp.genomicsengland.co.uk/panels/entities/${geneSymbol}`))
+        if (geneSymbol) externalLinksLine1.push(link('PanelAppAU', `https://panelapp-aus.org/panels/entities/${geneSymbol}`))
+        if (hgncId) externalLinksLine1.push(link('ClinGen', `https://search.clinicalgenome.org/kb/gene-dosage/${hgncId}`))
+        if (hgncId) externalLinksLine1.push(link('GenCC', `https://search.thegencc.org/genes/${hgncId}`))
+        if (geneId) externalLinksLine1.push(link('Decipher', `https://www.deciphergenomics.org/gene/${geneId}/overview/protein-genomic-info`))
+        if (geneSymbol) externalLinksLine1.push(link('ClinVar', `https://www.ncbi.nlm.nih.gov/clinvar?term=${geneSymbol}[gene]`))
+        if (geneSymbol) externalLinksLine1.push(link('HGMD', `https://my.qiagendigitalinsights.com/bbp/view/hgmd/pro/gene.php?gene=${geneSymbol}`))
+        if (geneId) externalLinksLine1.push(link('GeneCards', `https://www.genecards.org/cgi-bin/carddisp.pl?gene=${geneId}`))
+        if (geneId) externalLinksLine1.push(link('NCBI Gene', `https://www.ncbi.nlm.nih.gov/gene/?term=${geneId}`))
+        if (geneSymbol) externalLinksLine1.push(link('Monarch', `https://monarchinitiative.org/explore?search=${geneSymbol}#search`))
+        if (geneSymbol) externalLinksLine1.push(link('Geno2MP', `https://geno2mp.gs.washington.edu/Geno2MP/#/gene/${geneSymbol}/gene/0/0/0`))
+        if (geneId) externalLinksLine2.push(link('gnomAD', `https://gnomad.broadinstitute.org/gene/${geneId}?dataset=gnomad_r4`))
+        if (geneSymbol) externalLinksLine2.push(link('primAD', `https://primad.basespace.illumina.com/gene/${geneSymbol}`))
+        if (geneId) externalLinksLine2.push(link('GTEx', `https://www.gtexportal.org/home/gene/${geneId}`))
+        if (geneId) externalLinksLine2.push(link('Protein Atlas', `https://www.proteinatlas.org/${geneId}/tissue`))
+        if (geneId) externalLinksLine2.push(link('UniProt', `https://www.uniprot.org/uniprot?query=${geneId}+AND(reviewed:true)+AND(organism_id:9606)`))
+        if (geneSymbol) externalLinksLine2.push(link('KEGG', `https://www.kegg.jp/kegg-bin/search_pathway_text?keyword=${geneSymbol}&viewImage=true`))
         if (geneSymbol) {
             const allNames = [geneSymbol, ...(row['gene_aliases'] || '').split(',').map(s => s.trim()).filter(s => s)]
-            externalLinks.push(link('PubMed', `https://www.ncbi.nlm.nih.gov/pubmed/?term=(${allNames.join(' OR ')})`))
+            externalLinksLine2.push(link('PubMed', `https://www.ncbi.nlm.nih.gov/pubmed/?term=(${allNames.join(' OR ')})`))
         }
-        if (geneId) externalLinks.push(link('GeneCards', `https://www.genecards.org/cgi-bin/carddisp.pl?gene=${geneId}`))
-        if (geneId) externalLinks.push(link('Protein Atlas', `https://www.proteinatlas.org/${geneId}/tissue`))
-        if (geneId) externalLinks.push(link('NCBI Gene', `https://www.ncbi.nlm.nih.gov/gene/?term=${geneId}`))
-        if (geneId) externalLinks.push(link('GTEx', `https://www.gtexportal.org/home/gene/${geneId}`))
-        if (geneSymbol) externalLinks.push(link('Monarch', `https://monarchinitiative.org/explore?search=${geneSymbol}#search`))
-        if (geneId) externalLinks.push(link('UniProt', `https://www.uniprot.org/uniprot?query=${geneId}+AND(reviewed:true)+AND(organism_id:9606)`))
-        if (geneSymbol) externalLinks.push(link('Geno2MP', `https://geno2mp.gs.washington.edu/Geno2MP/#/gene/${geneSymbol}/gene/0/0/0`))
-        if (geneSymbol) externalLinks.push(link('primAD', `https://primad.basespace.illumina.com/gene/${geneSymbol}`))
-        if (geneSymbol) externalLinks.push(link('KEGG', `https://www.kegg.jp/kegg-bin/search_pathway_text?keyword=${geneSymbol}&viewImage=true`))
-        $('#external-links').html(externalLinks.join(''))
+        $('#external-links').html(`<div>${externalLinksLine1.join('')}</div><div style="margin-top: 5px;">${externalLinksLine2.join('')}</div>`)
 
         // --- Phenotype Summary ---
         if (row['LLM_phenotype_summary']) {

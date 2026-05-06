@@ -20,7 +20,7 @@
 <a name="q1"></a>
 <b>Q1: How do I use Gene Lookup?</b><br />
 <br />
-Gene Lookup allows you to search for genes by name, disease, or genomic region. You can also apply advanced filters for inheritance mode, data source, constraint scores, ClinGen classification, and disease category.<br />
+Gene Lookup allows you to search by gene name, genomic region, disease name, or phenotype. You can also apply advanced filters for inheritance mode, data source, constraint scores, ClinGen classification, or other structured fields.<br />
 <br />
 <i>Example use cases:</i>
 <div style="margin-left: 20px">
@@ -44,21 +44,21 @@ Gene Lookup allows you to search for genes by name, disease, or genomic region. 
 <a name="q2"></a>
 <b>Q2: What data sources are included?</b><br />
 <br />
-Gene Lookup aggregates gene-disease association data from the following curated sources:<br />
+Gene Lookup aggregates gene-disease association data from the following sources:<br />
 <br />
 <div style="margin-left: 20px">
 <ul>
-    <li><b>OMIM</b> &mdash; Online Mendelian Inheritance in Man</li>
-    <li><b>ClinGen</b> &mdash; Gene-disease validity classifications</li>
-    <li><b>GenCC</b> &mdash; Gene Curation Coalition</li>
-    <li><b>PanelApp UK</b> &mdash; Genomics England PanelApp</li>
-    <li><b>PanelApp AU</b> &mdash; Australian Genomics PanelApp</li>
-    <li><b>DECIPHER</b> &mdash; DDG2P gene-disease associations</li>
-    <li><b>ClinVar</b> &mdash; Pathogenic/likely pathogenic variant annotations</li>
-    <li><b>Fridman et al. 2025</b> &mdash; Autosomal recessive gene-disease associations</li>
+    <li><b><a href="https://omim.org/" target="_blank">OMIM</a></b> &mdash; Online Mendelian Inheritance in Man</li>
+    <li><b><a href="https://clinicalgenome.org/" target="_blank">ClinGen</a></b> &mdash; Gene-disease validity classifications</li>
+    <li><b><a href="https://thegencc.org/" target="_blank">GenCC</a></b> &mdash; Gene Curation Coalition</li>
+    <li><b><a href="https://panelapp.genomicsengland.co.uk/" target="_blank">PanelApp UK</a></b> &mdash; Genomics England PanelApp</li>
+    <li><b><a href="https://panelapp.agha.umccr.org/" target="_blank">PanelApp Australia</a></b> &mdash; Australian Genomics PanelApp</li>
+    <li><b><a href="https://www.deciphergenomics.org/" target="_blank">DECIPHER</a></b> &mdash; DDG2P gene-disease associations</li>
+    <li><b><a href="https://www.ncbi.nlm.nih.gov/clinvar/" target="_blank">ClinVar</a></b> &mdash; Pathogenic/likely pathogenic variant annotations</li>
+    <li><b><a href="https://pubmed.ncbi.nlm.nih.gov/40374730/" target="_blank">Fridman et al. 2025</a></b> &mdash; Autosomal recessive gene-disease associations</li>
+    <li><b><a href="https://gnomad.broadinstitute.org/" target="_blank">gnomAD constraint metrics</a></b> &mdash; pLI, LOEUF, and Missense O/E from gnomAD v4</li>
 </ul>
 </div>
-Gene constraint metrics (pLI, LOEUF, Missense O/E) are from gnomAD v4.
 
 <hr class="separator">
 <a name="q3"></a>
@@ -78,13 +78,13 @@ Constraint scores from gnomAD v4 reflect how tolerant a gene is to different typ
 <a name="q4"></a>
 <b>Q4: What is the phenotype summary?</b><br />
 <br />
-The phenotype summary column contains AI-generated summaries of the disease phenotypes associated with each gene. These summaries are created by aggregating phenotype descriptions from all data sources and using a large language model to produce a concise overview. They are intended as a quick reference and should be verified against the original source data for clinical use.
+The summary is created by aggregating phenotype descriptions from the data sources listed in Q2 and feeding them into a large language model (Gemini Flash) to produce a concise summary. 
 
 <hr class="separator">
 <a name="q5"></a>
 <b>Q5: How do I report issues or suggest improvements?</b><br />
 <br />
-Please open an issue on the <a href="https://github.com/broadinstitute/annotation-utils/issues" target="_blank">GitHub repository</a> or email <i>weisburd</i><i>@</i><i>broadinstitute.org</i><br />
+Open an issue on the <a href="https://github.com/broadinstitute/annotation-utils/issues" target="_blank">GitHub repository</a> or email <i>weisburd</i><i>@</i><i>broadinstitute.org</i><br />
 
 </div>
 <div style="padding-bottom: 700px;"></div>

@@ -992,7 +992,19 @@
 
     const escapeSqlString = (s) => String(s).replace(/'/g, "''")
 
-    const getSourcesBadges = (sourcesStr) => {
+    const SOURCE_BADGE_URL_BUILDERS = {
+        'OMIM':       ({ mimNumber }) => mimNumber ? `https://omim.org/entry/${encodeURIComponent(mimNumber)}` : null,
+        'ClinGen':    ({ hgncId }) => hgncId ? `https://search.clinicalgenome.org/kb/gene-dosage/${hgncId}` : null,
+        'GenCC':      ({ hgncId }) => hgncId ? `https://search.thegencc.org/genes/${hgncId}` : null,
+        'PanelAppUK': ({ geneSymbol }) => geneSymbol ? `https://panelapp.genomicsengland.co.uk/panels/entities/${geneSymbol}` : null,
+        'PanelAppAU': ({ geneSymbol }) => geneSymbol ? `https://panelapp-aus.org/panels/entities/${geneSymbol}` : null,
+        'Decipher':   ({ ensemblId }) => ensemblId ? `https://www.deciphergenomics.org/gene/${ensemblId}/overview/protein-genomic-info` : null,
+        'ClinVar':    ({ geneSymbol }) => geneSymbol ? `https://www.ncbi.nlm.nih.gov/clinvar?term=${geneSymbol}[gene]` : null,
+        'Fridman':    () => 'https://pubmed.ncbi.nlm.nih.gov/40374730/',
+        'dbNSFP':     () => 'https://www.dbnsfp.org/',
+    }
+
+    const getSourcesBadges = (sourcesStr, ids = null) => {
         if (!sourcesStr) return ''
         // Format is like "3: OMIM, ClinGen, GenCC"
         const match = sourcesStr.match(/^(\d+):\s*(.*)$/)
@@ -1002,7 +1014,13 @@
 
         const pastelColors = ['#e8d5d5', '#d5dfe8', '#d5e8db', '#e8e2d5', '#ddd5e8', '#d5e8e6', '#e8d5e0', '#e0e8d5']
 
-        const makeBadge = (src, i) => `<span class="ui mini label" style="background-color: ${pastelColors[i % pastelColors.length]}; color: #333; margin: 1px;">${src}</span>`
+        const makeBadge = (src, i) => {
+            const badge = `<span class="ui mini label" style="background-color: ${pastelColors[i % pastelColors.length]}; color: #333; margin: 1px;">${src}</span>`
+            if (!ids) return badge
+            const builder = SOURCE_BADGE_URL_BUILDERS[src]
+            const url = builder ? builder(ids) : null
+            return url ? `<a href="${url}" target="_blank" style="text-decoration: none;">${badge}</a>` : badge
+        }
 
         const inlineBadges = sourcesList.slice(0, 2).map(makeBadge).join(' ')
         if (sourcesList.length <= 2) return inlineBadges
@@ -1912,7 +1930,13 @@
         // --- Right column (row1-box2) ---
         let box2 = '<table class="locus-info-table">'
         box2 += `<tr><td class="locus-info-label">Inheritance:</td><td>${row['inheritance'] || ''}</td></tr>`
-        box2 += `<tr><td class="locus-info-label">Sources:</td><td>${getSourcesBadges(row['sources'])}</td></tr>`
+        const sourceBadgeIds = {
+            geneSymbol,
+            hgncId,
+            ensemblId: geneId,
+            mimNumber: (row['OMIM_mim_number'] || '').split(';').map(m => m.trim()).filter(m => m)[0] || '',
+        }
+        box2 += `<tr><td class="locus-info-label">Sources:</td><td>${getSourcesBadges(row['sources'], sourceBadgeIds)}</td></tr>`
 
         // Constraint scores
         const pliV2 = row['pLI_v2'] != null ? row['pLI_v2'].toFixed(2) : ''
@@ -1933,6 +1957,14 @@
         const link = (label, url) => `<a href="${url}" target="_blank">${label}</a>`
         const mimNumbers = (row['OMIM_mim_number'] || '').split(';').map(m => m.trim()).filter(m => m)
         if (mimNumbers.length > 0) externalLinks.push(link('OMIM', `https://omim.org/entry/${mimNumbers[0]}`))
+        if (geneSymbol) externalLinks.push(link('PanelAppUK', `https://panelapp.genomicsengland.co.uk/panels/entities/${geneSymbol}`))
+        if (geneSymbol) externalLinks.push(link('PanelAppAU', `https://panelapp-aus.org/panels/entities/${geneSymbol}`))
+        if (hgncId) externalLinks.push(link('ClinGen', `https://search.clinicalgenome.org/kb/gene-dosage/${hgncId}`))
+        if (hgncId) externalLinks.push(link('GenCC', `https://search.thegencc.org/genes/${hgncId}`))
+        if (geneId) externalLinks.push(link('Decipher', `https://www.deciphergenomics.org/gene/${geneId}/overview/protein-genomic-info`))
+        if (geneId) externalLinks.push(link('gnomAD', `https://gnomad.broadinstitute.org/gene/${geneId}?dataset=gnomad_r4`))
+        if (geneSymbol) externalLinks.push(link('ClinVar', `https://www.ncbi.nlm.nih.gov/clinvar?term=${geneSymbol}[gene]`))
+        if (geneSymbol) externalLinks.push(link('HGMD', `https://my.qiagendigitalinsights.com/bbp/view/hgmd/pro/gene.php?gene=${geneSymbol}`))
         if (geneSymbol) {
             const allNames = [geneSymbol, ...(row['gene_aliases'] || '').split(',').map(s => s.trim()).filter(s => s)]
             externalLinks.push(link('PubMed', `https://www.ncbi.nlm.nih.gov/pubmed/?term=(${allNames.join(' OR ')})`))
@@ -1940,17 +1972,12 @@
         if (geneId) externalLinks.push(link('GeneCards', `https://www.genecards.org/cgi-bin/carddisp.pl?gene=${geneId}`))
         if (geneId) externalLinks.push(link('Protein Atlas', `https://www.proteinatlas.org/${geneId}/tissue`))
         if (geneId) externalLinks.push(link('NCBI Gene', `https://www.ncbi.nlm.nih.gov/gene/?term=${geneId}`))
-        if (geneId) externalLinks.push(link('GTEx Portal', `https://www.gtexportal.org/home/gene/${geneId}`))
+        if (geneId) externalLinks.push(link('GTEx', `https://www.gtexportal.org/home/gene/${geneId}`))
         if (geneSymbol) externalLinks.push(link('Monarch', `https://monarchinitiative.org/explore?search=${geneSymbol}#search`))
-        if (geneId) externalLinks.push(link('Decipher', `https://www.deciphergenomics.org/gene/${geneId}/overview/protein-genomic-info`))
         if (geneId) externalLinks.push(link('UniProt', `https://www.uniprot.org/uniprot?query=${geneId}+AND(reviewed:true)+AND(organism_id:9606)`))
         if (geneSymbol) externalLinks.push(link('Geno2MP', `https://geno2mp.gs.washington.edu/Geno2MP/#/gene/${geneSymbol}/gene/0/0/0`))
-        if (geneId) externalLinks.push(link('gnomAD', `https://gnomad.broadinstitute.org/gene/${geneId}?dataset=gnomad_r4`))
         if (geneSymbol) externalLinks.push(link('primAD', `https://primad.basespace.illumina.com/gene/${geneSymbol}`))
         if (geneSymbol) externalLinks.push(link('KEGG', `https://www.kegg.jp/kegg-bin/search_pathway_text?keyword=${geneSymbol}&viewImage=true`))
-        if (hgncId) externalLinks.push(link('ClinGen', `https://search.clinicalgenome.org/kb/gene-dosage/${hgncId}`))
-        if (geneSymbol) externalLinks.push(link('ClinVar', `https://www.ncbi.nlm.nih.gov/clinvar?term=${geneSymbol}[gene]`))
-        if (geneSymbol) externalLinks.push(link('HGMD', `https://my.qiagendigitalinsights.com/bbp/view/hgmd/pro/gene.php?gene=${geneSymbol}`))
         $('#external-links').html(externalLinks.join(''))
 
         // --- Phenotype Summary ---

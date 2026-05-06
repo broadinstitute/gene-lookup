@@ -175,7 +175,19 @@
 
     const escapeSqlString = (s) => String(s).replace(/'/g, "''")
 
-    const getSourcesBadges = (sourcesStr) => {
+    const SOURCE_BADGE_URL_BUILDERS = {
+        'OMIM':       ({ mimNumber }) => mimNumber ? `https://omim.org/entry/${encodeURIComponent(mimNumber)}` : null,
+        'ClinGen':    ({ hgncId }) => hgncId ? `https://search.clinicalgenome.org/kb/gene-dosage/${hgncId}` : null,
+        'GenCC':      ({ hgncId }) => hgncId ? `https://search.thegencc.org/genes/${hgncId}` : null,
+        'PanelAppUK': ({ geneSymbol }) => geneSymbol ? `https://panelapp.genomicsengland.co.uk/panels/entities/${geneSymbol}` : null,
+        'PanelAppAU': ({ geneSymbol }) => geneSymbol ? `https://panelapp-aus.org/panels/entities/${geneSymbol}` : null,
+        'Decipher':   ({ ensemblId }) => ensemblId ? `https://www.deciphergenomics.org/gene/${ensemblId}/overview/protein-genomic-info` : null,
+        'ClinVar':    ({ geneSymbol }) => geneSymbol ? `https://www.ncbi.nlm.nih.gov/clinvar?term=${geneSymbol}[gene]` : null,
+        'Fridman':    () => 'https://pubmed.ncbi.nlm.nih.gov/40374730/',
+        'dbNSFP':     () => 'https://www.dbnsfp.org/',
+    }
+
+    const getSourcesBadges = (sourcesStr, ids = null) => {
         if (!sourcesStr) return ''
         // Format is like "3: OMIM, ClinGen, GenCC"
         const match = sourcesStr.match(/^(\d+):\s*(.*)$/)
@@ -185,7 +197,13 @@
 
         const pastelColors = ['#e8d5d5', '#d5dfe8', '#d5e8db', '#e8e2d5', '#ddd5e8', '#d5e8e6', '#e8d5e0', '#e0e8d5']
 
-        const makeBadge = (src, i) => `<span class="ui mini label" style="background-color: ${pastelColors[i % pastelColors.length]}; color: #333; margin: 1px;">${src}</span>`
+        const makeBadge = (src, i) => {
+            const badge = `<span class="ui mini label" style="background-color: ${pastelColors[i % pastelColors.length]}; color: #333; margin: 1px;">${src}</span>`
+            if (!ids) return badge
+            const builder = SOURCE_BADGE_URL_BUILDERS[src]
+            const url = builder ? builder(ids) : null
+            return url ? `<a href="${url}" target="_blank" style="text-decoration: none;">${badge}</a>` : badge
+        }
 
         const inlineBadges = sourcesList.slice(0, 2).map(makeBadge).join(' ')
         if (sourcesList.length <= 2) return inlineBadges

@@ -378,7 +378,7 @@
         if (row['LLM_phenotype_summary']) {
             $('#phenotype-summary-section').html(`
                 <div class="source-section">
-                    <h4>Phenotype Summary:<i class="question circle outline icon" data-html="This is an AI summary of the phenotype descriptions from the sources listed below. It was generated using Gemini 2.5 Flash." data-position="top left"></i></h4>
+                    <h4>Phenotype Summary:<i class="question circle outline icon" style="margin-left: 10px;" data-html="This is an AI summary of the phenotype descriptions from the sources listed below. It was generated using Gemini 2.5 Flash." data-position="top left"></i></h4>
                     <div class="phenotype-summary-card">${row['LLM_phenotype_summary']}</div>
                 </div>
             `)
@@ -498,7 +498,7 @@
             let html = `<div class="source-section"><h4>${clinvarTitle}</h4><table class="locus-info-table">`
             html += `<tr><td class="locus-info-label">Phenotypes:</td><td style="white-space: normal;">${dedupSemicolon(row['CLINVAR_phenotypes'])}</td></tr>`
             html += `<tr><td class="locus-info-label">Clinical Significance:</td><td>${dedupSemicolon(row['CLINVAR_clinical_significance'])}</td></tr>`
-            html += `<tr><td class="locus-info-label">Stars:</td><td>${dedupSemicolon(row['CLINVAR_stars'])}</td></tr>`
+            html += `<tr><td class="locus-info-label">Stars:</td><td>${row['CLINVAR_stars'] != null ? row['CLINVAR_stars'] : ''}</td></tr>`
             html += `<tr><td class="locus-info-label">Variant Consequences:</td><td>${dedupSemicolon(row['CLINVAR_variant_consequences'])}</td></tr>`
             html += '</table></div>'
             $('#source-clinvar').html(html)
@@ -526,6 +526,15 @@
             html += '</table></div>'
             $('#source-dbnsfp').html(html)
         }
+
+        // Hide grid rows whose source section has no rendered content so they don't add vertical space
+        const sourceSectionIds = ['phenotype-summary-section', 'source-omim', 'source-clingen', 'source-gencc',
+            'source-panelapp-uk', 'source-panelapp-au', 'source-decipher', 'source-clinvar',
+            'source-fridman', 'source-dbnsfp']
+        sourceSectionIds.forEach(id => {
+            const $div = $(`#${id}`)
+            $div.closest('.ui.row').toggle($div.children().length > 0)
+        })
 
         $('.question').popup({ on: 'click' })
         $('.show-popup').popup({ on: 'click', hoverable: true })

@@ -2917,20 +2917,47 @@
                 }
             })
 
-            // Gene detail page link — prefer hgnc_gene_id, fall back to ensembl_gene_id
+            // IGV link — only show when the row has a usable locus
+            const hasLocus = row['gene_chrom'] && row['gene_start'] != null && row['gene_end'] != null
+            const igvLink = hasLocus
+                ? `<span class="action-link results-table-igv-link" data-row-index="${index}">IGV</span>`
+                : ''
+
+            // Gene detail page link — prefer hgnc_gene_id, fall back to ensembl_gene_id.
+            // Carry the current search state in the gene page hash so its "Back to search page"
+            // link can return the user to the same results.
             const hgncId = row['hgnc_gene_id'] || ''
             const geneIdForLink = row['ensembl_gene_id'] || ''
+            const searchStateHash = window.location.hash.substring(1)
+            const searchStateSuffix = searchStateHash ? `&${searchStateHash}` : ''
+            let geneLink = ''
             if (hgncId) {
-                tableHtml += `<td style="padding: 8px 10px; white-space: nowrap; text-align: right;"><a href="gene.html#hgnc_gene_id=${encodeURIComponent(hgncId)}" class="ui basic mini button" style="padding: 5px 10px; color: #2185d0; font-weight: 500; border: 1px solid #2185d0; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">gene &gt;</a></td>`
+                geneLink = `<a href="gene.html#hgnc_gene_id=${encodeURIComponent(hgncId)}${searchStateSuffix}" class="ui basic mini button" style="padding: 5px 10px; color: #2185d0; font-weight: 500; border: 1px solid #2185d0; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">gene &gt;</a>`
             } else if (geneIdForLink) {
-                tableHtml += `<td style="padding: 8px 10px; white-space: nowrap; text-align: right;"><a href="gene.html#ensembl_gene_id=${encodeURIComponent(geneIdForLink)}" class="ui basic mini button" style="padding: 5px 10px; color: #2185d0; font-weight: 500; border: 1px solid #2185d0; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">gene &gt;</a></td>`
-            } else {
-                tableHtml += `<td></td>`
+                geneLink = `<a href="gene.html#ensembl_gene_id=${encodeURIComponent(geneIdForLink)}${searchStateSuffix}" class="ui basic mini button" style="padding: 5px 10px; color: #2185d0; font-weight: 500; border: 1px solid #2185d0; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">gene &gt;</a>`
             }
+            const igvGeneSpacer = igvLink && geneLink ? '<span style="display: inline-block; width: 10px;"></span>' : ''
+            tableHtml += `<td style="padding: 8px 10px; white-space: nowrap; text-align: right;">${igvLink}${igvGeneSpacer}${geneLink}</td>`
             tableHtml += '</tr>'
         })
         tableHtml += '</tbody></table>'
         resultsTableElement.html(tableHtml)
+
+        // Per-row IGV link: open IGV (if hidden), scroll the IGV pane into view, and navigate to that gene's locus
+        resultsTableElement.find('.results-table-igv-link').click(async function() {
+            const index = parseInt($(this).data('row-index'), 10)
+            if (Number.isNaN(index)) return
+            if (GLOBAL_PAGE_STATE['showIGV'] !== 1) {
+                GLOBAL_PAGE_STATE['showIGV'] = 1
+                writePersistentPageStateToUrl()
+                $('#igv-row').show()
+                $('#show-igv-divider-text').hide()
+                $('#hide-igv-divider-text').show()
+                await updateIgv()
+            }
+            $('#igv-row')[0].scrollIntoView({ behavior: 'smooth' })
+            await navigateIgvToResult(index)
+        })
 
         // Add click handlers for sortable headers
         resultsTableElement.find('.results-table-sortable-header').click(function() {

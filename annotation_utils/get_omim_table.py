@@ -234,8 +234,10 @@ def get_omim_table():
     X-linked dominant, Somatic mosaicism                            1
     """    
 
-    # rename inheritance
-    omim_df["phenotype_inheritance"] = omim_df["phenotype_inheritance"].map({
+    # Normalize inheritance strings to short codes. Use .replace (not .map) so any
+    # unrecognized OMIM value (e.g. "Multifactorial", "Y-linked", "Pseudoautosomal recessive")
+    # passes through unchanged instead of becoming NaN and being silently dropped downstream.
+    inheritance_mapping = {
         "Autosomal recessive": "AR",
         "Autosomal dominant": "AD",
         "X-linked recessive": "XR",
@@ -250,7 +252,11 @@ def get_omim_table():
         "Somatic mosaicism, Autosomal recessive": "Somatic/AR",
         "Somatic mutation": "Somatic",
         "Mitochondrial": "MITO",
-    })
+    }
+    unmapped = set(omim_df["phenotype_inheritance"].dropna().unique()) - set(inheritance_mapping.keys())
+    if unmapped:
+        print(f"Warning: {len(unmapped)} OMIM phenotype_inheritance values are not in the mapping dict and will be passed through unchanged: {sorted(unmapped)}")
+    omim_df["phenotype_inheritance"] = omim_df["phenotype_inheritance"].replace(inheritance_mapping)
 
     return omim_df[OUTPUT_COLUMNS]
 

@@ -68,6 +68,17 @@ def get_gencc_table():
         "inheritance",
     ]]
 
+    # Drop submissions whose classification doesn't actually support a gene-disease association.
+    # Without this, "Refuted Evidence", "Disputed Evidence" and "No Known Disease Relationship"
+    # rows would be merged in as if they were positive evidence.
+    df = df[df["classification"].isin([
+        "Definitive",
+        "Strong",
+        "Moderate",
+        "Limited",
+        "Supportive",
+    ])]
+
     """
     Autosomal recessive     10132
     Autosomal dominant       8913

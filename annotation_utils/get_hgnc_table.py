@@ -40,8 +40,10 @@ def get_ensg_id_to_hgnc_id_map(remove_duplicate_ensg_ids=False):
         # this is a one to many mapping, so we need to remove the duplicates
         df_hgnc = _remove_duplicate_ensg_ids(df_hgnc)
     else:
-        # group by Ensembl gene ID and join the HGNC IDs by comma
-        df_hgnc = df_hgnc.groupby("Ensembl gene ID").agg({"HGNC ID": lambda x: ",".join(x)}).reset_index()
+        # When an Ensembl gene ID maps to multiple HGNC IDs, keep only the first one. The
+        # downstream consumer interpolates this value into single-ID URLs (genenames.org,
+        # ClinGen, etc.) on the per-gene page, which break for comma-joined multi-IDs.
+        df_hgnc = df_hgnc.groupby("Ensembl gene ID", as_index=False).agg({"HGNC ID": "first"})
 
     ENSG_to_HGNC_map = dict(zip(df_hgnc["Ensembl gene ID"], df_hgnc["HGNC ID"]))
 

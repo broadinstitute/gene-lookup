@@ -86,12 +86,13 @@ def get_gwas_catalog_rare_disease_records():
 
     df_gwas = df_gwas[df_gwas["MONDO_ID"].isin(mondo_rare_disease_term_lookup)]
     df_gwas = df_gwas[[
-        "MONDO_ID", 
+        "MONDO_ID",
         "CHR_ID",
         "CHR_POS",
         "SNPS",
         "UPSTREAM_GENE_ID",
         "DOWNSTREAM_GENE_ID",
+        "SNP_GENE_IDS",
         "UPSTREAM_GENE_DISTANCE",
         "DOWNSTREAM_GENE_DISTANCE",
         "P-VALUE",
@@ -101,9 +102,11 @@ def get_gwas_catalog_rare_disease_records():
     df_gwas["MONDO_NAME"] = df_gwas["MONDO_ID"].apply(lambda x: mondo_rare_disease_term_lookup[x]["name"])
     df_gwas["MONDO_CATEGORY"] = df_gwas["MONDO_ID"].apply(lambda x: mondo_rare_disease_term_lookup[x].get("category"))
 
-    # First melt the gene IDs
+    id_columns = ["MONDO_ID", "MONDO_NAME", "MONDO_CATEGORY", "CHR_ID", "CHR_POS", "SNPS", "P-VALUE", "OR or BETA", "95% CI (TEXT)"]
+
+    # First melt the upstream/downstream gene IDs
     df_genes = df_gwas.melt(
-        id_vars=["MONDO_ID", "MONDO_NAME", "MONDO_CATEGORY", "CHR_ID", "CHR_POS", "SNPS", "P-VALUE", "OR or BETA", "95% CI (TEXT)", "UPSTREAM_GENE_DISTANCE", "DOWNSTREAM_GENE_DISTANCE"],
+        id_vars=id_columns + ["UPSTREAM_GENE_DISTANCE", "DOWNSTREAM_GENE_DISTANCE"],
         value_vars=["UPSTREAM_GENE_ID", "DOWNSTREAM_GENE_ID"],
         var_name="GENE_TYPE",
         value_name="GENE_ID"
@@ -111,21 +114,30 @@ def get_gwas_catalog_rare_disease_records():
     df_genes["GENE_TYPE"] = df_genes["GENE_TYPE"].str.replace("_GENE_ID", "")
     df_genes = df_genes[df_genes["GENE_ID"].notna()]
 
-    # Then melt the distances
+    # Then melt the distances and pair each gene with its matching distance
     df_genes_and_distances = df_genes.melt(
-        id_vars=["MONDO_ID", "MONDO_NAME", "MONDO_CATEGORY", "CHR_ID", "CHR_POS", "SNPS", "P-VALUE", "OR or BETA", "95% CI (TEXT)", "GENE_ID", "GENE_TYPE"],
+        id_vars=id_columns + ["GENE_ID", "GENE_TYPE"],
         value_vars=["UPSTREAM_GENE_DISTANCE", "DOWNSTREAM_GENE_DISTANCE"],
         var_name="DISTANCE_TYPE",
         value_name="GENE_DISTANCE"
     )
-
-    # Clean up the type columns to match
     df_genes_and_distances["DISTANCE_TYPE"] = df_genes_and_distances["DISTANCE_TYPE"].str.replace("_GENE_DISTANCE", "")
     df_genes_and_distances = df_genes_and_distances[
         df_genes_and_distances["GENE_DISTANCE"].notna() & (df_genes_and_distances["GENE_TYPE"] == df_genes_and_distances["DISTANCE_TYPE"])
     ]
+    df_genes_and_distances = df_genes_and_distances.drop(columns=["DISTANCE_TYPE"])
 
-    df_gwas = df_genes_and_distances.drop(columns=["DISTANCE_TYPE"])
+    # Intragenic SNP gene hits (SNP_GENE_IDS may be a comma-separated list of one or more ENSG IDs)
+    df_intragenic = df_gwas[df_gwas["SNP_GENE_IDS"].notna()][id_columns + ["SNP_GENE_IDS"]].copy()
+    df_intragenic["GENE_ID"] = df_intragenic["SNP_GENE_IDS"].str.split(",")
+    df_intragenic = df_intragenic.explode("GENE_ID")
+    df_intragenic["GENE_ID"] = df_intragenic["GENE_ID"].str.strip()
+    df_intragenic = df_intragenic[df_intragenic["GENE_ID"].astype(bool)]
+    df_intragenic["GENE_TYPE"] = "INTRAGENIC"
+    df_intragenic["GENE_DISTANCE"] = float("nan")
+    df_intragenic = df_intragenic.drop(columns=["SNP_GENE_IDS"])
+
+    df_gwas = pd.concat([df_genes_and_distances, df_intragenic], ignore_index=True)
     
     return df_gwas
     

@@ -55,12 +55,14 @@ def get_dbnsfp_gene_table():
     df = df[disease_mask]
     print(f"Kept {len(df):,d} disease-associated genes")
 
-    # Handle multi-ENSG rows: explode on ";" and deduplicate
+    # Handle multi-ENSG rows: explode on ";" so each row has one ENSG. Two source rows can
+    # share an ENSG (e.g. when their Ensembl_gene fields overlap), so we merge those rows
+    # below — dropping duplicates with keep="first" would silently discard the second row's
+    # column values.
     df["Ensembl_gene"] = df["Ensembl_gene"].str.split(";")
     df = df.explode("Ensembl_gene")
     df["Ensembl_gene"] = df["Ensembl_gene"].str.strip()
     df = df[df["Ensembl_gene"].notna() & (df["Ensembl_gene"] != "") & (df["Ensembl_gene"] != ".")]
-    df = df.drop_duplicates(subset=["Ensembl_gene"], keep="first")
 
     # Select and rename columns
     columns_to_keep = ["Ensembl_gene"] + list(COLUMN_RENAME_MAP.keys())
@@ -77,6 +79,32 @@ def get_dbnsfp_gene_table():
     string_cols = [c for c in df.columns if c != "Ensembl_gene" and c != "DBNSFP_p_rec"]
     for col in string_cols:
         df[col] = df[col].str.replace(r";\s*", "; ", regex=True)
+
+    # Merge rows that share an Ensembl_gene by concatenating unique "; "-separated parts
+    # from every source row's value (so data from row "ENSG1;ENSG2" and row "ENSG2;ENSG3"
+    # are both preserved on the shared ENSG2 row). DBNSFP_p_rec is a per-gene probability;
+    # take the max non-empty value across rows.
+    def _join_unique_parts(values):
+        seen = set()
+        out = []
+        for v in values:
+            if not v:
+                continue
+            for part in str(v).split(";"):
+                part = part.strip()
+                if not part or part in seen:
+                    continue
+                seen.add(part)
+                out.append(part)
+        return "; ".join(out)
+
+    def _max_numeric(values):
+        floats = [float(v) for v in values if v != "" and not pd.isna(v)]
+        return str(max(floats)) if floats else ""
+
+    agg_funcs = {col: (_max_numeric if col == "DBNSFP_p_rec" else _join_unique_parts)
+                 for col in df.columns if col != "Ensembl_gene"}
+    df = df.groupby("Ensembl_gene", as_index=False).agg(agg_funcs)
 
     df = df.rename(columns={"Ensembl_gene": "gene_id"})
 

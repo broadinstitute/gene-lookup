@@ -9,7 +9,10 @@ import time
 
 CACHE_DIR = os.path.expanduser("~/.annotations")
 
-FORCE_DOWNLOAD = os.getenv("FORCE_DOWNLOAD") == "1"
+# Read FORCE_DOWNLOAD at call time (not import time) so callers can set the env var after
+# importing modules that wrap themselves with these decorators.
+def _force_download():
+    return os.getenv("FORCE_DOWNLOAD") == "1"
 
 def cache_data_table(get_table_func):
     """Decorator that caches the pandas DataFrame returned by the decorated function.
@@ -34,7 +37,7 @@ def cache_data_table(get_table_func):
 
         # use the cached file if it's less than 5 days old
         if (
-            not FORCE_DOWNLOAD and
+            not _force_download() and
             os.path.isfile(cache_file_path) and
             os.path.getmtime(cache_file_path) > time.time() - 5 * 24 * 60 * 60
         ):
@@ -78,7 +81,7 @@ def cache_json(get_json_func):
 
         # use the cached file if it's less than 5 days old
         if (
-            not FORCE_DOWNLOAD and
+            not _force_download() and
             os.path.isfile(cache_file_path) and
             os.path.getmtime(cache_file_path) > time.time() - 5 * 24 * 60 * 60
         ):

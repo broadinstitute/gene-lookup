@@ -124,11 +124,19 @@ def get_clinvar_gene_disease_table():
 
     # filter out rows where gene_ids is empty
     ht = ht.filter(hl.len(ht.gene_id) > 0, keep=True)
-    ht = ht.annotate(phenotypes=hl.array(hl.sorted(hl.set(ht.submissions.map(lambda x: hl.str(", ").join(x.conditions.map(lambda y: y.name)))))))
+    # Flatten each submission's conditions into a single deduped, sorted list of condition
+    # names. Drop "not provided" / "not specified" at the condition level (a row containing
+    # both a real condition and "not provided" would otherwise leak the placeholder into the
+    # output). Join with "; " — ClinVar condition names commonly contain ", " (e.g.
+    # "Cardiomyopathy, dilated, 1A"), so a comma separator gets shredded by the later split.
+    ht = ht.annotate(phenotypes=hl.array(hl.sorted(hl.set(
+        ht.submissions
+            .flatmap(lambda x: x.conditions.map(lambda y: y.name))
+            .filter(lambda p: (p.lower() != "not provided") & (p.lower() != "not specified"))
+    ))))
     # filter out rows where phenotypes is empty
     ht = ht.filter(hl.len(ht.phenotypes) > 0, keep=True)
-    ht = ht.annotate(phenotypes = hl.str(", ").join(ht.phenotypes))
-    ht = ht.filter(ht.phenotypes != "not provided", keep=True)
+    ht = ht.annotate(phenotypes=hl.str("; ").join(ht.phenotypes))
 
     ht = ht.annotate(major_consequences = hl.str(", ").join(hl.array(hl.sorted(hl.set(ht.transcript_consequences.map(lambda x: x.major_consequence))))))
 
@@ -150,7 +158,7 @@ def get_clinvar_gene_disease_table():
     
     # group by gene_id and combine the other fields using ; as a separator
     df = df.groupby("gene_id").agg({
-        "phenotypes": lambda x: ", ".join(sorted(set(", ".join(x).split(", ")))),
+        "phenotypes": lambda x: "; ".join(sorted(set("; ".join(x).split("; ")))),
         "clinical_significance": lambda x: ", ".join(sorted(set(", ".join(x).split(", ")))),
         "gold_stars": lambda x: max(x),
         "major_consequences": lambda x: ", ".join(sorted(set(", ".join(x).split(", ")))),

@@ -58,28 +58,15 @@ def get_clingen_haploinsufficient_genes_table():
         30: Some evidence a region is haploinsufficient.
         40: Strong evidence a region is haploinsufficient.
     """
-    r = requests.get("https://search.clinicalgenome.org/kb/gene-dosage/download")
-    if not r.ok:
-        raise Exception(f"Failed to download ClinGen dosage sensitivity table: {r}")
-    lines = r.content.decode('UTF-8').split("\n")
-    header_idx = None
-    for i, line in enumerate(lines):
-        if '"GENE SYMBOL"' in line:
-            header_idx = i
-            break
-    if header_idx is None:
-        raise ValueError("Could not find header line containing 'GENE SYMBOL' in ClinGen dosage download")
-    data_start = header_idx + 1
-    if data_start < len(lines) and lines[data_start].startswith('"+++'):
-        data_start += 1
-    table_contents = "\n".join([lines[header_idx]] + lines[data_start:])
-    df = pd.read_csv(StringIO(table_contents))
+    df = _get_clingen_table("https://search.clinicalgenome.org/kb/gene-dosage/download")
     df = df[["HGNC ID", "HAPLOINSUFFICIENCY"]]
     # Substring-match the exclusion keywords so that we catch both the legacy labels
     # ("Dosage Sensitivity Unlikely") and the current longer ones ("Dosage Sensitivity
     # Unlikely for Haploinsufficiency"). Without this, genes like PCSK9 / GJB2 that ClinGen
     # now flags as "Unlikely" still get propagated as CLINGEN_haploinsufficient.
-    exclude_pattern = r"Unlikely|No Evidence|Little Evidence"
+    # Also drop "Gene Associated with Autosomal Recessive Phenotype" — ClinGen uses this
+    # in the HI column for biallelic-disease genes where haploinsufficiency doesn't apply.
+    exclude_pattern = r"Unlikely|No Evidence|Little Evidence|Autosomal Recessive"
     df = df[~df["HAPLOINSUFFICIENCY"].fillna("").str.contains(exclude_pattern, case=False, regex=True)]
     return df
 

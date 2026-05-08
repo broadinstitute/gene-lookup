@@ -34,13 +34,13 @@ print_example_genes = args.print_example_genes
 separator = "; "
 
 def safe_max(values, default=float('nan')):
-    """Return max of non-empty values, or default if all values are empty."""
-    non_empty = [float(v) for v in values if v != ""]
+    """Return max of non-empty, non-NaN values, or default if none remain."""
+    non_empty = [float(v) for v in values if v != "" and not pd.isna(v)]
     return max(non_empty) if non_empty else default
 
 def safe_min(values, default=float('nan')):
-    """Return min of non-empty values, or default if all values are empty."""
-    non_empty = [float(v) for v in values if v != ""]
+    """Return min of non-empty, non-NaN values, or default if none remain."""
+    non_empty = [float(v) for v in values if v != "" and not pd.isna(v)]
     return min(non_empty) if non_empty else default
 
 def normalize_nulls(x):
@@ -287,7 +287,9 @@ print(f"Got {len(df_panel_app):,d} rows from PanelApp, containing {len(df_panel_
 df_panel_app["phenotypes"] = df_panel_app["phenotypes"].str.replace("No OMIM phenotype", "")
 
 before = len(df_panel_app)
-df_panel_app["gene_id"] = df_panel_app["gene_id"].fillna(df_panel_app["hgnc"].map(HGNC_to_ENSG_map))
+# get_panel_app_table writes "" (not NaN) when the API result has no GRCh38 Ensembl ID.
+# Convert "" to NaN so the HGNC fallback below actually fires for those rows.
+df_panel_app["gene_id"] = df_panel_app["gene_id"].replace("", pd.NA).fillna(df_panel_app["hgnc"].map(HGNC_to_ENSG_map))
 df_panel_app = df_panel_app[df_panel_app["gene_id"].notna() & (df_panel_app["gene_id"] != "")]
 df_panel_app = df_panel_app[df_panel_app["phenotypes"].notna() & (df_panel_app["phenotypes"] != "")]
 print("\t", f"Kept {len(df_panel_app):,d} out of {before:,d} ({(len(df_panel_app) / before):.1%}) rows which had a gene id and a phenotype")

@@ -634,7 +634,10 @@
         // Genomic region: chr1:12345-67890
         const regionMatch = q.match(REFERENCE_REGION_REGEXP)
         if (regionMatch) {
-            const chrom = regionMatch[1]
+            // gene_chrom is sourced from Ensembl seq_region.name and stored uppercase, with
+            // mitochondrial as 'MT' (not 'M'). Normalize the user-supplied chrom to match.
+            let chrom = regionMatch[1].toUpperCase()
+            if (chrom === 'M') chrom = 'MT'
             const start = parseInt(regionMatch[2].replace(/,/g, ''))
             const end = parseInt(regionMatch[3].replace(/,/g, ''))
             return `(gene_chrom = '${chrom}' AND gene_start < ${end} AND gene_end > ${start})`
@@ -697,7 +700,16 @@
             if (!allowedOps.has(op)) continue
 
             if (op === 'IS NULL' || op === 'IS NOT NULL') {
-                clauses.push(`${col} ${op}`)
+                // load_bigquery.py fills NaN in object columns with '' before upload, so
+                // absent string values are stored as empty strings, not NULL. Match both.
+                const colType = BIGQUERY_COLUMN_TYPES[col]
+                if (colType !== 'INTEGER' && colType !== 'FLOAT') {
+                    clauses.push(op === 'IS NULL'
+                        ? `(${col} IS NULL OR ${col} = '')`
+                        : `(${col} IS NOT NULL AND ${col} != '')`)
+                } else {
+                    clauses.push(`${col} ${op}`)
+                }
             } else if (op === 'LIKE') {
                 const escapedValue = val.replace(/'/g, "''")
                 clauses.push(`${col} LIKE '${escapedValue}'`)

@@ -89,8 +89,10 @@ def get_gencc_table():
     Y-linked inheritance        2
     X-linked recessive          2
     """
-    # rename using dictionary
-    df["inheritance"] = df["inheritance"].map({
+    # Normalize inheritance strings to short codes. Use .replace (not .map) so any
+    # unrecognized GenCC value (e.g. "Unknown") passes through unchanged instead of
+    # becoming NaN and being silently dropped downstream.
+    inheritance_mapping = {
         "Autosomal recessive": "AR",
         "Autosomal dominant": "AD",
         "Semidominant": "SD",
@@ -98,7 +100,11 @@ def get_gencc_table():
         "X-linked recessive": "XR",
         "X-linked": "XR",
         "Y-linked inheritance": "YL",
-    })
+    }
+    unmapped = set(df["inheritance"].dropna().unique()) - set(inheritance_mapping.keys())
+    if unmapped:
+        print(f"Warning: {len(unmapped)} GenCC inheritance values are not in the mapping dict and will be passed through unchanged: {sorted(unmapped)}")
+    df["inheritance"] = df["inheritance"].replace(inheritance_mapping)
 
     return df
 

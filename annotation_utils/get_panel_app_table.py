@@ -75,7 +75,10 @@ def get_panel_app_table():
     Other - please specifiy in evaluation comments                                                                                                34
     Other - please specify in evaluation comments                                                                                                 14
     """
-    df["mode_of_inheritance"] = df["mode_of_inheritance"].map({
+    # Normalize inheritance strings to short codes. Use .replace (not .map) so any
+    # unrecognized PanelApp value passes through unchanged instead of becoming NaN
+    # and being silently dropped downstream.
+    inheritance_mapping = {
         "BIALLELIC, autosomal or pseudoautosomal": "AR",
         "MONOALLELIC, autosomal or pseudoautosomal, NOT imprinted": "AD",
         "MONOALLELIC, autosomal or pseudoautosomal, imprinted status unknown": "AD",
@@ -90,7 +93,11 @@ def get_panel_app_table():
         "MONOALLELIC, autosomal or pseudoautosomal, paternally imprinted (maternal allele expressed)": "AD (paternally imprinted, maternal allele expressed)",
         "Other - please specifiy in evaluation comments": "Other",
         "Other - please specify in evaluation comments": "Other",
-    })
+    }
+    unmapped = set(df["mode_of_inheritance"].dropna().unique()) - set(inheritance_mapping.keys())
+    if unmapped:
+        print(f"Warning: {len(unmapped)} PanelApp mode_of_inheritance values are not in the mapping dict and will be passed through unchanged: {sorted(unmapped)}")
+    df["mode_of_inheritance"] = df["mode_of_inheritance"].replace(inheritance_mapping)
 
     return df
 

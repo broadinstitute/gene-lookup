@@ -453,7 +453,7 @@ BIGQUERY_COLUMNS = [
         "group": GROUP_OMIM_CLINVAR,
     },
     {
-        "type": "STRING",
+        "type": "FLOAT",
         "name": "CLINVAR_stars",
         "description": "ClinVar review status gold stars for variants in this gene.",
         "displayName": "ClinVar Stars",

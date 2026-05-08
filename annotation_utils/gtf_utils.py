@@ -39,6 +39,6 @@ def parse_gtf(gtf_path, feature_type=None):
             }
 
             info = fields[8]
-            record.update({k: v.strip(';" ') for k, v in [x.split(" ") for x in info.split("; ")]})
+            record.update({k: v.strip(';" ') for k, v in [x.split(" ", 1) for x in info.split("; ")]})
 
             yield record

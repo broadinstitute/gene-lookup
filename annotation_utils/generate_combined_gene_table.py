@@ -174,6 +174,15 @@ df_clingen = df_clingen.rename(columns={
     "CLASSIFICATION": "CLINGEN_classification",
 })
 
+# Filter validity rows by classification BEFORE the outer join with the haploinsufficient
+# table, so HI-only genes (which have NaN classification after the outer join) don't get
+# dropped and lose their CLINGEN_haploinsufficient annotation.
+before = len(df_clingen)
+df_clingen = df_clingen[df_clingen["CLINGEN_classification"].isin({
+    "Definitive", "Limited", "Moderate", "Strong"
+})]
+print("\t", f"Kept {len(df_clingen):,d} out of {before:,d} ({(len(df_clingen) / before):.1%}) rows which had a Definitive, Limited, Moderate, or Strong classification")
+
 df_clingen = df_clingen.set_index("GENE ID (HGNC)").join(df_clingen_haploinsufficient_genes, how="outer").reset_index()
 
 # Convert HGNC -> ENSG for joining, but preserve native HGNC ID
@@ -191,13 +200,6 @@ df_clingen = df_clingen[[
     "CLINGEN_classification",
     "CLINGEN_haploinsufficient",
 ]]
-
-
-before = len(df_clingen)
-df_clingen = df_clingen[df_clingen["CLINGEN_classification"].isin({
-    "Definitive", "Limited", "Moderate", "Strong"
-})]
-print("\t", f"Kept {len(df_clingen):,d} out of {before:,d} ({(len(df_clingen) / before):.1%}) rows which had a Definitive, Limited, Moderate, or Strong classification")
 
 
 

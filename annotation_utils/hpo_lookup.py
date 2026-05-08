@@ -2,6 +2,7 @@ import argparse
 from annotation_utils.cache_utils import cache_json
 import os
 import requests
+import sys
 from tqdm import tqdm
 
 HP_OBO_URL = 'http://purl.obolibrary.org/obo/hp.obo'
@@ -115,6 +116,9 @@ def main():
 
     hpo_terms = parse_hpo_terms_arg(args.hpo_terms, hpo_id_to_record)
     print(f"{len(hpo_terms):,d} HPO terms:")
+
+    if not hpo_terms:
+        sys.exit(1)
 
     category_field_width = max(len(hpo_id_to_record[hpo_term]["category"]) for hpo_term in hpo_terms)
     for hpo_term in sorted(hpo_terms, key=lambda hpo_term: (hpo_id_to_record[hpo_term]['category_id'], hpo_term)):

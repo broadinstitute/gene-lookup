@@ -150,10 +150,10 @@ def get_clinvar_gene_disease_table():
     
     # group by gene_id and combine the other fields using ; as a separator
     df = df.groupby("gene_id").agg({
-        "phenotypes": lambda x: ", ".join(list(sorted(set(", ".join(x).split(", "))))[:5]),
-        "clinical_significance": lambda x: ", ".join(list(sorted(set(", ".join(x).split(", "))))[:5]),
+        "phenotypes": lambda x: ", ".join(sorted(set(", ".join(x).split(", ")))),
+        "clinical_significance": lambda x: ", ".join(sorted(set(", ".join(x).split(", ")))),
         "gold_stars": lambda x: max(x),
-        "major_consequences": lambda x: ", ".join(list(sorted(set(", ".join(x).split(", "))))[:5]),
+        "major_consequences": lambda x: ", ".join(sorted(set(", ".join(x).split(", ")))),
     })
 
     df.reset_index(inplace=True)

@@ -138,14 +138,14 @@ jobs:
 
     - name: Save annotation data cache
       uses: actions/cache/save@v4
-      if: always()
+      if: success()
       with:
         path: ~/.annotations
         key: annotations-cache-${{ github.run_id }}
 
     - name: Save LLM response cache
       uses: actions/cache/save@v4
-      if: always()
+      if: success()
       with:
         path: .cache/llm_response_cache.db
         key: llm-cache-${{ github.run_id }}

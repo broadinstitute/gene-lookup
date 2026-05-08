@@ -38,7 +38,11 @@ def _get_clingen_table(url):
 @cache_data_table
 def get_clingen_gene_disease_validity_table():
     "Download ClinGen gene-disease validity table and return it as a pandas DataFrame"
-    return _get_clingen_table("https://search.clinicalgenome.org/kb/gene-validity/download")
+    df = _get_clingen_table("https://search.clinicalgenome.org/kb/gene-validity/download")
+    # Normalize ClinGen's mitochondrial token (MT) to match the other sources' MITO so the
+    # website's "Mitochondrial" inheritance filter matches ClinGen rows too.
+    df["MOI"] = df["MOI"].replace({"MT": "MITO"})
+    return df
 
 @cache_data_table
 def get_clingen_haploinsufficient_genes_table():
@@ -71,11 +75,12 @@ def get_clingen_haploinsufficient_genes_table():
     table_contents = "\n".join([lines[header_idx]] + lines[data_start:])
     df = pd.read_csv(StringIO(table_contents))
     df = df[["HGNC ID", "HAPLOINSUFFICIENCY"]]
-    df = df[~df["HAPLOINSUFFICIENCY"].isin([
-        "No Evidence for Haploinsufficiency", 
-        "Dosage Sensitivity Unlikely",
-        "Little Evidence for Haploinsufficiency",
-    ])]
+    # Substring-match the exclusion keywords so that we catch both the legacy labels
+    # ("Dosage Sensitivity Unlikely") and the current longer ones ("Dosage Sensitivity
+    # Unlikely for Haploinsufficiency"). Without this, genes like PCSK9 / GJB2 that ClinGen
+    # now flags as "Unlikely" still get propagated as CLINGEN_haploinsufficient.
+    exclude_pattern = r"Unlikely|No Evidence|Little Evidence"
+    df = df[~df["HAPLOINSUFFICIENCY"].fillna("").str.contains(exclude_pattern, case=False, regex=True)]
     return df
 
 

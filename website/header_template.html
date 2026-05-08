@@ -288,7 +288,16 @@
             displayName: 'ClinGen',
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['CLINGEN_classification'],
             getValue: (row) => {
-                const val = row['CLINGEN_classification']
+                const rawVal = row['CLINGEN_classification']
+                if (!rawVal) return ''
+                const seen = new Set()
+                const parts = []
+                for (const v of String(rawVal).split(';').map(x => x.trim())) {
+                    if (!v || seen.has(v)) continue
+                    seen.add(v)
+                    parts.push(v)
+                }
+                const val = parts.join('; ')
                 if (!val) return ''
                 const classColors = {
                     'Definitive': '#28a745',

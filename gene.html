@@ -1105,7 +1105,16 @@
             displayName: 'ClinGen',
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['CLINGEN_classification'],
             getValue: (row) => {
-                const val = row['CLINGEN_classification']
+                const rawVal = row['CLINGEN_classification']
+                if (!rawVal) return ''
+                const seen = new Set()
+                const parts = []
+                for (const v of String(rawVal).split(';').map(x => x.trim())) {
+                    if (!v || seen.has(v)) continue
+                    seen.add(v)
+                    parts.push(v)
+                }
+                const val = parts.join('; ')
                 if (!val) return ''
                 const classColors = {
                     'Definitive': '#28a745',
@@ -1900,6 +1909,18 @@
 
     const hasAnyValue = (...values) => values.some(v => v != null && v !== '')
 
+    const dedupSemicolonArray = (s) => {
+        const out = []
+        const seen = new Set()
+        for (const v of String(s || '').split(';').map(x => x.trim())) {
+            if (!v || seen.has(v)) continue
+            seen.add(v)
+            out.push(v)
+        }
+        return out
+    }
+    const dedupSemicolon = (s) => dedupSemicolonArray(s).join('; ')
+
     const displaySearchResults = () => {
         const row = window.searchResults.rows[0]
 
@@ -1937,7 +1958,7 @@
             geneSymbol,
             hgncId,
             ensemblId: geneId,
-            mimNumber: (row['OMIM_mim_number'] || '').split(';').map(m => m.trim()).filter(m => m)[0] || '',
+            mimNumber: dedupSemicolonArray(row['OMIM_mim_number'])[0] || '',
         }
         box2 += `<tr><td class="locus-info-label">Sources:</td><td>${getSourcesBadges(row['sources'], sourceBadgeIds)}</td></tr>`
 
@@ -1959,7 +1980,7 @@
         const externalLinksLine1 = []
         const externalLinksLine2 = []
         const link = (label, url) => `<a href="${url}" target="_blank">${label}</a>`
-        const mimNumbers = (row['OMIM_mim_number'] || '').split(';').map(m => m.trim()).filter(m => m)
+        const mimNumbers = dedupSemicolonArray(row['OMIM_mim_number'])
         if (mimNumbers.length > 0) externalLinksLine1.push(link('OMIM', `https://omim.org/entry/${mimNumbers[0]}`))
         if (geneSymbol) externalLinksLine1.push(link('PanelAppUK', `https://panelapp.genomicsengland.co.uk/panels/entities/${geneSymbol}`))
         if (geneSymbol) externalLinksLine1.push(link('PanelAppAU', `https://panelapp-aus.org/panels/entities/${geneSymbol}`))
@@ -1997,13 +2018,13 @@
         // --- Source: OMIM ---
         if (hasAnyValue(row['OMIM_mim_number'], row['OMIM_phenotype_mim_number'], row['OMIM_inheritance'], row['OMIM_phenotype_description'])) {
             let html = '<div class="source-section"><h4>OMIM</h4><table class="locus-info-table">'
-            const mimLinks = (row['OMIM_mim_number'] || '').split(';').map(m => m.trim()).filter(m => m).map(m =>
+            const mimLinks = dedupSemicolonArray(row['OMIM_mim_number']).map(m =>
                 `<a href="https://omim.org/entry/${m}" target="_blank" class="action-link">${m}</a>`
             ).join('; ')
             html += `<tr><td class="locus-info-label">MIM #:</td><td>${mimLinks}</td></tr>`
-            html += `<tr><td class="locus-info-label">Phenotype MIM #:</td><td>${row['OMIM_phenotype_mim_number'] || ''}</td></tr>`
-            html += `<tr><td class="locus-info-label">Inheritance:</td><td>${row['OMIM_inheritance'] || ''}</td></tr>`
-            html += `<tr><td class="locus-info-label">Phenotype:</td><td style="white-space: normal;">${row['OMIM_phenotype_description'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Phenotype MIM #:</td><td>${dedupSemicolon(row['OMIM_phenotype_mim_number'])}</td></tr>`
+            html += `<tr><td class="locus-info-label">Inheritance:</td><td>${dedupSemicolon(row['OMIM_inheritance'])}</td></tr>`
+            html += `<tr><td class="locus-info-label">Phenotype:</td><td style="white-space: normal;">${dedupSemicolon(row['OMIM_phenotype_description'])}</td></tr>`
             html += '</table></div>'
             $('#source-omim').html(html)
         }
@@ -2011,19 +2032,20 @@
         // --- Source: ClinGen ---
         if (hasAnyValue(row['CLINGEN_disease_label'], row['CLINGEN_disease_mondo_id'], row['CLINGEN_inheritance'], row['CLINGEN_classification'], row['CLINGEN_haploinsufficient'])) {
             let html = '<div class="source-section"><h4>ClinGen</h4><table class="locus-info-table">'
-            html += `<tr><td class="locus-info-label">Disease:</td><td style="white-space: normal;">${row['CLINGEN_disease_label'] || ''}</td></tr>`
-            const mondoId = row['CLINGEN_disease_mondo_id'] || ''
-            const mondoLink = mondoId ? `<a href="https://monarchinitiative.org/${mondoId}" target="_blank" class="action-link">${mondoId}</a>` : ''
-            html += `<tr><td class="locus-info-label">MONDO ID:</td><td>${mondoLink}</td></tr>`
-            html += `<tr><td class="locus-info-label">Inheritance:</td><td>${row['CLINGEN_inheritance'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Disease:</td><td style="white-space: normal;">${dedupSemicolon(row['CLINGEN_disease_label'])}</td></tr>`
+            const mondoLinks = dedupSemicolonArray(row['CLINGEN_disease_mondo_id']).map(id =>
+                `<a href="https://monarchinitiative.org/${id}" target="_blank" class="action-link">${id}</a>`
+            ).join('; ')
+            html += `<tr><td class="locus-info-label">MONDO ID:</td><td>${mondoLinks}</td></tr>`
+            html += `<tr><td class="locus-info-label">Inheritance:</td><td>${dedupSemicolon(row['CLINGEN_inheritance'])}</td></tr>`
             // Classification badge
-            const classVal = row['CLINGEN_classification'] || ''
+            const classVal = dedupSemicolon(row['CLINGEN_classification'])
             if (classVal) {
                 const classColors = { 'Definitive': '#28a745', 'Strong': '#218838', 'Moderate': '#ffc107', 'Limited': '#fd7e14' }
                 const color = classColors[classVal] || '#6c757d'
                 html += `<tr><td class="locus-info-label">Classification:</td><td><span class="ui mini label" style="background-color: ${color}; color: white;">${classVal}</span></td></tr>`
             }
-            html += `<tr><td class="locus-info-label">Haploinsufficiency:</td><td>${row['CLINGEN_haploinsufficient'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Haploinsufficiency:</td><td>${dedupSemicolon(row['CLINGEN_haploinsufficient'])}</td></tr>`
             html += '</table></div>'
             $('#source-clingen').html(html)
         }
@@ -2031,9 +2053,9 @@
         // --- Source: GenCC ---
         if (hasAnyValue(row['GENCC_disease_name'], row['GENCC_classification'], row['GENCC_inheritance'])) {
             let html = '<div class="source-section"><h4>GenCC</h4><table class="locus-info-table">'
-            html += `<tr><td class="locus-info-label">Disease:</td><td style="white-space: normal;">${row['GENCC_disease_name'] || ''}</td></tr>`
-            html += `<tr><td class="locus-info-label">Classification:</td><td>${row['GENCC_classification'] || ''}</td></tr>`
-            html += `<tr><td class="locus-info-label">Inheritance:</td><td>${row['GENCC_inheritance'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Disease:</td><td style="white-space: normal;">${dedupSemicolon(row['GENCC_disease_name'])}</td></tr>`
+            html += `<tr><td class="locus-info-label">Classification:</td><td>${dedupSemicolon(row['GENCC_classification'])}</td></tr>`
+            html += `<tr><td class="locus-info-label">Inheritance:</td><td>${dedupSemicolon(row['GENCC_inheritance'])}</td></tr>`
             html += '</table></div>'
             $('#source-gencc').html(html)
         }
@@ -2041,13 +2063,13 @@
         // --- Source: PanelApp UK ---
         if (hasAnyValue(row['PANEL_APP_UK_confidence'], row['PANEL_APP_UK_penetrance'], row['PANEL_APP_UK_mode_of_pathogenicity'], row['PANEL_APP_UK_inheritance'], row['PANEL_APP_UK_evidence'], row['PANEL_APP_UK_phenotypes'], row['PANEL_APP_UK_panel_name'])) {
             let html = '<div class="source-section"><h4>PanelApp UK</h4><table class="locus-info-table">'
-            html += `<tr><td class="locus-info-label">Confidence:</td><td>${row['PANEL_APP_UK_confidence'] || ''}</td></tr>`
-            html += `<tr><td class="locus-info-label">Penetrance:</td><td>${row['PANEL_APP_UK_penetrance'] || ''}</td></tr>`
-            html += `<tr><td class="locus-info-label">Pathogenicity:</td><td>${row['PANEL_APP_UK_mode_of_pathogenicity'] || ''}</td></tr>`
-            html += `<tr><td class="locus-info-label">Inheritance:</td><td>${row['PANEL_APP_UK_inheritance'] || ''}</td></tr>`
-            html += `<tr><td class="locus-info-label">Evidence:</td><td style="white-space: normal;">${row['PANEL_APP_UK_evidence'] || ''}</td></tr>`
-            html += `<tr><td class="locus-info-label">Phenotypes:</td><td style="white-space: normal;">${row['PANEL_APP_UK_phenotypes'] || ''}</td></tr>`
-            html += `<tr><td class="locus-info-label">Panel:</td><td style="white-space: normal;">${row['PANEL_APP_UK_panel_name'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Confidence:</td><td>${dedupSemicolon(row['PANEL_APP_UK_confidence'])}</td></tr>`
+            html += `<tr><td class="locus-info-label">Penetrance:</td><td>${dedupSemicolon(row['PANEL_APP_UK_penetrance'])}</td></tr>`
+            html += `<tr><td class="locus-info-label">Pathogenicity:</td><td>${dedupSemicolon(row['PANEL_APP_UK_mode_of_pathogenicity'])}</td></tr>`
+            html += `<tr><td class="locus-info-label">Inheritance:</td><td>${dedupSemicolon(row['PANEL_APP_UK_inheritance'])}</td></tr>`
+            html += `<tr><td class="locus-info-label">Evidence:</td><td style="white-space: normal;">${dedupSemicolon(row['PANEL_APP_UK_evidence'])}</td></tr>`
+            html += `<tr><td class="locus-info-label">Phenotypes:</td><td style="white-space: normal;">${dedupSemicolon(row['PANEL_APP_UK_phenotypes'])}</td></tr>`
+            html += `<tr><td class="locus-info-label">Panel:</td><td style="white-space: normal;">${dedupSemicolon(row['PANEL_APP_UK_panel_name'])}</td></tr>`
             html += '</table></div>'
             $('#source-panelapp-uk').html(html)
         }
@@ -2055,13 +2077,13 @@
         // --- Source: PanelApp AU ---
         if (hasAnyValue(row['PANEL_APP_AU_confidence'], row['PANEL_APP_AU_penetrance'], row['PANEL_APP_AU_mode_of_pathogenicity'], row['PANEL_APP_AU_inheritance'], row['PANEL_APP_AU_evidence'], row['PANEL_APP_AU_phenotypes'], row['PANEL_APP_AU_panel_name'])) {
             let html = '<div class="source-section"><h4>PanelApp AU</h4><table class="locus-info-table">'
-            html += `<tr><td class="locus-info-label">Confidence:</td><td>${row['PANEL_APP_AU_confidence'] || ''}</td></tr>`
-            html += `<tr><td class="locus-info-label">Penetrance:</td><td>${row['PANEL_APP_AU_penetrance'] || ''}</td></tr>`
-            html += `<tr><td class="locus-info-label">Pathogenicity:</td><td>${row['PANEL_APP_AU_mode_of_pathogenicity'] || ''}</td></tr>`
-            html += `<tr><td class="locus-info-label">Inheritance:</td><td>${row['PANEL_APP_AU_inheritance'] || ''}</td></tr>`
-            html += `<tr><td class="locus-info-label">Evidence:</td><td style="white-space: normal;">${row['PANEL_APP_AU_evidence'] || ''}</td></tr>`
-            html += `<tr><td class="locus-info-label">Phenotypes:</td><td style="white-space: normal;">${row['PANEL_APP_AU_phenotypes'] || ''}</td></tr>`
-            html += `<tr><td class="locus-info-label">Panel:</td><td style="white-space: normal;">${row['PANEL_APP_AU_panel_name'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Confidence:</td><td>${dedupSemicolon(row['PANEL_APP_AU_confidence'])}</td></tr>`
+            html += `<tr><td class="locus-info-label">Penetrance:</td><td>${dedupSemicolon(row['PANEL_APP_AU_penetrance'])}</td></tr>`
+            html += `<tr><td class="locus-info-label">Pathogenicity:</td><td>${dedupSemicolon(row['PANEL_APP_AU_mode_of_pathogenicity'])}</td></tr>`
+            html += `<tr><td class="locus-info-label">Inheritance:</td><td>${dedupSemicolon(row['PANEL_APP_AU_inheritance'])}</td></tr>`
+            html += `<tr><td class="locus-info-label">Evidence:</td><td style="white-space: normal;">${dedupSemicolon(row['PANEL_APP_AU_evidence'])}</td></tr>`
+            html += `<tr><td class="locus-info-label">Phenotypes:</td><td style="white-space: normal;">${dedupSemicolon(row['PANEL_APP_AU_phenotypes'])}</td></tr>`
+            html += `<tr><td class="locus-info-label">Panel:</td><td style="white-space: normal;">${dedupSemicolon(row['PANEL_APP_AU_panel_name'])}</td></tr>`
             html += '</table></div>'
             $('#source-panelapp-au').html(html)
         }
@@ -2069,8 +2091,8 @@
         // --- Source: Decipher ---
         if (hasAnyValue(row['DECIPHER_inheritance'], row['DECIPHER_disease_names'])) {
             let html = '<div class="source-section"><h4>Decipher</h4><table class="locus-info-table">'
-            html += `<tr><td class="locus-info-label">Inheritance:</td><td>${row['DECIPHER_inheritance'] || ''}</td></tr>`
-            html += `<tr><td class="locus-info-label">Disease Names:</td><td style="white-space: normal;">${row['DECIPHER_disease_names'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Inheritance:</td><td>${dedupSemicolon(row['DECIPHER_inheritance'])}</td></tr>`
+            html += `<tr><td class="locus-info-label">Disease Names:</td><td style="white-space: normal;">${dedupSemicolon(row['DECIPHER_disease_names'])}</td></tr>`
             html += '</table></div>'
             $('#source-decipher').html(html)
         }
@@ -2078,10 +2100,10 @@
         // --- Source: ClinVar ---
         if (hasAnyValue(row['CLINVAR_phenotypes'], row['CLINVAR_clinical_significance'], row['CLINVAR_stars'], row['CLINVAR_variant_consequences'])) {
             let html = '<div class="source-section"><h4>ClinVar</h4><table class="locus-info-table">'
-            html += `<tr><td class="locus-info-label">Phenotypes:</td><td style="white-space: normal;">${row['CLINVAR_phenotypes'] || ''}</td></tr>`
-            html += `<tr><td class="locus-info-label">Clinical Significance:</td><td>${row['CLINVAR_clinical_significance'] || ''}</td></tr>`
-            html += `<tr><td class="locus-info-label">Stars:</td><td>${row['CLINVAR_stars'] || ''}</td></tr>`
-            html += `<tr><td class="locus-info-label">Variant Consequences:</td><td>${row['CLINVAR_variant_consequences'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Phenotypes:</td><td style="white-space: normal;">${dedupSemicolon(row['CLINVAR_phenotypes'])}</td></tr>`
+            html += `<tr><td class="locus-info-label">Clinical Significance:</td><td>${dedupSemicolon(row['CLINVAR_clinical_significance'])}</td></tr>`
+            html += `<tr><td class="locus-info-label">Stars:</td><td>${dedupSemicolon(row['CLINVAR_stars'])}</td></tr>`
+            html += `<tr><td class="locus-info-label">Variant Consequences:</td><td>${dedupSemicolon(row['CLINVAR_variant_consequences'])}</td></tr>`
             html += '</table></div>'
             $('#source-clinvar').html(html)
         }
@@ -2089,9 +2111,9 @@
         // --- Source: Fridman ---
         if (hasAnyValue(row['FRIDMAN_omim_phenotype_id'], row['FRIDMAN_phenotype_category'], row['FRIDMAN_inheritance'])) {
             let html = '<div class="source-section"><h4>Fridman</h4><table class="locus-info-table">'
-            html += `<tr><td class="locus-info-label">OMIM Phenotype ID:</td><td>${row['FRIDMAN_omim_phenotype_id'] || ''}</td></tr>`
-            html += `<tr><td class="locus-info-label">Phenotype Category:</td><td>${row['FRIDMAN_phenotype_category'] || ''}</td></tr>`
-            html += `<tr><td class="locus-info-label">Inheritance:</td><td>${row['FRIDMAN_inheritance'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">OMIM Phenotype ID:</td><td>${dedupSemicolon(row['FRIDMAN_omim_phenotype_id'])}</td></tr>`
+            html += `<tr><td class="locus-info-label">Phenotype Category:</td><td>${dedupSemicolon(row['FRIDMAN_phenotype_category'])}</td></tr>`
+            html += `<tr><td class="locus-info-label">Inheritance:</td><td>${dedupSemicolon(row['FRIDMAN_inheritance'])}</td></tr>`
             html += '</table></div>'
             $('#source-fridman').html(html)
         }
@@ -2099,12 +2121,12 @@
         // --- Source: dbNSFP ---
         if (hasAnyValue(row['DBNSFP_orphanet_disorder'], row['DBNSFP_function_description'], row['DBNSFP_disease_description'], row['DBNSFP_hpo_name'], row['DBNSFP_mgi_mouse_phenotype'], row['DBNSFP_zfin_zebrafish_phenotype'])) {
             let html = '<div class="source-section"><h4>dbNSFP</h4><table class="locus-info-table">'
-            html += `<tr><td class="locus-info-label">Orphanet Disorder:</td><td style="white-space: normal;">${row['DBNSFP_orphanet_disorder'] || ''}</td></tr>`
-            html += `<tr><td class="locus-info-label">Function:</td><td style="white-space: normal;">${row['DBNSFP_function_description'] || ''}</td></tr>`
-            html += `<tr><td class="locus-info-label">Disease:</td><td style="white-space: normal;">${row['DBNSFP_disease_description'] || ''}</td></tr>`
-            html += `<tr><td class="locus-info-label">HPO Terms:</td><td style="white-space: normal;">${row['DBNSFP_hpo_name'] || ''}</td></tr>`
-            html += `<tr><td class="locus-info-label">Mouse Phenotype:</td><td style="white-space: normal;">${row['DBNSFP_mgi_mouse_phenotype'] || ''}</td></tr>`
-            html += `<tr><td class="locus-info-label">Zebrafish Phenotype:</td><td style="white-space: normal;">${row['DBNSFP_zfin_zebrafish_phenotype'] || ''}</td></tr>`
+            html += `<tr><td class="locus-info-label">Orphanet Disorder:</td><td style="white-space: normal;">${dedupSemicolon(row['DBNSFP_orphanet_disorder'])}</td></tr>`
+            html += `<tr><td class="locus-info-label">Function:</td><td style="white-space: normal;">${dedupSemicolon(row['DBNSFP_function_description'])}</td></tr>`
+            html += `<tr><td class="locus-info-label">Disease:</td><td style="white-space: normal;">${dedupSemicolon(row['DBNSFP_disease_description'])}</td></tr>`
+            html += `<tr><td class="locus-info-label">HPO Terms:</td><td style="white-space: normal;">${dedupSemicolon(row['DBNSFP_hpo_name'])}</td></tr>`
+            html += `<tr><td class="locus-info-label">Mouse Phenotype:</td><td style="white-space: normal;">${dedupSemicolon(row['DBNSFP_mgi_mouse_phenotype'])}</td></tr>`
+            html += `<tr><td class="locus-info-label">Zebrafish Phenotype:</td><td style="white-space: normal;">${dedupSemicolon(row['DBNSFP_zfin_zebrafish_phenotype'])}</td></tr>`
             html += '</table></div>'
             $('#source-dbnsfp').html(html)
         }

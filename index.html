@@ -689,17 +689,6 @@
                         displayMode: 'EXPANDED',
                         color: 'rgb(76,171,225)',
                     })
-                } else if (trackName == 'igv_refseq') {
-                    tracks.push({
-                        name: trackDisplayName,
-                        format: 'refgene',
-                        url: trackURL,
-                        indexURL: `${trackURL}.tbi`,
-                        indexed: true,
-                        searchable: true,
-                        height: 150,
-                        infoURL: 'https://www.ncbi.nlm.nih.gov/gene/?term=$$',
-                    })
                 } else if (trackURL.endsWith('.bed.gz')) {
                     tracks.push({
                         format: 'bed',
@@ -883,7 +872,6 @@
 
     const REFERENCE_TRACKS = [
         ["igv_gencode", "Gencode v49", `${REFERENCE_BASE_URL}/gencode_v49/gencode.v49.GRCh38.sorted.txt.gz`],
-        ["igv_refseq", "RefSeq genes", `${REFERENCE_BASE_URL}/ncbiRefSeq.txt.gz`],
         ["igv_haploinsuf", "ClinGen haploinsufficiency track", `${REFERENCE_BASE_URL}/clingen/ClinGen_haploinsufficiency_gene_GRCh38.sorted.bed.gz`],
         ["igv_triplosens", "ClinGen triplosensitivity track", `${REFERENCE_BASE_URL}/clingen/ClinGen_triplosensitivity_gene_GRCh38.sorted.bed.gz`],
         ["igv_segdups", "SegDups > 1000bp", `${REFERENCE_BASE_URL}/segdups/segdups.gtf.gz`],
@@ -1407,7 +1395,7 @@
         CLINVAR_stars: {
             displayName: 'ClinVar Stars',
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['CLINVAR_stars'],
-            getValue: (row) => row['CLINVAR_stars'] || '',
+            getValue: (row) => row['CLINVAR_stars'] != null ? row['CLINVAR_stars'] : '',
             getSortColumns: () => ['CLINVAR_stars'],
             getRequiredColumns: () => ['CLINVAR_stars'],
         },

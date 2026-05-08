@@ -38,17 +38,6 @@
                         displayMode: 'EXPANDED',
                         color: 'rgb(76,171,225)',
                     })
-                } else if (trackName == 'igv_refseq') {
-                    tracks.push({
-                        name: trackDisplayName,
-                        format: 'refgene',
-                        url: trackURL,
-                        indexURL: `${trackURL}.tbi`,
-                        indexed: true,
-                        searchable: true,
-                        height: 150,
-                        infoURL: 'https://www.ncbi.nlm.nih.gov/gene/?term=$$',
-                    })
                 } else if (trackURL.endsWith('.bed.gz')) {
                     tracks.push({
                         format: 'bed',

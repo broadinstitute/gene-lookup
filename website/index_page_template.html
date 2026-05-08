@@ -1480,14 +1480,17 @@
                 conditions.push(`mis_oe_ci_upper_v4 <= ${parseFloat(moeufThreshold)}`)
             }
 
-            // ClinGen classification filter
+            // ClinGen classification filter — CLINGEN_classification stores ';'-joined values
+            // (e.g. 'Definitive; Limited') because a gene can have multiple curated entries, so
+            // exact-match IN (...) silently misses multi-value rows. Match each allowed level
+            // as a substring instead.
             const clingenClassification = $('#clingen-classification-dropdown').dropdown('get value')
             if (clingenClassification) {
                 const classificationOrder = ['Definitive', 'Strong', 'Moderate', 'Limited']
                 const minIndex = classificationOrder.indexOf(clingenClassification)
                 if (minIndex >= 0) {
-                    const allowedValues = classificationOrder.slice(0, minIndex + 1).map(v => `'${v}'`).join(', ')
-                    conditions.push(`CLINGEN_classification IN (${allowedValues})`)
+                    const allowed = classificationOrder.slice(0, minIndex + 1).join('|')
+                    conditions.push(`REGEXP_CONTAINS(CLINGEN_classification, r'\\b(${allowed})\\b')`)
                 }
             }
 

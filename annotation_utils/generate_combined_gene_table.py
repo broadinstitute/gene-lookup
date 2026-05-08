@@ -489,6 +489,14 @@ df_gencc = df_gencc[[
     "GENCC_inheritance",
 ]]
 
+# Drop refuted/disputed/no-disease classifications so they don't get rolled up as positive
+# associations. Keep only the curated positive levels.
+before = len(df_gencc)
+df_gencc = df_gencc[df_gencc["GENCC_classification"].isin({
+    "Definitive", "Strong", "Moderate", "Limited", "Supportive"
+})]
+print("\t", f"Kept {len(df_gencc):,d} out of {before:,d} ({(len(df_gencc) / before):.1%}) rows which had a Definitive, Strong, Moderate, Limited, or Supportive classification")
+
 df_gencc = df_gencc.groupby("GENCC_gene_id").agg({
     "GENCC_hgnc_gene_id": "first",
     "GENCC_disease_name": lambda x: separator.join(normalize_nulls(v) for v in x),

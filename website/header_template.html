@@ -302,10 +302,13 @@
                     classRank[p] !== undefined && (best === null || classRank[p] < classRank[best]) ? p : best
                 ), null)
                 const color = (highest && classColors[highest]) || '#6c757d'
-                return `<span class="ui mini label" style="background-color: ${color}; color: white;">${val}</span>`
+                const badge = `<span class="ui mini label" style="background-color: ${color}; color: white;">${val}</span>`
+                const hgncId = row['hgnc_gene_id']
+                if (!hgncId) return badge
+                return `<a href="https://search.clinicalgenome.org/kb/genes/${encodeURIComponent(hgncId)}" target="_blank">${badge}</a>`
             },
             getSortColumns: () => ['CLINGEN_classification'],
-            getRequiredColumns: () => ['CLINGEN_classification'],
+            getRequiredColumns: () => ['CLINGEN_classification', 'hgnc_gene_id'],
         },
         ensembl_gene_id: {
             displayName: 'Ensembl Gene ID',

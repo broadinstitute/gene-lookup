@@ -688,6 +688,17 @@
                         displayMode: 'EXPANDED',
                         color: 'rgb(76,171,225)',
                     })
+                } else if (trackName == 'igv_refseq') {
+                    tracks.push({
+                        name: trackDisplayName,
+                        format: 'refgene',
+                        url: trackURL,
+                        indexURL: `${trackURL}.tbi`,
+                        indexed: true,
+                        searchable: true,
+                        height: 150,
+                        infoURL: 'https://www.ncbi.nlm.nih.gov/gene/?term=$$',
+                    })
                 } else if (trackURL.endsWith('.bed.gz')) {
                     tracks.push({
                         format: 'bed',
@@ -1119,10 +1130,13 @@
                     classRank[p] !== undefined && (best === null || classRank[p] < classRank[best]) ? p : best
                 ), null)
                 const color = (highest && classColors[highest]) || '#6c757d'
-                return `<span class="ui mini label" style="background-color: ${color}; color: white;">${val}</span>`
+                const badge = `<span class="ui mini label" style="background-color: ${color}; color: white;">${val}</span>`
+                const hgncId = row['hgnc_gene_id']
+                if (!hgncId) return badge
+                return `<a href="https://search.clinicalgenome.org/kb/genes/${encodeURIComponent(hgncId)}" target="_blank">${badge}</a>`
             },
             getSortColumns: () => ['CLINGEN_classification'],
-            getRequiredColumns: () => ['CLINGEN_classification'],
+            getRequiredColumns: () => ['CLINGEN_classification', 'hgnc_gene_id'],
         },
         ensembl_gene_id: {
             displayName: 'Ensembl Gene ID',
@@ -2036,8 +2050,12 @@
 
         // --- Source: OMIM ---
         if (hasAnyValue(row['OMIM_mim_number'], row['OMIM_phenotype_mim_number'], row['OMIM_inheritance'], row['OMIM_phenotype_description'])) {
-            let html = '<div class="source-section"><h4>OMIM</h4><table class="locus-info-table">'
-            const mimLinks = dedupSemicolonArray(row['OMIM_mim_number']).map(m =>
+            const mimNumbersList = dedupSemicolonArray(row['OMIM_mim_number'])
+            const omimTitle = mimNumbersList.length > 0
+                ? `<a href="https://omim.org/entry/${mimNumbersList[0]}" target="_blank" class="action-link">OMIM</a>`
+                : 'OMIM'
+            let html = `<div class="source-section"><h4>${omimTitle}</h4><table class="locus-info-table">`
+            const mimLinks = mimNumbersList.map(m =>
                 `<a href="https://omim.org/entry/${m}" target="_blank" class="action-link">${m}</a>`
             ).join('; ')
             html += `<tr><td class="locus-info-label">MIM #:</td><td>${mimLinks}</td></tr>`
@@ -2050,7 +2068,10 @@
 
         // --- Source: ClinGen ---
         if (hasAnyValue(row['CLINGEN_disease_label'], row['CLINGEN_disease_mondo_id'], row['CLINGEN_inheritance'], row['CLINGEN_classification'], row['CLINGEN_haploinsufficient'])) {
-            let html = '<div class="source-section"><h4>ClinGen</h4><table class="locus-info-table">'
+            const clingenTitle = hgncId
+                ? `<a href="https://search.clinicalgenome.org/kb/genes/${encodeURIComponent(hgncId)}" target="_blank" class="action-link">ClinGen</a>`
+                : 'ClinGen'
+            let html = `<div class="source-section"><h4>${clingenTitle}</h4><table class="locus-info-table">`
             html += `<tr><td class="locus-info-label">Disease:</td><td style="white-space: normal;">${dedupSemicolon(row['CLINGEN_disease_label'])}</td></tr>`
             const mondoLinks = dedupSemicolonArray(row['CLINGEN_disease_mondo_id']).map(id =>
                 `<a href="https://monarchinitiative.org/${id}" target="_blank" class="action-link">${id}</a>`
@@ -2076,7 +2097,10 @@
 
         // --- Source: GenCC ---
         if (hasAnyValue(row['GENCC_disease_name'], row['GENCC_classification'], row['GENCC_inheritance'])) {
-            let html = '<div class="source-section"><h4>GenCC</h4><table class="locus-info-table">'
+            const genccTitle = hgncId
+                ? `<a href="https://search.thegencc.org/genes/${encodeURIComponent(hgncId)}" target="_blank" class="action-link">GenCC</a>`
+                : 'GenCC'
+            let html = `<div class="source-section"><h4>${genccTitle}</h4><table class="locus-info-table">`
             html += `<tr><td class="locus-info-label">Disease:</td><td style="white-space: normal;">${dedupSemicolon(row['GENCC_disease_name'])}</td></tr>`
             html += `<tr><td class="locus-info-label">Classification:</td><td>${dedupSemicolon(row['GENCC_classification'])}</td></tr>`
             html += `<tr><td class="locus-info-label">Inheritance:</td><td>${dedupSemicolon(row['GENCC_inheritance'])}</td></tr>`
@@ -2086,7 +2110,10 @@
 
         // --- Source: PanelApp UK ---
         if (hasAnyValue(row['PANEL_APP_UK_confidence'], row['PANEL_APP_UK_penetrance'], row['PANEL_APP_UK_mode_of_pathogenicity'], row['PANEL_APP_UK_inheritance'], row['PANEL_APP_UK_evidence'], row['PANEL_APP_UK_phenotypes'], row['PANEL_APP_UK_panel_name'])) {
-            let html = '<div class="source-section"><h4>PanelApp UK</h4><table class="locus-info-table">'
+            const panelAppUkTitle = geneSymbol
+                ? `<a href="https://panelapp.genomicsengland.co.uk/panels/entities/${encodeURIComponent(geneSymbol)}" target="_blank" class="action-link">PanelApp UK</a>`
+                : 'PanelApp UK'
+            let html = `<div class="source-section"><h4>${panelAppUkTitle}</h4><table class="locus-info-table">`
             html += `<tr><td class="locus-info-label">Confidence:</td><td>${dedupSemicolon(row['PANEL_APP_UK_confidence'])}</td></tr>`
             html += `<tr><td class="locus-info-label">Penetrance:</td><td>${dedupSemicolon(row['PANEL_APP_UK_penetrance'])}</td></tr>`
             html += `<tr><td class="locus-info-label">Pathogenicity:</td><td>${dedupSemicolon(row['PANEL_APP_UK_mode_of_pathogenicity'])}</td></tr>`
@@ -2100,7 +2127,10 @@
 
         // --- Source: PanelApp AU ---
         if (hasAnyValue(row['PANEL_APP_AU_confidence'], row['PANEL_APP_AU_penetrance'], row['PANEL_APP_AU_mode_of_pathogenicity'], row['PANEL_APP_AU_inheritance'], row['PANEL_APP_AU_evidence'], row['PANEL_APP_AU_phenotypes'], row['PANEL_APP_AU_panel_name'])) {
-            let html = '<div class="source-section"><h4>PanelApp AU</h4><table class="locus-info-table">'
+            const panelAppAuTitle = geneSymbol
+                ? `<a href="https://panelapp-aus.org/panels/entities/${encodeURIComponent(geneSymbol)}" target="_blank" class="action-link">PanelApp AU</a>`
+                : 'PanelApp AU'
+            let html = `<div class="source-section"><h4>${panelAppAuTitle}</h4><table class="locus-info-table">`
             html += `<tr><td class="locus-info-label">Confidence:</td><td>${dedupSemicolon(row['PANEL_APP_AU_confidence'])}</td></tr>`
             html += `<tr><td class="locus-info-label">Penetrance:</td><td>${dedupSemicolon(row['PANEL_APP_AU_penetrance'])}</td></tr>`
             html += `<tr><td class="locus-info-label">Pathogenicity:</td><td>${dedupSemicolon(row['PANEL_APP_AU_mode_of_pathogenicity'])}</td></tr>`
@@ -2114,7 +2144,10 @@
 
         // --- Source: Decipher ---
         if (hasAnyValue(row['DECIPHER_inheritance'], row['DECIPHER_disease_names'])) {
-            let html = '<div class="source-section"><h4>Decipher</h4><table class="locus-info-table">'
+            const decipherTitle = geneId
+                ? `<a href="https://www.deciphergenomics.org/gene/${encodeURIComponent(geneId)}/overview/protein-genomic-info" target="_blank" class="action-link">Decipher</a>`
+                : 'Decipher'
+            let html = `<div class="source-section"><h4>${decipherTitle}</h4><table class="locus-info-table">`
             html += `<tr><td class="locus-info-label">Inheritance:</td><td>${dedupSemicolon(row['DECIPHER_inheritance'])}</td></tr>`
             html += `<tr><td class="locus-info-label">Disease Names:</td><td style="white-space: normal;">${dedupSemicolon(row['DECIPHER_disease_names'])}</td></tr>`
             html += '</table></div>'
@@ -2123,7 +2156,10 @@
 
         // --- Source: ClinVar ---
         if (hasAnyValue(row['CLINVAR_phenotypes'], row['CLINVAR_clinical_significance'], row['CLINVAR_stars'], row['CLINVAR_variant_consequences'])) {
-            let html = '<div class="source-section"><h4>ClinVar</h4><table class="locus-info-table">'
+            const clinvarTitle = geneSymbol
+                ? `<a href="https://www.ncbi.nlm.nih.gov/clinvar?term=${encodeURIComponent(geneSymbol)}[gene]" target="_blank" class="action-link">ClinVar</a>`
+                : 'ClinVar'
+            let html = `<div class="source-section"><h4>${clinvarTitle}</h4><table class="locus-info-table">`
             html += `<tr><td class="locus-info-label">Phenotypes:</td><td style="white-space: normal;">${dedupSemicolon(row['CLINVAR_phenotypes'])}</td></tr>`
             html += `<tr><td class="locus-info-label">Clinical Significance:</td><td>${dedupSemicolon(row['CLINVAR_clinical_significance'])}</td></tr>`
             html += `<tr><td class="locus-info-label">Stars:</td><td>${dedupSemicolon(row['CLINVAR_stars'])}</td></tr>`

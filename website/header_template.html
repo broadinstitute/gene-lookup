@@ -35,18 +35,10 @@
     const IGV_LOCUS_PADDING = 5000
 
     const REFERENCE_REGION_REGEXP = /^[\s]*(?:chr)?([XYMTt0-9]+):([\d,]+)[\p{Dash_Punctuation}]([\d,]+)[\s]*$/iu
-    const CHROM_TO_CHROM_INDEX = {
-        "X":  23, "chrX": 23,
-        "Y":  24, "chrY": 24,
-        "MT": 25, "M": 25, "chrMT": 25, "chrM": 25,
-    }
-    for (let i = 1; i <= 22; i++) {
-        CHROM_TO_CHROM_INDEX[`${i}`] = i
-        CHROM_TO_CHROM_INDEX[`chr${i}`] = i
-    }
 
     // BigQuery column descriptions - generated from global_constants.py via Jinja2
     const BIGQUERY_COLUMN_DESCRIPTIONS = {{ column_descriptions | tojson }}
+    const BIGQUERY_COLUMN_TYPES = {{ column_types | tojson }}
 
     const BIGQUERY_COLUMN_GROUPS = {{ column_groups | tojson }}
 
@@ -305,7 +297,11 @@
                     'Moderate': '#ffc107',
                     'Limited': '#fd7e14',
                 }
-                const color = classColors[val] || '#6c757d'
+                const classRank = { 'Definitive': 0, 'Strong': 1, 'Moderate': 2, 'Limited': 3 }
+                const highest = parts.reduce((best, p) => (
+                    classRank[p] !== undefined && (best === null || classRank[p] < classRank[best]) ? p : best
+                ), null)
+                const color = (highest && classColors[highest]) || '#6c757d'
                 return `<span class="ui mini label" style="background-color: ${color}; color: white;">${val}</span>`
             },
             getSortColumns: () => ['CLINGEN_classification'],
@@ -652,7 +648,7 @@
         }
 
         // Ensembl gene ID: ENSG00000000001
-        if (/^ENSG\d+/i.test(q)) {
+        if (/^ENSG\d+$/i.test(q)) {
             return `(UPPER(ensembl_gene_id) = UPPER('${escapedQ}'))`
         }
 
@@ -706,8 +702,9 @@
                 const escapedValue = val.replace(/'/g, "''")
                 clauses.push(`${col} LIKE '${escapedValue}'`)
             } else {
-                const colInfo = BIGQUERY_COLUMN_DESCRIPTIONS[col]
-                if (colInfo && (val.trim() !== '' && isFinite(Number(val)))) {
+                const colType = BIGQUERY_COLUMN_TYPES[col]
+                const isNumericCol = colType === 'INTEGER' || colType === 'FLOAT'
+                if (isNumericCol && val.trim() !== '' && isFinite(Number(val))) {
                     clauses.push(`${col} ${op} ${Number(val)}`)
                 } else {
                     const escapedValue = val.replace(/'/g, "''")

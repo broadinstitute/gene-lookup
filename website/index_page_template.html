@@ -397,7 +397,7 @@
         }
         // Restore custom filters from URL
         $('#custom-filter-rows').empty()
-        deserializeAndCreateCustomFilters(GLOBAL_PAGE_STATE['customFilters'])
+        await deserializeAndCreateCustomFilters(GLOBAL_PAGE_STATE['customFilters'])
 
         // Restore custom track URLs
         for (let i = 1; i <= 3; i++) {
@@ -987,12 +987,11 @@
         return parts.join(';')
     }
 
-    const deserializeAndCreateCustomFilters = (serialized) => {
+    const deserializeAndCreateCustomFilters = async (serialized) => {
         if (!serialized) return
-        const parts = serialized.split(';')
-        parts.forEach(part => {
+        for (const part of serialized.split(';')) {
             const segments = part.split('|')
-            if (segments.length < 2) return
+            if (segments.length < 2) continue
             const col = segments[0]
             const op = segments[1]
             let val
@@ -1002,15 +1001,15 @@
                 val = segments.slice(2).join('|')
             }
             const $row = addCustomFilterRow(col)
-            // Set operator and value after a brief delay to let dropdown initialize
-            setTimeout(() => {
-                $row.find('.custom-filter-op').dropdown('set selected', op)
-                $row.find('.custom-filter-value').val(val)
-                if (op === 'IS NULL' || op === 'IS NOT NULL') {
-                    $row.find('.custom-filter-value').hide()
-                }
-            }, 50)
-        })
+            // Wait one macrotask so the column dropdown's onChange (which clears+rebuilds the
+            // operator menu) settles before we set the operator value.
+            await new Promise(resolve => setTimeout(resolve, 50))
+            $row.find('.custom-filter-op').dropdown('set selected', op)
+            $row.find('.custom-filter-value').val(val)
+            if (op === 'IS NULL' || op === 'IS NOT NULL') {
+                $row.find('.custom-filter-value').hide()
+            }
+        }
     }
 
     // --- End Custom Filter Logic ---
@@ -1450,8 +1449,8 @@
             if ($('input[name="keepOMIM"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%OMIM%'")
             if ($('input[name="keepClinGen"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%CLINGEN%'")
             if ($('input[name="keepGenCC"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%GENCC%'")
-            if ($('input[name="keepPanelAppUK"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%PANELAPP_UK%'")
-            if ($('input[name="keepPanelAppAU"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%PANELAPP_AU%'")
+            if ($('input[name="keepPanelAppUK"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%PANELAPPUK%'")
+            if ($('input[name="keepPanelAppAU"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%PANELAPPAU%'")
             if ($('input[name="keepDecipher"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%DECIPHER%'")
             if ($('input[name="keepClinVar"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%CLINVAR%'")
             if ($('input[name="keepFridman"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%FRIDMAN%'")

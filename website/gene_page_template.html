@@ -408,10 +408,15 @@
             html += `<tr><td class="locus-info-label">MONDO ID:</td><td>${mondoLinks}</td></tr>`
             html += `<tr><td class="locus-info-label">Inheritance:</td><td>${dedupSemicolon(row['CLINGEN_inheritance'])}</td></tr>`
             // Classification badge
-            const classVal = dedupSemicolon(row['CLINGEN_classification'])
+            const classParts = dedupSemicolonArray(row['CLINGEN_classification'])
+            const classVal = classParts.join('; ')
             if (classVal) {
                 const classColors = { 'Definitive': '#28a745', 'Strong': '#218838', 'Moderate': '#ffc107', 'Limited': '#fd7e14' }
-                const color = classColors[classVal] || '#6c757d'
+                const classRank = { 'Definitive': 0, 'Strong': 1, 'Moderate': 2, 'Limited': 3 }
+                const highest = classParts.reduce((best, p) => (
+                    classRank[p] !== undefined && (best === null || classRank[p] < classRank[best]) ? p : best
+                ), null)
+                const color = (highest && classColors[highest]) || '#6c757d'
                 html += `<tr><td class="locus-info-label">Classification:</td><td><span class="ui mini label" style="background-color: ${color}; color: white;">${classVal}</span></td></tr>`
             }
             html += `<tr><td class="locus-info-label">Haploinsufficiency:</td><td>${dedupSemicolon(row['CLINGEN_haploinsufficient'])}</td></tr>`

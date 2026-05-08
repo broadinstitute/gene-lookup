@@ -639,6 +639,15 @@ def get_column_descriptions():
     return {col["name"]: col.get("description", "") for col in BIGQUERY_COLUMNS}
 
 
+def get_column_types():
+    """Return a dictionary mapping column names to their BigQuery types (e.g., STRING, INTEGER, FLOAT).
+
+    Returns:
+        dict: Mapping of column name to type string.
+    """
+    return {col["name"]: col.get("type", "") for col in BIGQUERY_COLUMNS}
+
+
 def get_custom_filter_columns():
     """Return a list of columns that can be used for custom filtering.
 

@@ -9,12 +9,15 @@ import json
 import jinja2
 import os
 
-from global_constants import BIGQUERY_COLUMNS, GROUP_ORDER, get_column_descriptions, get_custom_filter_columns, get_exportable_columns
+from global_constants import BIGQUERY_COLUMNS, GROUP_ORDER, get_column_descriptions, get_column_types, get_custom_filter_columns, get_exportable_columns
 
 jinja2_env = jinja2.Environment(loader=jinja2.FileSystemLoader('.'))
 
 # Get column descriptions to pass to templates
 column_descriptions = get_column_descriptions()
+
+# Get column types (STRING/INTEGER/FLOAT) for SQL value-quoting decisions
+column_types = get_column_types()
 
 # Get custom filter columns to pass to templates
 custom_filter_columns = get_custom_filter_columns()
@@ -34,6 +37,7 @@ for template_file in glob.glob("*_page_template.html"):
     template = jinja2_env.get_template(os.path.basename(template_file))
     html_content = template.render(
         column_descriptions=column_descriptions,
+        column_types=column_types,
         column_groups=GROUP_ORDER,
         custom_filter_columns_json=custom_filter_columns_json,
         exportable_columns_json=exportable_columns_json,

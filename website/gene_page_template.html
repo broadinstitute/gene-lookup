@@ -358,6 +358,7 @@
         if (geneId) externalLinksLine2.push(link('Protein Atlas', `https://www.proteinatlas.org/${geneId}/tissue`))
         if (geneId) externalLinksLine2.push(link('UniProt', `https://www.uniprot.org/uniprot?query=${geneId}+AND(reviewed:true)+AND(organism_id:9606)`))
         if (geneSymbol) externalLinksLine2.push(link('KEGG', `https://www.kegg.jp/kegg-bin/search_pathway_text?keyword=${geneSymbol}&viewImage=true`))
+        if (geneSymbol) externalLinksLine2.push(link('STRING', `https://string-db.org/network/homo_sapiens/${geneSymbol}`))
         if (geneSymbol) {
             const allNames = [geneSymbol, ...(row['gene_aliases'] || '').split(',').map(s => s.trim()).filter(s => s)]
             externalLinksLine2.push(link('PubMed', `https://www.ncbi.nlm.nih.gov/pubmed/?term=(${allNames.join(' OR ')})`))
@@ -368,7 +369,7 @@
         if (row['LLM_phenotype_summary']) {
             $('#phenotype-summary-section').html(`
                 <div class="source-section">
-                    <h4>Phenotype Summary</h4>
+                    <h4>Phenotype Summary:<i class="question circle outline icon" data-html="This is an AI summary of the phenotype descriptions from the sources listed below. It was generated using Gemini 2.5 Flash." data-position="top left"></i></h4>
                     <div class="phenotype-summary-card">${row['LLM_phenotype_summary']}</div>
                 </div>
             `)

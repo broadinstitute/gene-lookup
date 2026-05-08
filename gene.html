@@ -2015,8 +2015,8 @@
         if (geneId) externalLinksLine2.push(link('Open Targets', `https://platform.opentargets.org/target/${geneId}`))
         if (geneSymbol) externalLinksLine2.push(link('DGIdb', `https://dgidb.org/results?searchType=gene&searchTerms=${geneSymbol}`))
         if (geneSymbol) externalLinksLine2.push(link('cBioPortal', `https://www.cbioportal.org/results/cancerTypesSummary?cancer_study_list=5c8a7d55e4b046111fee2296&gene_list=${geneSymbol}`))
-        if (geneSymbol) externalLinksLine2.push(link('AlphaFold', `https://alphafold.ebi.ac.uk/search/text/${geneSymbol}?organismScientificName=Homo%20sapiens`))
         if (geneSymbol) externalLinksLine2.push(link('CIViC', `https://civicdb.org/links/entrez_name/${geneSymbol}`))
+        if (geneSymbol) externalLinksLine2.push(link('AlphaFold', `https://alphafold.ebi.ac.uk/search/text/${geneSymbol}?organismScientificName=Homo%20sapiens`))
         if (geneSymbol) externalLinksLine2.push(link('TRExplorer', `https://trexplorer.broadinstitute.org/#showRs=1&q=${geneSymbol}`))
         if (geneSymbol) {
             const allNames = [geneSymbol, ...(row['gene_aliases'] || '').split(',').map(s => s.trim()).filter(s => s)]

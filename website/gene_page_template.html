@@ -367,6 +367,7 @@
         if (geneSymbol) externalLinksLine2.push(link('cBioPortal', `https://www.cbioportal.org/results?gene_list=${geneSymbol}`))
         if (geneSymbol) externalLinksLine2.push(link('COSMIC', `https://cancer.sanger.ac.uk/cosmic/gene/analysis?ln=${geneSymbol}`))
         if (geneSymbol) externalLinksLine2.push(link('CIViC', `https://civicdb.org/links/entrez_name/${geneSymbol}`))
+        if (geneSymbol) externalLinksLine2.push(link('TRExplorer', `https://trexplorer.broadinstitute.org/#showRs=1&q=${geneSymbol}`))
         if (geneSymbol) {
             const allNames = [geneSymbol, ...(row['gene_aliases'] || '').split(',').map(s => s.trim()).filter(s => s)]
             externalLinksLine2.push(link('PubMed', `https://www.ncbi.nlm.nih.gov/pubmed/?term=(${allNames.join(' OR ')})`))

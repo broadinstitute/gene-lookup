@@ -695,6 +695,32 @@
 
     let customFilterNextId = 0
 
+    // Returns the current shared conjunction value across all custom filter rows,
+    // or 'AND' if none exist yet (used as default for new rows).
+    const getCurrentCustomFilterConjunction = () => {
+        const $existing = $('#custom-filter-rows .custom-filter-conjunction')
+        if (!$existing.length) return 'AND'
+        return $existing.first().dropdown('get value') || 'AND'
+    }
+
+    // Synchronize all custom-filter conjunction dropdowns to the same value.
+    // Mixing AND/OR across rows is not allowed — toggling one toggles all.
+    let suppressCustomConjunctionSync = false
+    const syncCustomFilterConjunctions = (value) => {
+        if (suppressCustomConjunctionSync) return
+        const newConj = value === 'OR' ? 'OR' : 'AND'
+        suppressCustomConjunctionSync = true
+        try {
+            $('#custom-filter-rows .custom-filter-conjunction').each(function() {
+                if ($(this).dropdown('get value') !== newConj) {
+                    $(this).dropdown('set selected', newConj)
+                }
+            })
+        } finally {
+            suppressCustomConjunctionSync = false
+        }
+    }
+
     const CUSTOM_FILTER_GROUP_ORDER = BIGQUERY_COLUMN_GROUPS
 
     const getCustomFilterColumnInfo = (columnName) => {
@@ -767,7 +793,9 @@
         return menuHtml
     }
 
-    const addCustomFilterRow = (columnName) => {
+    const addCustomFilterRow = (columnName, conjunction) => {
+        // New rows inherit the existing shared conjunction if not explicitly provided.
+        if (conjunction !== 'OR' && conjunction !== 'AND') conjunction = getCurrentCustomFilterConjunction()
         const filterId = customFilterNextId++
         const colInfo = columnName ? getCustomFilterColumnInfo(columnName) : null
         const colType = colInfo ? colInfo.type : 'STRING'
@@ -781,8 +809,19 @@
             `<div class="item" data-value="${op.value}">${op.label}</div>`
         ).join('')
 
+        const conjActive = (val) => conjunction === val ? ' active selected' : ''
+
         const rowHtml = `
         <div class="custom-filter-row" data-filter-id="${filterId}">
+            <div class="ui selection dropdown custom-filter-conjunction">
+                <input type="hidden" name="customFilterConjunction_${filterId}" value="${conjunction}">
+                <i class="dropdown icon"></i>
+                <div class="text">${conjunction}</div>
+                <div class="menu">
+                    <div class="item${conjActive('AND')}" data-value="AND">AND</div>
+                    <div class="item${conjActive('OR')}" data-value="OR">OR</div>
+                </div>
+            </div>
             <div class="ui selection search dropdown custom-filter-field" style="min-width: 220px;">
                 <input type="hidden" name="customFilterField_${filterId}">
                 <i class="dropdown icon"></i>
@@ -840,6 +879,14 @@
                     $row.find('.custom-filter-value').show()
                 }
                 updateFilterTooltip($row)
+            }
+        })
+
+        $row.find('.custom-filter-conjunction').dropdown({
+            onShow: function() { $(this).css('z-index', 10001) },
+            onHide: function() { $(this).css('z-index', '') },
+            onChange: function(value) {
+                syncCustomFilterConjunctions(value)
             }
         })
 
@@ -965,8 +1012,13 @@
             const col = $(this).find('.custom-filter-field').dropdown('get value')
             const op = $(this).find('.custom-filter-op').dropdown('get value')
             const val = $(this).find('.custom-filter-value').val()
+            const conjunction = $(this).find('.custom-filter-conjunction').dropdown('get value') || 'AND'
+            // Format: col|op|encoded_val|conj — the conjunction is always written
+            // explicitly so a value literally equal to 'AND' or 'OR' can't be
+            // mistaken for the conjunction segment on reload.
             if (col && op) {
-                parts.push(`${col}|${op}|${encodeURIComponent(val || '')}`)
+                const conjSegment = conjunction === 'OR' ? 'OR' : 'AND'
+                parts.push(`${col}|${op}|${encodeURIComponent(val || '')}|${conjSegment}`)
             }
         })
         return parts.join(';')
@@ -979,13 +1031,22 @@
             if (segments.length < 2) continue
             const col = segments[0]
             const op = segments[1]
+            // Backward compat: older URLs lacked the trailing conjunction segment.
+            // Detect the new 4+-segment format by checking whether the final segment
+            // is exactly 'AND' or 'OR'.
+            const last = segments[segments.length - 1]
+            const hasConjunction = (last === 'AND' || last === 'OR') && segments.length >= 4
+            const conjunction = hasConjunction ? last : 'AND'
+            const valueEncoded = hasConjunction
+                ? segments.slice(2, -1).join('|')
+                : segments.slice(2).join('|')
             let val
             try {
-                val = decodeURIComponent(segments.slice(2).join('|'))
+                val = decodeURIComponent(valueEncoded)
             } catch (e) {
-                val = segments.slice(2).join('|')
+                val = valueEncoded
             }
-            const $row = addCustomFilterRow(col)
+            const $row = addCustomFilterRow(col, conjunction)
             // Wait one macrotask so the column dropdown's onChange (which clears+rebuilds the
             // operator menu) settles before we set the operator value.
             await new Promise(resolve => setTimeout(resolve, 50))

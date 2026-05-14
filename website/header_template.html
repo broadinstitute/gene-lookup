@@ -675,59 +675,76 @@
 
     /**
      * Build a WHERE clause for custom filters.
-     * Custom filters are stored in GLOBAL_PAGE_STATE.customFilters as "col|op|val;col|op|val"
-     * where op is a SQL operator (=, !=, >, <, >=, <=, LIKE, IS NULL, IS NOT NULL).
+     * Custom filters are stored in GLOBAL_PAGE_STATE.customFilters as
+     * "col|op|val|conj;col|op|val|conj" where op is a SQL operator
+     * (=, !=, >, <, >=, <=, LIKE, IS NULL, IS NOT NULL) and conj is AND/OR.
+     * Rows are combined with their per-row conjunction (the first row's
+     * conjunction is ignored). Older 3-segment URLs default to AND.
      */
     const buildCustomFiltersWhereClause = () => {
         const filtersStr = GLOBAL_PAGE_STATE.customFilters
         if (!filtersStr || !filtersStr.trim()) return ''
 
         const allowedOps = new Set(['=', '!=', '>', '<', '>=', '<=', 'LIKE', 'IS NULL', 'IS NOT NULL'])
-        const clauses = []
+        const items = [] // {conjunction, clause}
         for (const filterStr of filtersStr.split(';')) {
             const parts = filterStr.split('|')
             if (parts.length < 2) continue
 
             const col = parts[0]
             const op = parts[1]
+            const last = parts[parts.length - 1]
+            const hasConjunction = (last === 'AND' || last === 'OR') && parts.length >= 4
+            const conjunction = hasConjunction ? last : 'AND'
+            const valueEncoded = hasConjunction
+                ? parts.slice(2, -1).join('|')
+                : parts.slice(2).join('|')
             let val
             try {
-                val = decodeURIComponent(parts.slice(2).join('|'))
+                val = decodeURIComponent(valueEncoded)
             } catch (e) {
-                val = parts.slice(2).join('|')
+                val = valueEncoded
             }
 
             // Validate column name and operator
             if (!BIGQUERY_COLUMN_DESCRIPTIONS[col] && !TABLE_COLUMNS[col]) continue
             if (!allowedOps.has(op)) continue
 
+            let clause
             if (op === 'IS NULL' || op === 'IS NOT NULL') {
                 // load_bigquery.py fills NaN in object columns with '' before upload, so
                 // absent string values are stored as empty strings, not NULL. Match both.
                 const colType = BIGQUERY_COLUMN_TYPES[col]
                 if (colType !== 'INTEGER' && colType !== 'FLOAT') {
-                    clauses.push(op === 'IS NULL'
+                    clause = op === 'IS NULL'
                         ? `(${col} IS NULL OR ${col} = '')`
-                        : `(${col} IS NOT NULL AND ${col} != '')`)
+                        : `(${col} IS NOT NULL AND ${col} != '')`
                 } else {
-                    clauses.push(`${col} ${op}`)
+                    clause = `${col} ${op}`
                 }
             } else if (op === 'LIKE') {
                 const escapedValue = val.replace(/'/g, "''")
-                clauses.push(`${col} LIKE '${escapedValue}'`)
+                clause = `${col} LIKE '${escapedValue}'`
             } else {
                 const colType = BIGQUERY_COLUMN_TYPES[col]
                 const isNumericCol = colType === 'INTEGER' || colType === 'FLOAT'
                 if (isNumericCol && val.trim() !== '' && isFinite(Number(val))) {
-                    clauses.push(`${col} ${op} ${Number(val)}`)
+                    clause = `${col} ${op} ${Number(val)}`
                 } else {
                     const escapedValue = val.replace(/'/g, "''")
-                    clauses.push(`${col} ${op} '${escapedValue}'`)
+                    clause = `${col} ${op} '${escapedValue}'`
                 }
             }
+            items.push({ conjunction, clause })
         }
 
-        return clauses.join(' AND ')
+        if (items.length === 0) return ''
+        if (items.length === 1) return items[0].clause
+        let combined = items[0].clause
+        for (let i = 1; i < items.length; i++) {
+            combined += ` ${items[i].conjunction} ${items[i].clause}`
+        }
+        return `(${combined})`
     }
 
     const DEFAULT_VISIBLE_COLUMNS = [

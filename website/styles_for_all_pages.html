@@ -590,6 +590,16 @@
         max-width: 300px;
     }
 
+    /* Conjunction dropdown only appears on the 2nd+ rows */
+    .custom-filter-row .ui.selection.dropdown.custom-filter-conjunction {
+        min-width: 80px;
+        width: 80px;
+    }
+
+    .custom-filter-row:first-child .custom-filter-conjunction {
+        display: none;
+    }
+
     .custom-filter-help-icon {
         margin-left: 2px;
         color: #888;

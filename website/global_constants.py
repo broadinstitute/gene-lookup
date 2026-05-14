@@ -25,6 +25,18 @@ GROUP_ORDER = [
     GROUP_DBNSFP,
 ]
 
+# Constraint-score thresholds. A gene is added to its source list for a given metric when
+# the score crosses the threshold:
+#   pLI_v2, pLI_v4: score >= value  (higher = more constrained)
+#   LOEUF, MOEUF:   score <= value  (lower  = more constrained)
+# Used by the BigQuery loading pipeline and exported to the website via generate_website.py.
+CONSTRAINT_THRESHOLDS = {
+    "pLI_v2": {"value": 0.9, "operator": ">="},
+    "pLI_v4": {"value": 0.9, "operator": ">="},
+    "LOEUF":  {"value": 0.2, "operator": "<="},
+    "MOEUF":  {"value": 0.2, "operator": "<="},
+}
+
 BIGQUERY_COLUMNS = [
     # Core
     {

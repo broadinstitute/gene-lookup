@@ -9,7 +9,7 @@ import json
 import jinja2
 import os
 
-from global_constants import BIGQUERY_COLUMNS, GROUP_ORDER, get_column_descriptions, get_column_types, get_custom_filter_columns, get_exportable_columns
+from global_constants import BIGQUERY_COLUMNS, GROUP_ORDER, CONSTRAINT_THRESHOLDS, get_column_descriptions, get_column_types, get_custom_filter_columns, get_exportable_columns
 
 jinja2_env = jinja2.Environment(loader=jinja2.FileSystemLoader('.'))
 
@@ -41,6 +41,7 @@ for template_file in glob.glob("*_page_template.html"):
         column_groups=GROUP_ORDER,
         custom_filter_columns_json=custom_filter_columns_json,
         exportable_columns_json=exportable_columns_json,
+        constraint_thresholds_json=json.dumps(CONSTRAINT_THRESHOLDS),
         data_last_updated_date=data_last_updated_date,
     )
 

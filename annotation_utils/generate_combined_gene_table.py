@@ -1,7 +1,11 @@
 import argparse
 from datetime import datetime
 import os
+import sys
 import pandas as pd
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "website"))
+from global_constants import CONSTRAINT_THRESHOLDS
 
 from annotation_utils.get_omim_table import get_omim_table
 from annotation_utils.get_clingen_table import get_clingen_gene_disease_validity_table, get_clingen_haploinsufficient_genes_table
@@ -622,10 +626,10 @@ assert df_combined.index.is_unique, "The merged dataframe has duplicate gene ids
 rows_with_constraint_scores = sum(df_combined["pLI_v2"].notna() | df_combined["pLI_v4"].notna() | df_combined["lof_oe_ci_upper_v4"].notna() | df_combined["mis_oe_ci_upper_v4"].notna())
 print(f"Added constraint scores to {rows_with_constraint_scores:,d} out of {len(df_combined):,d} ({(rows_with_constraint_scores / len(df_combined)):.1%}) genes")
 
-pLI_v2_THRESHOLD = 0.9
-pLI_v4_THRESHOLD = 0.9
-LOEUF_CONSTRAINT_THRESHOLD = 0.2
-MOEUF_CONSTRAINT_THRESHOLD = 0.2
+pLI_v2_THRESHOLD = CONSTRAINT_THRESHOLDS["pLI_v2"]["value"]
+pLI_v4_THRESHOLD = CONSTRAINT_THRESHOLDS["pLI_v4"]["value"]
+LOEUF_CONSTRAINT_THRESHOLD = CONSTRAINT_THRESHOLDS["LOEUF"]["value"]
+MOEUF_CONSTRAINT_THRESHOLD = CONSTRAINT_THRESHOLDS["MOEUF"]["value"]
 
 # add highly constrained genes that are not in the other sources:
 df_highly_constrained_genes = df_constraint_scores[

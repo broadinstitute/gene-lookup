@@ -268,18 +268,6 @@
 
     const hasAnyValue = (...values) => values.some(v => v != null && v !== '')
 
-    const dedupSemicolonArray = (s) => {
-        const out = []
-        const seen = new Set()
-        for (const v of String(s || '').split(';').map(x => x.trim())) {
-            if (!v || seen.has(v)) continue
-            seen.add(v)
-            out.push(v)
-        }
-        return out
-    }
-    const dedupSemicolon = (s) => dedupSemicolonArray(s).join('; ')
-
     const displaySearchResults = () => {
         const row = window.searchResults.rows[0]
 
@@ -312,7 +300,7 @@
 
         // --- Right column (row1-box2) ---
         let box2 = '<table class="locus-info-table">'
-        box2 += `<tr><td class="locus-info-label">Inheritance:</td><td>${row['inheritance'] || ''}</td></tr>`
+        box2 += `<tr><td class="locus-info-label">Inheritance:</td><td>${dedupInheritance(row['inheritance'])}</td></tr>`
         const sourceBadgeIds = {
             geneSymbol,
             hgncId,
@@ -339,38 +327,41 @@
         const externalLinksLine1 = []
         const externalLinksLine2 = []
         const link = (label, url) => `<a href="${url}" target="_blank">${label}</a>`
+        const enc = encodeURIComponent
         const mimNumbers = dedupSemicolonArray(row['OMIM_mim_number'])
-        if (mimNumbers.length > 0) externalLinksLine1.push(link('OMIM', `https://omim.org/entry/${mimNumbers[0]}`))
-        if (geneSymbol) externalLinksLine1.push(link('PanelAppUK', `https://panelapp.genomicsengland.co.uk/panels/entities/${geneSymbol}`))
-        if (geneSymbol) externalLinksLine1.push(link('PanelAppAU', `https://panelapp-aus.org/panels/entities/${geneSymbol}`))
-        if (hgncId) externalLinksLine1.push(link('ClinGen', `https://search.clinicalgenome.org/kb/gene-dosage/${hgncId}`))
-        if (hgncId) externalLinksLine1.push(link('GenCC', `https://search.thegencc.org/genes/${hgncId}`))
-        if (geneId) externalLinksLine1.push(link('Decipher', `https://www.deciphergenomics.org/gene/${geneId}/overview/protein-genomic-info`))
-        if (geneSymbol) externalLinksLine1.push(link('ClinVar', `https://www.ncbi.nlm.nih.gov/clinvar?term=${geneSymbol}[gene]`))
-        if (geneSymbol) externalLinksLine1.push(link('HGMD', `https://my.qiagendigitalinsights.com/bbp/view/hgmd/pro/gene.php?gene=${geneSymbol}`))
-        if (geneSymbol) externalLinksLine1.push(link('MalaCards', `https://www.malacards.org/search/results?query=${geneSymbol}`))
-        if (geneId) externalLinksLine1.push(link('GeneCards', `https://www.genecards.org/cgi-bin/carddisp.pl?gene=${geneId}`))
-        if (geneId) externalLinksLine1.push(link('NCBI Gene', `https://www.ncbi.nlm.nih.gov/gene/?term=${geneId}`))
-        if (geneSymbol) externalLinksLine1.push(link('Monarch', `https://monarchinitiative.org/explore?search=${geneSymbol}#search`))
-        if (geneSymbol) externalLinksLine1.push(link('Orphanet', `https://www.orpha.net/en/disease/gene/${geneSymbol}`))
-        if (hgncId) externalLinksLine1.push(link('MARRVEL', `https://marrvel.org/human/gene/${hgncId.replace('HGNC:', '')}`))
-        if (geneId) externalLinksLine2.push(link('gnomAD', `https://gnomad.broadinstitute.org/gene/${geneId}?dataset=gnomad_r4`))
-        if (geneSymbol) externalLinksLine2.push(link('primAD', `https://primad.basespace.illumina.com/gene/${geneSymbol}`))
-        if (geneSymbol) externalLinksLine2.push(link('MGI', `https://www.informatics.jax.org/marker/summary?nomen=${geneSymbol}`))
-        if (geneId) externalLinksLine2.push(link('GTEx', `https://www.gtexportal.org/home/gene/${geneId}`))
-        if (geneId) externalLinksLine2.push(link('Protein Atlas', `https://www.proteinatlas.org/${geneId}/tissue`))
-        if (geneId) externalLinksLine2.push(link('UniProt', `https://www.uniprot.org/uniprot?query=${geneId}+AND(reviewed:true)+AND(organism_id:9606)`))
-        if (geneSymbol) externalLinksLine2.push(link('KEGG', `https://www.kegg.jp/kegg-bin/search_pathway_text?keyword=${geneSymbol}&viewImage=true`))
-        if (geneSymbol) externalLinksLine2.push(link('STRING', `https://string-db.org/network/homo_sapiens/${geneSymbol}`))
-        if (geneId) externalLinksLine2.push(link('Open Targets', `https://platform.opentargets.org/target/${geneId}`))
-        if (geneSymbol) externalLinksLine2.push(link('DGIdb', `https://dgidb.org/results?searchType=gene&searchTerms=${geneSymbol}`))
-        if (geneSymbol) externalLinksLine2.push(link('cBioPortal', `https://www.cbioportal.org/results/cancerTypesSummary?cancer_study_list=5c8a7d55e4b046111fee2296&gene_list=${geneSymbol}`))
-        if (geneSymbol) externalLinksLine2.push(link('CIViC', `https://civicdb.org/links/entrez_name/${geneSymbol}`))
-        if (geneSymbol) externalLinksLine2.push(link('AlphaFold', `https://alphafold.ebi.ac.uk/search/text/${geneSymbol}?organismScientificName=Homo%20sapiens`))
-        if (geneSymbol) externalLinksLine2.push(link('TRExplorer', `https://trexplorer.broadinstitute.org/#showRs=1&q=${geneSymbol}`))
+        // For sources that also appear as a colored source badge, build the link via SOURCES[x].url(...)
+        // so the two stay in sync (URL encoding, query params, etc.).
+        if (mimNumbers.length > 0) externalLinksLine1.push(link('OMIM', SOURCES.OMIM.url({ mimNumber: mimNumbers[0] })))
+        if (geneSymbol) externalLinksLine1.push(link('PanelAppUK', SOURCES.PanelAppUK.url({ geneSymbol })))
+        if (geneSymbol) externalLinksLine1.push(link('PanelAppAU', SOURCES.PanelAppAU.url({ geneSymbol })))
+        if (hgncId) externalLinksLine1.push(link('ClinGen', SOURCES.ClinGen.url({ hgncId })))
+        if (hgncId) externalLinksLine1.push(link('GenCC', SOURCES.GenCC.url({ hgncId })))
+        if (geneId) externalLinksLine1.push(link('Decipher', SOURCES.Decipher.url({ ensemblId: geneId })))
+        if (geneSymbol) externalLinksLine1.push(link('ClinVar', SOURCES.ClinVar.url({ geneSymbol })))
+        if (geneSymbol) externalLinksLine1.push(link('HGMD', `https://my.qiagendigitalinsights.com/bbp/view/hgmd/pro/gene.php?gene=${enc(geneSymbol)}`))
+        if (geneSymbol) externalLinksLine1.push(link('MalaCards', `https://www.malacards.org/search/results?query=${enc(geneSymbol)}`))
+        if (geneId) externalLinksLine1.push(link('GeneCards', `https://www.genecards.org/cgi-bin/carddisp.pl?gene=${enc(geneId)}`))
+        if (geneId) externalLinksLine1.push(link('NCBI Gene', `https://www.ncbi.nlm.nih.gov/gene/?term=${enc(geneId)}`))
+        if (geneSymbol) externalLinksLine1.push(link('Monarch', `https://monarchinitiative.org/explore?search=${enc(geneSymbol)}#search`))
+        if (geneSymbol) externalLinksLine1.push(link('Orphanet', `https://www.orpha.net/en/disease/gene/${enc(geneSymbol)}`))
+        if (hgncId) externalLinksLine1.push(link('MARRVEL', `https://marrvel.org/human/gene/${enc(hgncId.replace('HGNC:', ''))}`))
+        if (geneId) externalLinksLine2.push(link('gnomAD', `https://gnomad.broadinstitute.org/gene/${enc(geneId)}?dataset=gnomad_r4`))
+        if (geneSymbol) externalLinksLine2.push(link('primAD', `https://primad.basespace.illumina.com/gene/${enc(geneSymbol)}`))
+        if (geneSymbol) externalLinksLine2.push(link('MGI', `https://www.informatics.jax.org/marker/summary?nomen=${enc(geneSymbol)}`))
+        if (geneId) externalLinksLine2.push(link('GTEx', `https://www.gtexportal.org/home/gene/${enc(geneId)}`))
+        if (geneId) externalLinksLine2.push(link('Protein Atlas', `https://www.proteinatlas.org/${enc(geneId)}/tissue`))
+        if (geneId) externalLinksLine2.push(link('UniProt', `https://www.uniprot.org/uniprot?query=${enc(geneId)}+AND(reviewed:true)+AND(organism_id:9606)`))
+        if (geneSymbol) externalLinksLine2.push(link('KEGG', `https://www.kegg.jp/kegg-bin/search_pathway_text?keyword=${enc(geneSymbol)}&viewImage=true`))
+        if (geneSymbol) externalLinksLine2.push(link('STRING', `https://string-db.org/network/homo_sapiens/${enc(geneSymbol)}`))
+        if (geneId) externalLinksLine2.push(link('Open Targets', `https://platform.opentargets.org/target/${enc(geneId)}`))
+        if (geneSymbol) externalLinksLine2.push(link('DGIdb', `https://dgidb.org/results?searchType=gene&searchTerms=${enc(geneSymbol)}`))
+        if (geneSymbol) externalLinksLine2.push(link('cBioPortal', `https://www.cbioportal.org/results/cancerTypesSummary?cancer_study_list=5c8a7d55e4b046111fee2296&gene_list=${enc(geneSymbol)}`))
+        if (geneSymbol) externalLinksLine2.push(link('CIViC', `https://civicdb.org/links/entrez_name/${enc(geneSymbol)}`))
+        if (geneSymbol) externalLinksLine2.push(link('AlphaFold', `https://alphafold.ebi.ac.uk/search/text/${enc(geneSymbol)}?organismScientificName=Homo%20sapiens`))
+        if (geneSymbol) externalLinksLine2.push(link('TRExplorer', `https://trexplorer.broadinstitute.org/#showRs=1&q=${enc(geneSymbol)}`))
         if (geneSymbol) {
             const allNames = [geneSymbol, ...(row['gene_aliases'] || '').split(',').map(s => s.trim()).filter(s => s)]
-            externalLinksLine2.push(link('PubMed', `https://www.ncbi.nlm.nih.gov/pubmed/?term=(${allNames.join(' OR ')})`))
+            externalLinksLine2.push(link('PubMed', `https://www.ncbi.nlm.nih.gov/pubmed/?term=(${allNames.map(enc).join('+OR+')})`))
         }
         $('#external-links').html(`<div>${externalLinksLine1.join('')}</div><div style="margin-top: 5px;">${externalLinksLine2.join('')}</div>`)
 
@@ -387,10 +378,7 @@
         // --- Source: OMIM ---
         if (hasAnyValue(row['OMIM_mim_number'], row['OMIM_phenotype_mim_number'], row['OMIM_inheritance'], row['OMIM_phenotype_description'])) {
             const mimNumbersList = dedupSemicolonArray(row['OMIM_mim_number'])
-            const omimTitle = mimNumbersList.length > 0
-                ? `<a href="https://omim.org/entry/${mimNumbersList[0]}" target="_blank" class="action-link">OMIM</a>`
-                : 'OMIM'
-            let html = `<div class="source-section"><h4>${omimTitle}</h4><table class="locus-info-table">`
+            let html = `<div class="source-section"><h4>OMIM</h4><table class="locus-info-table">`
             const mimLinks = mimNumbersList.map(m =>
                 `<a href="https://omim.org/entry/${m}" target="_blank" class="action-link">${m}</a>`
             ).join('; ')
@@ -537,7 +525,15 @@
         })
 
         $('.question').popup({ on: 'click' })
-        $('.show-popup').popup({ on: 'click', hoverable: true })
+        $('.show-popup').popup({
+            on: 'click',
+            hoverable: true,
+            onVisible: function() {
+                const $popup = $(this).popup('get popup')
+                if ($popup && $popup.length) initSourceBadgePopups($popup)
+            },
+        })
+        initSourceBadgePopups()
     }
 
     const performSearch = async () => {

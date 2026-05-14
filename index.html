@@ -994,17 +994,162 @@
 
     const escapeSqlString = (s) => String(s).replace(/'/g, "''")
 
-    const SOURCE_BADGE_URL_BUILDERS = {
-        'OMIM':       ({ mimNumber }) => mimNumber ? `https://omim.org/entry/${encodeURIComponent(mimNumber)}` : null,
-        'ClinGen':    ({ hgncId }) => hgncId ? `https://search.clinicalgenome.org/kb/gene-dosage/${hgncId}` : null,
-        'GenCC':      ({ hgncId }) => hgncId ? `https://search.thegencc.org/genes/${hgncId}` : null,
-        'PanelAppUK': ({ geneSymbol }) => geneSymbol ? `https://panelapp.genomicsengland.co.uk/panels/entities/${geneSymbol}` : null,
-        'PanelAppAU': ({ geneSymbol }) => geneSymbol ? `https://panelapp-aus.org/panels/entities/${geneSymbol}` : null,
-        'Decipher':   ({ ensemblId }) => ensemblId ? `https://www.deciphergenomics.org/gene/${ensemblId}/overview/protein-genomic-info` : null,
-        'ClinVar':    ({ geneSymbol }) => geneSymbol ? `https://www.ncbi.nlm.nih.gov/clinvar?term=${geneSymbol}[gene]` : null,
-        'Fridman':    () => 'https://pubmed.ncbi.nlm.nih.gov/40374730/',
-        'dbNSFP':     () => 'https://www.dbnsfp.org/',
+    const dedupSemicolonArray = (s) => {
+        const out = []
+        const seen = new Set()
+        for (const v of String(s || '').split(';').map(x => x.trim())) {
+            if (!v || seen.has(v)) continue
+            seen.add(v)
+            out.push(v)
+        }
+        return out
     }
+    const dedupSemicolon = (s) => dedupSemicolonArray(s).join('; ')
+
+    // Collapse the various combined inheritance notations the upstream sources emit (e.g. AD/AR,
+    // AR/AD, AD-AR, AR-AD, XD/XR, optionally with a parenthetical like "(AR is more severe)") so
+    // that any combined form expands into its constituent two-letter codes, and the deduped 2-letter
+    // codes are listed in alphabetical order. Non-two-letter modes (MITO, SD, verbose strings like
+    // "Autosomal dominant, Somatic mutation", parenthetical-only entries, etc.) are preserved in
+    // their original order after the alphabetized 2-letter codes. See generate_combined_gene_table.py
+    // for the raw upstream values; the BigQuery table currently contains ~180 unique inheritance
+    // strings, many of which restate the same modes in multiple notations.
+    const dedupInheritance = (s) => {
+        if (!s) return ''
+        const parts = dedupSemicolonArray(s)
+        const combinedRegex = /^([A-Z]{2})[\/\-]([A-Z]{2})(\s*\(.*\))?$/
+        const twoLetterRegex = /^[A-Z]{2}$/
+        const detectedCodes = new Set()
+        const others = []
+        for (const p of parts) {
+            const m = combinedRegex.exec(p)
+            if (m) {
+                detectedCodes.add(m[1])
+                detectedCodes.add(m[2])
+            } else if (twoLetterRegex.test(p)) {
+                detectedCodes.add(p)
+            } else {
+                others.push(p)
+            }
+        }
+        const codes = Array.from(detectedCodes).sort()
+        return [...codes, ...others].join('; ')
+    }
+
+    // Initialize Semantic UI hover popups for source badges within the given root element (or the
+    // whole document by default). Called once per table render for inline badges, and again from the
+    // outer "(+N more)" popup's onVisible callback so that nested badges (which only enter the DOM
+    // when the outer popup is shown) also get their hover popups.
+    const initSourceBadgePopups = (rootEl) => {
+        const $scope = rootEl ? $(rootEl) : $(document)
+        $scope.find('.source-hover-popup').popup({
+            on: 'hover',
+            delay: { show: 80, hide: 50 },
+            position: 'top center',
+            variation: 'tiny',
+        })
+    }
+
+    // Constraint-score thresholds exported from website/global_constants.py — single source of truth.
+    // Pipeline (annotation_utils/generate_combined_gene_table.py) reads the same dict.
+    const CONSTRAINT_THRESHOLDS = {"pLI_v2": {"value": 0.9, "operator": ">="}, "pLI_v4": {"value": 0.9, "operator": ">="}, "LOEUF": {"value": 0.2, "operator": "<="}, "MOEUF": {"value": 0.2, "operator": "<="}}
+
+    const constraintHoverText = (label, key, extra) => {
+        const t = CONSTRAINT_THRESHOLDS[key]
+        const op = t.operator === '>=' ? '≥' : (t.operator === '<=' ? '≤' : t.operator)
+        return `<b>${label}</b>: ${extra} Badge shown when ${op} ${t.value}`
+    }
+
+    const gnomadGeneUrl = (ensemblId, dataset) => ensemblId
+        ? `https://gnomad.broadinstitute.org/gene/${encodeURIComponent(ensemblId)}?dataset=${dataset}`
+        : 'https://gnomad.broadinstitute.org/'
+
+    // Per-source config: color, hover-tooltip description, and url (gene-specific link target).
+    // Keys match the source labels emitted by compute_sources_string() in generate_combined_gene_table.py.
+    // Descriptions are exposed via `class="source-hover-popup" data-html="..."` on each badge and
+    // surfaced through Semantic UI hover popups initialized by initSourceBadgePopups(). Badges nested
+    // inside the "(+N more)" click-popup are wired up by an onVisible hook on `.show-popup` that
+    // re-runs initSourceBadgePopups inside the just-opened popup body (Semantic UI's popup plugin
+    // doesn't initialize popups on descendants that enter the DOM after init).
+    const SOURCES = {
+        'OMIM': {
+            color: '#e8c8c8',
+            description: '<b>OMIM</b>: Online Mendelian Inheritance in Man',
+            url: ({ mimNumber }) => mimNumber ? `https://omim.org/entry/${encodeURIComponent(mimNumber)}` : 'https://omim.org/',
+        },
+        'ClinGen': {
+            color: '#c8d8ec',
+            description: '<b>ClinGen</b>: gene-disease validity classifications',
+            url: ({ hgncId }) => hgncId ? `https://search.clinicalgenome.org/kb/genes/${encodeURIComponent(hgncId)}` : 'https://clinicalgenome.org/',
+        },
+        'GenCC': {
+            color: '#c8e8cf',
+            description: '<b>GenCC</b>: Gene Curation Coalition',
+            url: ({ hgncId }) => hgncId ? `https://search.thegencc.org/genes/${encodeURIComponent(hgncId)}` : 'https://thegencc.org/',
+        },
+        'PanelAppUK': {
+            color: '#ecdcb8',
+            description: '<b>PanelApp UK</b>: Genomics England PanelApp',
+            url: ({ geneSymbol }) => geneSymbol ? `https://panelapp.genomicsengland.co.uk/panels/entities/${encodeURIComponent(geneSymbol)}` : 'https://panelapp.genomicsengland.co.uk/',
+        },
+        'PanelAppAU': {
+            color: '#f0d0a8',
+            description: '<b>PanelApp AU</b>: Australian Genomics PanelApp',
+            url: ({ geneSymbol }) => geneSymbol ? `https://panelapp-aus.org/panels/entities/${encodeURIComponent(geneSymbol)}` : 'https://panelapp-aus.org/',
+        },
+        'Decipher': {
+            color: '#d8c8ec',
+            description: '<b>DECIPHER</b>: DDG2P gene-disease associations',
+            url: ({ ensemblId }) => ensemblId ? `https://www.deciphergenomics.org/gene/${encodeURIComponent(ensemblId)}/overview/protein-genomic-info` : 'https://www.deciphergenomics.org/',
+        },
+        'ClinVar': {
+            color: '#c8e4e0',
+            description: '<b>ClinVar</b>: pathogenic/likely pathogenic variant annotations',
+            url: ({ geneSymbol, ensemblId }) => {
+                const grch38 = '+AND+GRCh38%5BAssembly%5D'
+                if (geneSymbol) return `https://www.ncbi.nlm.nih.gov/clinvar?term=${encodeURIComponent(geneSymbol)}%5Bgene%5D${grch38}`
+                if (ensemblId)  return `https://www.ncbi.nlm.nih.gov/clinvar?term=${encodeURIComponent(ensemblId)}${grch38}`
+                return 'https://www.ncbi.nlm.nih.gov/clinvar/'
+            },
+        },
+        'GWAS': {
+            color: '#e8d488',
+            description: '<b>GWAS Catalog</b>: GWAS hits for MONDO rare-disease phenotypes',
+            url: ({ geneSymbol }) => geneSymbol ? `https://www.ebi.ac.uk/gwas/genes/${encodeURIComponent(geneSymbol)}` : 'https://www.ebi.ac.uk/gwas/',
+        },
+        'Fridman': {
+            color: '#dce8b8',
+            description: '<b>Fridman et al. 2025</b>: autosomal recessive gene-disease associations',
+            url: () => 'https://pubmed.ncbi.nlm.nih.gov/40374730/',
+        },
+        'dbNSFP': {
+            color: '#c8ccec',
+            description: '<b>dbNSFP</b>: variant-level functional annotations (e.g., model-organism phenotypes)',
+            url: () => 'https://www.dbnsfp.org/',
+        },
+        'pLI_v2': {
+            color: '#f0d0c0',
+            description: constraintHoverText('pLI (v2)', 'pLI_v2', 'Probability of loss-of-function intolerance from gnomAD v2.'),
+            url: ({ ensemblId }) => gnomadGeneUrl(ensemblId, 'gnomad_r2_1'),
+        },
+        'pLI_v4': {
+            color: '#f0c0b0',
+            description: constraintHoverText('pLI (v4)', 'pLI_v4', 'Probability of loss-of-function intolerance from gnomAD v4.'),
+            url: ({ ensemblId }) => gnomadGeneUrl(ensemblId, 'gnomad_r4'),
+        },
+        'LOEUF': {
+            color: '#b8d8e8',
+            description: constraintHoverText('LOEUF (v4)', 'LOEUF', 'Loss-of-function observed/expected upper bound from gnomAD v4.'),
+            url: ({ ensemblId }) => gnomadGeneUrl(ensemblId, 'gnomad_r4'),
+        },
+        'MOEUF': {
+            color: '#c8e0b8',
+            description: constraintHoverText('Missense O/E (v4)', 'MOEUF', 'Missense observed/expected ratio from gnomAD v4.'),
+            url: ({ ensemblId }) => gnomadGeneUrl(ensemblId, 'gnomad_r4'),
+        },
+    }
+    const DEFAULT_SOURCE_COLOR = '#e0e0e0'
+    const getSourceInfo = (src) => SOURCES[src.split(':')[0]] || {}
 
     const getSourcesBadges = (sourcesStr, ids = null) => {
         if (!sourcesStr) return ''
@@ -1014,21 +1159,29 @@
 
         const sourcesList = match[2].split(',').map(s => s.trim())
 
-        const pastelColors = ['#e8d5d5', '#d5dfe8', '#d5e8db', '#e8e2d5', '#ddd5e8', '#d5e8e6', '#e8d5e0', '#e0e8d5']
-
-        const makeBadge = (src, i) => {
-            const badge = `<span class="ui mini label" style="background-color: ${pastelColors[i % pastelColors.length]}; color: #333; margin: 1px;">${src}</span>`
-            if (!ids) return badge
-            const builder = SOURCE_BADGE_URL_BUILDERS[src]
-            const url = builder ? builder(ids) : null
-            return url ? `<a href="${url}" target="_blank" style="text-decoration: none;">${badge}</a>` : badge
+        // Render a colored badge wrapped in a link to the source's gene-specific URL (when one exists).
+        // Used both for the 1-2 inline badges and for the badges shown inside the "(+N more)" popup.
+        // The `.source-hover-popup` class + `data-html` attribute drive a Semantic UI hover popup
+        // (initialized via initSourceBadgePopups, including re-init on the "(+N more)" outer popup
+        // so that nested badges that enter the DOM later also get their hover popups).
+        const makeBadge = (src) => {
+            const info = getSourceInfo(src)
+            const color = info.color || DEFAULT_SOURCE_COLOR
+            const badge = `<span class="ui mini label" style="background-color: ${color}; color: #333; margin: 1px;">${src}</span>`
+            const url = info.url ? info.url(ids || {}) : null
+            const popupAttr = info.description
+                ? ` class="source-hover-popup" data-html="${info.description.replace(/"/g, '&quot;')}"`
+                : ''
+            if (url)              return `<a href="${url}" target="_blank" style="text-decoration: none;"${popupAttr}>${badge}</a>`
+            if (info.description) return `<span${popupAttr}>${badge}</span>`
+            return badge
         }
 
         const inlineBadges = sourcesList.slice(0, 2).map(makeBadge).join(' ')
         if (sourcesList.length <= 2) return inlineBadges
 
-        const remainingBadges = sourcesList.slice(2).map((src, i) => makeBadge(src, i + 2)).join(' ')
-        return `${inlineBadges} <span class="show-popup action-link" data-html="${remainingBadges.replace(/"/g, '&quot;')}">(+${sourcesList.length - 2} more)</span>`
+        const overflowBadges = sourcesList.slice(2).map(makeBadge).join(' ')
+        return `${inlineBadges} <span class="show-popup action-link" data-html="${overflowBadges.replace(/"/g, '&quot;')}">(+${sourcesList.length - 2} more)</span>`
     }
 
     const getTruncatedText = (text, maxLen=80) => {
@@ -1060,21 +1213,26 @@
         inheritance: {
             displayName: 'Inheritance',
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['inheritance'],
-            getValue: (row) => row['inheritance'] || '',
+            getValue: (row) => getTruncatedText(dedupInheritance(row['inheritance']), 20),
             getSortColumns: () => ['inheritance'],
             getRequiredColumns: () => ['inheritance'],
         },
         sources: {
             displayName: 'Sources',
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['sources'],
-            getValue: (row) => getSourcesBadges(row['sources']),
+            getValue: (row) => getSourcesBadges(row['sources'], {
+                geneSymbol: row['gene_symbol'] || '',
+                hgncId: row['hgnc_gene_id'] || '',
+                ensemblId: row['ensembl_gene_id'] || '',
+                mimNumber: dedupSemicolonArray(row['OMIM_mim_number'])[0] || '',
+            }),
             getSortColumns: () => ['sources'],
-            getRequiredColumns: () => ['sources'],
+            getRequiredColumns: () => ['sources', 'gene_symbol', 'hgnc_gene_id', 'ensembl_gene_id', 'OMIM_mim_number'],
         },
         LLM_phenotype_summary: {
             displayName: 'Phenotype Summary',
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['LLM_phenotype_summary'],
-            getValue: (row) => getTruncatedText(row['LLM_phenotype_summary'], 80),
+            getValue: (row) => getTruncatedText(row['LLM_phenotype_summary'], 60),
             getSortColumns: () => ['LLM_phenotype_summary'],
             getRequiredColumns: () => ['LLM_phenotype_summary'],
         },
@@ -3060,8 +3218,20 @@
             performSearch(true)
         })
 
-        // init popups
-        $('.show-popup').popup({ on: 'click', hoverable: true })
+        // init popups: click-popups for truncated text and the "(+N more)" overflow, and hover-popups
+        // for source badges. The onVisible hook on .show-popup re-runs initSourceBadgePopups inside
+        // the just-opened popup body so that source badges nested inside the "(+N more)" popup also
+        // get their hover popups (Semantic UI's popup plugin doesn't initialize popups on descendants
+        // that enter the DOM after init).
+        $('.show-popup').popup({
+            on: 'click',
+            hoverable: true,
+            onVisible: function() {
+                const $popup = $(this).popup('get popup')
+                if ($popup && $popup.length) initSourceBadgePopups($popup)
+            },
+        })
+        initSourceBadgePopups()
 
         // init click handler for "Column settings" modal
         $('#results-table-settings-button').click((e) => {

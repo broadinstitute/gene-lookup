@@ -1381,8 +1381,20 @@
             performSearch(true)
         })
 
-        // init popups
-        $('.show-popup').popup({ on: 'click', hoverable: true })
+        // init popups: click-popups for truncated text and the "(+N more)" overflow, and hover-popups
+        // for source badges. The onVisible hook on .show-popup re-runs initSourceBadgePopups inside
+        // the just-opened popup body so that source badges nested inside the "(+N more)" popup also
+        // get their hover popups (Semantic UI's popup plugin doesn't initialize popups on descendants
+        // that enter the DOM after init).
+        $('.show-popup').popup({
+            on: 'click',
+            hoverable: true,
+            onVisible: function() {
+                const $popup = $(this).popup('get popup')
+                if ($popup && $popup.length) initSourceBadgePopups($popup)
+            },
+        })
+        initSourceBadgePopups()
 
         // init click handler for "Column settings" modal
         $('#results-table-settings-button').click((e) => {

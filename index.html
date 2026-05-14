@@ -1866,27 +1866,6 @@
                         </div>
                     </div>
 
-                    <div class="two fields" style="padding-top: 5px">
-                        <div class="field" style="max-width: 350px;">
-                            <label>ClinGen Classification
-                                <i class="question circle icon link" style="margin-left: 5px;" data-html="Filter by ClinGen gene-disease validity classification. Only show genes with at least this level of evidence."></i>
-                            </label>
-                            <div class="ui selection dropdown" id="clingen-classification-dropdown" style="min-width: 220px;">
-                                <input type="hidden" name="clingenClassification">
-                                <i class="dropdown icon"></i>
-                                <div class="default text">Any classification</div>
-                                <div class="menu">
-                                    <div class="item" data-value="">Any</div>
-                                    <div class="item" data-value="Definitive">Definitive</div>
-                                    <div class="item" data-value="Strong">Strong</div>
-                                    <div class="item" data-value="Moderate">Moderate</div>
-                                    <div class="item" data-value="Limited">Limited</div>
-                                </div>
-                            </div>
-                        </div>
-
-                    </div>
-
                     <div id="custom-filter-rows"></div>
                     <a href="#" id="add-custom-filter-link">Add Custom Filter...</a>
                 </form>
@@ -1945,7 +1924,6 @@
     DEFAULT_GLOBAL_PAGE_STATE['pliThreshold'] = ''
     DEFAULT_GLOBAL_PAGE_STATE['loeufThreshold'] = ''
     DEFAULT_GLOBAL_PAGE_STATE['moeufThreshold'] = ''
-    DEFAULT_GLOBAL_PAGE_STATE['clingenClassification'] = ''
 
     // Copy the default persistent page state
     let GLOBAL_PAGE_STATE = JSON.parse(JSON.stringify(DEFAULT_GLOBAL_PAGE_STATE))
@@ -2046,10 +2024,6 @@
         $('input[name="loeufThreshold"]').val(GLOBAL_PAGE_STATE['loeufThreshold'])
         $('input[name="moeufThreshold"]').val(GLOBAL_PAGE_STATE['moeufThreshold'])
 
-        // Restore dropdowns
-        if (GLOBAL_PAGE_STATE['clingenClassification']) {
-            $('#clingen-classification-dropdown').dropdown('set selected', GLOBAL_PAGE_STATE['clingenClassification'])
-        }
         // Restore custom filters from URL
         $('#custom-filter-rows').empty()
         await deserializeAndCreateCustomFilters(GLOBAL_PAGE_STATE['customFilters'])
@@ -3169,20 +3143,6 @@
                 conditions.push(`mis_oe_ci_upper_v4 <= ${parseFloat(moeufThreshold)}`)
             }
 
-            // ClinGen classification filter — CLINGEN_classification stores ';'-joined values
-            // (e.g. 'Definitive; Limited') because a gene can have multiple curated entries, so
-            // exact-match IN (...) silently misses multi-value rows. Match each allowed level
-            // as a substring instead.
-            const clingenClassification = $('#clingen-classification-dropdown').dropdown('get value')
-            if (clingenClassification) {
-                const classificationOrder = ['Definitive', 'Strong', 'Moderate', 'Limited']
-                const minIndex = classificationOrder.indexOf(clingenClassification)
-                if (minIndex >= 0) {
-                    const allowed = classificationOrder.slice(0, minIndex + 1).join('|')
-                    conditions.push(`REGEXP_CONTAINS(CLINGEN_classification, r'\\b(${allowed})\\b')`)
-                }
-            }
-
         }
 
         return conditions
@@ -3269,7 +3229,6 @@
             GLOBAL_PAGE_STATE['pliThreshold'] = $('input[name="pliThreshold"]').val()
             GLOBAL_PAGE_STATE['loeufThreshold'] = $('input[name="loeufThreshold"]').val()
             GLOBAL_PAGE_STATE['moeufThreshold'] = $('input[name="moeufThreshold"]').val()
-            GLOBAL_PAGE_STATE['clingenClassification'] = $('#clingen-classification-dropdown').dropdown('get value')
             writePersistentPageStateToUrl()
 
             displaySearchResults()
@@ -3420,12 +3379,6 @@
             e.preventDefault()
             handleSearch(e)
         }
-    })
-
-    // Initialize dropdowns
-    $('#clingen-classification-dropdown').dropdown({
-        onShow: function() { $(this).css('z-index', 10001) },
-        onHide: function() { $(this).css('z-index', '') },
     })
 
     // handle browser forward & back buttons

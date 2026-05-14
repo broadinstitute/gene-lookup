@@ -385,6 +385,7 @@
         }
 
         if (GLOBAL_PAGE_STATE['showRs'] === 1) {
+            if (!validateForm()) return
             await performSearch(false)
         }
     }

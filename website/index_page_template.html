@@ -59,8 +59,11 @@
 <!-- modal dialog for selecting custom filter columns -->
 <div class="ui modal" id="custom-filter-column-dialog">
     <i class="close icon"></i>
-    <div class="header">
+    <div class="header" style="display: flex; justify-content: space-between; align-items: center;">
         Select custom filter column(s)
+        <span style="font-size: 14px; font-weight: normal;">
+            <a href="#" id="custom-filter-columns-clear-all" class="action-link">clear all</a>
+        </span>
     </div>
     <div class="content">
         <div class="ui form">
@@ -941,6 +944,11 @@
     $('#add-custom-filter-link').click(function(e) {
         e.preventDefault()
         showCustomFilterColumnDialog()
+    })
+
+    $('#custom-filter-columns-clear-all').click((e) => {
+        e.preventDefault()
+        $('#custom-filter-column-checkboxes .ui.checkbox').checkbox('uncheck')
     })
 
     // "Add Filters" button handler in modal

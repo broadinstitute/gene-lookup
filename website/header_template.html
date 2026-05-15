@@ -178,6 +178,110 @@
     }
     const dedupSemicolon = (s) => dedupSemicolonArray(s).join('; ')
 
+    // Inheritance types — colors and aliases (short codes + verbose long-form strings). Used to
+    // colorize occurrences in inheritance cells and build the on-click explanation popup. The
+    // aliases mirror the normalized values emitted by the pipeline (see get_panel_app_table.py,
+    // get_gencc_table.py, get_decipher_genes.py for upstream short-code maps).
+    const INHERITANCE_TYPES = [
+        { name: 'Autosomal dominant',         color: '#e67e22', code: 'AD',   aliases: ['AD', 'Autosomal dominant'] },
+        { name: 'Autosomal recessive',        color: '#2980b9', code: 'AR',   aliases: ['AR', 'Autosomal recessive'] },
+        { name: 'X-linked',                   color: '#b8860b', code: 'XL',   aliases: ['XL', 'X-linked'] },
+        { name: 'X-linked dominant',          color: '#daa520', code: 'XD',   aliases: ['XD', 'X-linked dominant'] },
+        { name: 'X-linked recessive',         color: '#996515', code: 'XR',   aliases: ['XR', 'X-linked recessive'] },
+        { name: 'Y-linked',                   color: '#1e8449', code: 'YL',   aliases: ['YL', 'Y-linked'] },
+        { name: 'Mitochondrial',              color: '#c0392b', code: 'MITO', aliases: ['MITO', 'MITOCHONDRIAL', 'Mitochondrial'] },
+        { name: 'Semidominant',               color: '#8e44ad', code: 'SD',   aliases: ['SD', 'Semidominant'] },
+        { name: 'Multifactorial',             color: '#16a085', code: '',     aliases: ['Multifactorial'] },
+        { name: 'Digenic dominant',           color: '#a04000', code: '',     aliases: ['Digenic dominant'] },
+        { name: 'Digenic recessive',          color: '#6e2c00', code: '',     aliases: ['Digenic recessive'] },
+        { name: 'Pseudoautosomal dominant',   color: '#cd6155', code: '',     aliases: ['Pseudoautosomal dominant'] },
+        { name: 'Pseudoautosomal recessive',  color: '#a93226', code: '',     aliases: ['Pseudoautosomal recessive'] },
+        { name: 'Somatic mutation',           color: '#5d6d7e', code: '',     aliases: ['Somatic mutation', 'Somatic'] },
+        { name: 'Somatic mosaicism',          color: '#34495e', code: '',     aliases: ['Somatic mosaicism'] },
+        { name: 'Isolated cases',             color: '#7f8c8d', code: '',     aliases: ['Isolated cases'] },
+        { name: 'Unknown dominant',           color: '#95a5a6', code: 'UD',   aliases: ['UD'] },
+        { name: 'Other',                      color: '#4a5568', code: '',     aliases: ['Other'] },
+    ]
+
+    // Lookup: lowercased alias string -> { name, color, code }. Lookups are case-insensitive so
+    // upstream variants like "mitochondrial" / "MITOCHONDRIAL" / "Mitochondrial" all match.
+    const INHERITANCE_ALIAS_LOOKUP = (() => {
+        const lookup = {}
+        for (const t of INHERITANCE_TYPES) for (const a of t.aliases) lookup[a.toLowerCase()] = t
+        return lookup
+    })()
+
+    // Regex matching any inheritance-type alias at a non-alphanumeric boundary, case-insensitive.
+    // Longest aliases first so "Autosomal dominant" matches before "AD" would partial-match.
+    const INHERITANCE_ALIAS_REGEX = (() => {
+        const aliases = []
+        for (const t of INHERITANCE_TYPES) for (const a of t.aliases) aliases.push(a)
+        aliases.sort((a, b) => b.length - a.length)
+        const escaped = aliases.map(a => a.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+        return new RegExp(`(?<![A-Za-z0-9])(${escaped.join('|')})(?![A-Za-z0-9])`, 'gi')
+    })()
+
+    // Wrap every alias occurrence in a colored <span>. Other text passes through unchanged.
+    const colorizeInheritanceText = (text) => text.replace(INHERITANCE_ALIAS_REGEX, (m, alias) => {
+        const t = INHERITANCE_ALIAS_LOOKUP[alias.toLowerCase()]
+        return `<span style="color: ${t.color}; font-weight: 600;">${alias}</span>`
+    })
+
+    // Truncate the plain text at maxLen plain chars by walking semicolon-separated parts, then
+    // colorize each kept part. Returns { display, truncated } where display is the (possibly
+    // truncated) colorized HTML and truncated is whether truncation happened.
+    const truncateInheritanceForCell = (text, maxLen) => {
+        if (text.length <= maxLen) return { display: colorizeInheritanceText(text), truncated: false }
+        const parts = text.split(';').map(p => p.trim()).filter(Boolean)
+        const kept = []
+        let lenSoFar = 0
+        for (const p of parts) {
+            const partLen = p.length + (kept.length > 0 ? 2 : 0)  // "; " separator
+            if (lenSoFar + partLen > maxLen - 3) break             // leave room for "..."
+            kept.push(p)
+            lenSoFar += partLen
+        }
+        if (kept.length === 0) return { display: colorizeInheritanceText(parts[0].slice(0, maxLen - 3)) + '…', truncated: true }
+        return { display: colorizeInheritanceText(kept.join('; ')) + '…', truncated: true }
+    }
+
+    // Collect the inheritance types referenced in `text`, in INHERITANCE_TYPES (declared) order.
+    const findInheritanceTypesInText = (text) => {
+        const present = new Set()
+        for (const m of text.matchAll(INHERITANCE_ALIAS_REGEX)) present.add(INHERITANCE_ALIAS_LOOKUP[m[1].toLowerCase()])
+        return INHERITANCE_TYPES.filter(t => present.has(t))
+    }
+
+    // Render an Inheritance cell value: colorize known types, truncate at maxLen chars, and (when
+    // any types are recognized or the text is truncated) wrap in a .show-popup click-popup whose
+    // body shows the full colorized text plus a legend mapping each code to its full name.
+    const renderInheritanceCell = (rawText, maxLen=20) => {
+        const text = dedupInheritance(rawText)
+        if (!text) return ''
+        const fullColored = colorizeInheritanceText(text)
+        const { display, truncated } = truncateInheritanceForCell(text, maxLen)
+        const types = findInheritanceTypesInText(text)
+        if (!truncated && types.length === 0) return fullColored
+
+        // Only show legend entries for types that have a short code (eg. AD = autosomal dominant);
+        // types like "Somatic mutation" / "Other" add no extra info beyond what's in the cell.
+        const typesWithCode = types.filter(t => t.code)
+        if (!truncated && typesWithCode.length === 0) return fullColored
+
+        let popupContent = ''
+        if (truncated) popupContent += `<div>${fullColored}</div>`
+        if (truncated && typesWithCode.length > 0) {
+            popupContent += `<hr style="border: none; border-top: 1px solid #e0e0e0; margin: 8px 0;">`
+        }
+        if (typesWithCode.length > 0) {
+            popupContent += typesWithCode.map(t =>
+                `<b style="color: ${t.color};">${t.code}</b> = ${t.name}`
+            ).join('<br />')
+        }
+        const escaped = popupContent.replace(/"/g, '&quot;')
+        return `<span class="show-popup" data-html="${escaped}" style="cursor: pointer;">${display}</span>`
+    }
+
     // Collapse the various combined inheritance notations the upstream sources emit (e.g. AD/AR,
     // AR/AD, AD-AR, AR-AD, XD/XR, optionally with a parenthetical like "(AR is more severe)") so
     // that any combined form expands into its constituent two-letter codes, and the deduped 2-letter
@@ -189,37 +293,60 @@
     const dedupInheritance = (s) => {
         if (!s) return ''
         const parts = dedupSemicolonArray(s)
-        const combinedRegex = /^([A-Z]{2})[\/\-]([A-Z]{2})(\s*\(.*\))?$/
-        const twoLetterRegex = /^[A-Z]{2}$/
+        // Case-insensitive: upstream sources may emit lowercase variants like "ad/ar" or "Ad-Ar".
+        // Codes are normalized to uppercase before going into the detected set.
+        const combinedRegex = /^([A-Z]{2})[\/\-]([A-Z]{2})(\s*\(.*\))?$/i
+        const twoLetterRegex = /^[A-Z]{2}$/i
         const detectedCodes = new Set()
         const others = []
         for (const p of parts) {
             const m = combinedRegex.exec(p)
             if (m) {
-                detectedCodes.add(m[1])
-                detectedCodes.add(m[2])
+                detectedCodes.add(m[1].toUpperCase())
+                detectedCodes.add(m[2].toUpperCase())
             } else if (twoLetterRegex.test(p)) {
-                detectedCodes.add(p)
+                detectedCodes.add(p.toUpperCase())
             } else {
                 others.push(p)
             }
         }
+        // XL is the general X-linked category; drop it when a subtype (XD or XR) is present, since
+        // the subtype already implies X-linked inheritance.
+        if (detectedCodes.has('XL') && (detectedCodes.has('XD') || detectedCodes.has('XR'))) {
+            detectedCodes.delete('XL')
+        }
         const codes = Array.from(detectedCodes).sort()
-        return [...codes, ...others].join('; ')
+        return [...codes, ...others].join(', ')
     }
 
-    // Initialize Semantic UI hover popups for source badges within the given root element (or the
-    // whole document by default). Called once per table render for inline badges, and again from the
-    // outer "(+N more)" popup's onVisible callback so that nested badges (which only enter the DOM
-    // when the outer popup is shown) also get their hover popups.
+    // Initialize Semantic UI hover popups for elements tagged with .source-hover-popup (used by
+    // source badges) and .constraint-hover-popup (used by red-highlighted constraint-score cells).
+    // Called once per table render, and again from the outer "(+N more)" popup's onVisible callback
+    // so that nested elements (which only enter the DOM when the outer popup is shown) also get
+    // their hover popups.
     const initSourceBadgePopups = (rootEl) => {
         const $scope = rootEl ? $(rootEl) : $(document)
-        $scope.find('.source-hover-popup').popup({
+        $scope.find('.source-hover-popup, .constraint-hover-popup').popup({
             on: 'hover',
             delay: { show: 80, hide: 50 },
             position: 'top center',
-            variation: 'tiny',
         })
+    }
+
+    // Format a constraint-score value for display in the results table. When the value crosses
+    // its CONSTRAINT_THRESHOLDS threshold (same threshold the pipeline uses to add the source-badge),
+    // the value is rendered in red with a hover popup explaining the threshold. Otherwise the
+    // value is rendered as plain text.
+    const renderConstraintValue = (val, thresholdKey, labelForPopup) => {
+        if (val == null) return ''
+        const formatted = val.toFixed(2)
+        const t = CONSTRAINT_THRESHOLDS[thresholdKey]
+        if (!t) return formatted
+        const crosses = t.operator === '>=' ? val >= t.value : val <= t.value
+        if (!crosses) return formatted
+        const op = t.operator === '>=' ? '≥' : '≤'
+        const popup = `<div style='white-space: nowrap;'><b>${labelForPopup}</b>: highlighted when ${op} ${t.value}.</div>`.replace(/"/g, '&quot;')
+        return `<span class="constraint-hover-popup" data-html="${popup}" style="color: #c0392b; font-weight: bold;">${formatted}</span>`
     }
 
     // Constraint-score thresholds exported from website/global_constants.py — single source of truth.
@@ -342,7 +469,7 @@
             const badge = `<span class="ui mini label" style="background-color: ${color}; color: #333; margin: 1px;">${src}</span>`
             const url = info.url ? info.url(ids || {}) : null
             const popupAttr = info.description
-                ? ` class="source-hover-popup" data-html="${info.description.replace(/"/g, '&quot;')}"`
+                ? ` class="source-hover-popup" data-html="<div style='white-space: nowrap;'>${info.description.replace(/"/g, '&quot;')}</div>"`
                 : ''
             if (url)              return `<a href="${url}" target="_blank" style="text-decoration: none;"${popupAttr}>${badge}</a>`
             if (info.description) return `<span${popupAttr}>${badge}</span>`
@@ -385,7 +512,7 @@
         inheritance: {
             displayName: 'Inheritance',
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['inheritance'],
-            getValue: (row) => getTruncatedText(dedupInheritance(row['inheritance']), 20),
+            getValue: (row) => renderInheritanceCell(row['inheritance'], 20),
             getSortColumns: () => ['inheritance'],
             getRequiredColumns: () => ['inheritance'],
         },
@@ -412,24 +539,14 @@
             displayName: 'pLI',
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['pLI_v4'],
             defaultSortDirection: 'DESC',
-            getValue: (row) => {
-                if (row['pLI_v4'] == null) return ''
-                const val = row['pLI_v4']
-                const style = val >= 0.9 ? 'color: #c0392b; font-weight: bold;' : ''
-                return `<span style="${style}">${val.toFixed(2)}</span>`
-            },
+            getValue: (row) => renderConstraintValue(row['pLI_v4'], 'pLI_v4', 'pLI (v4)'),
             getSortColumns: () => ['pLI_v4'],
             getRequiredColumns: () => ['pLI_v4'],
         },
         lof_oe_ci_upper_v4: {
             displayName: 'LOEUF',
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['lof_oe_ci_upper_v4'],
-            getValue: (row) => {
-                if (row['lof_oe_ci_upper_v4'] == null) return ''
-                const val = row['lof_oe_ci_upper_v4']
-                const style = val <= 0.35 ? 'color: #c0392b; font-weight: bold;' : ''
-                return `<span style="${style}">${val.toFixed(2)}</span>`
-            },
+            getValue: (row) => renderConstraintValue(row['lof_oe_ci_upper_v4'], 'LOEUF', 'LOEUF (v4)'),
             getSortColumns: () => ['lof_oe_ci_upper_v4'],
             getRequiredColumns: () => ['lof_oe_ci_upper_v4'],
         },
@@ -460,9 +577,12 @@
                 ), null)
                 const color = (highest && classColors[highest]) || '#6c757d'
                 const badge = `<span class="ui mini label" style="background-color: ${color}; color: white;">${val}</span>`
+                const popupHtml = `<div style='white-space: nowrap;'>ClinGen disease validity classification<br /><br />Click to visit ClinGen.</div>`
                 const hgncId = row['hgnc_gene_id']
-                if (!hgncId) return badge
-                return `<a href="https://search.clinicalgenome.org/kb/genes/${encodeURIComponent(hgncId)}" target="_blank">${badge}</a>`
+                if (!hgncId) {
+                    return `<span class="source-hover-popup" data-html="${popupHtml}">${badge}</span>`
+                }
+                return `<a href="https://search.clinicalgenome.org/kb/genes/${encodeURIComponent(hgncId)}" target="_blank" style="text-decoration: none;" class="source-hover-popup" data-html="${popupHtml}">${badge}</a>`
             },
             getSortColumns: () => ['CLINGEN_classification'],
             getRequiredColumns: () => ['CLINGEN_classification', 'hgnc_gene_id'],
@@ -513,14 +633,14 @@
             displayName: 'pLI (v2)',
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['pLI_v2'],
             defaultSortDirection: 'DESC',
-            getValue: (row) => row['pLI_v2'] != null ? row['pLI_v2'].toFixed(2) : '',
+            getValue: (row) => renderConstraintValue(row['pLI_v2'], 'pLI_v2', 'pLI (v2)'),
             getSortColumns: () => ['pLI_v2'],
             getRequiredColumns: () => ['pLI_v2'],
         },
         mis_oe_ci_upper_v4: {
             displayName: 'MOEUF (v4)',
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['mis_oe_ci_upper_v4'],
-            getValue: (row) => row['mis_oe_ci_upper_v4'] != null ? row['mis_oe_ci_upper_v4'].toFixed(2) : '',
+            getValue: (row) => renderConstraintValue(row['mis_oe_ci_upper_v4'], 'MOEUF', 'Missense O/E (v4)'),
             getSortColumns: () => ['mis_oe_ci_upper_v4'],
             getRequiredColumns: () => ['mis_oe_ci_upper_v4'],
         },

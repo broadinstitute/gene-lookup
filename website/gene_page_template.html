@@ -278,7 +278,11 @@
         const chrom = row['gene_chrom'] || ''
         const start = row['gene_start']
         const end = row['gene_end']
-        const coordinates = (chrom && start != null && end != null) ? `${chrom.startsWith('chr') ? '' : 'chr'}${chrom}:${start}-${end}` : ''
+        const coordsValid = chrom && start != null && end != null
+        const coordsText = coordsValid ? `${chrom.startsWith('chr') ? '' : 'chr'}${chrom}:${start}-${end}` : ''
+        const coordinates = coordsValid
+            ? `<span id="coordinates-igv-link" class="action-link" style="cursor: pointer;" data-chrom="${chrom}" data-start="${start}" data-end="${end}">${coordsText}</span>`
+            : ''
 
         // Set page title
         document.title = `Gene Lookup: ${displayName}`
@@ -298,9 +302,29 @@
         box1 += '</table>'
         $('#locus-page-row1-box1').html(box1)
 
+        // Coordinates click handler: open IGV.js at this gene's locus (with the standard padding).
+        $('#coordinates-igv-link').click(async () => {
+            const c = $('#coordinates-igv-link').data('chrom')
+            const s = parseInt($('#coordinates-igv-link').data('start'), 10)
+            const e = parseInt($('#coordinates-igv-link').data('end'), 10)
+            if (!c || Number.isNaN(s) || Number.isNaN(e)) return
+            const paddedStart = Math.max(0, s - IGV_LOCUS_PADDING)
+            const paddedEnd = e + IGV_LOCUS_PADDING
+            GLOBAL_PAGE_STATE['igvLoc'] = `${c}:${paddedStart}-${paddedEnd}`
+            if (GLOBAL_PAGE_STATE['showIGV'] !== 1) {
+                GLOBAL_PAGE_STATE['showIGV'] = 1
+                $('#igv-row').show()
+                $('#show-igv-divider-text').hide()
+                $('#hide-igv-divider-text').show()
+            }
+            writePersistentPageStateToUrl()
+            await updateIgv()
+            $('#igv-row')[0].scrollIntoView({ behavior: 'smooth' })
+        })
+
         // --- Right column (row1-box2) ---
         let box2 = '<table class="locus-info-table">'
-        box2 += `<tr><td class="locus-info-label">Inheritance:</td><td>${dedupInheritance(row['inheritance'])}</td></tr>`
+        box2 += `<tr><td class="locus-info-label">Inheritance:</td><td>${renderInheritanceCell(row['inheritance'], 999)}</td></tr>`
         const sourceBadgeIds = {
             geneSymbol,
             hgncId,
@@ -310,10 +334,10 @@
         box2 += `<tr><td class="locus-info-label">Sources:</td><td>${getSourcesBadges(row['sources'], sourceBadgeIds)}</td></tr>`
 
         // Constraint scores
-        const pliV2 = row['pLI_v2'] != null ? row['pLI_v2'].toFixed(2) : ''
-        const pliV4 = row['pLI_v4'] != null ? (() => { const v = row['pLI_v4']; const s = v >= 0.9 ? 'color: #c0392b; font-weight: bold;' : ''; return `<span style="${s}">${v.toFixed(2)}</span>` })() : ''
-        const loeuf = row['lof_oe_ci_upper_v4'] != null ? (() => { const v = row['lof_oe_ci_upper_v4']; const s = v <= 0.35 ? 'color: #c0392b; font-weight: bold;' : ''; return `<span style="${s}">${v.toFixed(2)}</span>` })() : ''
-        const moeuf = row['mis_oe_ci_upper_v4'] != null ? row['mis_oe_ci_upper_v4'].toFixed(2) : ''
+        const pliV2 = renderConstraintValue(row['pLI_v2'], 'pLI_v2', 'pLI (v2)')
+        const pliV4 = renderConstraintValue(row['pLI_v4'], 'pLI_v4', 'pLI (v4)')
+        const loeuf = renderConstraintValue(row['lof_oe_ci_upper_v4'], 'LOEUF', 'LOEUF (v4)')
+        const moeuf = renderConstraintValue(row['mis_oe_ci_upper_v4'], 'MOEUF', 'Missense O/E (v4)')
 
         box2 += `<tr><td class="locus-info-label">pLI (v2):</td><td>${pliV2}</td></tr>`
         box2 += `<tr><td class="locus-info-label">pLI (v4):</td><td>${pliV4}</td></tr>`
@@ -412,7 +436,12 @@
                     classRank[p] !== undefined && (best === null || classRank[p] < classRank[best]) ? p : best
                 ), null)
                 const color = (highest && classColors[highest]) || '#6c757d'
-                html += `<tr><td class="locus-info-label">Classification:</td><td><span class="ui mini label" style="background-color: ${color}; color: white;">${classVal}</span></td></tr>`
+                const classBadge = `<span class="ui mini label" style="background-color: ${color}; color: white;">${classVal}</span>`
+                const classPopup = `<div style='white-space: nowrap;'>ClinGen disease validity classification<br /><br />Click to visit ClinGen.</div>`
+                const classLink = hgncId
+                    ? `<a href="https://search.clinicalgenome.org/kb/genes/${encodeURIComponent(hgncId)}" target="_blank" style="text-decoration: none;" class="source-hover-popup" data-html="${classPopup}">${classBadge}</a>`
+                    : `<span class="source-hover-popup" data-html="${classPopup}">${classBadge}</span>`
+                html += `<tr><td class="locus-info-label">Classification:</td><td>${classLink}</td></tr>`
             }
             html += `<tr><td class="locus-info-label">Haploinsufficiency:</td><td>${dedupSemicolon(row['CLINGEN_haploinsufficient'])}</td></tr>`
             html += '</table></div>'

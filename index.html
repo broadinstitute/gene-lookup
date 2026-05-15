@@ -2084,31 +2084,7 @@
                 <form id="advanced-search-form" class="ui form" style="display:none">
 
                     <div class="field" style="padding-top: 5px">
-                        <label>Inheritance Mode
-                            <i class="question circle icon link" style="margin-left: 5px;" data-html="Filter by inheritance mode.<br>AD = Autosomal Dominant<br>AR = Autosomal Recessive"></i>
-                        </label>
-                        <div class="checkbox-group" style="padding-bottom: 15px">
-                            <div class="ui checkbox">
-                                <input type="checkbox" name="keepAD">
-                                <label>AD</label>
-                            </div>
-                            <div class="ui checkbox">
-                                <input type="checkbox" name="keepAR">
-                                <label>AR</label>
-                            </div>
-                            <div class="ui checkbox">
-                                <input type="checkbox" name="keepXL">
-                                <label>X-linked</label>
-                            </div>
-                            <div class="ui checkbox">
-                                <input type="checkbox" name="keepMito">
-                                <label>Mitochondrial</label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="field" style="padding-top: 5px">
-                        <label>Source Filter
+                        <label>Sources
                             <i class="question circle icon link" style="margin-left: 5px;" data-html="Filter results to only include genes reported by the selected source(s)."></i>
                         </label>
                         <div class="checkbox-group" style="padding-bottom: 15px">
@@ -2160,22 +2136,46 @@
                         </div>
 
                         <div class="field">
-                            <label>Constraint Scores
-                                <i class="question circle icon link" style="margin-left: 5px;" data-html="Filter by gene constraint scores from gnomAD. pLI measures probability of loss-of-function intolerance. LOEUF is the loss-of-function observed/expected upper bound fraction. Missense O/E is the missense observed/expected ratio."></i>
+                            <label>Inheritance Mode
+                                <i class="question circle icon link" style="margin-left: 5px;" data-html="Filter by inheritance mode.<br>AD = Autosomal Dominant<br>AR = Autosomal Recessive"></i>
                             </label>
-                            <div style="display: flex; gap: 30px; flex-wrap: wrap;">
-                                <div style="display: flex; align-items: center; gap: 5px;">
-                                    <span>pLI (v4) &ge;</span>
-                                    <input type="text" id="pli-threshold" name="pliThreshold" placeholder="e.g., 0.9" style="width: 80px;">
+                            <div class="checkbox-group">
+                                <div class="ui checkbox">
+                                    <input type="checkbox" name="keepAD">
+                                    <label>AD</label>
                                 </div>
-                                <div style="display: flex; align-items: center; gap: 5px;">
-                                    <span>LOEUF &le;</span>
-                                    <input type="text" id="loeuf-threshold" name="loeufThreshold" placeholder="e.g., 0.3" style="width: 80px;">
+                                <div class="ui checkbox">
+                                    <input type="checkbox" name="keepAR">
+                                    <label>AR</label>
                                 </div>
-                                <div style="display: flex; align-items: center; gap: 5px;">
-                                    <span>Missense O/E &le;</span>
-                                    <input type="text" id="moeuf-threshold" name="moeufThreshold" placeholder="e.g., 0.8" style="width: 80px;">
+                                <div class="ui checkbox">
+                                    <input type="checkbox" name="keepXL">
+                                    <label>X-linked</label>
                                 </div>
+                                <div class="ui checkbox">
+                                    <input type="checkbox" name="keepMito">
+                                    <label>Mitochondrial</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="field" style="padding-top: 15px">
+                        <label>Constraint Scores
+                            <i class="question circle icon link" style="margin-left: 5px;" data-html="Filter by gene constraint scores from gnomAD. pLI measures probability of loss-of-function intolerance. LOEUF is the loss-of-function observed/expected upper bound fraction. Missense O/E is the missense observed/expected ratio."></i>
+                        </label>
+                        <div style="display: flex; gap: 30px; flex-wrap: wrap;">
+                            <div style="display: flex; align-items: center; gap: 5px;">
+                                <span>pLI (v4) &ge;</span>
+                                <input type="text" id="pli-threshold" name="pliThreshold" placeholder="e.g., 0.9" style="width: 80px;">
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 5px;">
+                                <span>LOEUF &le;</span>
+                                <input type="text" id="loeuf-threshold" name="loeufThreshold" placeholder="e.g., 0.3" style="width: 80px;">
+                            </div>
+                            <div style="display: flex; align-items: center; gap: 5px;">
+                                <span>Missense O/E &le;</span>
+                                <input type="text" id="moeuf-threshold" name="moeufThreshold" placeholder="e.g., 0.8" style="width: 80px;">
                             </div>
                         </div>
                     </div>
@@ -3737,7 +3737,8 @@
 
     $('#search-form').submit(handleSearch)
     $('#advanced-search-form').submit(handleSearch)
-    $('#advanced-search-form').find('input').keypress((e) => {
+    // Delegated handler so dynamically-added inputs (e.g. custom filter rows) submit on Enter
+    $('#advanced-search-form').on('keypress', 'input', (e) => {
         if (e.which === 13) {
             e.preventDefault()
             handleSearch(e)

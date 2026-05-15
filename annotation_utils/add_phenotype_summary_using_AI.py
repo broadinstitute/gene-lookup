@@ -62,8 +62,6 @@ def summarize_phenotypes(row):
                 constraint_type.append("pLI_v4")
             if row["lof_oe_ci_upper_v4"] <= 0.2:
                 constraint_type.append("LOEUF")
-            if row["mis_oe_ci_upper_v4"] <= 0.2:
-                constraint_type.append("MOEUF")
 
             if constraint_type:
                 return f"Constrained: {', '.join(constraint_type)}"

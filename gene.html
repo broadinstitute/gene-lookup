@@ -1759,7 +1759,9 @@
             if (chrom === 'M') chrom = 'MT'
             const start = parseInt(regionMatch[2].replace(/,/g, ''))
             const end = parseInt(regionMatch[3].replace(/,/g, ''))
-            return `(gene_chrom = '${chrom}' AND gene_start < ${end} AND gene_end > ${start})`
+            // gene_start / gene_end are 1-based inclusive (from Ensembl seq_region_start/end), so
+            // use inclusive comparisons to include genes whose boundary equals a query endpoint.
+            return `(gene_chrom = '${chrom}' AND gene_start <= ${end} AND gene_end >= ${start})`
         }
 
         // HGNC gene ID: HGNC:1234
@@ -1840,16 +1842,14 @@
                     clause = `${col} ${op}`
                 }
             } else if (op === 'LIKE' || op === 'NOT LIKE') {
-                const escapedValue = val.replace(/'/g, "''")
-                clause = `${col} ${op} '${escapedValue}'`
+                clause = `${col} ${op} '${escapeSqlString(val)}'`
             } else {
                 const colType = BIGQUERY_COLUMN_TYPES[col]
                 const isNumericCol = colType === 'INTEGER' || colType === 'FLOAT'
                 if (isNumericCol && val.trim() !== '' && isFinite(Number(val))) {
                     clause = `${col} ${op} ${Number(val)}`
                 } else {
-                    const escapedValue = val.replace(/'/g, "''")
-                    clause = `${col} ${op} '${escapedValue}'`
+                    clause = `${col} ${op} '${escapeSqlString(val)}'`
                 }
             }
             items.push({ conjunction, clause })

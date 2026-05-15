@@ -54,6 +54,7 @@ test:
 undeploy:
 	gcloud functions delete query_gene_lookup_db --region=us-central1
 
-# Load data into BigQuery
+# Load data into BigQuery (usage: make load TSV=path/to/file.tsv[.gz])
 load:
-	python3 ../annotation_utils/load_bigquery.py
+	@if [ -z "$(TSV)" ]; then echo "ERROR: TSV not set. Usage: make load TSV=path/to/file.tsv[.gz]"; exit 1; fi
+	python3 ../annotation_utils/load_bigquery.py $(TSV)

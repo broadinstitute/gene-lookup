@@ -2546,7 +2546,9 @@
             $container.find('.page-number-input').on('change keypress', function(e) {
                 if (e.type === 'change' || e.which === 13) {
                     const newPage = parseInt($(this).val())
-                    if (newPage !== currentPage) {
+                    if (!Number.isFinite(newPage)) {
+                        $(this).val(currentPage)
+                    } else if (newPage !== currentPage) {
                         GLOBAL_PAGE_STATE['currentPage'] = Math.max(1, Math.min(newPage, totalPages))
                         writePersistentPageStateToUrl()
                         performSearch(true)
@@ -3281,9 +3283,15 @@
             // Gene detail page link — prefer hgnc_gene_id, fall back to ensembl_gene_id.
             // Carry the current search state in the gene page hash so its "Back to search page"
             // link can return the user to the same results.
+            //
+            // Strip igvLoc from the carried state — the gene page must initialize its IGV viewer
+            // at the displayed gene's own coordinates, not at whatever locus the user had pinned
+            // on the search page (which would point to a different row's gene).
             const hgncId = row['hgnc_gene_id'] || ''
             const geneIdForLink = row['ensembl_gene_id'] || ''
-            const searchStateHash = window.location.hash.substring(1)
+            const searchStateParams = new URLSearchParams(window.location.hash.substring(1))
+            searchStateParams.delete('igvLoc')
+            const searchStateHash = searchStateParams.toString()
             const searchStateSuffix = searchStateHash ? `&${searchStateHash}` : ''
             let geneLink = ''
             if (hgncId) {
@@ -3387,84 +3395,43 @@
             $('.question').popup({ on: 'click' })
         })
 
-        $('#results-columns-select-all').click((e) => {
-            e.preventDefault()
-            $('.results-table-column-settings-checkboxes .ui.checkbox').checkbox('check')
-        })
-
-        $('#results-columns-clear-all').click((e) => {
-            e.preventDefault()
-            $('.results-table-column-settings-checkboxes .ui.checkbox').checkbox('uncheck')
-        })
-
-        // handle Apply button click in column settings dialog
-        $('#results-table-column-settings-apply-button').click(() => {
-            const selectedColumns = []
-            $('.results-table-column-settings-checkboxes input[type="checkbox"]').each(function() {
-                if ($(this).prop('checked')) {
-                    const columnName = $(this).attr('name').replace('show_column_', '')
-                    selectedColumns.push(columnName)
-                }
-            })
-
-            GLOBAL_PAGE_STATE['showColumns'] = selectedColumns.join(SHOW_COLUMNS_VALUE_DELIMITER)
-            writePersistentPageStateToUrl()
-            performSearch(true)
-
-            $('#results-table-column-settings-dialog').modal('hide')
-        })
-
-        $('#results-table-column-settings-cancel-button').click(() => {
-            $('#results-table-column-settings-dialog').modal('hide')
-        })
-
-        // Add click handlers for IGV buttons
-        $('.row-igv-button').click(async function() {
-            const chrom = $(this).data('chrom')
-            const start = $(this).data('start')
-            const end = $(this).data('end')
-            if (!chrom || start == null || end == null) return
-            const rowIndex = $(this).closest('tr').index()
-
-            const paddedStart = Math.max(0, parseInt(start) - IGV_LOCUS_PADDING)
-            const paddedEnd = parseInt(end) + IGV_LOCUS_PADDING
-            const locus = `${chrom}:${paddedStart}-${paddedEnd}`
-
-            window.igvNavIndex = rowIndex
-            window.igvNavActive = true
-
-            try {
-                $('body').css('cursor', 'wait')
-
-                GLOBAL_PAGE_STATE['igvLoc'] = locus
-
-                if (GLOBAL_PAGE_STATE['showIGV'] !== 1) {
-                    GLOBAL_PAGE_STATE['showIGV'] = 1
-                    writePersistentPageStateToUrl()
-
-                    $('#igv-row').show()
-                    $('#show-igv-divider-text').hide()
-                    $('#hide-igv-divider-text').show()
-                }
-
-                $('#igv-row')[0].scrollIntoView({ behavior: 'smooth' })
-
-                if (!window.igvBrowser) {
-                    await updateIgv()
-                } else {
-                    writePersistentPageStateToUrl()
-                    await window.igvBrowser.search(locus)
-                }
-
-                updateIgvNavButtons()
-            } finally {
-                $('body').css('cursor', 'default')
-            }
-        })
-
         GLOBAL_PAGE_STATE['showRs'] = 1
         writePersistentPageStateToUrl()
     }
+
+    // Column-settings modal controls live in the static modal HTML at the top of the page,
+    // so their click handlers must be bound exactly once at page init — not from inside
+    // displaySearchResults(), which would re-bind them on every search and cause Apply to
+    // fire performSearch(true) N times after N searches.
+    $('#results-columns-select-all').click((e) => {
+        e.preventDefault()
+        $('.results-table-column-settings-checkboxes .ui.checkbox').checkbox('check')
+    })
+
+    $('#results-columns-clear-all').click((e) => {
+        e.preventDefault()
+        $('.results-table-column-settings-checkboxes .ui.checkbox').checkbox('uncheck')
+    })
+
+    $('#results-table-column-settings-apply-button').click(() => {
+        const selectedColumns = []
+        $('.results-table-column-settings-checkboxes input[type="checkbox"]').each(function() {
+            if ($(this).prop('checked')) {
+                const columnName = $(this).attr('name').replace('show_column_', '')
+                selectedColumns.push(columnName)
+            }
+        })
+
+        GLOBAL_PAGE_STATE['showColumns'] = selectedColumns.join(SHOW_COLUMNS_VALUE_DELIMITER)
+        writePersistentPageStateToUrl()
+        performSearch(true)
+
+        $('#results-table-column-settings-dialog').modal('hide')
+    })
+
+    $('#results-table-column-settings-cancel-button').click(() => {
+        $('#results-table-column-settings-dialog').modal('hide')
+    })
 
     /**
      * Build all search and filter conditions as an array of SQL WHERE clause strings.

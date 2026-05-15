@@ -121,33 +121,28 @@
                 <!-- Advanced Search (Initially Hidden) -->
                 <form id="advanced-search-form" class="ui form" style="display:none">
 
-                    <div id="custom-filter-rows"></div>
-
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; padding-top: 5px">
-                        <div class="field">
-                            <label>Inheritance Mode
-                                <i class="question circle icon link" style="margin-left: 5px;" data-html="Filter by inheritance mode.<br>AD = Autosomal Dominant<br>AR = Autosomal Recessive"></i>
-                            </label>
-                            <div class="checkbox-group" style="padding-bottom: 15px">
-                                <div class="ui checkbox">
-                                    <input type="checkbox" name="keepAD">
-                                    <label>AD</label>
-                                </div>
-                                <div class="ui checkbox">
-                                    <input type="checkbox" name="keepAR">
-                                    <label>AR</label>
-                                </div>
-                                <div class="ui checkbox">
-                                    <input type="checkbox" name="keepXL">
-                                    <label>X-linked</label>
-                                </div>
-                                <div class="ui checkbox">
-                                    <input type="checkbox" name="keepMito">
-                                    <label>Mitochondrial</label>
-                                </div>
+                    <div class="field" style="padding-top: 5px">
+                        <label>Inheritance Mode
+                            <i class="question circle icon link" style="margin-left: 5px;" data-html="Filter by inheritance mode.<br>AD = Autosomal Dominant<br>AR = Autosomal Recessive"></i>
+                        </label>
+                        <div class="checkbox-group" style="padding-bottom: 15px">
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="keepAD">
+                                <label>AD</label>
+                            </div>
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="keepAR">
+                                <label>AR</label>
+                            </div>
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="keepXL">
+                                <label>X-linked</label>
+                            </div>
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="keepMito">
+                                <label>Mitochondrial</label>
                             </div>
                         </div>
-                        <a href="#" id="add-custom-filter-link">Add custom filter...</a>
                     </div>
 
                     <div class="field" style="padding-top: 5px">
@@ -184,6 +179,10 @@
                                 <label>ClinVar</label>
                             </div>
                             <div class="ui checkbox">
+                                <input type="checkbox" name="keepGWAS">
+                                <label>GWAS</label>
+                            </div>
+                            <div class="ui checkbox">
                                 <input type="checkbox" name="keepFridman">
                                 <label>Fridman 2025</label>
                             </div>
@@ -195,7 +194,7 @@
                             <label>Minimum Number of Sources
                                 <i class="question circle icon link" style="margin-left: 5px;" data-html="Only show genes that appear in at least this many sources."></i>
                             </label>
-                            <input type="number" id="min-sources-input" name="minSources" placeholder="e.g., 2" min="1" max="8" style="width: 80px;">
+                            <input type="number" id="min-sources-input" name="minSources" placeholder="e.g., 2" min="1" max="9" style="width: 80px;">
                         </div>
 
                         <div class="field">
@@ -217,6 +216,12 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
+
+                    <div id="custom-filter-rows" style="padding-top: 15px"></div>
+
+                    <div style="padding-top: 15px">
+                        <a href="#" id="add-custom-filter-link">Add custom filter...</a>
                     </div>
 
                 </form>
@@ -270,6 +275,7 @@
     DEFAULT_GLOBAL_PAGE_STATE['keepPanelAppAU'] = 0
     DEFAULT_GLOBAL_PAGE_STATE['keepDecipher'] = 0
     DEFAULT_GLOBAL_PAGE_STATE['keepClinVar'] = 0
+    DEFAULT_GLOBAL_PAGE_STATE['keepGWAS'] = 0
     DEFAULT_GLOBAL_PAGE_STATE['keepFridman'] = 0
     DEFAULT_GLOBAL_PAGE_STATE['minSources'] = ''
     DEFAULT_GLOBAL_PAGE_STATE['pliThreshold'] = ''
@@ -365,6 +371,7 @@
         $('input[name="keepPanelAppAU"]').prop('checked', GLOBAL_PAGE_STATE['keepPanelAppAU'] === 1)
         $('input[name="keepDecipher"]').prop('checked', GLOBAL_PAGE_STATE['keepDecipher'] === 1)
         $('input[name="keepClinVar"]').prop('checked', GLOBAL_PAGE_STATE['keepClinVar'] === 1)
+        $('input[name="keepGWAS"]').prop('checked', GLOBAL_PAGE_STATE['keepGWAS'] === 1)
         $('input[name="keepFridman"]').prop('checked', GLOBAL_PAGE_STATE['keepFridman'] === 1)
 
         // Restore numeric/text filters
@@ -746,12 +753,13 @@
             { value: '=', label: '=' },
             { value: '!=', label: '\u2260' },
             { value: 'LIKE', label: 'LIKE' },
+            { value: 'NOT LIKE', label: 'NOT LIKE' },
             { value: 'IS NULL', label: 'IS NULL' },
             { value: 'IS NOT NULL', label: 'IS NOT NULL' },
         ]
     }
 
-    const LIKE_HELP_TEXT = ' The LIKE operator does pattern matching. Use % to match any sequence of characters and _ to match any single character. For example, "SCN_A" would match "SCN2A", "SCN3A", etc, while "SCN%" would match any name that starts with "SCN".'
+    const LIKE_HELP_TEXT = ' The LIKE / NOT LIKE operators do pattern matching. Use % to match any sequence of characters and _ to match any single character. For example, "SCN_A" would match "SCN2A", "SCN3A", etc, while "SCN%" would match any name that starts with "SCN".'
 
     const updateFilterTooltip = ($row) => {
         const fieldValue = $row.find('.custom-filter-field').dropdown('get value')
@@ -759,8 +767,9 @@
         const info = getCustomFilterColumnInfo(fieldValue)
         const $helpIcon = $row.find('.custom-filter-help-icon')
         let text = info ? (info.description || '') : ''
-        if (opValue === 'LIKE' && text) text += LIKE_HELP_TEXT
-        else if (opValue === 'LIKE') text = LIKE_HELP_TEXT.trim()
+        const isLikeOp = opValue === 'LIKE' || opValue === 'NOT LIKE'
+        if (isLikeOp && text) text += LIKE_HELP_TEXT
+        else if (isLikeOp) text = LIKE_HELP_TEXT.trim()
         if (text) {
             const escaped = text.replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
             $helpIcon.attr('data-tooltip', escaped).show()
@@ -829,7 +838,7 @@
                 <div class="default text">Select column</div>
                 <div class="menu">${buildColumnDropdownMenu()}</div>
             </div>
-            <div class="ui selection dropdown custom-filter-op" style="min-width: 100px;">
+            <div class="ui selection dropdown custom-filter-op" style="min-width: 130px;">
                 <input type="hidden" name="customFilterOp_${filterId}">
                 <i class="dropdown icon"></i>
                 <div class="default text">Op</div>
@@ -1506,6 +1515,7 @@
             if ($('input[name="keepPanelAppAU"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%PANELAPPAU%'")
             if ($('input[name="keepDecipher"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%DECIPHER%'")
             if ($('input[name="keepClinVar"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%CLINVAR%'")
+            if ($('input[name="keepGWAS"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%GWAS%'")
             if ($('input[name="keepFridman"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%FRIDMAN%'")
             if (sourceClauses.length > 0) {
                 conditions.push(`(${sourceClauses.join(' OR ')})`)
@@ -1614,6 +1624,7 @@
             GLOBAL_PAGE_STATE['keepPanelAppAU'] = $('input[name="keepPanelAppAU"]').prop('checked') ? 1 : 0
             GLOBAL_PAGE_STATE['keepDecipher'] = $('input[name="keepDecipher"]').prop('checked') ? 1 : 0
             GLOBAL_PAGE_STATE['keepClinVar'] = $('input[name="keepClinVar"]').prop('checked') ? 1 : 0
+            GLOBAL_PAGE_STATE['keepGWAS'] = $('input[name="keepGWAS"]').prop('checked') ? 1 : 0
             GLOBAL_PAGE_STATE['keepFridman'] = $('input[name="keepFridman"]').prop('checked') ? 1 : 0
             GLOBAL_PAGE_STATE['minSources'] = $('input[name="minSources"]').val()
             GLOBAL_PAGE_STATE['pliThreshold'] = $('input[name="pliThreshold"]').val()

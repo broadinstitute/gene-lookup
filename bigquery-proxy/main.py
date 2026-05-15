@@ -23,15 +23,19 @@ def _get_signing_credentials():
     Cloud Functions Gen2 don't ship a private key, so we sign via the IAM
     signBlob API. The function's runtime SA must have
     roles/iam.serviceAccountTokenCreator on itself.
+
+    The credentials object is cached across invocations on a warm instance, but the underlying
+    OAuth access token has a ~1h lifetime, so refresh it whenever it is missing or expired.
     """
     global _SIGNING_CREDENTIALS, _SIGNING_SA_EMAIL
     if _SIGNING_CREDENTIALS is None:
         credentials, _ = google.auth.default()
-        credentials.refresh(google.auth.transport.requests.Request())
         _SIGNING_CREDENTIALS = credentials
         _SIGNING_SA_EMAIL = getattr(credentials, "service_account_email", None) \
             or os.getenv("K_SERVICE_ACCOUNT") \
             or os.getenv("FUNCTION_IDENTITY")
+    if not _SIGNING_CREDENTIALS.valid:
+        _SIGNING_CREDENTIALS.refresh(google.auth.transport.requests.Request())
     return _SIGNING_CREDENTIALS, _SIGNING_SA_EMAIL
 
 BIGQUERY_PROJECT = "cmg-analysis"

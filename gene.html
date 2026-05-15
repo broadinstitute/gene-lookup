@@ -991,7 +991,9 @@
         }
     }
 
-    const escapeSqlString = (s) => String(s).replace(/'/g, "''")
+    // Escape backslashes first (otherwise a user-supplied \' would survive as an escaped quote in
+    // BigQuery standard SQL and break out of the surrounding string literal), then double quotes.
+    const escapeSqlString = (s) => String(s).replace(/\\/g, '\\\\').replace(/'/g, "''")
 
     const dedupSemicolonArray = (s) => {
         const out = []
@@ -1310,11 +1312,12 @@
         return `${inlineBadges} <span class="show-popup action-link" data-html="${overflowBadges.replace(/"/g, '&quot;')}">(+${sourcesList.length - 2} more)</span>`
     }
 
+    const escapeHtml = (s) => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')
+
     const getTruncatedText = (text, maxLen=80) => {
         if (!text) return ''
-        if (text.length <= maxLen) return text
-        const escapedFull = text.replace(/"/g, '&quot;').replace(/'/g, '&#39;')
-        return `<span class="show-popup" data-html="<div style='max-width:400px'>${escapedFull}</div>">${text.substring(0, maxLen)}...</span>`
+        if (text.length <= maxLen) return escapeHtml(text)
+        return `<span class="show-popup" data-html="<div style='max-width:400px'>${escapeHtml(text)}</div>">${escapeHtml(text.substring(0, maxLen))}...</span>`
     }
 
     let TABLE_COLUMNS = {
@@ -1724,8 +1727,10 @@
     const buildSearchWhereClause = (rawQuery) => {
         if (!rawQuery || !rawQuery.trim()) return ''
 
-        // Check for comma-separated list of queries
-        const queries = rawQuery.split(',').map(q => q.trim()).filter(q => q)
+        // Check for comma-separated list of queries. Use a lookbehind/lookahead so that commas
+        // between digits (eg. thousands-separators in genomic coordinates like chr17:43,044,295-43,125,483)
+        // are preserved instead of being treated as list separators.
+        const queries = rawQuery.split(/(?<!\d),(?!\d)/).map(q => q.trim()).filter(q => q)
         if (queries.length > 1) {
             const clauses = queries.map(q => buildSingleSearchWhereClause(q)).filter(c => c)
             if (clauses.length === 0) return ''

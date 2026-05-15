@@ -33,10 +33,12 @@ def get_panel_app_table():
             for r in data["results"]:
                 ensembl_genes = r["gene_data"]["ensembl_genes"]
 
-                # gene id may not be specified for some results
+                # gene id may not be specified for some results. ensembl_genes.get('GRch38') is
+                # falsy both when the key is missing and when the value is an empty dict, so the
+                # next(iter(...)) below can't raise StopIteration.
                 gene_id = ""
-                if ensembl_genes and 'GRch38' in ensembl_genes:
-                    gene_id = next(iter(ensembl_genes['GRch38'].values())).get("ensembl_id")
+                if ensembl_genes and ensembl_genes.get('GRch38'):
+                    gene_id = next(iter(ensembl_genes['GRch38'].values())).get("ensembl_id") or ""
 
                 rows.append({
                     "source": source_label,

@@ -290,8 +290,6 @@
     // Store pending export type when showing the dialog
     let pendingExportType = null
 
-    const escapeHtml = (s) => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;')
-
     const applyParamsToState = (params, {preferExisting = false} = {}) => {
         for (const [urlKey, value] of params.entries()) {
             // Convert abbreviated URL param name to internal state name if needed

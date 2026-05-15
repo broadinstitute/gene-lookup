@@ -371,8 +371,10 @@ if include_Fridman and not os.path.exists(fridman_path):
 
 if include_Fridman:
     df_fridman = pd.read_table(fridman_path)
+    # Source TSV uses ", " (comma + space) as the transcript separator, so strip whitespace before
+    # looking up each transcript. A row's transcripts can map to the same gene multiple times — dedupe.
     df_fridman["FRIDMAN_gene_id"] = df_fridman["Transcripts"].apply(
-        lambda transcript_list: ", ".join(transcript_id_to_gene_id[t] for t in transcript_list.split(",") if t in transcript_id_to_gene_id)
+        lambda transcript_list: ", ".join(sorted({transcript_id_to_gene_id[t.strip()] for t in transcript_list.split(",") if t.strip() in transcript_id_to_gene_id}))
     )
     assert sum(df_fridman["FRIDMAN_gene_id"].str.contains(",")) == 0, "Some rows had multiple gene ids: " + str(df_fridman[df_fridman["FRIDMAN_gene_id"].str.contains(",")])
 
@@ -607,17 +609,12 @@ if include_dbNSFP:
     assert df_combined.index.is_unique, "The merged dataframe has duplicate gene ids after merging with dbNSFP"
     print(f"Added {len(df_combined) - len(before):,d} genes from dbNSFP" + (f" - examples: {', '.join(list(sorted(set(df_combined.index) - set(before)))[:5])}" if print_example_genes else ""))
 
-# add gene chrom, start, end
+# prepare gene chrom, start, end (merged after the constrained-only concat below so that
+# highly-constrained-only genes also get coordinates)
 df_gene_chrom_start_end = pd.DataFrame(get_gene_metadata().values())
 df_gene_chrom_start_end = df_gene_chrom_start_end[["gene.stable_id", "chrom", "start", "end"]]
 df_gene_chrom_start_end.rename(columns={"chrom": "gene_chrom", "start": "gene_start", "end": "gene_end"}, inplace=True)
 df_gene_chrom_start_end.set_index("gene.stable_id", inplace=True)
-missing_gene_ids = set(df_combined.index) - set(df_gene_chrom_start_end.index)
-if len(missing_gene_ids) > 0:
-    print(f"WARNING: gene_chrom/gene_start/gene_end not available for {len(missing_gene_ids):,d} genes: {', '.join(list(missing_gene_ids)[:20])}" + (", ..." if len(missing_gene_ids) > 20 else ""))
-df_combined = pd.merge(df_combined, df_gene_chrom_start_end, how="left", left_index=True, right_index=True)
-df_combined["gene_start"] = df_combined["gene_start"].fillna(0).astype(int)
-df_combined["gene_end"] = df_combined["gene_end"].fillna(0).astype(int)
 
 # add constraint scores
 before = list(df_combined.index)
@@ -643,6 +640,14 @@ df_highly_constrained_genes = df_constraint_scores[
 
 print(f"Added {len(df_highly_constrained_genes):,d} highly constrained genes that are not in the other sources")
 df_combined = pd.concat([df_combined, df_highly_constrained_genes])
+
+# add gene chrom/start/end (merged here so both pre-existing and constrained-only genes get coordinates)
+missing_gene_ids = set(df_combined.index) - set(df_gene_chrom_start_end.index)
+if len(missing_gene_ids) > 0:
+    print(f"WARNING: gene_chrom/gene_start/gene_end not available for {len(missing_gene_ids):,d} genes: {', '.join(list(missing_gene_ids)[:20])}" + (", ..." if len(missing_gene_ids) > 20 else ""))
+df_combined = pd.merge(df_combined, df_gene_chrom_start_end, how="left", left_index=True, right_index=True)
+df_combined["gene_start"] = df_combined["gene_start"].fillna(0).astype(int)
+df_combined["gene_end"] = df_combined["gene_end"].fillna(0).astype(int)
 
 
 df_combined.reset_index(inplace=True)

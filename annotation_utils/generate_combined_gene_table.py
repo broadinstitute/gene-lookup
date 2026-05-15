@@ -626,15 +626,13 @@ print(f"Added constraint scores to {rows_with_constraint_scores:,d} out of {len(
 pLI_v2_THRESHOLD = CONSTRAINT_THRESHOLDS["pLI_v2"]["value"]
 pLI_v4_THRESHOLD = CONSTRAINT_THRESHOLDS["pLI_v4"]["value"]
 LOEUF_CONSTRAINT_THRESHOLD = CONSTRAINT_THRESHOLDS["LOEUF"]["value"]
-MOEUF_CONSTRAINT_THRESHOLD = CONSTRAINT_THRESHOLDS["MOEUF"]["value"]
 
 # add highly constrained genes that are not in the other sources:
 df_highly_constrained_genes = df_constraint_scores[
     ~df_constraint_scores.index.isin(df_combined.index) & (
         (df_constraint_scores["pLI_v2"] >= pLI_v2_THRESHOLD) |
         (df_constraint_scores["pLI_v4"] >= pLI_v4_THRESHOLD) |
-        (df_constraint_scores["lof_oe_ci_upper_v4"] <= LOEUF_CONSTRAINT_THRESHOLD) |
-        (df_constraint_scores["mis_oe_ci_upper_v4"] <= MOEUF_CONSTRAINT_THRESHOLD)
+        (df_constraint_scores["lof_oe_ci_upper_v4"] <= LOEUF_CONSTRAINT_THRESHOLD)
     )
 ]
 
@@ -697,8 +695,6 @@ def compute_sources_string(row):
         sources.append("pLI_v4:" + str(round(row["pLI_v4"], 2)))
     if row["lof_oe_ci_upper_v4"] <= LOEUF_CONSTRAINT_THRESHOLD:
         sources.append("LOEUF:" + str(round(row["lof_oe_ci_upper_v4"], 2)))
-    if row["mis_oe_ci_upper_v4"] <= MOEUF_CONSTRAINT_THRESHOLD:
-        sources.append("MOEUF:" + str(round(row["mis_oe_ci_upper_v4"], 2)))
 
     return f"{len(sources)}: " + ", ".join(sources)
 

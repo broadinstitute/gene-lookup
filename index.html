@@ -1172,19 +1172,26 @@
         const formatted = val.toFixed(2)
         const t = CONSTRAINT_THRESHOLDS[thresholdKey]
         if (!t) return formatted
-        const crosses = t.operator === '>=' ? val >= t.value : val <= t.value
-        if (!crosses) return formatted
         const op = t.operator === '>=' ? '≥' : '≤'
-        const popup = `<div style='white-space: nowrap;'><b>${labelForPopup}</b>: highlighted when ${op} ${t.value}.</div>`.replace(/"/g, '&quot;')
-        return `<span class="constraint-hover-popup" data-html="${popup}" style="color: #c0392b; font-weight: bold;">${formatted}</span>`
+        const crosses = (cutoff) => t.operator === '>=' ? val >= cutoff : val <= cutoff
+        if (crosses(t.value)) {
+            const popup = `<div style='white-space: nowrap;'><b>${labelForPopup}</b>: highlighted when ${op} ${t.value}.</div>`.replace(/"/g, '&quot;')
+            return `<span class="constraint-hover-popup" data-html="${popup}" style="color: #c0392b; font-weight: bold;">${formatted}</span>`
+        }
+        if (t.warn_value != null && crosses(t.warn_value)) {
+            const popup = `<div style='white-space: nowrap;'><b>${labelForPopup}</b>: highlighted when ${op} ${t.warn_value} (constrained); ${op} ${t.value} bold red (highly constrained).</div>`.replace(/"/g, '&quot;')
+            return `<span class="constraint-hover-popup" data-html="${popup}" style="color: #b7791f; font-weight: 600;">${formatted}</span>`
+        }
+        return formatted
     }
 
     // Constraint-score thresholds exported from website/global_constants.py — single source of truth.
     // Pipeline (annotation_utils/generate_combined_gene_table.py) reads the same dict.
-    const CONSTRAINT_THRESHOLDS = {"pLI_v2": {"value": 0.9, "operator": ">="}, "pLI_v4": {"value": 0.9, "operator": ">="}, "LOEUF": {"value": 0.2, "operator": "<="}, "MOEUF": {"value": 0.2, "operator": "<="}}
+    const CONSTRAINT_THRESHOLDS = {"pLI_v2": {"value": 0.9, "operator": ">="}, "pLI_v4": {"value": 0.9, "operator": ">="}, "LOEUF": {"value": 0.2, "operator": "<=", "warn_value": 0.6}}
 
     const constraintHoverText = (label, key, extra) => {
         const t = CONSTRAINT_THRESHOLDS[key]
+        if (!t) return `<b>${label}</b>: ${extra}`
         const op = t.operator === '>=' ? '≥' : (t.operator === '<=' ? '≤' : t.operator)
         return `<b>${label}</b>: ${extra} Badge shown when ${op} ${t.value}`
     }

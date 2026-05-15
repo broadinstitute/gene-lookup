@@ -28,13 +28,16 @@ GROUP_ORDER = [
 # Constraint-score thresholds. A gene is added to its source list for a given metric when
 # the score crosses the threshold:
 #   pLI_v2, pLI_v4: score >= value  (higher = more constrained)
-#   LOEUF, MOEUF:   score <= value  (lower  = more constrained)
+#   LOEUF:          score <= value  (lower  = more constrained)
+# An optional warn_value provides a softer cutoff used only by the website renderer (eg. amber
+# highlight for "worth a look" vs the red highlight at `value` for "highly constrained"); the
+# pipeline ignores warn_value. For LOEUF the gnomAD v4.0 recommended threshold is 0.6, while
+# 0.2 marks the most constrained genes.
 # Used by the BigQuery loading pipeline and exported to the website via generate_website.py.
 CONSTRAINT_THRESHOLDS = {
     "pLI_v2": {"value": 0.9, "operator": ">="},
     "pLI_v4": {"value": 0.9, "operator": ">="},
-    "LOEUF":  {"value": 0.2, "operator": "<="},
-    "MOEUF":  {"value": 0.2, "operator": "<="},
+    "LOEUF":  {"value": 0.2, "operator": "<=", "warn_value": 0.6},
 }
 
 BIGQUERY_COLUMNS = [

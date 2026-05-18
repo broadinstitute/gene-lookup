@@ -34,7 +34,8 @@ def get_panel_app_table():
                 ensembl_genes = r["gene_data"]["ensembl_genes"]
 
                 # gene id may not be specified for some results. PanelApp sometimes returns
-                # ensembl_genes as a bare ENSG string instead of the usual dict.
+                # ensembl_genes as a bare ENSG string, or as the literal placeholder "{}"
+                # for malformed entries (e.g. records that also lack an hgnc_id).
                 gene_id = ""
                 if isinstance(ensembl_genes, dict):
                     grch38 = ensembl_genes.get('GRch38')
@@ -43,7 +44,7 @@ def get_panel_app_table():
                 elif isinstance(ensembl_genes, str):
                     if ensembl_genes.startswith("ENSG"):
                         gene_id = ensembl_genes
-                    else:
+                    elif ensembl_genes != "{}":
                         raise ValueError(f"Unexpected ensembl_genes string value: {ensembl_genes!r}")
 
                 rows.append({

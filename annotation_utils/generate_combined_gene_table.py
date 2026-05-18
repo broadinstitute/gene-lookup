@@ -1,4 +1,5 @@
 import argparse
+from collections import Counter
 from datetime import datetime
 import os
 import sys
@@ -371,12 +372,29 @@ if include_Fridman and not os.path.exists(fridman_path):
 
 if include_Fridman:
     df_fridman = pd.read_table(fridman_path)
-    # Source TSV uses ", " (comma + space) as the transcript separator, so strip whitespace before
-    # looking up each transcript. A row's transcripts can map to the same gene multiple times — dedupe.
-    df_fridman["FRIDMAN_gene_id"] = df_fridman["Transcripts"].apply(
-        lambda transcript_list: ", ".join(sorted({transcript_id_to_gene_id[t.strip()] for t in transcript_list.split(",") if t.strip() in transcript_id_to_gene_id}))
-    )
-    assert sum(df_fridman["FRIDMAN_gene_id"].str.contains(",")) == 0, "Some rows had multiple gene ids: " + str(df_fridman[df_fridman["FRIDMAN_gene_id"].str.contains(",")])
+
+    # Resolve each row's ENSG by majority vote over its transcripts. Source TSV uses ", "
+    # (comma + space) as the separator. A few rows contain a transcript that now belongs
+    # to a paralog/unrelated gene in current Ensembl; majority vote picks the intended
+    # gene. Ties or rows with no resolvable transcripts are dropped (empty string).
+    def _resolve_fridman_gene_id(row):
+        counts = Counter(
+            transcript_id_to_gene_id[t.strip()]
+            for t in row["Transcripts"].split(",")
+            if t.strip() in transcript_id_to_gene_id
+        )
+        if not counts:
+            return ""
+        top = counts.most_common()
+        if len(top) > 1:
+            tied = [g for g, c in top if c == top[0][1]]
+            if len(tied) > 1:
+                print(f"Warning: Fridman row for gene {row['Gene']!r} has tied ENSG counts {dict(counts)}; dropping row")
+                return ""
+            print(f"Warning: Fridman row for gene {row['Gene']!r} has transcripts mapping to multiple ENSGs {dict(counts)}; picking {top[0][0]} (majority)")
+        return top[0][0]
+
+    df_fridman["FRIDMAN_gene_id"] = df_fridman.apply(_resolve_fridman_gene_id, axis=1)
 
     df_fridman = df_fridman[df_fridman["FRIDMAN_gene_id"].notna() & (df_fridman["FRIDMAN_gene_id"] != "")]
     df_fridman = df_fridman[[

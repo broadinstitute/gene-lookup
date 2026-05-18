@@ -33,12 +33,18 @@ def get_panel_app_table():
             for r in data["results"]:
                 ensembl_genes = r["gene_data"]["ensembl_genes"]
 
-                # gene id may not be specified for some results. ensembl_genes.get('GRch38') is
-                # falsy both when the key is missing and when the value is an empty dict, so the
-                # next(iter(...)) below can't raise StopIteration.
+                # gene id may not be specified for some results. PanelApp sometimes returns
+                # ensembl_genes as a bare ENSG string instead of the usual dict.
                 gene_id = ""
-                if ensembl_genes and ensembl_genes.get('GRch38'):
-                    gene_id = next(iter(ensembl_genes['GRch38'].values())).get("ensembl_id") or ""
+                if isinstance(ensembl_genes, dict):
+                    grch38 = ensembl_genes.get('GRch38')
+                    if isinstance(grch38, dict) and grch38:
+                        gene_id = next(iter(grch38.values())).get("ensembl_id") or ""
+                elif isinstance(ensembl_genes, str):
+                    if ensembl_genes.startswith("ENSG"):
+                        gene_id = ensembl_genes
+                    else:
+                        raise ValueError(f"Unexpected ensembl_genes string value: {ensembl_genes!r}")
 
                 rows.append({
                     "source": source_label,

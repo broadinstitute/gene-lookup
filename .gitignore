@@ -1,5 +1,11 @@
 .idea
 *.iml
+.claude/
+.code_review/
+.memory/
+.prompt/
+.playwright-mcp/
+.stfolder/
 
 *.tsv.gz
 *.bed.gz

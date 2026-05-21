@@ -138,6 +138,7 @@ def _get_gnomAD_v4_constraint():
         "mis.oe",
         "mis.oe_ci.lower",
         "mis.oe_ci.upper",
+        "mis.z_score",
     ]]
 
     df = df.rename(columns={
@@ -148,6 +149,7 @@ def _get_gnomAD_v4_constraint():
         "mis.oe": "mis_oe_v4",
         "mis.oe_ci.lower": "mis_oe_ci_lower_v4",
         "mis.oe_ci.upper": "mis_oe_ci_upper_v4",
+        "mis.z_score": "mis_z_score_v4",
     })
 
 

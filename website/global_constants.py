@@ -39,6 +39,9 @@ CONSTRAINT_THRESHOLDS = {
     "pLI_v4": {"value": 0.9, "operator": ">="},
     "LOEUF":  {"value": 0.2, "operator": "<=", "warn_value": 0.6},
     "MOEUF":  {"value": 0.6, "operator": "<=", "warn_value": 0.8},
+    # Missense Z-score: gnomAD's conventional "constrained" cutoff (Samocha 2014; reused in v4.1.1
+    # browser visualization).
+    "Missense_Z": {"value": 3.09, "operator": ">="},
 }
 
 BIGQUERY_COLUMNS = [
@@ -207,6 +210,15 @@ BIGQUERY_COLUMNS = [
         "name": "mis_oe_ci_upper_v4",
         "description": "Upper bound of the 90% confidence interval for the missense observed/expected ratio from gnomAD v4.1.1 (MOEUF).",
         "displayName": "MOEUF (v4.1.1)",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_CONSTRAINT,
+    },
+    {
+        "type": "FLOAT",
+        "name": "mis_z_score_v4",
+        "description": "Missense constraint Z-score from gnomAD v4.1.1. Higher values indicate stronger missense constraint (more depletion than expected).",
+        "displayName": "Missense Z (v4.1.1)",
         "allowCustomFilter": True,
         "allowExport": True,
         "group": GROUP_CONSTRAINT,

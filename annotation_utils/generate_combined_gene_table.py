@@ -252,6 +252,10 @@ df_constraint_scores = df_constraint_scores[[
     "mis_oe_ci_upper_v4",
     "mis_z_score_v4",
     "s_het",
+    "PEPPER_XGB_pct",
+    "OMELET_XGB_pct",
+    "OMELET_LLM_pct",
+    "Discovery_Potential_pct",
 ]]
 
 df_constraint_scores = df_constraint_scores.groupby("CONSTRAINT_scores_gene_id").agg({
@@ -265,6 +269,10 @@ df_constraint_scores = df_constraint_scores.groupby("CONSTRAINT_scores_gene_id")
     "mis_oe_ci_upper_v4": lambda x: safe_min(x),
     "mis_z_score_v4": lambda x: safe_max(x),
     "s_het": lambda x: safe_max(x),
+    "PEPPER_XGB_pct": lambda x: safe_max(x),
+    "OMELET_XGB_pct": lambda x: safe_max(x),
+    "OMELET_LLM_pct": lambda x: safe_max(x),
+    "Discovery_Potential_pct": lambda x: safe_max(x),
 }).reset_index()
 
 df_constraint_scores.set_index("CONSTRAINT_scores_gene_id", inplace=True)

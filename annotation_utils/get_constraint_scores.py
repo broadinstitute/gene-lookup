@@ -240,15 +240,44 @@ def _get_s_het_scores():
     return df
 
 
+@cache_data_table
+def _get_gnomAD_v4_flagship_scores():
+    """Download per-gene score percentiles from the gnomAD v4 flagship paper
+    (Guez, Goodrich et al. 2026, Supplementary Dataset).
+
+    Source: https://github.com/atgu/gnomAD_v4_flagship_paper
+    Paper: https://doi.org/10.1101/2026.03.23.26349081
+
+    Returns the 4 headline score percentiles (0-100, higher = stronger signal):
+        PEPPER_XGB_pct          - literature-independent clinical-impact prediction
+        OMELET_XGB_pct          - Bayesian posterior combining PEPPER_XGB with LOEUF-MIS
+        OMELET_LLM_pct          - Bayesian posterior combining PEPPER_LLM with LOEUF-MIS
+        Discovery_Potential_pct - constraint exceeding literature-derived clinical evidence
+    """
+    df = pd.read_table("https://raw.githubusercontent.com/atgu/gnomAD_v4_flagship_paper/main/Supplementary%20Datasets/supp_dataset_2.tsv")
+    df = df[df["ensg"].notna() & df["ensg"].str.startswith("ENSG")]
+    df = df[[
+        "ensg",
+        "PEPPER_XGB_pct",
+        "OMELET_XGB_pct",
+        "OMELET_LLM_pct",
+        "Discovery_Potential_pct",
+    ]].rename(columns={"ensg": "gene_id"})
+    df = df.drop_duplicates(subset=["gene_id"], keep="first")
+    return df
+
+
 def get_constraint_scores():
     "Download gnomAD gene constraint tables and s_het scores"
 
     df = _get_gnomAD_v2_constraint()
     df2 = _get_gnomAD_v4_constraint()
     df3 = _get_s_het_scores()
+    df4 = _get_gnomAD_v4_flagship_scores()
 
     df = df.set_index("gene_id").join(df2.set_index("gene_id"), how="outer")
-    df = df.join(df3.set_index("gene_id"), how="outer").reset_index()
+    df = df.join(df3.set_index("gene_id"), how="outer")
+    df = df.join(df4.set_index("gene_id"), how="outer").reset_index()
 
     return df
 

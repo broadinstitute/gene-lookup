@@ -12,6 +12,7 @@ GROUP_CLINGEN_GENCC = "ClinGen & GenCC"
 GROUP_PANEL_APP_UK = "PanelApp UK"
 GROUP_PANEL_APP_AU = "PanelApp AU"
 GROUP_DECIPHER_OTHER = "Decipher & Other Sources"
+GROUP_GWAS = "GWAS Catalog"
 GROUP_DBNSFP = "dbNSFP"
 
 GROUP_ORDER = [
@@ -22,6 +23,7 @@ GROUP_ORDER = [
     GROUP_PANEL_APP_UK,
     GROUP_PANEL_APP_AU,
     GROUP_DECIPHER_OTHER,
+    GROUP_GWAS,
     GROUP_DBNSFP,
 ]
 
@@ -228,6 +230,42 @@ BIGQUERY_COLUMNS = [
         "name": "s_het",
         "description": "Gene constraint score from GeneBayes (Zeng et al. 2024). Scores >0.1 indicate high likelihood of extreme selection.",
         "displayName": "s_het",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_CONSTRAINT,
+    },
+    {
+        "type": "FLOAT",
+        "name": "PEPPER_XGB_pct",
+        "description": "PEPPER (XGBoost) percentile (0-100) from the gnomAD v4 flagship paper (Guez, Goodrich et al. 2026). Higher = stronger predicted clinical impact based on gene-level biological features, independent of literature evidence.",
+        "displayName": "PEPPER XGB %",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_CONSTRAINT,
+    },
+    {
+        "type": "FLOAT",
+        "name": "OMELET_XGB_pct",
+        "description": "OMELET (XGBoost) percentile (0-100) from the gnomAD v4 flagship paper (Guez, Goodrich et al. 2026). Bayesian posterior combining PEPPER_XGB with LOEUF-MIS; higher = stronger predicted clinical significance.",
+        "displayName": "OMELET XGB %",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_CONSTRAINT,
+    },
+    {
+        "type": "FLOAT",
+        "name": "OMELET_LLM_pct",
+        "description": "OMELET (LLM) percentile (0-100) from the gnomAD v4 flagship paper (Guez, Goodrich et al. 2026). Bayesian posterior combining literature-derived PEPPER_LLM with LOEUF-MIS; higher = stronger predicted clinical significance.",
+        "displayName": "OMELET LLM %",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_CONSTRAINT,
+    },
+    {
+        "type": "FLOAT",
+        "name": "Discovery_Potential_pct",
+        "description": "Discovery Potential (DisPo) percentile (0-100) from the gnomAD v4 flagship paper (Guez, Goodrich et al. 2026). Higher = stronger constraint relative to existing literature-derived clinical evidence, flagging candidate disease genes that remain under-characterized.",
+        "displayName": "Discovery Potential %",
         "allowCustomFilter": True,
         "allowExport": True,
         "group": GROUP_CONSTRAINT,
@@ -562,6 +600,98 @@ BIGQUERY_COLUMNS = [
         "allowCustomFilter": True,
         "allowExport": True,
         "group": GROUP_DECIPHER_OTHER,
+    },
+
+    # GWAS Catalog
+    {
+        "type": "STRING",
+        "name": "GWAS_mondo_id",
+        "description": "MONDO disease ID(s) of GWAS hits for this gene (semicolon-separated if multiple).",
+        "displayName": "GWAS MONDO ID",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_GWAS,
+    },
+    {
+        "type": "STRING",
+        "name": "GWAS_mondo_name",
+        "description": "MONDO disease name(s) of GWAS hits for this gene (semicolon-separated if multiple).",
+        "displayName": "GWAS MONDO Name",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_GWAS,
+    },
+    {
+        "type": "STRING",
+        "name": "GWAS_mondo_category",
+        "description": "MONDO disease category(s) of GWAS hits for this gene (semicolon-separated if multiple).",
+        "displayName": "GWAS MONDO Category",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_GWAS,
+    },
+    {
+        "type": "STRING",
+        "name": "GWAS_chr_id",
+        "description": "Chromosome(s) of GWAS hit(s) for this gene (semicolon-separated if multiple).",
+        "displayName": "GWAS Chrom",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_GWAS,
+    },
+    {
+        "type": "STRING",
+        "name": "GWAS_chr_pos",
+        "description": "GRCh38 chromosome position(s) of GWAS hit(s) for this gene (semicolon-separated if multiple).",
+        "displayName": "GWAS Position",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_GWAS,
+    },
+    {
+        "type": "FLOAT",
+        "name": "GWAS_p_value",
+        "description": "Smallest GWAS Catalog p-value reported for any rare-disease hit linked to this gene.",
+        "displayName": "GWAS P-value (min)",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_GWAS,
+    },
+    {
+        "type": "FLOAT",
+        "name": "GWAS_odds_ratio_or_beta",
+        "description": "Smallest GWAS Catalog odds ratio or beta reported for any rare-disease hit linked to this gene.",
+        "displayName": "GWAS OR or Beta (min)",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_GWAS,
+    },
+    {
+        "type": "STRING",
+        "name": "GWAS_95_ci_text",
+        "description": "95% confidence interval text from GWAS Catalog for this gene's hit(s) (semicolon-separated if multiple).",
+        "displayName": "GWAS 95% CI",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_GWAS,
+    },
+    {
+        "type": "STRING",
+        "name": "GWAS_gene_type",
+        "description": "Gene-to-variant relationship from GWAS Catalog (e.g. UPSTREAM, INTRON; semicolon-separated if multiple).",
+        "displayName": "GWAS Gene Type",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_GWAS,
+    },
+    {
+        "type": "STRING",
+        "name": "GWAS_gene_distance",
+        "description": "Distance in bp from the GWAS variant to the nearest gene boundary (semicolon-separated if multiple).",
+        "displayName": "GWAS Gene Distance",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_GWAS,
     },
 
     # dbNSFP

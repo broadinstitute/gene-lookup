@@ -228,12 +228,12 @@
 
         console.log("Starting to initialize page. GLOBAL_PAGE_STATE:", GLOBAL_PAGE_STATE)
 
-        // igv
+        // igv: reveal the row now, but defer updateIgv() until performSearch() has set
+        // igvLoc to the gene's coordinates (otherwise IGV would load at the default chr7 locus)
         if (GLOBAL_PAGE_STATE['showIGV'] === 1) {
             $('#igv-row').show()
             $('#show-igv-divider-text').hide()
             $('#hide-igv-divider-text').show()
-            await updateIgv()
         }
 
         // Restore custom track URLs
@@ -242,6 +242,10 @@
         }
 
         await performSearch()
+
+        if (GLOBAL_PAGE_STATE['showIGV'] === 1) {
+            await updateIgv()
+        }
     }
 
     $('#show-igv-divider').click(async () => {
@@ -299,6 +303,14 @@
         box1 += `<tr><td class="locus-info-label">Gene ID:</td><td>${geneId ? `<a href="https://ensembl.org/Homo_sapiens/Gene/Summary?g=${geneId}" target="_blank" class="action-link">${geneId}</a>` : ''}</td></tr>`
         box1 += `<tr><td class="locus-info-label">Aliases:</td><td>${row['gene_aliases'] || ''}</td></tr>`
         box1 += `<tr><td class="locus-info-label">Coordinates (hg38):</td><td>${coordinates}</td></tr>`
+        box1 += `<tr><td class="locus-info-label">Inheritance:</td><td>${renderInheritanceCell(row['inheritance'], 999)}</td></tr>`
+        const sourceBadgeIds = {
+            geneSymbol,
+            hgncId,
+            ensemblId: geneId,
+            mimNumber: dedupSemicolonArray(row['OMIM_mim_number'])[0] || '',
+        }
+        box1 += `<tr><td class="locus-info-label">Sources:</td><td>${getSourcesBadges(row['sources'], sourceBadgeIds)}</td></tr>`
         box1 += '</table>'
         $('#locus-page-row1-box1').html(box1)
 
@@ -324,14 +336,6 @@
 
         // --- Right column (row1-box2) ---
         let box2 = '<table class="locus-info-table">'
-        box2 += `<tr><td class="locus-info-label">Inheritance:</td><td>${renderInheritanceCell(row['inheritance'], 999)}</td></tr>`
-        const sourceBadgeIds = {
-            geneSymbol,
-            hgncId,
-            ensemblId: geneId,
-            mimNumber: dedupSemicolonArray(row['OMIM_mim_number'])[0] || '',
-        }
-        box2 += `<tr><td class="locus-info-label">Sources:</td><td>${getSourcesBadges(row['sources'], sourceBadgeIds)}</td></tr>`
 
         // Constraint scores
         const pliV2 = renderConstraintValue(row['pLI_v2'], 'pLI_v2', 'pLI (v2)')
@@ -343,11 +347,13 @@
             : misInterval ? misInterval
             : misZBadge ? `Z = ${misZBadge}`
             : ''
+        const dispoPct = row['Discovery_Potential_pct'] != null ? `${row['Discovery_Potential_pct'].toFixed(1)}%` : ''
 
         box2 += `<tr><td class="locus-info-label">pLI (v2):</td><td>${pliV2}</td></tr>`
         box2 += `<tr><td class="locus-info-label">pLI (v4.1.1):</td><td>${pliV4}</td></tr>`
         box2 += `<tr><td class="locus-info-label">LOEUF (v4.1.1):</td><td>${loeuf}</td></tr>`
         box2 += `<tr><td class="locus-info-label">MOEUF (v4.1.1):</td><td>${moeuf}</td></tr>`
+        box2 += `<tr><td class="locus-info-label">DisPo:</td><td>${dispoPct}</td></tr>`
 
         box2 += '</table>'
         $('#locus-page-row1-box2').html(box2)

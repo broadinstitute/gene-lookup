@@ -1184,26 +1184,30 @@
         return formatted
     }
 
-    // Renders an observed/expected interval as "o/e = 0.30 (0.25 - 0.35)". Threshold color is applied
-    // to the upper-CI bound (the standard gnomAD LOEUF / MOEUF convention). If oe or upper is missing,
-    // returns whatever pieces are available.
+    // Renders an observed/expected interval as "o/e = 0.30 (0.25 - 0.35)". The upper-CI bound is
+    // wrapped in a colored background box (gnomAD-browser style) when it crosses the warn_value or
+    // value threshold — orange for "constrained", darker orange for "highly constrained". If oe or
+    // upper is missing, returns whatever pieces are available with no highlight.
     const renderConstraintInterval = (oe, ciLower, ciUpper, thresholdKey, labelForPopup) => {
         if (oe == null && ciUpper == null) return ''
         const fmt = (v) => v == null ? '?' : v.toFixed(2)
-        const intervalText = `o/e = ${fmt(oe)} (${fmt(ciLower)} - ${fmt(ciUpper)})`
+        const prefix = `o/e = ${fmt(oe)} (${fmt(ciLower)} - `
+        const upperStr = fmt(ciUpper)
+        const suffix = ')'
         const t = CONSTRAINT_THRESHOLDS[thresholdKey]
-        if (!t || ciUpper == null) return intervalText
+        if (!t || ciUpper == null) return `${prefix}${upperStr}${suffix}`
         const op = t.operator === '>=' ? '≥' : '≤'
         const crosses = (cutoff) => t.operator === '>=' ? ciUpper >= cutoff : ciUpper <= cutoff
+        const boxStyle = "padding: 1px 6px; border-radius: 3px; font-weight: 600;"
+        let upperHTML = upperStr
         if (crosses(t.value)) {
-            const popup = `<div style='white-space: nowrap;'><b>${labelForPopup}</b>: highlighted when ${op} ${t.value}.</div>`.replace(/"/g, '&quot;')
-            return `<span class="constraint-hover-popup" data-html="${popup}" style="color: #c0392b; font-weight: bold;">${intervalText}</span>`
+            const popup = `<div style='white-space: nowrap;'><b>${labelForPopup}</b>: upper bound highlighted when ${op} ${t.value} (highly constrained).</div>`.replace(/"/g, '&quot;')
+            upperHTML = `<span class="constraint-hover-popup" data-html="${popup}" style="background-color: #dd6b20; color: #fff; ${boxStyle}">${upperStr}</span>`
+        } else if (t.warn_value != null && crosses(t.warn_value)) {
+            const popup = `<div style='white-space: nowrap;'><b>${labelForPopup}</b>: upper bound highlighted when ${op} ${t.warn_value} (constrained); darker highlight when ${op} ${t.value} (highly constrained).</div>`.replace(/"/g, '&quot;')
+            upperHTML = `<span class="constraint-hover-popup" data-html="${popup}" style="background-color: #f6ad55; color: #1a202c; ${boxStyle}">${upperStr}</span>`
         }
-        if (t.warn_value != null && crosses(t.warn_value)) {
-            const popup = `<div style='white-space: nowrap;'><b>${labelForPopup}</b>: highlighted when ${op} ${t.warn_value} (constrained); ${op} ${t.value} bold red (highly constrained).</div>`.replace(/"/g, '&quot;')
-            return `<span class="constraint-hover-popup" data-html="${popup}" style="color: #b7791f; font-weight: 600;">${intervalText}</span>`
-        }
-        return intervalText
+        return `${prefix}${upperHTML}${suffix}`
     }
 
     // Constraint-score thresholds exported from website/global_constants.py — single source of truth.

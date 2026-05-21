@@ -1146,7 +1146,7 @@
             detectedCodes.delete('XL')
         }
         const codes = Array.from(detectedCodes).sort()
-        return [...codes, ...others].join('; ')
+        return [...codes, ...others].join(', ')
     }
 
     // Initialize Semantic UI hover popups for elements tagged with .source-hover-popup (used by

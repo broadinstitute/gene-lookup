@@ -33,8 +33,6 @@ def get_current_ensembl_database():
     print(f"Using Ensembl database: {_CURRENT_ENSEMBL_DATABASE}")
     return _CURRENT_ENSEMBL_DATABASE
 
-CURRENT_ENSEMBL_DATABASE = get_current_ensembl_database()
-
 
 """
 homo_sapiens_cdna_102_38
@@ -53,20 +51,23 @@ homo_sapiens_variation_103_38
 
 
 def get_gene_metadata(
-        database=CURRENT_ENSEMBL_DATABASE,
+        database=None,
         only_protein_coding=False):
     """Retrieves a dictionary containing gene_id => a dictionary of information about that gene.
 
     Args:
-        database (str): The Ensembl database name (eg. "homo_sapiens_core_107_38")
+        database (str): The Ensembl database name (eg. "homo_sapiens_core_107_38"). If None,
+            the current GRCh38 core database is looked up from the Ensembl server.
         only_protein_coding (bool): If True, only return protein-coding genes
 
     Return:
         dict: mapping ENSG id string to a dictionary of metadata about that gene
     """
 
+    if database is None:
+        database = get_current_ensembl_database()
     gene_id_to_metadata = {}
-    host = ENSEMBL_HOST_EAST if database == CURRENT_ENSEMBL_DATABASE else ENSEMBL_HOST_MAIN
+    host = ENSEMBL_HOST_EAST if database == get_current_ensembl_database() else ENSEMBL_HOST_MAIN
     with pymysql.connect(host=host, user="anonymous", database=database) as conn:
         with conn.cursor() as cursor:
             columns = [
@@ -106,14 +107,15 @@ def get_gene_metadata(
 
 
 def get_gene_id_to_transcript_metadata(
-        database=CURRENT_ENSEMBL_DATABASE,
+        database=None,
         only_protein_coding=False,
         only_canonical_transcripts=False):
     """Retrieves a dictionary containing gene_id => a list of dictionaries each of which
     contains information about one transcript that belongs to that gene.
 
     Args:
-        database (str): The Ensembl database name (eg. "homo_sapiens_core_107_38")
+        database (str): The Ensembl database name (eg. "homo_sapiens_core_107_38"). If None,
+            the current GRCh38 core database is looked up from the Ensembl server.
         only_protein_coding (bool): If True, only return protein-coding genes and protein-coding transcripts
         only_canonical_transcripts (bool): If True, only return canonical transcripts
 
@@ -121,8 +123,10 @@ def get_gene_id_to_transcript_metadata(
         dict: mapping ENSG id string to a list of dictionaries where each dictionary contains metadata fields
     """
 
+    if database is None:
+        database = get_current_ensembl_database()
     gene_id_to_transcript_id = collections.defaultdict(list)
-    host = ENSEMBL_HOST_EAST if database == CURRENT_ENSEMBL_DATABASE else ENSEMBL_HOST_MAIN
+    host = ENSEMBL_HOST_EAST if database == get_current_ensembl_database() else ENSEMBL_HOST_MAIN
     with pymysql.connect(host=host, user="anonymous", database=database) as conn:
         with conn.cursor() as cursor:
             if only_canonical_transcripts:
@@ -160,7 +164,7 @@ def get_gene_id_to_transcript_metadata(
 
 
 def get_gene_id_to_transcript_ids(
-        database=CURRENT_ENSEMBL_DATABASE,
+        database=None,
         only_protein_coding=False,
         only_canonical_transcripts=False):
     """Returns a dictionary mapping each Ensembl gene_id => a list of transcript ids for that gene.
@@ -187,7 +191,7 @@ def get_gene_id_to_transcript_ids(
 
 
 def get_transcript_id_to_gene_id(
-        database=CURRENT_ENSEMBL_DATABASE,
+        database=None,
         only_protein_coding=False,
         only_canonical_transcripts=False):
     """Returns a dictionary mapping each Ensembl transcript_id => gene_id.
@@ -213,7 +217,7 @@ def get_transcript_id_to_gene_id(
 
 
 
-def get_gene_id_to_canonical_transcript_id(database=CURRENT_ENSEMBL_DATABASE, only_protein_coding=False):
+def get_gene_id_to_canonical_transcript_id(database=None, only_protein_coding=False):
     """Returns a dictionary mapping each Ensembl gene_id => canonical transcript id
 
     Args:
@@ -242,7 +246,7 @@ def get_gene_id_to_canonical_transcript_id(database=CURRENT_ENSEMBL_DATABASE, on
 
 
 def get_gene_created_modified_dates(
-        database=CURRENT_ENSEMBL_DATABASE,
+        database=None,
         only_protein_coding=False,
         only_canonical_transcripts=False):
     """Returns a dictionary mapping each Ensembl gene_id => a 2-tuple containing the created date and the modified date
@@ -268,7 +272,7 @@ def get_gene_created_modified_dates(
 
 
 def get_transcript_created_modified_dates(
-        database=CURRENT_ENSEMBL_DATABASE,
+        database=None,
         only_protein_coding=False,
         only_canonical_transcripts=False):
     """Returns a dictionary mapping each Ensembl gene_id => a list of 3-tuples each containing the
@@ -300,8 +304,10 @@ def get_transcript_created_modified_dates(
         for gene_id, transcript_metadata_list in gene_id_to_transcript_metadata_list.items()
     }
 
-def get_ensembl_ENST_to_RefSeq_ids(database=CURRENT_ENSEMBL_DATABASE):
-    host = ENSEMBL_HOST_EAST if database == CURRENT_ENSEMBL_DATABASE else ENSEMBL_HOST_MAIN
+def get_ensembl_ENST_to_RefSeq_ids(database=None):
+    if database is None:
+        database = get_current_ensembl_database()
+    host = ENSEMBL_HOST_EAST if database == get_current_ensembl_database() else ENSEMBL_HOST_MAIN
     db = pymysql.connect(host=host, user="anonymous", database=database)
     cursor = db.cursor()
     cursor.execute(" ".join([

@@ -1,8 +1,13 @@
 """Load a TSV into BigQuery, overwriting the existing table."""
 
 import argparse
+import os
+import sys
 import pandas as pd
 from google.cloud import bigquery
+
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "website"))
+from global_constants import get_column_types
 
 PROJECT_ID = "cmg-analysis"
 DATASET_ID = "gene_lookup"
@@ -14,15 +19,9 @@ def main():
     parser.add_argument("tsv_path", help="Path to the TSV file (can be gzipped)")
     args = parser.parse_args()
 
-    FLOAT_COLUMNS = {
-        "pLI_v2", "pLI_v4",
-        "lof_oe_v4", "lof_oe_ci_lower_v4", "lof_oe_ci_upper_v4",
-        "mis_oe_v4", "mis_oe_ci_lower_v4", "mis_oe_ci_upper_v4",
-        "mis_z_score_v4",
-        "s_het", "CLINVAR_stars", "GWAS_p_value", "GWAS_odds_ratio_or_beta",
-        "DBNSFP_p_rec",
-    }
-    INT_COLUMNS = {"gene_start", "gene_end"}
+    column_types = get_column_types()
+    FLOAT_COLUMNS = {name for name, t in column_types.items() if t == "FLOAT"}
+    INT_COLUMNS = {name for name, t in column_types.items() if t == "INTEGER"}
 
     # Read column names to build dtype dict
     all_columns = pd.read_table(args.tsv_path, nrows=0).columns

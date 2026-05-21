@@ -347,7 +347,7 @@
             : misInterval ? misInterval
             : misZBadge ? `Z = ${misZBadge}`
             : ''
-        const dispoPct = row['Discovery_Potential_pct'] != null ? `${row['Discovery_Potential_pct'].toFixed(1)}%` : ''
+        const dispoPct = row['Discovery_Potential_pct'] != null && row['Discovery_Potential_pct'] !== '' ? `${Number(row['Discovery_Potential_pct']).toFixed(1)}%` : ''
 
         box2 += `<tr><td class="locus-info-label">pLI (v2):</td><td>${pliV2}</td></tr>`
         box2 += `<tr><td class="locus-info-label">pLI (v4.1.1):</td><td>${pliV4}</td></tr>`

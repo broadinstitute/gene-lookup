@@ -318,7 +318,7 @@
             detectedCodes.delete('XL')
         }
         const codes = Array.from(detectedCodes).sort()
-        return [...codes, ...others].join(', ')
+        return [...codes, ...others].join('; ')
     }
 
     // Initialize Semantic UI hover popups for elements tagged with .source-hover-popup (used by
@@ -954,6 +954,76 @@
             getValue: (row) => row['FRIDMAN_inheritance'] || '',
             getSortColumns: () => ['FRIDMAN_inheritance'],
             getRequiredColumns: () => ['FRIDMAN_inheritance'],
+        },
+        GWAS_mondo_id: {
+            displayName: 'GWAS MONDO ID',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['GWAS_mondo_id'],
+            getValue: (row) => row['GWAS_mondo_id'] || '',
+            getSortColumns: () => ['GWAS_mondo_id'],
+            getRequiredColumns: () => ['GWAS_mondo_id'],
+        },
+        GWAS_mondo_name: {
+            displayName: 'GWAS MONDO Name',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['GWAS_mondo_name'],
+            getValue: (row) => getTruncatedText(row['GWAS_mondo_name'], 80),
+            getSortColumns: () => ['GWAS_mondo_name'],
+            getRequiredColumns: () => ['GWAS_mondo_name'],
+        },
+        GWAS_mondo_category: {
+            displayName: 'GWAS MONDO Category',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['GWAS_mondo_category'],
+            getValue: (row) => getTruncatedText(row['GWAS_mondo_category'], 80),
+            getSortColumns: () => ['GWAS_mondo_category'],
+            getRequiredColumns: () => ['GWAS_mondo_category'],
+        },
+        GWAS_chr_id: {
+            displayName: 'GWAS Chrom',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['GWAS_chr_id'],
+            getValue: (row) => row['GWAS_chr_id'] || '',
+            getSortColumns: () => ['GWAS_chr_id'],
+            getRequiredColumns: () => ['GWAS_chr_id'],
+        },
+        GWAS_chr_pos: {
+            displayName: 'GWAS Position',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['GWAS_chr_pos'],
+            getValue: (row) => row['GWAS_chr_pos'] || '',
+            getSortColumns: () => ['GWAS_chr_pos'],
+            getRequiredColumns: () => ['GWAS_chr_pos'],
+        },
+        GWAS_p_value: {
+            displayName: 'GWAS P-value (min)',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['GWAS_p_value'],
+            getValue: (row) => row['GWAS_p_value'] != null ? Number(row['GWAS_p_value']).toExponential(2) : '',
+            getSortColumns: () => ['GWAS_p_value'],
+            getRequiredColumns: () => ['GWAS_p_value'],
+        },
+        GWAS_odds_ratio_or_beta: {
+            displayName: 'GWAS OR or Beta (min)',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['GWAS_odds_ratio_or_beta'],
+            getValue: (row) => row['GWAS_odds_ratio_or_beta'] != null ? row['GWAS_odds_ratio_or_beta'] : '',
+            getSortColumns: () => ['GWAS_odds_ratio_or_beta'],
+            getRequiredColumns: () => ['GWAS_odds_ratio_or_beta'],
+        },
+        GWAS_95_ci_text: {
+            displayName: 'GWAS 95% CI',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['GWAS_95_ci_text'],
+            getValue: (row) => row['GWAS_95_ci_text'] || '',
+            getSortColumns: () => ['GWAS_95_ci_text'],
+            getRequiredColumns: () => ['GWAS_95_ci_text'],
+        },
+        GWAS_gene_type: {
+            displayName: 'GWAS Gene Type',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['GWAS_gene_type'],
+            getValue: (row) => row['GWAS_gene_type'] || '',
+            getSortColumns: () => ['GWAS_gene_type'],
+            getRequiredColumns: () => ['GWAS_gene_type'],
+        },
+        GWAS_gene_distance: {
+            displayName: 'GWAS Gene Distance',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['GWAS_gene_distance'],
+            getValue: (row) => row['GWAS_gene_distance'] || '',
+            getSortColumns: () => ['GWAS_gene_distance'],
+            getRequiredColumns: () => ['GWAS_gene_distance'],
         },
     }
 

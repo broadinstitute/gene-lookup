@@ -289,10 +289,10 @@
     const RESULTS_TABLE_COLUMN_SELECTION_CHECKBOXES = RESULTS_TABLE_COLUMN_NAMES
 
     // Columns that can be used for filtering in the UI, with their display names and group
-    const CUSTOM_FILTER_COLUMNS = {{ custom_filter_columns_json }}
+    const CUSTOM_FILTER_COLUMNS = {{ custom_filter_columns_json | safe }}
 
     // Columns available for TSV/JSON export with their display names and group
-    const EXPORT_COLUMN_OPTIONS = {{ exportable_columns_json }}
+    const EXPORT_COLUMN_OPTIONS = {{ exportable_columns_json | safe }}
 
     // Store pending export type when showing the dialog
     let pendingExportType = null
@@ -1280,7 +1280,7 @@
 
         let tableHtml = '<table class="ui celled sortable table"><thead><tr>'
         tableHtml += `<th style="width: 1%; padding: 2px 4px; text-align: center; vertical-align: middle;">
-            <button id="results-table-settings-button" class="ui primary basic grey button" style="height:25px; width:30px; padding:0; border-radius:5px; background-color: #FCFCFF !important; display: inline-flex; align-items: center; justify-content: center;" data-tooltip="Column descriptions and settings">
+            <button id="results-table-settings-button" class="ui primary basic grey button" style="height:25px; width:30px; padding:0; border-radius:5px; background-color: #FCFCFF !important; display: inline-flex; align-items: center; justify-content: center;" data-tooltip="Configure columns to display">
                 <i class="setting icon" style="margin: 0;"></i>
             </button>
         </th>`

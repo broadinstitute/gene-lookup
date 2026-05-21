@@ -347,12 +347,14 @@
             : misInterval ? misInterval
             : misZBadge ? `Z = ${misZBadge}`
             : ''
+        const omeletLlmPct = row['OMELET_LLM_pct'] != null && row['OMELET_LLM_pct'] !== '' ? `${Number(row['OMELET_LLM_pct']).toFixed(1)}%` : ''
         const dispoPct = row['Discovery_Potential_pct'] != null && row['Discovery_Potential_pct'] !== '' ? `${Number(row['Discovery_Potential_pct']).toFixed(1)}%` : ''
 
         box2 += `<tr><td class="locus-info-label">pLI (v2):</td><td>${pliV2}</td></tr>`
         box2 += `<tr><td class="locus-info-label">pLI (v4.1.1):</td><td>${pliV4}</td></tr>`
         box2 += `<tr><td class="locus-info-label">LOEUF (v4.1.1):</td><td>${loeuf}</td></tr>`
         box2 += `<tr><td class="locus-info-label">MOEUF (v4.1.1):</td><td>${moeuf}</td></tr>`
+        box2 += `<tr><td class="locus-info-label">OMELET LLM:</td><td>${omeletLlmPct}</td></tr>`
         box2 += `<tr><td class="locus-info-label">DisPo:</td><td>${dispoPct}</td></tr>`
 
         box2 += '</table>'

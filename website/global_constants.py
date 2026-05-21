@@ -150,8 +150,8 @@ BIGQUERY_COLUMNS = [
     {
         "type": "FLOAT",
         "name": "pLI_v4",
-        "description": "Probability of loss-of-function intolerance from gnomAD v4.",
-        "displayName": "pLI (v4)",
+        "description": "Probability of loss-of-function intolerance from gnomAD v4.1.1.",
+        "displayName": "pLI (v4.1.1)",
         "allowCustomFilter": True,
         "allowExport": True,
         "group": GROUP_CONSTRAINT,
@@ -159,8 +159,8 @@ BIGQUERY_COLUMNS = [
     {
         "type": "FLOAT",
         "name": "lof_oe_ci_upper_v4",
-        "description": "Upper bound of the 90% confidence interval for the loss-of-function observed/expected ratio from gnomAD v4 (LOEUF).",
-        "displayName": "LOEUF (v4)",
+        "description": "Upper bound of the 90% confidence interval for the loss-of-function observed/expected ratio from gnomAD v4.1.1 (LOEUF).",
+        "displayName": "LOEUF (v4.1.1)",
         "allowCustomFilter": True,
         "allowExport": True,
         "group": GROUP_CONSTRAINT,
@@ -168,8 +168,8 @@ BIGQUERY_COLUMNS = [
     {
         "type": "FLOAT",
         "name": "mis_oe_ci_upper_v4",
-        "description": "Upper bound of the 90% confidence interval for the missense observed/expected ratio from gnomAD v4 (MOEUF).",
-        "displayName": "MOEUF (v4)",
+        "description": "Upper bound of the 90% confidence interval for the missense observed/expected ratio from gnomAD v4.1.1 (MOEUF).",
+        "displayName": "MOEUF (v4.1.1)",
         "allowCustomFilter": True,
         "allowExport": True,
         "group": GROUP_CONSTRAINT,

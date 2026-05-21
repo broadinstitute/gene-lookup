@@ -120,8 +120,8 @@ def _get_gnomAD_v2_constraint():
 
 @cache_data_table
 def _get_gnomAD_v4_constraint():
-     # gnomAD v4.1 constraint metrics
-    df = pd.read_table("https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1/constraint/gnomad.v4.1.constraint_metrics.tsv")
+     # gnomAD v4.1.1 constraint metrics
+    df = pd.read_table("https://storage.googleapis.com/gcp-public-data--gnomad/release/4.1.1/constraint/gnomad.v4.1.1.constraint_metrics.tsv.bgz", compression="gzip")
     #with pd.option_context('display.max_rows', None, 'display.max_columns', None):
     #    print(df2.iloc[0])
 

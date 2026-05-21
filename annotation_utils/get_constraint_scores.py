@@ -129,6 +129,8 @@ def _get_gnomAD_v4_constraint():
 
     df = df[[
         "gene_id",
+        "mane_select",
+        "canonical",
         "lof.pLI",
         "lof.oe",
         "lof.oe_ci.lower",
@@ -150,8 +152,13 @@ def _get_gnomAD_v4_constraint():
 
 
     df = df[df["pLI_v4"].notna()]
-    df = df.sort_values(by=["pLI_v4", "lof_oe_v4"], ascending=[False, True])
+    # Prefer MANE-select, then canonical; fall back to highest pLI / lowest lof.oe for genes with no MANE/canonical row.
+    df = df.sort_values(
+        by=["mane_select", "canonical", "pLI_v4", "lof_oe_v4"],
+        ascending=[False, False, False, True],
+    )
     df = df.drop_duplicates(subset=["gene_id"], keep="first")
+    df = df.drop(columns=["mane_select", "canonical"])
 
     """
     Columns:

@@ -15,7 +15,9 @@ def main():
     args = parser.parse_args()
 
     FLOAT_COLUMNS = {
-        "pLI_v2", "pLI_v4", "lof_oe_ci_upper_v4", "mis_oe_ci_upper_v4",
+        "pLI_v2", "pLI_v4",
+        "lof_oe_v4", "lof_oe_ci_lower_v4", "lof_oe_ci_upper_v4",
+        "mis_oe_v4", "mis_oe_ci_lower_v4", "mis_oe_ci_upper_v4",
         "s_het", "CLINVAR_stars", "GWAS_p_value", "GWAS_odds_ratio_or_beta",
         "DBNSFP_p_rec",
     }

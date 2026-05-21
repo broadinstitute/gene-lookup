@@ -357,6 +357,28 @@
         return formatted
     }
 
+    // Renders an observed/expected interval as "o/e = 0.30 (0.25 - 0.35)". Threshold color is applied
+    // to the upper-CI bound (the standard gnomAD LOEUF / MOEUF convention). If oe or upper is missing,
+    // returns whatever pieces are available.
+    const renderConstraintInterval = (oe, ciLower, ciUpper, thresholdKey, labelForPopup) => {
+        if (oe == null && ciUpper == null) return ''
+        const fmt = (v) => v == null ? '?' : v.toFixed(2)
+        const intervalText = `o/e = ${fmt(oe)} (${fmt(ciLower)} - ${fmt(ciUpper)})`
+        const t = CONSTRAINT_THRESHOLDS[thresholdKey]
+        if (!t || ciUpper == null) return intervalText
+        const op = t.operator === '>=' ? '≥' : '≤'
+        const crosses = (cutoff) => t.operator === '>=' ? ciUpper >= cutoff : ciUpper <= cutoff
+        if (crosses(t.value)) {
+            const popup = `<div style='white-space: nowrap;'><b>${labelForPopup}</b>: highlighted when ${op} ${t.value}.</div>`.replace(/"/g, '&quot;')
+            return `<span class="constraint-hover-popup" data-html="${popup}" style="color: #c0392b; font-weight: bold;">${intervalText}</span>`
+        }
+        if (t.warn_value != null && crosses(t.warn_value)) {
+            const popup = `<div style='white-space: nowrap;'><b>${labelForPopup}</b>: highlighted when ${op} ${t.warn_value} (constrained); ${op} ${t.value} bold red (highly constrained).</div>`.replace(/"/g, '&quot;')
+            return `<span class="constraint-hover-popup" data-html="${popup}" style="color: #b7791f; font-weight: 600;">${intervalText}</span>`
+        }
+        return intervalText
+    }
+
     // Constraint-score thresholds exported from website/global_constants.py — single source of truth.
     // Pipeline (annotation_utils/generate_combined_gene_table.py) reads the same dict.
     const CONSTRAINT_THRESHOLDS = {{ constraint_thresholds_json | safe }}
@@ -448,11 +470,6 @@
         'LOEUF': {
             color: '#b8d8e8',
             description: constraintHoverText('LOEUF (v4.1.1)', 'LOEUF', 'Loss-of-function observed/expected upper bound from gnomAD v4.1.1.'),
-            url: ({ ensemblId }) => gnomadGeneUrl(ensemblId, 'gnomad_r4'),
-        },
-        'MOEUF': {
-            color: '#c8e0b8',
-            description: constraintHoverText('Missense O/E (v4.1.1)', 'MOEUF', 'Missense observed/expected ratio from gnomAD v4.1.1.'),
             url: ({ ensemblId }) => gnomadGeneUrl(ensemblId, 'gnomad_r4'),
         },
     }
@@ -556,9 +573,9 @@
         lof_oe_ci_upper_v4: {
             displayName: 'LOEUF',
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['lof_oe_ci_upper_v4'],
-            getValue: (row) => renderConstraintValue(row['lof_oe_ci_upper_v4'], 'LOEUF', 'LOEUF (v4.1.1)'),
+            getValue: (row) => renderConstraintInterval(row['lof_oe_v4'], row['lof_oe_ci_lower_v4'], row['lof_oe_ci_upper_v4'], 'LOEUF', 'LOEUF (v4.1.1)'),
             getSortColumns: () => ['lof_oe_ci_upper_v4'],
-            getRequiredColumns: () => ['lof_oe_ci_upper_v4'],
+            getRequiredColumns: () => ['lof_oe_v4', 'lof_oe_ci_lower_v4', 'lof_oe_ci_upper_v4'],
         },
         CLINGEN_classification: {
             displayName: 'ClinGen',
@@ -648,11 +665,11 @@
             getRequiredColumns: () => ['pLI_v2'],
         },
         mis_oe_ci_upper_v4: {
-            displayName: 'MOEUF (v4.1.1)',
+            displayName: 'MOEUF',
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['mis_oe_ci_upper_v4'],
-            getValue: (row) => renderConstraintValue(row['mis_oe_ci_upper_v4'], 'MOEUF', 'Missense O/E (v4.1.1)'),
+            getValue: (row) => renderConstraintInterval(row['mis_oe_v4'], row['mis_oe_ci_lower_v4'], row['mis_oe_ci_upper_v4'], 'MOEUF', 'MOEUF (v4.1.1)'),
             getSortColumns: () => ['mis_oe_ci_upper_v4'],
-            getRequiredColumns: () => ['mis_oe_ci_upper_v4'],
+            getRequiredColumns: () => ['mis_oe_v4', 'mis_oe_ci_lower_v4', 'mis_oe_ci_upper_v4'],
         },
         OMIM_mim_number: {
             displayName: 'OMIM MIM #',

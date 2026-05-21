@@ -57,7 +57,7 @@ Gene Lookup aggregates gene-disease association data from the following sources:
     <li><b><a href="https://www.ncbi.nlm.nih.gov/clinvar/" target="_blank">ClinVar</a></b> &mdash; Pathogenic/likely pathogenic variant annotations</li>
     <li><b><a href="https://www.ebi.ac.uk/gwas/" target="_blank">GWAS Catalog</a></b> &mdash; GWAS hits for MONDO rare-disease phenotypes</li>
     <li><b><a href="https://pubmed.ncbi.nlm.nih.gov/40374730/" target="_blank">Fridman et al. 2025</a></b> &mdash; Autosomal recessive gene-disease associations</li>
-    <li><b><a href="https://gnomad.broadinstitute.org/" target="_blank">gnomAD constraint metrics</a></b> &mdash; pLI, LOEUF, and Missense O/E from gnomAD v4</li>
+    <li><b><a href="https://gnomad.broadinstitute.org/" target="_blank">gnomAD constraint metrics</a></b> &mdash; pLI, LOEUF, and MOEUF from gnomAD v4.1.1</li>
 </ul>
 </div>
 
@@ -65,13 +65,13 @@ Gene Lookup aggregates gene-disease association data from the following sources:
 <a name="q3"></a>
 <b>Q3: What are the constraint scores?</b><br />
 <br />
-Constraint scores from gnomAD v4 reflect how tolerant a gene is to different types of variation:<br />
+Constraint scores from gnomAD v4.1.1 reflect how tolerant a gene is to different types of variation:<br />
 <br />
 <div style="margin-left: 20px">
 <ul>
     <li><b>pLI</b> &mdash; Probability of loss-of-function intolerance. Values close to 1 indicate the gene is highly intolerant to loss-of-function variants.</li>
     <li><b>LOEUF</b> &mdash; Loss-of-function observed/expected upper bound fraction. Lower values indicate greater constraint. A threshold of &le;0.35 is commonly used to identify constrained genes.</li>
-    <li><b>Missense O/E</b> &mdash; Missense observed/expected ratio. Lower values suggest the gene is intolerant to missense variation.</li>
+    <li><b>MOEUF</b> &mdash; Missense observed/expected upper-bound fraction. Lower values suggest the gene is intolerant to missense variation.</li>
 </ul>
 </div>
 

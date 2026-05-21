@@ -336,13 +336,13 @@
         // Constraint scores
         const pliV2 = renderConstraintValue(row['pLI_v2'], 'pLI_v2', 'pLI (v2)')
         const pliV4 = renderConstraintValue(row['pLI_v4'], 'pLI_v4', 'pLI (v4.1.1)')
-        const loeuf = renderConstraintValue(row['lof_oe_ci_upper_v4'], 'LOEUF', 'LOEUF (v4.1.1)')
-        const moeuf = renderConstraintValue(row['mis_oe_ci_upper_v4'], 'MOEUF', 'Missense O/E (v4.1.1)')
+        const loeuf = renderConstraintInterval(row['lof_oe_v4'], row['lof_oe_ci_lower_v4'], row['lof_oe_ci_upper_v4'], 'LOEUF', 'LOEUF (v4.1.1)')
+        const moeuf = renderConstraintInterval(row['mis_oe_v4'], row['mis_oe_ci_lower_v4'], row['mis_oe_ci_upper_v4'], 'MOEUF', 'MOEUF (v4.1.1)')
 
         box2 += `<tr><td class="locus-info-label">pLI (v2):</td><td>${pliV2}</td></tr>`
         box2 += `<tr><td class="locus-info-label">pLI (v4.1.1):</td><td>${pliV4}</td></tr>`
         box2 += `<tr><td class="locus-info-label">LOEUF (v4.1.1):</td><td>${loeuf}</td></tr>`
-        box2 += `<tr><td class="locus-info-label">Missense O/E (v4.1.1):</td><td>${moeuf}</td></tr>`
+        box2 += `<tr><td class="locus-info-label">MOEUF (v4.1.1):</td><td>${moeuf}</td></tr>`
 
         box2 += '</table>'
         $('#locus-page-row1-box2').html(box2)

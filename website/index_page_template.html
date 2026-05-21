@@ -200,7 +200,7 @@
 
                     <div class="field" style="padding-top: 15px">
                         <label>Constraint Scores
-                            <i class="question circle icon link" style="margin-left: 5px;" data-html="Filter by gene constraint scores from gnomAD. pLI measures probability of loss-of-function intolerance. LOEUF is the loss-of-function observed/expected upper bound fraction. Missense O/E is the missense observed/expected ratio."></i>
+                            <i class="question circle icon link" style="margin-left: 5px;" data-html="Filter by gene constraint scores from gnomAD. pLI measures probability of loss-of-function intolerance. LOEUF is the loss-of-function observed/expected upper-bound fraction. MOEUF is the missense observed/expected upper-bound fraction."></i>
                         </label>
                         <div style="display: flex; gap: 30px; flex-wrap: wrap;">
                             <div style="display: flex; align-items: center; gap: 5px;">
@@ -212,7 +212,7 @@
                                 <input type="text" id="loeuf-threshold" name="loeufThreshold" placeholder="e.g., 0.3" style="width: 80px;">
                             </div>
                             <div style="display: flex; align-items: center; gap: 5px;">
-                                <span>Missense O/E &le;</span>
+                                <span>MOEUF &le;</span>
                                 <input type="text" id="moeuf-threshold" name="moeufThreshold" placeholder="e.g., 0.8" style="width: 80px;">
                             </div>
                         </div>
@@ -1693,7 +1693,7 @@
         const moeufThreshold = $('input[name="moeufThreshold"]').val()
         if (moeufThreshold && (isNaN(parseFloat(moeufThreshold)) || parseFloat(moeufThreshold) < 0)) {
             if (GLOBAL_PAGE_STATE['showAdvFilters'] !== 1) toggleAdvancedSearch()
-            $('#form-error-message').html(`<b>ERROR:</b> The Missense O/E threshold '${escapeHtml(moeufThreshold)}' is invalid`).show()
+            $('#form-error-message').html(`<b>ERROR:</b> The MOEUF threshold '${escapeHtml(moeufThreshold)}' is invalid`).show()
             return false
         }
 

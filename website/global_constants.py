@@ -38,6 +38,7 @@ CONSTRAINT_THRESHOLDS = {
     "pLI_v2": {"value": 0.9, "operator": ">="},
     "pLI_v4": {"value": 0.9, "operator": ">="},
     "LOEUF":  {"value": 0.2, "operator": "<=", "warn_value": 0.6},
+    "MOEUF":  {"value": 0.6, "operator": "<=", "warn_value": 0.8},
 }
 
 BIGQUERY_COLUMNS = [
@@ -158,9 +159,45 @@ BIGQUERY_COLUMNS = [
     },
     {
         "type": "FLOAT",
+        "name": "lof_oe_v4",
+        "description": "Loss-of-function observed/expected ratio (point estimate) from gnomAD v4.1.1.",
+        "displayName": "lof o/e (v4.1.1)",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_CONSTRAINT,
+    },
+    {
+        "type": "FLOAT",
+        "name": "lof_oe_ci_lower_v4",
+        "description": "Lower bound of the 90% confidence interval for the loss-of-function observed/expected ratio from gnomAD v4.1.1.",
+        "displayName": "lof o/e CI lower (v4.1.1)",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_CONSTRAINT,
+    },
+    {
+        "type": "FLOAT",
         "name": "lof_oe_ci_upper_v4",
         "description": "Upper bound of the 90% confidence interval for the loss-of-function observed/expected ratio from gnomAD v4.1.1 (LOEUF).",
         "displayName": "LOEUF (v4.1.1)",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_CONSTRAINT,
+    },
+    {
+        "type": "FLOAT",
+        "name": "mis_oe_v4",
+        "description": "Missense observed/expected ratio (point estimate) from gnomAD v4.1.1.",
+        "displayName": "mis o/e (v4.1.1)",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_CONSTRAINT,
+    },
+    {
+        "type": "FLOAT",
+        "name": "mis_oe_ci_lower_v4",
+        "description": "Lower bound of the 90% confidence interval for the missense observed/expected ratio from gnomAD v4.1.1.",
+        "displayName": "mis o/e CI lower (v4.1.1)",
         "allowCustomFilter": True,
         "allowExport": True,
         "group": GROUP_CONSTRAINT,

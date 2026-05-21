@@ -357,10 +357,42 @@
         return formatted
     }
 
+    // Renders a single value as "X.XX" wrapped in a colored background box (gnomAD-browser style)
+    // when it crosses the configured threshold(s). Used for metrics where the value itself is the
+    // primary signal (eg. Missense Z). For two-tier thresholds (value + warn_value): darker box at
+    // value, lighter at warn_value. For single-tier (value only): lighter box at value.
+    const renderConstraintBadge = (val, thresholdKey, labelForPopup) => {
+        if (val == null) return ''
+        const formatted = val.toFixed(2)
+        const t = CONSTRAINT_THRESHOLDS[thresholdKey]
+        if (!t) return formatted
+        const op = t.operator === '>=' ? '≥' : '≤'
+        const crosses = (cutoff) => t.operator === '>=' ? val >= cutoff : val <= cutoff
+        const boxStyle = "padding: 1px 6px; border-radius: 3px; font-weight: 600;"
+        if (t.warn_value != null) {
+            if (crosses(t.value)) {
+                const popup = `<div style='white-space: nowrap;'><b>${labelForPopup}</b>: highlighted when ${op} ${t.warn_value} (constrained); darker highlight when ${op} ${t.value} (highly constrained).</div>`.replace(/"/g, '&quot;')
+                return `<span class="constraint-hover-popup" data-html="${popup}" style="background-color: #dd6b20; color: #fff; ${boxStyle}">${formatted}</span>`
+            }
+            if (crosses(t.warn_value)) {
+                const popup = `<div style='white-space: nowrap;'><b>${labelForPopup}</b>: highlighted when ${op} ${t.warn_value} (constrained); darker highlight when ${op} ${t.value} (highly constrained).</div>`.replace(/"/g, '&quot;')
+                return `<span class="constraint-hover-popup" data-html="${popup}" style="background-color: #f6ad55; color: #1a202c; ${boxStyle}">${formatted}</span>`
+            }
+            return formatted
+        }
+        if (crosses(t.value)) {
+            const popup = `<div style='white-space: nowrap;'><b>${labelForPopup}</b>: highlighted when ${op} ${t.value} (constrained).</div>`.replace(/"/g, '&quot;')
+            return `<span class="constraint-hover-popup" data-html="${popup}" style="background-color: #f6ad55; color: #1a202c; ${boxStyle}">${formatted}</span>`
+        }
+        return formatted
+    }
+
     // Renders an observed/expected interval as "o/e = 0.30 (0.25 - 0.35)". The upper-CI bound is
     // wrapped in a colored background box (gnomAD-browser style) when it crosses the warn_value or
-    // value threshold — orange for "constrained", darker orange for "highly constrained". If oe or
-    // upper is missing, returns whatever pieces are available with no highlight.
+    // value threshold — orange for "constrained", darker orange for "highly constrained". Pass a
+    // null thresholdKey to render the interval without highlighting (eg. when another metric like
+    // Missense Z is the primary signal). If oe or upper is missing, returns whatever pieces are
+    // available with no highlight.
     const renderConstraintInterval = (oe, ciLower, ciUpper, thresholdKey, labelForPopup) => {
         if (oe == null && ciUpper == null) return ''
         const fmt = (v) => v == null ? '?' : v.toFixed(2)
@@ -671,9 +703,14 @@
         mis_oe_ci_upper_v4: {
             displayName: 'MOEUF',
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['mis_oe_ci_upper_v4'],
-            getValue: (row) => renderConstraintInterval(row['mis_oe_v4'], row['mis_oe_ci_lower_v4'], row['mis_oe_ci_upper_v4'], 'MOEUF', 'MOEUF (v4.1.1)'),
+            getValue: (row) => {
+                const interval = renderConstraintInterval(row['mis_oe_v4'], row['mis_oe_ci_lower_v4'], row['mis_oe_ci_upper_v4'], null, '')
+                const zBadge = renderConstraintBadge(row['mis_z_score_v4'], 'Missense_Z', 'Missense Z (v4.1.1)')
+                if (!interval) return zBadge ? `Z = ${zBadge}` : ''
+                return zBadge ? `${interval} &nbsp; Z = ${zBadge}` : interval
+            },
             getSortColumns: () => ['mis_oe_ci_upper_v4'],
-            getRequiredColumns: () => ['mis_oe_v4', 'mis_oe_ci_lower_v4', 'mis_oe_ci_upper_v4'],
+            getRequiredColumns: () => ['mis_oe_v4', 'mis_oe_ci_lower_v4', 'mis_oe_ci_upper_v4', 'mis_z_score_v4'],
         },
         OMIM_mim_number: {
             displayName: 'OMIM MIM #',

@@ -337,7 +337,12 @@
         const pliV2 = renderConstraintValue(row['pLI_v2'], 'pLI_v2', 'pLI (v2)')
         const pliV4 = renderConstraintValue(row['pLI_v4'], 'pLI_v4', 'pLI (v4.1.1)')
         const loeuf = renderConstraintInterval(row['lof_oe_v4'], row['lof_oe_ci_lower_v4'], row['lof_oe_ci_upper_v4'], 'LOEUF', 'LOEUF (v4.1.1)')
-        const moeuf = renderConstraintInterval(row['mis_oe_v4'], row['mis_oe_ci_lower_v4'], row['mis_oe_ci_upper_v4'], 'MOEUF', 'MOEUF (v4.1.1)')
+        const misInterval = renderConstraintInterval(row['mis_oe_v4'], row['mis_oe_ci_lower_v4'], row['mis_oe_ci_upper_v4'], null, '')
+        const misZBadge = renderConstraintBadge(row['mis_z_score_v4'], 'Missense_Z', 'Missense Z (v4.1.1)')
+        const moeuf = misInterval && misZBadge ? `${misInterval} &nbsp; Z = ${misZBadge}`
+            : misInterval ? misInterval
+            : misZBadge ? `Z = ${misZBadge}`
+            : ''
 
         box2 += `<tr><td class="locus-info-label">pLI (v2):</td><td>${pliV2}</td></tr>`
         box2 += `<tr><td class="locus-info-label">pLI (v4.1.1):</td><td>${pliV4}</td></tr>`

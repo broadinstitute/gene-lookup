@@ -349,13 +349,17 @@
             : ''
         const omeletLlmPct = row['OMELET_LLM_pct'] != null && row['OMELET_LLM_pct'] !== '' ? `${Number(row['OMELET_LLM_pct']).toFixed(1)}%` : ''
         const dispoPct = row['Discovery_Potential_pct'] != null && row['Discovery_Potential_pct'] !== '' ? `${Number(row['Discovery_Potential_pct']).toFixed(1)}%` : ''
+        const omeletLlmHelp = BIGQUERY_COLUMN_DESCRIPTIONS['OMELET_LLM_pct'] || ''
+        const dispoHelp = BIGQUERY_COLUMN_DESCRIPTIONS['Discovery_Potential_pct'] || ''
+        const omeletLlmIcon = omeletLlmPct && omeletLlmHelp ? `<i class="question circle outline icon column-help-hover" style="margin-left: 10px; cursor: help;" data-html="${omeletLlmHelp}"></i>` : ''
+        const dispoIcon = dispoPct && dispoHelp ? `<i class="question circle outline icon column-help-hover" style="margin-left: 10px; cursor: help;" data-html="${dispoHelp}"></i>` : ''
 
         box2 += `<tr><td class="locus-info-label">pLI (v2):</td><td>${pliV2}</td></tr>`
         box2 += `<tr><td class="locus-info-label">pLI (v4.1.1):</td><td>${pliV4}</td></tr>`
         box2 += `<tr><td class="locus-info-label">LOEUF (v4.1.1):</td><td>${loeuf}</td></tr>`
         box2 += `<tr><td class="locus-info-label">MOEUF (v4.1.1):</td><td>${moeuf}</td></tr>`
-        box2 += `<tr><td class="locus-info-label">OMELET LLM %:</td><td>${omeletLlmPct}</td></tr>`
-        box2 += `<tr><td class="locus-info-label">DisPo %:</td><td>${dispoPct}</td></tr>`
+        box2 += `<tr><td class="locus-info-label">OMELET LLM %:</td><td>${omeletLlmPct}${omeletLlmIcon}</td></tr>`
+        box2 += `<tr><td class="locus-info-label">DisPo %:</td><td>${dispoPct}${dispoIcon}</td></tr>`
 
         box2 += '</table>'
         $('#locus-page-row1-box2').html(box2)
@@ -567,6 +571,7 @@
         })
 
         $('.question').popup({ on: 'click' })
+        $('.column-help-hover').popup({ on: 'hover' })
         $('.show-popup').popup({
             on: 'click',
             hoverable: true,

@@ -47,6 +47,17 @@
         ...BIGQUERY_COLUMN_DESCRIPTIONS,
     }
 
+    // Enrich plain-text column descriptions with HTML links to cited preprints. Output is intended
+    // for use inside a popup's data-html attribute (HTML-rendered), so the embedded <a> uses single
+    // quotes to avoid breaking the surrounding double-quoted attribute.
+    const enrichHelpText = (text) => {
+        if (!text) return ''
+        return String(text).replace(
+            /Guez, Goodrich et al\. 2026/g,
+            "<a href='https://doi.org/10.64898/2026.03.23.26349081' target='_blank'>Guez, Goodrich et al. 2026</a>"
+        )
+    }
+
     const DEFAULT_SORT_COLUMN = 'gene_symbol'
     const DEFAULT_SORT_DIRECTION = 'ASC'
 

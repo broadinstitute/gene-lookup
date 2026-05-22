@@ -874,6 +874,17 @@
         ...BIGQUERY_COLUMN_DESCRIPTIONS,
     }
 
+    // Enrich plain-text column descriptions with HTML links to cited preprints. Output is intended
+    // for use inside a popup's data-html attribute (HTML-rendered), so the embedded <a> uses single
+    // quotes to avoid breaking the surrounding double-quoted attribute.
+    const enrichHelpText = (text) => {
+        if (!text) return ''
+        return String(text).replace(
+            /Guez, Goodrich et al\. 2026/g,
+            "<a href='https://doi.org/10.64898/2026.03.23.26349081' target='_blank'>Guez, Goodrich et al. 2026</a>"
+        )
+    }
+
     const DEFAULT_SORT_COLUMN = 'gene_symbol'
     const DEFAULT_SORT_DIRECTION = 'ASC'
 
@@ -2480,8 +2491,8 @@
         const dispoPct = row['Discovery_Potential_pct'] != null && row['Discovery_Potential_pct'] !== '' ? `${Number(row['Discovery_Potential_pct']).toFixed(1)}%` : ''
         const omeletLlmHelp = BIGQUERY_COLUMN_DESCRIPTIONS['OMELET_LLM_pct'] || ''
         const dispoHelp = BIGQUERY_COLUMN_DESCRIPTIONS['Discovery_Potential_pct'] || ''
-        const omeletLlmIcon = omeletLlmPct && omeletLlmHelp ? `<i class="question circle outline icon column-help-hover" style="margin-left: 10px; cursor: help;" data-html="${omeletLlmHelp}"></i>` : ''
-        const dispoIcon = dispoPct && dispoHelp ? `<i class="question circle outline icon column-help-hover" style="margin-left: 10px; cursor: help;" data-html="${dispoHelp}"></i>` : ''
+        const omeletLlmIcon = omeletLlmPct && omeletLlmHelp ? `<i class="question circle outline icon" style="margin-left: 10px; cursor: pointer;" data-html="${enrichHelpText(omeletLlmHelp)}"></i>` : ''
+        const dispoIcon = dispoPct && dispoHelp ? `<i class="question circle outline icon" style="margin-left: 10px; cursor: pointer;" data-html="${enrichHelpText(dispoHelp)}"></i>` : ''
 
         box2 += `<tr><td class="locus-info-label">pLI (v2):</td><td>${pliV2}</td></tr>`
         box2 += `<tr><td class="locus-info-label">pLI (v4.1.1):</td><td>${pliV4}</td></tr>`
@@ -2700,7 +2711,6 @@
         })
 
         $('.question').popup({ on: 'click' })
-        $('.column-help-hover').popup({ on: 'hover' })
         $('.show-popup').popup({
             on: 'click',
             hoverable: true,

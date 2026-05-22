@@ -1431,7 +1431,7 @@
                             <input type="checkbox" name="show_column_${columnName}" ${isChecked ? 'checked' : ''}>
                             <label>${TABLE_COLUMNS[columnName]?.displayName || ''}</label>
                         </div>
-                        ${TABLE_COLUMNS[columnName]?.helpText ? `<i class="question circle icon" data-html="${TABLE_COLUMNS[columnName].helpText}"></i>` : ''}
+                        ${TABLE_COLUMNS[columnName]?.helpText ? `<i class="question circle icon" data-html="${enrichHelpText(TABLE_COLUMNS[columnName].helpText)}"></i>` : ''}
                     </div>`
             }).join('')
 

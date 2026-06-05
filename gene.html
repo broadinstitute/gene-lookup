@@ -2559,7 +2559,10 @@
         // --- Source: OMIM ---
         if (hasAnyValue(row['OMIM_mim_number'], row['OMIM_phenotype_mim_number'], row['OMIM_inheritance'], row['OMIM_phenotype_description'])) {
             const mimNumbersList = dedupSemicolonArray(row['OMIM_mim_number'])
-            let html = `<div class="source-section"><h4>OMIM</h4><table class="locus-info-table">`
+            const omimTitle = mimNumbersList.length > 0
+                ? `<a href="https://omim.org/entry/${mimNumbersList[0]}" target="_blank" class="action-link">OMIM</a>`
+                : 'OMIM'
+            let html = `<div class="source-section"><h4>${omimTitle}</h4><table class="locus-info-table">`
             const mimLinks = mimNumbersList.map(m =>
                 `<a href="https://omim.org/entry/${m}" target="_blank" class="action-link">${m}</a>`
             ).join('; ')
@@ -2680,7 +2683,7 @@
 
         // --- Source: Fridman ---
         if (hasAnyValue(row['FRIDMAN_omim_phenotype_id'], row['FRIDMAN_phenotype_category'], row['FRIDMAN_inheritance'])) {
-            let html = '<div class="source-section"><h4>Fridman</h4><table class="locus-info-table">'
+            let html = '<div class="source-section"><h4><a href="https://pubmed.ncbi.nlm.nih.gov/40374730/" target="_blank" class="action-link">Fridman et al 2025</a></h4><table class="locus-info-table">'
             html += `<tr><td class="locus-info-label">OMIM Phenotype ID:</td><td>${dedupSemicolon(row['FRIDMAN_omim_phenotype_id'])}</td></tr>`
             html += `<tr><td class="locus-info-label">Phenotype Category:</td><td>${dedupSemicolon(row['FRIDMAN_phenotype_category'])}</td></tr>`
             html += `<tr><td class="locus-info-label">Inheritance:</td><td>${dedupSemicolon(row['FRIDMAN_inheritance'])}</td></tr>`

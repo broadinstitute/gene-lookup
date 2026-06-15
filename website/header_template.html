@@ -1120,6 +1120,11 @@
             return `(UPPER(ensembl_gene_id) = UPPER('${escapedQ}'))`
         }
 
+        // HPO term ID: HP:0001250. DBNSFP_hpo_id is semicolon-separated, so match as substring.
+        if (/^HP:\d+$/i.test(q)) {
+            return `(UPPER(DBNSFP_hpo_id) LIKE UPPER('%${escapedQ}%'))`
+        }
+
         // Always search both gene name/alias and disease/phenotype text
         const phenotypeColumns = [
             'LLM_phenotype_summary',
@@ -1130,6 +1135,7 @@
             'PANEL_APP_AU_phenotypes',
             'DECIPHER_disease_names',
             'CLINVAR_phenotypes',
+            'DBNSFP_hpo_name',
         ]
         const textClauses = phenotypeColumns.map(col => `UPPER(${col}) LIKE UPPER('%${escapedQ}%')`)
         const geneClause = `UPPER(gene_symbol) = UPPER('${escapedQ}') OR UPPER(gene_aliases) LIKE UPPER('%${escapedQ}%')`

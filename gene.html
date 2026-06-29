@@ -2568,7 +2568,7 @@
             const omimTitle = mimNumbersList.length > 0
                 ? `<a href="https://omim.org/entry/${mimNumbersList[0]}" target="_blank" class="action-link">OMIM</a>`
                 : 'OMIM'
-            let html = `<div class="source-section"><h4>${omimTitle}</h4><table class="locus-info-table">`
+            let html = `<div class="source-section"><h4>${omimTitle}<span style="color: #999; font-size: calc(1em - 2px); margin-left: 15px;">(last updated: 2026-06-08)</span></h4><table class="locus-info-table">`
             const mimLinks = mimNumbersList.map(m =>
                 `<a href="https://omim.org/entry/${m}" target="_blank" class="action-link">${m}</a>`
             ).join('; ')

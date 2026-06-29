@@ -4,7 +4,7 @@ import os
 import pandas as pd
 import requests
 
-from annotation_utils.cache_utils import cache_data_table
+from annotation_utils.cache_utils import cache_data_table, read_cached_table
 
 DBNSFP_BASE_URL = "https://dist.genos.us/academic"
 
@@ -43,11 +43,21 @@ def get_dbnsfp_gene_table():
     if not dbnsfp_key:
         raise ValueError("DBNSFP_KEY environment variable is not set")
 
-    url = f"{DBNSFP_BASE_URL}/{dbnsfp_key}/dbNSFP5.3_gene.gz"
-    print(f"Downloading dbNSFP5.3 gene table from {DBNSFP_BASE_URL}/...")
-    response = requests.get(url)
-    response.raise_for_status()
-    df = pd.read_table(io.BytesIO(response.content), compression="gzip", dtype=str)
+    try:
+        url = f"{DBNSFP_BASE_URL}/{dbnsfp_key}/dbNSFP5.3_gene.gz"
+        print(f"Downloading dbNSFP5.3 gene table from {DBNSFP_BASE_URL}/...")
+        response = requests.get(url)
+        response.raise_for_status()
+        df = pd.read_table(io.BytesIO(response.content), compression="gzip", dtype=str)
+    except Exception as e:
+        # The dbNSFP download key (dist.genos.us) expires/rotates periodically. This shows up as an HTTP
+        # error from the download, or as a non-gzip error body that fails to parse. In either case, fall
+        # back to the last successfully cached dbNSFP gene table rather than failing the whole pipeline.
+        df_stale = read_cached_table("get_dbnsfp_gene_table")
+        if df_stale is not None:
+            print(f"WARNING: dbNSFP download/parse failed ({e}); reusing previously cached dbNSFP gene table ({len(df_stale):,d} rows)")
+            return df_stale
+        raise
     print(f"Read {len(df):,d} rows with {len(df.columns)} columns")
 
     # Filter to disease-associated genes

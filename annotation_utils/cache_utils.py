@@ -14,6 +14,25 @@ CACHE_DIR = os.path.expanduser("~/.annotations")
 def _force_download():
     return os.getenv("FORCE_DOWNLOAD") == "1"
 
+
+def _cache_file_path(function_name, args, kwargs, ext="tsv.gz"):
+    """Return the cache file path for a decorated function called with the given args/kwargs."""
+    h = hashlib.sha256(f"{function_name} {args} {frozenset(sorted(kwargs.items()))}".encode()).hexdigest()[:10]
+    return os.path.join(CACHE_DIR, re.sub("^get_", "", function_name) + f".{h}.{ext}")
+
+
+def read_cached_table(function_name, *args, **kwargs):
+    """Return the cached DataFrame for the given cache_data_table function regardless of age.
+
+    Intended as a fallback when a fresh download fails: it returns the last successfully cached
+    table even if it's older than the normal 5-day freshness window, or None if no cache exists.
+    """
+    cache_file_path = _cache_file_path(function_name, args, kwargs)
+    if os.path.isfile(cache_file_path):
+        return pd.read_table(cache_file_path)
+    return None
+
+
 def cache_data_table(get_table_func):
     """Decorator that caches the pandas DataFrame returned by the decorated function.
     It's intended for functions that take a relatively long time to retrieve some table over the network.
@@ -29,11 +48,7 @@ def cache_data_table(get_table_func):
             os.mkdir(CACHE_DIR)
 
         # check if cached file already exists
-        function_name = get_table_func.__name__
-        h = hashlib.sha256(f"{function_name} {args} {frozenset(sorted(kwargs.items()))}".encode()).hexdigest()
-        h = h[:10]
-        filename = re.sub("^get_", "", function_name) + f".{h}.tsv.gz"
-        cache_file_path = os.path.join(CACHE_DIR, filename)
+        cache_file_path = _cache_file_path(get_table_func.__name__, args, kwargs)
 
         # use the cached file if it's less than 5 days old
         if (
@@ -73,11 +88,7 @@ def cache_json(get_json_func):
             os.mkdir(CACHE_DIR)
 
         # check if cached file already exists
-        function_name = get_json_func.__name__
-        h = hashlib.sha256(f"{function_name} {args} {frozenset(sorted(kwargs.items()))}".encode()).hexdigest()
-        h = h[:10]
-        filename = re.sub("^get_", "", function_name) + f".{h}.json.gz"
-        cache_file_path = os.path.join(CACHE_DIR, filename)
+        cache_file_path = _cache_file_path(get_json_func.__name__, args, kwargs, ext="json.gz")
 
         # use the cached file if it's less than 5 days old
         if (

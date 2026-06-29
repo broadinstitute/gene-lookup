@@ -9,7 +9,7 @@ import urllib.request
 from tqdm import tqdm
 import re
 
-from annotation_utils.cache_utils import cache_data_table
+from annotation_utils.cache_utils import cache_data_table, read_cached_table
 
 load_dotenv()
 
@@ -173,22 +173,33 @@ def get_omim_table():
     if not omim_key:
         raise Exception("OMIM_KEY is not set in .env")
 
-    file_path = download_file(f"https://data.omim.org/downloads/{omim_key}/genemap2.txt", force_download=True)
-    #file_path = os.path.expanduser("~/code/omim-search-private/genemap2.txt")
-    print(f'Parsing {file_path}')
-    records = []
-    with open(file_path) as f:
-        header_fields = get_file_header(f)
+    try:
+        file_path = download_file(f"https://data.omim.org/downloads/{omim_key}/genemap2.txt", force_download=True)
+        #file_path = os.path.expanduser("~/code/omim-search-private/genemap2.txt")
+        print(f'Parsing {file_path}')
+        records = []
+        with open(file_path) as f:
+            header_fields = get_file_header(f)
 
-        for line in tqdm(f, unit=" records"):
-            omim_line_fields = dict(zip(header_fields, line.rstrip('\r\n').split('\t')))
-            for record in parse_genemap2_records(omim_line_fields):
-                if record is None:
-                    continue
+            for line in tqdm(f, unit=" records"):
+                omim_line_fields = dict(zip(header_fields, line.rstrip('\r\n').split('\t')))
+                for record in parse_genemap2_records(omim_line_fields):
+                    if record is None:
+                        continue
 
-                records.append(record)
+                    records.append(record)
 
-    omim_df = pd.DataFrame(records)
+        omim_df = pd.DataFrame(records)
+    except Exception as e:
+        # The OMIM download key expires/rotates periodically. This shows up either as an HTTP 403 from
+        # the download, or as an HTTP 200 whose body is an "account inactive/expired" page that then
+        # fails to parse (get_file_header raises). In either case, fall back to the last successfully
+        # cached OMIM table (even if it's stale) rather than failing the whole pipeline.
+        df_stale = read_cached_table("get_omim_table")
+        if df_stale is not None:
+            print(f"WARNING: OMIM download/parse failed ({e}); reusing previously cached OMIM table ({len(df_stale):,d} rows)")
+            return df_stale
+        raise
 
     print(f"Got {len(omim_df[omim_df['gene_id'].notna() & omim_df['phenotype_mim_number'].notna()].gene_id.unique()):,d} unique genes from OMIM")
 

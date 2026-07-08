@@ -135,33 +135,39 @@ def export_to_file(client, result_table, export_to_file_format):
             print(f"DEBUG: Processing output file {i+1} of {len(blobs)}: gs://{bucket_name}/{output_blob.name}")
 
             if export_to_file_format == "JSON" and len(blobs) == 1:
-                # Download the original file
                 temp_file = f"/tmp/{filename_prefix}_original.json.gz"
-                output_blob.download_to_filename(temp_file)
-
                 new_filename = f"{filename_prefix}_converted.json.gz"
                 new_temp_file = f"/tmp/{new_filename}"
 
-                # Read and convert the newline-delimited JSON to a proper JSON array
-                with gzip.open(temp_file, 'rt') as f, gzip.open(new_temp_file, 'wt') as f_out:
-                    f_out.write('[')
-                    for j, line in enumerate(f):
-                        row = json.loads(line)
-                        if j > 0:
-                            f_out.write(', ')
-                        f_out.write(json.dumps(row, indent=4))
-                    f_out.write(']\n')
+                try:
+                    # Download the original file
+                    output_blob.download_to_filename(temp_file)
 
-                # Upload the converted file to GCS and clean up temporary files
-                new_blob = bucket.blob(new_filename)
-                new_blob.upload_from_filename(new_temp_file)
+                    # Read and convert the newline-delimited JSON to a proper JSON array
+                    with gzip.open(temp_file, 'rt') as f, gzip.open(new_temp_file, 'wt') as f_out:
+                        f_out.write('[')
+                        for j, line in enumerate(f):
+                            row = json.loads(line)
+                            if j > 0:
+                                f_out.write(', ')
+                            f_out.write(json.dumps(row, indent=4))
+                        f_out.write(']\n')
 
-                os.remove(temp_file)
-                os.remove(new_temp_file)
-                output_blob.delete()
+                    # Upload the converted file to GCS
+                    new_blob = bucket.blob(new_filename)
+                    new_blob.upload_from_filename(new_temp_file)
+                    output_blob.delete()
 
-                # Update the blob reference to the new file
-                output_blob = new_blob
+                    # Update the blob reference to the new file
+                    output_blob = new_blob
+                finally:
+                    # Always remove the local /tmp temp files, even on error, so they don't accumulate
+                    # on the warm Cloud Function instance and eventually exhaust its /tmp ramdisk.
+                    for f in (temp_file, new_temp_file):
+                        try:
+                            os.remove(f)
+                        except FileNotFoundError:
+                            pass
 
             # Set the Content-Disposition metadata to specify the download filename
             timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -242,12 +248,23 @@ def query_gene_lookup_db(request):
 
     # Structural validation runs against a normalized copy of the query with (a) single-quoted string
     # literals blanked out — so user search text (which may contain words like "drop" or dotted values)
-    # can't trip the keyword/table checks below — and (b) backtick identifier-quotes removed, so
-    # per-identifier quoting like `proj`.`ds`.`tbl` can't smuggle a table reference past the checks.
+    # can't trip the keyword/table checks below — (b) backtick identifier-quotes removed, so
+    # per-identifier quoting like `proj`.`ds`.`tbl` can't smuggle a table reference past the checks, and
+    # (c) whitespace around the dot operator collapsed, so `proj . ds . tbl` can't evade the checks.
     sql_norm = re.sub(r"'(?:[^'\\]|\\.|'')*'", "''", sql)
     sql_norm = sql_norm.replace("`", "")
+    sql_norm = re.sub(r"\s*\.\s*", ".", sql_norm)
 
     approved_table = f"{BIGQUERY_PROJECT}.{BIGQUERY_DATASET}.{BIGQUERY_TABLE}"
+
+    # Reject multi-statement scripts. BigQuery's client.query() executes a semicolon-delimited script,
+    # so a valid leading SELECT could otherwise be followed by a side-effecting statement (e.g.
+    # `EXPORT DATA`, `MERGE`). Allow at most a single optional trailing ';'. Semicolons inside string
+    # literals are already blanked out above, so this only sees statement separators.
+    if sql_norm.rstrip().rstrip(";").find(";") != -1:
+        response_dict = {"error": "Invalid SQL query: only a single SELECT statement is allowed (no ';'-delimited scripts)."}
+        print(f"ERROR: {response_dict['error']}")
+        return jsonify(response_dict), 400, response_headers
 
     # Validate that the query is a SELECT whose first FROM targets exactly the approved table.
     select_pattern = rf"^SELECT\s+.+\s+FROM\s+{re.escape(approved_table)}\b"
@@ -256,18 +273,10 @@ def query_gene_lookup_db(request):
         print(f"ERROR: {response_dict['error']}")
         return jsonify(response_dict), 400, response_headers
 
-    # Reject any fully-qualified table reference that isn't the approved table. The SELECT check above
-    # only anchors the FIRST FROM; this blocks JOINs, comma-joins, and subquery FROMs that would read
-    # other tables (or pseudo-tables) the service account can access.
-    for table_ref in re.findall(r"[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+", sql_norm):
-        if table_ref != approved_table:
-            response_dict = {"error": f"Invalid SQL query: references a table other than {approved_table}"}
-            print(f"ERROR: {response_dict['error']}")
-            return jsonify(response_dict), 400, response_headers
-
-    # Block SQL keywords that could be used for injection (UNION, subqueries, DML, DDL, etc.). Checked on
+    # Block SQL keywords that could be used for injection or side effects (UNION, subqueries, DML, DDL,
+    # BigQuery statements like EXPORT DATA / LOAD DATA / MERGE, scripting, and IAM changes). Checked on
     # the string-blanked copy so a legitimate search for text like "drop attacks" isn't rejected.
-    forbidden_pattern = r"\b(UNION|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|TRUNCATE|EXEC|EXECUTE|CALL|INTO\s+OUTFILE|INFORMATION_SCHEMA)\b"
+    forbidden_pattern = r"\b(UNION|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|TRUNCATE|MERGE|EXPORT|LOAD|GRANT|REVOKE|ASSERT|BEGIN|DECLARE|EXEC|EXECUTE|CALL|INTO\s+OUTFILE|INFORMATION_SCHEMA)\b"
     if re.search(forbidden_pattern, sql_norm, re.IGNORECASE):
         response_dict = {"error": f"SQL query contains forbidden keywords: {sql}"}
         print(f"ERROR: {response_dict['error']}")
@@ -279,6 +288,22 @@ def query_gene_lookup_db(request):
         # so legitimate queries are well under this; the cap bounds cost-drain attacks even if
         # the SQL gate is bypassed).
         max_bytes_billed = 1 * 1024 ** 3
+
+        # Authoritative table allow-list: dry-run the query so BigQuery itself resolves every table
+        # reference (including 2-part `dataset.table` names, wildcard tables, JOINs, and subquery FROMs
+        # that regex checks miss), then reject unless every referenced table is exactly the approved one.
+        # A dry run neither executes the query nor incurs cost. This runs before the real query, so a
+        # query that reads a non-approved table never executes.
+        dry_run_job = client.query(
+            sql, job_config=bigquery.QueryJobConfig(dry_run=True, use_query_cache=False))
+        referenced = dry_run_job.referenced_tables
+        if not referenced or any(
+                (t.project, t.dataset_id, t.table_id) != (BIGQUERY_PROJECT, BIGQUERY_DATASET, BIGQUERY_TABLE)
+                for t in referenced):
+            response_dict = {"error": f"Invalid SQL query: it may only reference {approved_table}"}
+            print(f"ERROR: {response_dict['error']} (referenced: {[t.path for t in referenced]})")
+            return jsonify(response_dict), 400, response_headers
+
         job_config = bigquery.QueryJobConfig(use_query_cache=True, maximum_bytes_billed=max_bytes_billed)
         job = client.query(sql, job_config=job_config)
         job.result()  # wait for the query to complete

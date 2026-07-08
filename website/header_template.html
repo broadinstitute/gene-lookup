@@ -240,22 +240,25 @@
         return `<span style="color: ${t.color}; font-weight: 600;">${alias}</span>`
     })
 
-    // Truncate the plain text at maxLen plain chars by walking semicolon-separated parts, then
-    // colorize each kept part. Returns { display, truncated } where display is the (possibly
-    // truncated) colorized HTML and truncated is whether truncation happened.
+    // Truncate the plain text at maxLen plain chars by walking comma-separated parts, then
+    // colorize each kept part. The input comes from dedupInheritance(), which joins values with
+    // ", ", so we must split on the same ", " delimiter for the value-boundary truncation to work
+    // (splitting on ";" would never match and would always fall through to a mid-token slice).
+    // Returns { display, truncated } where display is the (possibly truncated) colorized HTML and
+    // truncated is whether truncation happened.
     const truncateInheritanceForCell = (text, maxLen) => {
         if (text.length <= maxLen) return { display: colorizeInheritanceText(text), truncated: false }
-        const parts = text.split(';').map(p => p.trim()).filter(Boolean)
+        const parts = text.split(',').map(p => p.trim()).filter(Boolean)
         const kept = []
         let lenSoFar = 0
         for (const p of parts) {
-            const partLen = p.length + (kept.length > 0 ? 2 : 0)  // "; " separator
+            const partLen = p.length + (kept.length > 0 ? 2 : 0)  // ", " separator
             if (lenSoFar + partLen > maxLen - 3) break             // leave room for "..."
             kept.push(p)
             lenSoFar += partLen
         }
         if (kept.length === 0) return { display: colorizeInheritanceText(parts[0].slice(0, maxLen - 3)) + '…', truncated: true }
-        return { display: colorizeInheritanceText(kept.join('; ')) + '…', truncated: true }
+        return { display: colorizeInheritanceText(kept.join(', ')) + '…', truncated: true }
     }
 
     // Collect the inheritance types referenced in `text`, in INHERITANCE_TYPES (declared) order.
@@ -564,6 +567,11 @@
         return `<span class="show-popup" data-html="<div style='max-width:400px'>${escapeHtml(text)}</div>">${escapeHtml(text.substring(0, maxLen))}...</span>`
     }
 
+    // INTENTIONAL (do not flag as a bug): TABLE_COLUMNS defines only the columns shown in / toggleable
+    // into the results table. It deliberately does NOT include every column from global_constants.py's
+    // BIGQUERY_COLUMNS. In particular the dbNSFP (DBNSFP_*) columns and the GeneBayes s_het score are
+    // filter/export-only (allowCustomFilter / allowExport in BIGQUERY_COLUMNS) and are intentionally
+    // omitted here to keep the results table uncluttered; they remain usable via custom filters and export.
     let TABLE_COLUMNS = {
         gene_symbol: {
             displayName: 'Gene',

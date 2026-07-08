@@ -159,6 +159,14 @@
                     $(`input[name="${trackName}"]`).prop('checked', isChecked)
                 })
 
+                // Restore the persisted custom track URLs into the inputs each time the dialog opens.
+                // These inputs are created empty (and the initial page-load restore in
+                // readAndApplyPersistentPageStateFromUrl runs before they exist), so without this the
+                // Apply handler below would read blank inputs and wipe custom tracks loaded from the URL.
+                for (let i = 1; i <= 3; i++) {
+                    $(`#igv-custom-track-url-${i}`).val(GLOBAL_PAGE_STATE[`igv_custom_track_url_${i}`] || '')
+                }
+
                 $('#igv-track-selection-dialog').modal('show')
                 $('.question').popup({ on: 'click' })
             })

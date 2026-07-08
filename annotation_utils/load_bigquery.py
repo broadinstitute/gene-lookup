@@ -22,6 +22,7 @@ def main():
     column_types = get_column_types()
     FLOAT_COLUMNS = {name for name, t in column_types.items() if t == "FLOAT"}
     INT_COLUMNS = {name for name, t in column_types.items() if t == "INTEGER"}
+    BOOL_COLUMNS = {name for name, t in column_types.items() if t == "BOOLEAN"}
 
     # Read column names to build dtype dict
     all_columns = pd.read_table(args.tsv_path, nrows=0).columns
@@ -37,6 +38,13 @@ def main():
     print(f"Reading {args.tsv_path}")
     df = pd.read_table(args.tsv_path, dtype=dtypes, keep_default_na=False, na_values=[""])
     print(f"Read {len(df)} rows and {len(df.columns)} columns")
+
+    # Convert BOOLEAN columns from their TSV text form ("True"/"False") to real booleans so BigQuery
+    # gets a BOOLEAN column (not STRING). Done before the object-fillna loop below so these columns
+    # aren't clobbered into "" strings.
+    for col in df.columns:
+        if col in BOOL_COLUMNS:
+            df[col] = df[col].map({"True": True, "False": False, "true": True, "false": False}).astype("boolean")
 
     # Fill NaN in string columns with empty strings to avoid pyarrow type errors
     for col in df.columns:

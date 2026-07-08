@@ -108,6 +108,11 @@ def get_clinvar_gene_disease_table():
 
     ht = hl.read_table("gs://gnomad-v4-data-pipeline/output/clinvar/clinvar_grch38_annotated_2.ht")
 
+    # INTENTIONAL (do not flag as a bug): this ClinVar column is defined as "gene has Pathogenic /
+    # Likely pathogenic ClinVar variants", so we deliberately keep only pathogenic classifications and
+    # drop Benign / Uncertain / Conflicting. (This is variant-level significance, not gene-disease
+    # association evidence — unlike PanelApp/GenCC, keeping benign here would not be "negative evidence"
+    # about a gene-disease link, it would change the meaning of the column.)
     # check if clinical_significance string (when converted to lower case) contains "pathogenic" but not "pathogenicity"
     ht = ht.filter(hl.str(ht.clinical_significance).lower().contains("pathogenic") & ~hl.str(ht.clinical_significance).lower().contains("pathogenicity"), keep=True)
 

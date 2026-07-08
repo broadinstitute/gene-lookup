@@ -34,7 +34,10 @@ def download_hpo_obo_file():
                 'is_category': False,
             }
         elif line.startswith("is_a: "):
-            is_a = value.split(" ! ")[0]
+            # Strip the trailing " ! <label>" comment and any trailing OBO trailing modifier such as
+            # {xref="PMID:..."}, which would otherwise leave parent_id as e.g. 'HP:0032162 {xref=...}'
+            # and make get_category_id() raise ValueError on the malformed id.
+            is_a = value.split(" ! ")[0].split(" {")[0].strip()
             if is_a == "HP:0000118":
                 hpo_id_to_record[hpo_id]['is_category'] = True
             hpo_id_to_record[hpo_id]['parent_id'] = is_a

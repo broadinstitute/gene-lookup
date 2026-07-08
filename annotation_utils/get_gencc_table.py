@@ -36,12 +36,6 @@ submitted_as_submission_id                                                      
 submitted_run_date                                                            2020-12-24
 """
 
-def normalize_nulls(x):
-    if pd.isna(x):
-        return ""
-    return x
-
-
 
 @cache_data_table
 def get_gencc_table():
@@ -68,15 +62,18 @@ def get_gencc_table():
         "inheritance",
     ]]
 
-    # Drop submissions whose classification doesn't actually support a gene-disease association.
-    # Without this, "Refuted Evidence", "Disputed Evidence" and "No Known Disease Relationship"
-    # rows would be merged in as if they were positive evidence.
+    # Keep positive gene-disease classifications plus "Refuted Evidence" and "Disputed Evidence"
+    # (negative evidence is still useful evidence; the classification value is preserved in the
+    # classification column so consumers can weigh it). "No Known Disease Relationship" submissions
+    # are still dropped since they assert no association at all.
     df = df[df["classification"].isin([
         "Definitive",
         "Strong",
         "Moderate",
         "Limited",
         "Supportive",
+        "Disputed Evidence",
+        "Refuted Evidence",
     ])]
 
     """

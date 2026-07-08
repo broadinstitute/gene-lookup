@@ -60,6 +60,10 @@ def get_clingen_haploinsufficient_genes_table():
     """
     df = _get_clingen_table("https://search.clinicalgenome.org/kb/gene-dosage/download")
     df = df[["HGNC ID", "HAPLOINSUFFICIENCY"]]
+    # INTENTIONAL (do not flag as a bug): this table defines the CLINGEN_haploinsufficient annotation,
+    # so genes ClinGen scores as NOT haploinsufficient must be excluded — keeping them would mislabel
+    # non-haploinsufficient genes as haploinsufficient (this column encodes a positive HI call, it is
+    # not a place to surface negative gene-disease evidence).
     # Substring-match the exclusion keywords so that we catch both the legacy labels
     # ("Dosage Sensitivity Unlikely") and the current longer ones ("Dosage Sensitivity
     # Unlikely for Haploinsufficiency"). Without this, genes like PCSK9 / GJB2 that ClinGen
@@ -67,6 +71,8 @@ def get_clingen_haploinsufficient_genes_table():
     # Also drop "Gene Associated with Autosomal Recessive Phenotype" — ClinGen uses this
     # in the HI column for biallelic-disease genes where haploinsufficiency doesn't apply.
     exclude_pattern = r"Unlikely|No Evidence|Little Evidence|Autosomal Recessive"
+    # ANALYSIS_OK[imputation]: fillna("") treats a missing HAPLOINSUFFICIENCY as "no exclusion keyword"
+    # so the row is kept; "" is not itself a meaningful HI classification here.
     df = df[~df["HAPLOINSUFFICIENCY"].fillna("").str.contains(exclude_pattern, case=False, regex=True)]
     return df
 

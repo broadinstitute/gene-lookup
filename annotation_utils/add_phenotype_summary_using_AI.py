@@ -35,6 +35,18 @@ Now, try generating this type of summary for the following phenotype description
 # reads it as nullable Int64 so missing ids become BigQuery NULLs rather than 0.
 df = pd.read_table(args.combined_table, dtype={"ncbi_gene_id": "str"})
 
+def _has_content(v):
+    """True if `v` carries an actual phenotype value.
+
+    Treats NaN and separator/whitespace-only strings (e.g. "", "; ", ";;") as "no value". Genes that
+    are on a PanelApp panel but have no OMIM phenotype produce an empty PANEL_APP_*_phenotypes value
+    ("" or "; " after the per-source groupby join); pd.isna("") is False, so without this check such a
+    gene would be treated as having a phenotype and trigger a pointless, billed LLM call on an empty
+    prompt instead of falling back to the GWAS/constraint summary.
+    """
+    return not pd.isna(v) and str(v).strip(" ;,\t\r\n") != ""
+
+
 def summarize_phenotypes(row):
 
     # concatenate the phenotypes into a single string, by source
@@ -50,11 +62,11 @@ def summarize_phenotypes(row):
         ("ORPHANET", "DBNSFP_orphanet_disorder"),
         ("DBNSFP_DISEASE", "DBNSFP_disease_description"),
     ]:
-        if phenotype_column in row and not pd.isna(row[phenotype_column]):
+        if phenotype_column in row and _has_content(row[phenotype_column]):
             phenotypes.append(f"{label}: {row[phenotype_column]}")
 
     if not phenotypes:
-        if "GWAS_mondo_name" in row and not pd.isna(row["GWAS_mondo_name"]):
+        if "GWAS_mondo_name" in row and _has_content(row["GWAS_mondo_name"]):
             return f"GWAS: " + str(row["GWAS_mondo_name"])
         else:
             constraint_type = []

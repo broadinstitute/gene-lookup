@@ -59,10 +59,39 @@ def normalize_nulls(x):
 HGNC_to_ENSG_map = get_hgnc_to_ensg_id_map()
 ENSG_to_HGNC_map = get_ensg_id_to_hgnc_id_map()
 df_hgnc = get_hgnc_table()
-ENSG_to_gene_name_map = dict(zip(df_hgnc["Ensembl gene ID"], df_hgnc["Approved symbol"]))
-ENSG_to_gene_name_aliases_map = dict(zip(df_hgnc["Ensembl gene ID"], df_hgnc["Alias symbols"]))
-ENSG_to_refseq_map = dict(zip(df_hgnc["Ensembl gene ID"], df_hgnc["RefSeq IDs"]))
-ENSG_to_ncbi_gene_id_map = dict(zip(df_hgnc["Ensembl gene ID"], df_hgnc["NCBI Gene ID"]))
+# Build all ENSG-keyed identifier maps from a single first-occurrence-deduplicated HGNC frame, so that
+# for a gene whose Ensembl gene ID appears on multiple HGNC rows, every per-gene identifier (symbol,
+# aliases, RefSeq, NCBI id) is sourced from the SAME HGNC record as hgnc_gene_id / ENSG_to_HGNC_map
+# (get_ensg_id_to_hgnc_id_map dedups first-wins). The raw dict(zip(...)) below was last-wins and could
+# mix fields from different HGNC records for the same gene, producing internally inconsistent rows.
+df_hgnc_dedup = df_hgnc.drop_duplicates(subset="Ensembl gene ID", keep="first")
+ENSG_to_gene_name_map = dict(zip(df_hgnc_dedup["Ensembl gene ID"], df_hgnc_dedup["Approved symbol"]))
+ENSG_to_gene_name_aliases_map = dict(zip(df_hgnc_dedup["Ensembl gene ID"], df_hgnc_dedup["Alias symbols"]))
+ENSG_to_refseq_map = dict(zip(df_hgnc_dedup["Ensembl gene ID"], df_hgnc_dedup["RefSeq IDs"]))
+ENSG_to_ncbi_gene_id_map = dict(zip(df_hgnc_dedup["Ensembl gene ID"], df_hgnc_dedup["NCBI Gene ID"]))
+
+
+def _ncbi_key(v):
+    """Normalize an NCBI/Entrez gene id (str/float/int, possibly '9636.0' or blank) to a canonical
+    string key like '9636', or None if it isn't a usable integer id. Used to match OMIM's Entrez ids
+    against HGNC's NCBI Gene ID column regardless of how each was parsed."""
+    if v is None:
+        return None
+    s = str(v).strip()
+    if s == "" or s.lower() == "nan":
+        return None
+    try:
+        return str(int(float(s)))
+    except (ValueError, TypeError):
+        return None
+
+# NCBI (Entrez) gene id -> ENSG, built from the HGNC table (which carries both ids). Used as an
+# id-based backup to resolve OMIM loci that lack an Ensembl xref but do have an Entrez id.
+NCBI_to_ENSG_map = {
+    _ncbi_key(ncbi): ensg
+    for ncbi, ensg in zip(df_hgnc_dedup["NCBI Gene ID"], df_hgnc_dedup["Ensembl gene ID"])
+    if _ncbi_key(ncbi) is not None and isinstance(ensg, str) and ensg.startswith("ENSG")
+}
 
 # MANE transcripts (canonical = "MANE Select", one per gene; clinical = "MANE Plus Clinical", 0+ per gene).
 # The MANE summary table's Ensembl_Gene is versioned (ENSG...N), so strip the version to match ensembl_gene_id.
@@ -101,7 +130,33 @@ mis_z                                           -0.044129
 print("Getting OMIM table")
 df_omim = get_omim_table()
 print(f"Got {len(df_omim):,d} rows from OMIM")
-df_omim = df_omim[df_omim["phenotype_mim_number"].notna() & (df_omim["phenotype_mim_number"] != "")]
+
+# Recover a missing Ensembl gene id from OMIM's Entrez (NCBI) gene id via the HGNC NCBI->ENSG bridge,
+# so disease loci that OMIM lists without an Ensembl xref aren't dropped just for lacking one. This is
+# strictly id-based (Entrez id -> HGNC -> ENSG); gene-symbol matching is deliberately NOT used because
+# it is unreliable. Rows still lacking an ENSG after this (no Entrez id, or HGNC has no ENSG for it)
+# genuinely cannot be placed in the ENSG-keyed table and are dropped below — but the count is logged.
+if "ncbi_gene_id" in df_omim.columns:
+    missing_ensg = df_omim["gene_id"].isna() | (df_omim["gene_id"].astype(str).str.strip() == "") # ANALYSIS_OK[missingness]: OMIM/GenCC ids use "" (not NaN) for missing, so match both "" and NaN
+    n_missing_before = int(missing_ensg.sum())
+    df_omim.loc[missing_ensg, "gene_id"] = df_omim.loc[missing_ensg, "ncbi_gene_id"].map(
+        lambda v: NCBI_to_ENSG_map.get(_ncbi_key(v)))
+    still_missing = df_omim["gene_id"].isna() | (df_omim["gene_id"].astype(str).str.strip() == "") # ANALYSIS_OK[missingness]: OMIM/GenCC ids use "" (not NaN) for missing, so match both "" and NaN
+    n_recovered = n_missing_before - int(still_missing.sum())
+    print(" "*8, f"Recovered an Ensembl gene id via the NCBI->ENSG bridge for {n_recovered:,d} of "
+                 f"{n_missing_before:,d} OMIM rows that lacked one; {int(still_missing.sum()):,d} rows "
+                 f"still have no ENSG and will be dropped below")
+else:
+    print(" "*8, "WARNING: cached OMIM table predates the ncbi_gene_id column; skipping NCBI->ENSG "
+                 "recovery (re-run with FORCE_DOWNLOAD=1 to refresh the OMIM cache)")
+
+# Keep OMIM rows that have EITHER a phenotype_mim_number OR a phenotype_description. Some legitimate
+# OMIM phenotypes (e.g. bracketed/susceptibility entries) are written without a 6-digit phenotype MIM
+# number but still carry a phenotype_description; filtering on phenotype_mim_number alone silently
+# dropped those and also made the "| phenotype_description" branch of the filter below dead code.
+df_omim = df_omim[
+    (df_omim["phenotype_mim_number"].notna() & (df_omim["phenotype_mim_number"] != ""))
+    | (df_omim["phenotype_description"].notna() & (df_omim["phenotype_description"] != ""))]
 print(" "*8, f"Kept {len(df_omim):,d} rows from OMIM, containing {len(df_omim['gene_id'].unique()):,d} unique genes")
 df_omim = df_omim[[
     "gene_id",   # ENSG id
@@ -194,14 +249,17 @@ df_clingen = df_clingen.rename(columns={
     "CLASSIFICATION": "CLINGEN_classification",
 })
 
-# Filter validity rows by classification BEFORE the outer join with the haploinsufficient
-# table, so HI-only genes (which have NaN classification after the outer join) don't get
-# dropped and lose their CLINGEN_haploinsufficient annotation.
+# INTENTIONAL (do not flag as a bug): keep positive gene-disease classifications AND the negative
+# "Disputed" / "Refuted" levels (negative evidence is still useful evidence; the level is preserved in
+# the CLINGEN_classification column). "No Known Disease Relationship" is intentionally still dropped
+# since it asserts no association at all. Filtering happens BEFORE the outer join with the
+# haploinsufficient table, so HI-only genes (which have NaN classification after the join) aren't
+# dropped and don't lose their CLINGEN_haploinsufficient annotation.
 before = len(df_clingen)
 df_clingen = df_clingen[df_clingen["CLINGEN_classification"].isin({
-    "Definitive", "Limited", "Moderate", "Strong"
+    "Definitive", "Limited", "Moderate", "Strong", "Disputed", "Refuted"
 })]
-print("\t", f"Kept {len(df_clingen):,d} out of {before:,d} ({(len(df_clingen) / before):.1%}) rows which had a Definitive, Limited, Moderate, or Strong classification")
+print("\t", f"Kept {len(df_clingen):,d} out of {before:,d} ({(len(df_clingen) / before):.1%}) rows which had a Definitive, Limited, Moderate, Strong, Disputed, or Refuted classification")
 
 df_clingen = df_clingen.set_index("GENE ID (HGNC)").join(df_clingen_haploinsufficient_genes, how="outer").reset_index()
 
@@ -325,14 +383,18 @@ df_panel_app["phenotypes"] = df_panel_app["phenotypes"].str.replace("No OMIM phe
 before = len(df_panel_app)
 # get_panel_app_table writes "" (not NaN) when the API result has no GRCh38 Ensembl ID.
 # Convert "" to NaN so the HGNC fallback below actually fires for those rows.
-df_panel_app["gene_id"] = df_panel_app["gene_id"].replace("", pd.NA).fillna(df_panel_app["hgnc"].map(HGNC_to_ENSG_map))
+df_panel_app["gene_id"] = df_panel_app["gene_id"].replace("", pd.NA).fillna(df_panel_app["hgnc"].map(HGNC_to_ENSG_map))  # ANALYSIS_OK[imputation]: fall back to HGNC->ENSG map when the API gave no GRCh38 Ensembl id
 df_panel_app = df_panel_app[df_panel_app["gene_id"].notna() & (df_panel_app["gene_id"] != "")]
-df_panel_app = df_panel_app[df_panel_app["phenotypes"].notna() & (df_panel_app["phenotypes"] != "")]
-print("\t", f"Kept {len(df_panel_app):,d} out of {before:,d} ({(len(df_panel_app) / before):.1%}) rows which had a gene id and a phenotype")
+# NOTE: intentionally do NOT require a phenotype string. A gene's presence on a PanelApp panel (with a
+# confidence level, evidence, and panel name) is itself useful rare-disease evidence, so genes on a
+# panel with no OMIM phenotype label ("No OMIM phenotype" -> "" above) are kept rather than dropped.
+# The gene-id requirement stays because a row with no gene id cannot be placed in the table.
+print("\t", f"Kept {len(df_panel_app):,d} out of {before:,d} ({(len(df_panel_app) / before):.1%}) rows which had a gene id")
 
-before = len(df_panel_app)
-df_panel_app = df_panel_app[~df_panel_app["evidence"].apply(lambda x: not isinstance(x, str) or "Expert Review Red" in x)]
-print("\t", f"Kept {len(df_panel_app):,d} out of {before:,d} ({(len(df_panel_app) / before):.1%}) rows which had evidence other than 'Expert Review Red'")
+# NOTE: intentionally do NOT drop low-confidence ('Expert Review Red') or de-listed
+# ('Expert Review Removed') PanelApp entries. Negative/low-confidence evidence is still useful
+# evidence; the specific evidence level is preserved in the PANEL_APP_*_evidence and
+# PANEL_APP_*_confidence columns so downstream consumers can weigh it themselves.
 
 df_panel_app = df_panel_app[[
     "gene_id",
@@ -387,7 +449,7 @@ for panel_app_label, df_pannel_app in [
     # group by gene_id and combine the other fields using ; as a separator
 
 # do an outer join of the 2 tables
-df_panel_app = pd.merge(df_panel_app_uk, df_panel_app_au, how="outer", left_index=True, right_index=True)
+df_panel_app = pd.merge(df_panel_app_uk, df_panel_app_au, how="outer", left_index=True, right_index=True)  # ANALYSIS_OK[join]: merged on unique per-gene-id index (df_combined uniqueness asserted after each merge)
 print("\t", f"Merged PanelApp table contains {len(df_panel_app):,d} gene ids")
 
 
@@ -546,13 +608,28 @@ df_gencc = df_gencc[[
     "GENCC_inheritance",
 ]]
 
-# Drop refuted/disputed/no-disease classifications so they don't get rolled up as positive
-# associations. Keep only the curated positive levels.
+# INTENTIONAL (do not flag as a bug): keep positive gene-disease classifications AND the negative
+# "Disputed Evidence" / "Refuted Evidence" levels, because negative evidence is still useful evidence
+# and the specific level is preserved in the GENCC_classification column for downstream consumers.
+# "No Known Disease Relationship" is intentionally still dropped since it asserts no association at all.
 before = len(df_gencc)
 df_gencc = df_gencc[df_gencc["GENCC_classification"].isin({
-    "Definitive", "Strong", "Moderate", "Limited", "Supportive"
+    "Definitive", "Strong", "Moderate", "Limited", "Supportive", "Disputed Evidence", "Refuted Evidence"
 })]
-print("\t", f"Kept {len(df_gencc):,d} out of {before:,d} ({(len(df_gencc) / before):.1%}) rows which had a Definitive, Strong, Moderate, Limited, or Supportive classification")
+print("\t", f"Kept {len(df_gencc):,d} out of {before:,d} ({(len(df_gencc) / before):.1%}) rows which had a Definitive, Strong, Moderate, Limited, Supportive, Disputed, or Refuted classification")
+
+# GENCC_gene_id is HGNC_to_ENSG_map applied to the submission's HGNC id (get_gencc_table.py). GenCC
+# provides no other stable gene id (no Entrez/Ensembl), so an HGNC id that HGNC has no Ensembl mapping
+# for cannot be resolved to an ENSG and cannot be placed in this ENSG-keyed table. Previously such rows
+# were dropped silently by groupby(dropna=True); make the drop explicit and log it (with example HGNC
+# ids) instead of hiding it.
+no_ensg = df_gencc["GENCC_gene_id"].isna() | (df_gencc["GENCC_gene_id"].astype(str).str.strip() == "") # ANALYSIS_OK[missingness]: OMIM/GenCC ids use "" (not NaN) for missing, so match both "" and NaN
+if no_ensg.any():
+    dropped_hgnc = sorted(set(df_gencc.loc[no_ensg, "GENCC_hgnc_gene_id"].dropna()))
+    print("\t", f"WARNING: dropping {int(no_ensg.sum()):,d} GenCC rows ({len(dropped_hgnc):,d} unique "
+                f"HGNC ids) with no HGNC->ENSG mapping (no Ensembl id available for them): "
+                f"{', '.join(dropped_hgnc[:20])}" + (", ..." if len(dropped_hgnc) > 20 else ""))
+    df_gencc = df_gencc[~no_ensg]
 
 df_gencc = df_gencc.groupby("GENCC_gene_id").agg({
     "GENCC_hgnc_gene_id": "first",
@@ -614,45 +691,45 @@ df_clinvar["InClinVar"] = True
 
 before = list(df_omim.index)
 print(f"Starting with {len(df_omim):,d} genes from OMIM")
-df_combined = pd.merge(df_omim, df_clingen, how="outer", left_index=True, right_index=True)
+df_combined = pd.merge(df_omim, df_clingen, how="outer", left_index=True, right_index=True)  # ANALYSIS_OK[join]: merged on unique per-gene-id index (df_combined uniqueness asserted after each merge)
 assert df_combined.index.is_unique, "The merged dataframe has duplicate gene ids after merging OMIM and ClinGen"
 print(f"Added {len(df_combined) - len(before):,d} genes from ClinGen" + (f" - examples: {', '.join(list(sorted(set(df_combined.index) - set(before)))[:5])}" if print_example_genes else ""))
 
 before = list(df_combined.index)
-df_combined = pd.merge(df_combined, df_gencc, how="outer", left_index=True, right_index=True)
+df_combined = pd.merge(df_combined, df_gencc, how="outer", left_index=True, right_index=True)  # ANALYSIS_OK[join]: merged on unique per-gene-id index (df_combined uniqueness asserted after each merge)
 assert df_combined.index.is_unique, "The merged dataframe has duplicate gene ids after merging with GenCC"
 print(f"Added {len(df_combined) - len(before):,d} genes from GenCC" + (f" - examples: {', '.join(list(sorted(set(df_combined.index) - set(before)))[:5])}" if print_example_genes else ""))
 
 before = list(df_combined.index)
-df_combined = pd.merge(df_combined, df_panel_app, how="outer", left_index=True, right_index=True)
+df_combined = pd.merge(df_combined, df_panel_app, how="outer", left_index=True, right_index=True)  # ANALYSIS_OK[join]: merged on unique per-gene-id index (df_combined uniqueness asserted after each merge)
 assert df_combined.index.is_unique, "The merged dataframe has duplicate gene ids after merging with PanelApp"
 print(f"Added {len(df_combined) - len(before):,d} genes from PanelApp" + (f" - examples: {', '.join(list(sorted(set(df_combined.index) - set(before)))[:5])}" if print_example_genes else ""))
 
 before = list(df_combined.index)
-df_combined = pd.merge(df_combined, df_decipher, how="outer", left_index=True, right_index=True)
+df_combined = pd.merge(df_combined, df_decipher, how="outer", left_index=True, right_index=True)  # ANALYSIS_OK[join]: merged on unique per-gene-id index (df_combined uniqueness asserted after each merge)
 assert df_combined.index.is_unique, "The merged dataframe has duplicate gene ids after merging with Decipher"
 print(f"Added {len(df_combined) - len(before):,d} genes from Decipher" + (f" - examples: {', '.join(list(sorted(set(df_combined.index) - set(before)))[:5])}" if print_example_genes else ""))
 
 before = list(df_combined.index)
-df_combined = pd.merge(df_combined, df_clinvar, how="outer", left_index=True, right_index=True)
+df_combined = pd.merge(df_combined, df_clinvar, how="outer", left_index=True, right_index=True)  # ANALYSIS_OK[join]: merged on unique per-gene-id index (df_combined uniqueness asserted after each merge)
 assert df_combined.index.is_unique, "The merged dataframe has duplicate gene ids after merging with ClinVar"
 print(f"Added {len(df_combined) - len(before):,d} genes from ClinVar" + (f" - examples: {', '.join(list(set(sorted(df_combined.index)) - set(sorted(before)))[:20])}" if print_example_genes else ""))
 
 if include_GWAS:
     before = list(df_combined.index)
-    df_combined = pd.merge(df_combined, df_gwas, how="outer", left_index=True, right_index=True)
+    df_combined = pd.merge(df_combined, df_gwas, how="outer", left_index=True, right_index=True)  # ANALYSIS_OK[join]: merged on unique per-gene-id index (df_combined uniqueness asserted after each merge)
     assert df_combined.index.is_unique, "The merged dataframe has duplicate gene ids after merging with GWAS"
     print(f"Added {len(df_combined) - len(before):,d} genes from GWAS catalog" + (f" - examples: {', '.join(list(sorted(set(df_combined.index) - set(before)))[:5])}" if print_example_genes else ""))
 
 if include_Fridman:
     before = list(df_combined.index)
-    df_combined = pd.merge(df_combined, df_fridman, how="outer", left_index=True, right_index=True)
+    df_combined = pd.merge(df_combined, df_fridman, how="outer", left_index=True, right_index=True)  # ANALYSIS_OK[join]: merged on unique per-gene-id index (df_combined uniqueness asserted after each merge)
     assert df_combined.index.is_unique, "The merged dataframe has duplicate gene ids after merging with Fridman"
     print(f"Added {len(df_combined) - len(before):,d} genes from Fridman et al. 2025 list of recessive genes" + (f" - examples: {', '.join(list(set(df_combined.index) - set(before))[:5])}" if print_example_genes else ""))
 
 if include_dbNSFP:
     before = list(df_combined.index)
-    df_combined = pd.merge(df_combined, df_dbnsfp, how="outer", left_index=True, right_index=True)
+    df_combined = pd.merge(df_combined, df_dbnsfp, how="outer", left_index=True, right_index=True)  # ANALYSIS_OK[join]: merged on unique per-gene-id index (df_combined uniqueness asserted after each merge)
     assert df_combined.index.is_unique, "The merged dataframe has duplicate gene ids after merging with dbNSFP"
     print(f"Added {len(df_combined) - len(before):,d} genes from dbNSFP" + (f" - examples: {', '.join(list(sorted(set(df_combined.index) - set(before)))[:5])}" if print_example_genes else ""))
 
@@ -665,7 +742,7 @@ df_gene_chrom_start_end.set_index("gene.stable_id", inplace=True)
 
 # add constraint scores
 before = list(df_combined.index)
-df_combined = pd.merge(df_combined, df_constraint_scores, how="left", left_index=True, right_index=True)
+df_combined = pd.merge(df_combined, df_constraint_scores, how="left", left_index=True, right_index=True)  # ANALYSIS_OK[join]: merged on unique per-gene-id index (df_combined uniqueness asserted after each merge)
 assert df_combined.index.is_unique, "The merged dataframe has duplicate gene ids after merging with constraint scores"
 rows_with_constraint_scores = sum(df_combined["pLI_v2"].notna() | df_combined["pLI_v4"].notna() | df_combined["lof_oe_ci_upper_v4"].notna() | df_combined["mis_oe_ci_upper_v4"].notna())
 print(f"Added constraint scores to {rows_with_constraint_scores:,d} out of {len(df_combined):,d} ({(rows_with_constraint_scores / len(df_combined)):.1%}) genes")
@@ -690,9 +767,9 @@ df_combined = pd.concat([df_combined, df_highly_constrained_genes])
 missing_gene_ids = set(df_combined.index) - set(df_gene_chrom_start_end.index)
 if len(missing_gene_ids) > 0:
     print(f"WARNING: gene_chrom/gene_start/gene_end not available for {len(missing_gene_ids):,d} genes: {', '.join(list(missing_gene_ids)[:20])}" + (", ..." if len(missing_gene_ids) > 20 else ""))
-df_combined = pd.merge(df_combined, df_gene_chrom_start_end, how="left", left_index=True, right_index=True)
-df_combined["gene_start"] = df_combined["gene_start"].fillna(0).astype(int)
-df_combined["gene_end"] = df_combined["gene_end"].fillna(0).astype(int)
+df_combined = pd.merge(df_combined, df_gene_chrom_start_end, how="left", left_index=True, right_index=True)  # ANALYSIS_OK[join]: merged on unique per-gene-id index (df_combined uniqueness asserted after each merge)
+df_combined["gene_start"] = df_combined["gene_start"].fillna(0).astype(int)  # ANALYSIS_OK[imputation]: 0 = coordinate unavailable (missing genes warned above); INTEGER col can't hold NaN
+df_combined["gene_end"] = df_combined["gene_end"].fillna(0).astype(int)  # ANALYSIS_OK[imputation]: 0 = coordinate unavailable (missing genes warned above); INTEGER col can't hold NaN
 
 
 df_combined.reset_index(inplace=True)

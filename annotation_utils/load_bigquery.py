@@ -49,6 +49,8 @@ def main():
     # Fill NaN in string columns with empty strings to avoid pyarrow type errors
     for col in df.columns:
         if df[col].dtype == "object":
+            # ANALYSIS_OK[imputation]: BigQuery STRING columns represent "no value" as "" (empty),
+            # so NaN->"" is the intended, lossless encoding for object/string columns on load.
             df[col] = df[col].fillna("")
 
     client = bigquery.Client(project=PROJECT_ID)

@@ -23,6 +23,7 @@ OUTPUT_COLUMNS = [
     'phenotype_inheritance',
     'gene_symbols',
     'gene_id',
+    'ncbi_gene_id',
     'gene_description',
     'phenotype_description',
     'mouse_gene_id',
@@ -129,6 +130,10 @@ def parse_genemap2_records(omim_line_fields):
         output_record['end'] = int(omim_line_fields['genomic_position_end']) or 1
         output_record['cyto'] = omim_line_fields['cyto_location']
         output_record['gene_id'] = omim_line_fields['ensembl_gene_id']
+        # Entrez (NCBI) gene id kept as an id-based backup so a locus that OMIM lists without an
+        # Ensembl xref can still be resolved to an ENSG via the HGNC NCBI-id->ENSG bridge downstream
+        # (never via gene symbol, which is unreliable).
+        output_record['ncbi_gene_id'] = omim_line_fields.get('entrez_gene_id', '')
         output_record['mim_number'] = int(omim_line_fields['mim_number'])
         output_record['gene_symbols'] = ", ".join(sorted(set([s for s in [omim_line_fields.get('approved_symbol', '').strip()] + list(omim_line_fields['gene_symbols'].split(",")) if s])))
         output_record['gene_description'] = omim_line_fields['gene_name']

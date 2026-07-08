@@ -46,7 +46,9 @@ def test_source_filter_adds_clause(index_page, console_errors):
     page = index_page
     do_search(page, "cardiomyopathy")
 
-    page.click("#filter-button")  # open the advanced-filter panel
+    # Open the panel if it's not already visible
+    if not page.is_visible("#advanced-search-form"):
+        page.click("#filter-button")
     page.locator('input[name="keepOMIM"]').check(force=True)
 
     with page.expect_request(is_proxy_post) as req_info:
@@ -68,14 +70,17 @@ def test_source_filter_persists_after_panel_collapse(index_page, console_errors)
     page = index_page
     do_search(page, "cardiomyopathy")
 
-    page.click("#filter-button")  # open the panel
+    # Open the panel if it's not already visible
+    if not page.is_visible("#advanced-search-form"):
+        page.click("#filter-button")
     page.locator('input[name="keepOMIM"]').check(force=True)
     with page.expect_request(is_proxy_post):
         page.click("#search-button")
     page.wait_for_selector("#results-table tbody tr", timeout=30000)
 
     # Collapse the panel WITHOUT unchecking the filter, then trigger a re-search by sorting.
-    page.click("#filter-button")
+    if page.is_visible("#advanced-search-form"):
+        page.click("#filter-button")
     with page.expect_request(is_proxy_post) as req_info:
         page.locator("th.results-table-sortable-header").first.click()
     sql = request_sql(req_info.value)

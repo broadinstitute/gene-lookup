@@ -4,17 +4,26 @@ from io import StringIO
 
 from annotation_utils.cache_utils import cache_data_table
 
-URL = "https://www.genenames.org/cgi-bin/download/custom?col=gd_hgnc_id&col=gd_app_sym&col=gd_app_name&col=gd_status&col=gd_prev_sym&col=gd_aliases&col=gd_pub_chrom_map&col=gd_pub_acc_ids&col=gd_pub_refseq_ids&col=gd_pub_ensembl_id&col=gd_mgd_id&col=gd_pubmed_ids&col=gd_locus_type&status=Approved&hgnc_dbtag=on&order_by=gd_app_sym_sort&format=text&submit=submit"
+URL = "https://www.genenames.org/cgi-bin/download/custom?col=gd_hgnc_id&col=gd_app_sym&col=gd_app_name&col=gd_status&col=gd_prev_sym&col=gd_aliases&col=gd_pub_chrom_map&col=gd_pub_acc_ids&col=gd_pub_refseq_ids&col=gd_pub_ensembl_id&col=gd_mgd_id&col=gd_pubmed_ids&col=gd_locus_type&col=gd_pub_eg_id&status=Approved&hgnc_dbtag=on&order_by=gd_app_sym_sort&format=text&submit=submit"
 
 @cache_data_table
-def get_hgnc_table():
-    """Download the HGNC table from https://www.genenames.org/download/custom/ and return it as a pandas DataFrame"""
-    r = requests.get(URL)
+def _download_hgnc_table(url):
+    r = requests.get(url)
     if not r.ok:
-        raise Exception(f"Failed to download {URL}: {r}")
+        raise Exception(f"Failed to download {url}: {r}")
 
     table_contents = StringIO(r.content.decode('UTF-8'))
     return pd.read_table(table_contents)
+
+
+def get_hgnc_table():
+    """Download the HGNC table from https://www.genenames.org/download/custom/ and return it as a pandas DataFrame.
+
+    The URL is passed as an argument to the cached downloader so it becomes part of the
+    @cache_data_table cache key. Changing the requested columns (e.g. adding NCBI Gene ID) then
+    invalidates any stale cache instead of silently reusing a table that lacks the new column.
+    """
+    return _download_hgnc_table(URL)
 
 def _remove_duplicate_ensg_ids(df_hgnc):
     before = len(df_hgnc)
@@ -72,8 +81,9 @@ if __name__ == "__main__":
 10: Mouse genome database ID
 11: Pubmed IDs
 12: Locus type
+13: NCBI Gene ID
 
-(44109, 13)
+(44109, 14)
 
 Example:
 

@@ -864,8 +864,8 @@
     const REFERENCE_REGION_REGEXP = /^[\s]*(?:chr)?([XYMTt0-9]+):([\d,]+)[\p{Dash_Punctuation}]([\d,]+)[\s]*$/iu
 
     // BigQuery column descriptions - generated from global_constants.py via Jinja2
-    const BIGQUERY_COLUMN_DESCRIPTIONS = {"CLINGEN_classification": "ClinGen gene-disease validity classification (Definitive, Strong, Moderate, or Limited).", "CLINGEN_disease_label": "Disease name(s) from ClinGen gene-disease validity curation (semicolon-separated if multiple).", "CLINGEN_disease_mondo_id": "MONDO disease ID(s) from ClinGen (semicolon-separated if multiple).", "CLINGEN_haploinsufficient": "ClinGen haploinsufficiency classification for this gene.", "CLINGEN_inheritance": "Mode of inheritance from ClinGen (semicolon-separated if multiple).", "CLINVAR_clinical_significance": "Clinical significance categories from ClinVar for variants in this gene.", "CLINVAR_phenotypes": "Phenotype(s) from ClinVar for pathogenic/likely pathogenic variants in this gene.", "CLINVAR_stars": "ClinVar review status gold stars for variants in this gene.", "CLINVAR_variant_consequences": "Major variant consequence types from ClinVar for pathogenic/likely pathogenic variants in this gene.", "DBNSFP_disease_description": "Disease description from dbNSFP/UniProt.", "DBNSFP_essential_gene": "Essential gene annotation from dbNSFP (E=essential, N=non-essential).", "DBNSFP_function_description": "Gene function description from dbNSFP/UniProt.", "DBNSFP_hpo_id": "Human Phenotype Ontology (HPO) ID(s) from dbNSFP (semicolon-separated if multiple).", "DBNSFP_hpo_name": "Human Phenotype Ontology (HPO) term name(s) from dbNSFP (semicolon-separated if multiple).", "DBNSFP_known_rec_info": "Known recessive disease gene information from dbNSFP.", "DBNSFP_mgi_mouse_phenotype": "Mouse phenotype(s) from MGI via dbNSFP (semicolon-separated if multiple).", "DBNSFP_orphanet_association_type": "Orphanet gene-disease association type(s) from dbNSFP (semicolon-separated if multiple).", "DBNSFP_orphanet_disorder": "Orphanet disorder name(s) from dbNSFP (semicolon-separated if multiple).", "DBNSFP_orphanet_disorder_id": "Orphanet disorder ID(s) from dbNSFP (semicolon-separated if multiple).", "DBNSFP_p_rec": "Probability of being a recessive disease gene from dbNSFP.", "DBNSFP_pathway_kegg": "KEGG pathway(s) from dbNSFP (semicolon-separated if multiple).", "DBNSFP_pathway_uniprot": "UniProt pathway(s) from dbNSFP (semicolon-separated if multiple).", "DBNSFP_zfin_zebrafish_phenotype": "Zebrafish phenotype tag(s) from ZFIN via dbNSFP (semicolon-separated if multiple).", "DECIPHER_disease_names": "Disease name(s) from DECIPHER (semicolon-separated if multiple).", "DECIPHER_inheritance": "Mode of inheritance from DECIPHER (semicolon-separated if multiple).", "Discovery_Potential_pct": "Discovery Potential (DisPo) percentile (0-100) from the gnomAD v4 flagship paper (Guez, Goodrich et al. 2026). Higher = stronger constraint relative to existing literature-derived clinical evidence, flagging candidate disease genes that remain under-characterized.", "FRIDMAN_inheritance": "Inheritance mode from Fridman et al. 2025 (AR or AR-AD).", "FRIDMAN_omim_phenotype_id": "OMIM phenotype ID(s) from Fridman et al. 2025 list of recessive disease genes.", "FRIDMAN_phenotype_category": "Disorder group from Fridman et al. 2025 (semicolon-separated if multiple).", "GENCC_classification": "Gene-disease classification(s) from GenCC (semicolon-separated if multiple).", "GENCC_disease_name": "Disease name(s) from GenCC (semicolon-separated if multiple).", "GENCC_inheritance": "Mode of inheritance from GenCC (semicolon-separated if multiple).", "GWAS_95_ci_text": "95% confidence interval text from GWAS Catalog for this gene\u0027s hit(s) (semicolon-separated if multiple).", "GWAS_chr_id": "Chromosome(s) of GWAS hit(s) for this gene (semicolon-separated if multiple).", "GWAS_chr_pos": "GRCh38 chromosome position(s) of GWAS hit(s) for this gene (semicolon-separated if multiple).", "GWAS_gene_distance": "Distance in bp from the GWAS variant to the nearest gene boundary (semicolon-separated if multiple).", "GWAS_gene_type": "Gene-to-variant relationship from GWAS Catalog (e.g. UPSTREAM, INTRON; semicolon-separated if multiple).", "GWAS_mondo_category": "MONDO disease category(s) of GWAS hits for this gene (semicolon-separated if multiple).", "GWAS_mondo_id": "MONDO disease ID(s) of GWAS hits for this gene (semicolon-separated if multiple).", "GWAS_mondo_name": "MONDO disease name(s) of GWAS hits for this gene (semicolon-separated if multiple).", "GWAS_odds_ratio_or_beta": "Smallest GWAS Catalog odds ratio or beta reported for any rare-disease hit linked to this gene.", "GWAS_p_value": "Smallest GWAS Catalog p-value reported for any rare-disease hit linked to this gene.", "LLM_phenotype_summary": "LLM-generated concise summary of phenotypes from all sources.", "OMELET_LLM_pct": "OMELET (LLM) percentile (0-100) from the gnomAD v4 flagship paper (Guez, Goodrich et al. 2026). Bayesian posterior combining literature-derived PEPPER_LLM with LOEUF-MIS; higher = stronger predicted clinical significance.", "OMELET_XGB_pct": "OMELET (XGBoost) percentile (0-100) from the gnomAD v4 flagship paper (Guez, Goodrich et al. 2026). Bayesian posterior combining PEPPER_XGB with LOEUF-MIS; higher = stronger predicted clinical significance.", "OMIM_inheritance": "Inheritance mode(s) from OMIM (semicolon-separated if multiple).", "OMIM_mim_number": "OMIM gene MIM number(s) (semicolon-separated if multiple).", "OMIM_phenotype_description": "Phenotype description(s) from OMIM (semicolon-separated if multiple).", "OMIM_phenotype_mim_number": "OMIM phenotype MIM number(s) (semicolon-separated if multiple).", "PANEL_APP_AU_confidence": "PanelApp Australia confidence level(s) for this gene (semicolon-separated if multiple panels).", "PANEL_APP_AU_evidence": "Evidence level from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_inheritance": "Mode of inheritance from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_mode_of_pathogenicity": "Mode of pathogenicity from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_panel_name": "Panel name(s) from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_penetrance": "Penetrance from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_phenotypes": "Phenotype(s) from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_UK_confidence": "PanelApp UK confidence level(s) for this gene (semicolon-separated if multiple panels).", "PANEL_APP_UK_evidence": "Evidence level from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_inheritance": "Mode of inheritance from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_mode_of_pathogenicity": "Mode of pathogenicity from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_panel_name": "Panel name(s) from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_penetrance": "Penetrance from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_phenotypes": "Phenotype(s) from PanelApp UK (semicolon-separated if multiple panels).", "PEPPER_XGB_pct": "PEPPER (XGBoost) percentile (0-100) from the gnomAD v4 flagship paper (Guez, Goodrich et al. 2026). Higher = stronger predicted clinical impact based on gene-level biological features, independent of literature evidence.", "ensembl_gene_id": "Ensembl gene ID (ENSG).", "gene_aliases": "Alternative gene symbols from HGNC (uppercase, comma-separated).", "gene_chrom": "Chromosome name.", "gene_end": "Gene end coordinate (GRCh38).", "gene_start": "Gene start coordinate (GRCh38).", "gene_symbol": "HGNC-approved gene symbol (uppercase).", "hgnc_gene_id": "HGNC gene ID (e.g., HGNC:1234).", "inheritance": "Summarized inheritance modes across all sources (semicolon-separated).", "lof_oe_ci_lower_v4": "Lower bound of the 90% confidence interval for the loss-of-function observed/expected ratio from gnomAD v4.1.1.", "lof_oe_ci_upper_v4": "Upper bound of the 90% confidence interval for the loss-of-function observed/expected ratio from gnomAD v4.1.1 (LOEUF).", "lof_oe_v4": "Loss-of-function observed/expected ratio (point estimate) from gnomAD v4.1.1.", "mis_oe_ci_lower_v4": "Lower bound of the 90% confidence interval for the missense observed/expected ratio from gnomAD v4.1.1.", "mis_oe_ci_upper_v4": "Upper bound of the 90% confidence interval for the missense observed/expected ratio from gnomAD v4.1.1 (MOEUF).", "mis_oe_v4": "Missense observed/expected ratio (point estimate) from gnomAD v4.1.1.", "mis_z_score_v4": "Missense constraint Z-score from gnomAD v4.1.1. Higher values indicate stronger missense constraint (more depletion than expected).", "pLI_v2": "Probability of loss-of-function intolerance from gnomAD v2.", "pLI_v4": "Probability of loss-of-function intolerance from gnomAD v4.1.1.", "s_het": "Gene constraint score from GeneBayes (Zeng et al. 2024). Scores \u003e0.1 indicate high likelihood of extreme selection.", "sources": "Number and list of sources that include this gene (e.g., \u00273: OMIM, ClinGen, GenCC\u0027)."}
-    const BIGQUERY_COLUMN_TYPES = {"CLINGEN_classification": "STRING", "CLINGEN_disease_label": "STRING", "CLINGEN_disease_mondo_id": "STRING", "CLINGEN_haploinsufficient": "STRING", "CLINGEN_inheritance": "STRING", "CLINVAR_clinical_significance": "STRING", "CLINVAR_phenotypes": "STRING", "CLINVAR_stars": "FLOAT", "CLINVAR_variant_consequences": "STRING", "DBNSFP_disease_description": "STRING", "DBNSFP_essential_gene": "STRING", "DBNSFP_function_description": "STRING", "DBNSFP_hpo_id": "STRING", "DBNSFP_hpo_name": "STRING", "DBNSFP_known_rec_info": "STRING", "DBNSFP_mgi_mouse_phenotype": "STRING", "DBNSFP_orphanet_association_type": "STRING", "DBNSFP_orphanet_disorder": "STRING", "DBNSFP_orphanet_disorder_id": "STRING", "DBNSFP_p_rec": "FLOAT", "DBNSFP_pathway_kegg": "STRING", "DBNSFP_pathway_uniprot": "STRING", "DBNSFP_zfin_zebrafish_phenotype": "STRING", "DECIPHER_disease_names": "STRING", "DECIPHER_inheritance": "STRING", "Discovery_Potential_pct": "FLOAT", "FRIDMAN_inheritance": "STRING", "FRIDMAN_omim_phenotype_id": "STRING", "FRIDMAN_phenotype_category": "STRING", "GENCC_classification": "STRING", "GENCC_disease_name": "STRING", "GENCC_inheritance": "STRING", "GWAS_95_ci_text": "STRING", "GWAS_chr_id": "STRING", "GWAS_chr_pos": "STRING", "GWAS_gene_distance": "STRING", "GWAS_gene_type": "STRING", "GWAS_mondo_category": "STRING", "GWAS_mondo_id": "STRING", "GWAS_mondo_name": "STRING", "GWAS_odds_ratio_or_beta": "FLOAT", "GWAS_p_value": "FLOAT", "LLM_phenotype_summary": "STRING", "OMELET_LLM_pct": "FLOAT", "OMELET_XGB_pct": "FLOAT", "OMIM_inheritance": "STRING", "OMIM_mim_number": "STRING", "OMIM_phenotype_description": "STRING", "OMIM_phenotype_mim_number": "STRING", "PANEL_APP_AU_confidence": "STRING", "PANEL_APP_AU_evidence": "STRING", "PANEL_APP_AU_inheritance": "STRING", "PANEL_APP_AU_mode_of_pathogenicity": "STRING", "PANEL_APP_AU_panel_name": "STRING", "PANEL_APP_AU_penetrance": "STRING", "PANEL_APP_AU_phenotypes": "STRING", "PANEL_APP_UK_confidence": "STRING", "PANEL_APP_UK_evidence": "STRING", "PANEL_APP_UK_inheritance": "STRING", "PANEL_APP_UK_mode_of_pathogenicity": "STRING", "PANEL_APP_UK_panel_name": "STRING", "PANEL_APP_UK_penetrance": "STRING", "PANEL_APP_UK_phenotypes": "STRING", "PEPPER_XGB_pct": "FLOAT", "ensembl_gene_id": "STRING", "gene_aliases": "STRING", "gene_chrom": "STRING", "gene_end": "INTEGER", "gene_start": "INTEGER", "gene_symbol": "STRING", "hgnc_gene_id": "STRING", "inheritance": "STRING", "lof_oe_ci_lower_v4": "FLOAT", "lof_oe_ci_upper_v4": "FLOAT", "lof_oe_v4": "FLOAT", "mis_oe_ci_lower_v4": "FLOAT", "mis_oe_ci_upper_v4": "FLOAT", "mis_oe_v4": "FLOAT", "mis_z_score_v4": "FLOAT", "pLI_v2": "FLOAT", "pLI_v4": "FLOAT", "s_het": "FLOAT", "sources": "STRING"}
+    const BIGQUERY_COLUMN_DESCRIPTIONS = {"CLINGEN_classification": "ClinGen gene-disease validity classification (Definitive, Strong, Moderate, or Limited).", "CLINGEN_disease_label": "Disease name(s) from ClinGen gene-disease validity curation (semicolon-separated if multiple).", "CLINGEN_disease_mondo_id": "MONDO disease ID(s) from ClinGen (semicolon-separated if multiple).", "CLINGEN_haploinsufficient": "ClinGen haploinsufficiency classification for this gene.", "CLINGEN_inheritance": "Mode of inheritance from ClinGen (semicolon-separated if multiple).", "CLINVAR_clinical_significance": "Clinical significance categories from ClinVar for variants in this gene.", "CLINVAR_phenotypes": "Phenotype(s) from ClinVar for pathogenic/likely pathogenic variants in this gene.", "CLINVAR_stars": "ClinVar review status gold stars for variants in this gene.", "CLINVAR_variant_consequences": "Major variant consequence types from ClinVar for pathogenic/likely pathogenic variants in this gene.", "DBNSFP_disease_description": "Disease description from dbNSFP/UniProt.", "DBNSFP_essential_gene": "Essential gene annotation from dbNSFP (E=essential, N=non-essential).", "DBNSFP_function_description": "Gene function description from dbNSFP/UniProt.", "DBNSFP_hpo_id": "Human Phenotype Ontology (HPO) ID(s) from dbNSFP (semicolon-separated if multiple).", "DBNSFP_hpo_name": "Human Phenotype Ontology (HPO) term name(s) from dbNSFP (semicolon-separated if multiple).", "DBNSFP_known_rec_info": "Known recessive disease gene information from dbNSFP.", "DBNSFP_mgi_mouse_phenotype": "Mouse phenotype(s) from MGI via dbNSFP (semicolon-separated if multiple).", "DBNSFP_orphanet_association_type": "Orphanet gene-disease association type(s) from dbNSFP (semicolon-separated if multiple).", "DBNSFP_orphanet_disorder": "Orphanet disorder name(s) from dbNSFP (semicolon-separated if multiple).", "DBNSFP_orphanet_disorder_id": "Orphanet disorder ID(s) from dbNSFP (semicolon-separated if multiple).", "DBNSFP_p_rec": "Probability of being a recessive disease gene from dbNSFP.", "DBNSFP_pathway_kegg": "KEGG pathway(s) from dbNSFP (semicolon-separated if multiple).", "DBNSFP_pathway_uniprot": "UniProt pathway(s) from dbNSFP (semicolon-separated if multiple).", "DBNSFP_zfin_zebrafish_phenotype": "Zebrafish phenotype tag(s) from ZFIN via dbNSFP (semicolon-separated if multiple).", "DECIPHER_disease_names": "Disease name(s) from DECIPHER (semicolon-separated if multiple).", "DECIPHER_inheritance": "Mode of inheritance from DECIPHER (semicolon-separated if multiple).", "Discovery_Potential_pct": "Discovery Potential (DisPo) percentile (0-100) from the gnomAD v4 flagship paper (Guez, Goodrich et al. 2026). Higher = stronger constraint relative to existing literature-derived clinical evidence, flagging candidate disease genes that remain under-characterized.", "FRIDMAN_inheritance": "Inheritance mode from Fridman et al. 2025 (AR or AR-AD).", "FRIDMAN_omim_phenotype_id": "OMIM phenotype ID(s) from Fridman et al. 2025 list of recessive disease genes.", "FRIDMAN_phenotype_category": "Disorder group from Fridman et al. 2025 (semicolon-separated if multiple).", "GENCC_classification": "Gene-disease classification(s) from GenCC (semicolon-separated if multiple).", "GENCC_disease_name": "Disease name(s) from GenCC (semicolon-separated if multiple).", "GENCC_inheritance": "Mode of inheritance from GenCC (semicolon-separated if multiple).", "GWAS_95_ci_text": "95% confidence interval text from GWAS Catalog for this gene\u0027s hit(s) (semicolon-separated if multiple).", "GWAS_chr_id": "Chromosome(s) of GWAS hit(s) for this gene (semicolon-separated if multiple).", "GWAS_chr_pos": "GRCh38 chromosome position(s) of GWAS hit(s) for this gene (semicolon-separated if multiple).", "GWAS_gene_distance": "Distance in bp from the GWAS variant to the nearest gene boundary (semicolon-separated if multiple).", "GWAS_gene_type": "Gene-to-variant relationship from GWAS Catalog (e.g. UPSTREAM, INTRON; semicolon-separated if multiple).", "GWAS_mondo_category": "MONDO disease category(s) of GWAS hits for this gene (semicolon-separated if multiple).", "GWAS_mondo_id": "MONDO disease ID(s) of GWAS hits for this gene (semicolon-separated if multiple).", "GWAS_mondo_name": "MONDO disease name(s) of GWAS hits for this gene (semicolon-separated if multiple).", "GWAS_odds_ratio_or_beta": "Smallest GWAS Catalog odds ratio or beta reported for any rare-disease hit linked to this gene.", "GWAS_p_value": "Smallest GWAS Catalog p-value reported for any rare-disease hit linked to this gene.", "LLM_phenotype_summary": "LLM-generated concise summary of phenotypes from all sources.", "MANE_canonical_transcript_ensembl_id": "MANE Select (canonical) Ensembl transcript ID (e.g., ENST00000263100.8).", "MANE_canonical_transcript_refseq_id": "MANE Select (canonical) RefSeq transcript ID (e.g., NM_130786.4).", "MANE_clinical_transcript_ensembl_id": "MANE Plus Clinical Ensembl transcript ID(s), semicolon-separated.", "MANE_clinical_transcript_refseq_id": "MANE Plus Clinical RefSeq transcript ID(s), semicolon-separated.", "OMELET_LLM_pct": "OMELET (LLM) percentile (0-100) from the gnomAD v4 flagship paper (Guez, Goodrich et al. 2026). Bayesian posterior combining literature-derived PEPPER_LLM with LOEUF-MIS; higher = stronger predicted clinical significance.", "OMELET_XGB_pct": "OMELET (XGBoost) percentile (0-100) from the gnomAD v4 flagship paper (Guez, Goodrich et al. 2026). Bayesian posterior combining PEPPER_XGB with LOEUF-MIS; higher = stronger predicted clinical significance.", "OMIM_inheritance": "Inheritance mode(s) from OMIM (semicolon-separated if multiple).", "OMIM_mim_number": "OMIM gene MIM number(s) (semicolon-separated if multiple).", "OMIM_phenotype_description": "Phenotype description(s) from OMIM (semicolon-separated if multiple).", "OMIM_phenotype_mim_number": "OMIM phenotype MIM number(s) (semicolon-separated if multiple).", "PANEL_APP_AU_confidence": "PanelApp Australia confidence level(s) for this gene (semicolon-separated if multiple panels).", "PANEL_APP_AU_evidence": "Evidence level from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_inheritance": "Mode of inheritance from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_mode_of_pathogenicity": "Mode of pathogenicity from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_panel_name": "Panel name(s) from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_penetrance": "Penetrance from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_AU_phenotypes": "Phenotype(s) from PanelApp Australia (semicolon-separated if multiple panels).", "PANEL_APP_UK_confidence": "PanelApp UK confidence level(s) for this gene (semicolon-separated if multiple panels).", "PANEL_APP_UK_evidence": "Evidence level from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_inheritance": "Mode of inheritance from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_mode_of_pathogenicity": "Mode of pathogenicity from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_panel_name": "Panel name(s) from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_penetrance": "Penetrance from PanelApp UK (semicolon-separated if multiple panels).", "PANEL_APP_UK_phenotypes": "Phenotype(s) from PanelApp UK (semicolon-separated if multiple panels).", "PEPPER_XGB_pct": "PEPPER (XGBoost) percentile (0-100) from the gnomAD v4 flagship paper (Guez, Goodrich et al. 2026). Higher = stronger predicted clinical impact based on gene-level biological features, independent of literature evidence.", "ensembl_gene_id": "Ensembl gene ID (ENSG).", "gene_aliases": "Alternative gene symbols from HGNC (uppercase, comma-separated).", "gene_chrom": "Chromosome name.", "gene_end": "Gene end coordinate (GRCh38).", "gene_start": "Gene start coordinate (GRCh38).", "gene_symbol": "HGNC-approved gene symbol (uppercase).", "hgnc_gene_id": "HGNC gene ID (e.g., HGNC:1234).", "in_MANE": "Whether the gene has a MANE Select transcript.", "inheritance": "Summarized inheritance modes across all sources (semicolon-separated).", "lof_oe_ci_lower_v4": "Lower bound of the 90% confidence interval for the loss-of-function observed/expected ratio from gnomAD v4.1.1.", "lof_oe_ci_upper_v4": "Upper bound of the 90% confidence interval for the loss-of-function observed/expected ratio from gnomAD v4.1.1 (LOEUF).", "lof_oe_v4": "Loss-of-function observed/expected ratio (point estimate) from gnomAD v4.1.1.", "mis_oe_ci_lower_v4": "Lower bound of the 90% confidence interval for the missense observed/expected ratio from gnomAD v4.1.1.", "mis_oe_ci_upper_v4": "Upper bound of the 90% confidence interval for the missense observed/expected ratio from gnomAD v4.1.1 (MOEUF).", "mis_oe_v4": "Missense observed/expected ratio (point estimate) from gnomAD v4.1.1.", "mis_z_score_v4": "Missense constraint Z-score from gnomAD v4.1.1. Higher values indicate stronger missense constraint (more depletion than expected).", "ncbi_gene_id": "NCBI Gene ID (Entrez) from HGNC; NULL if unavailable.", "pLI_v2": "Probability of loss-of-function intolerance from gnomAD v2.", "pLI_v4": "Probability of loss-of-function intolerance from gnomAD v4.1.1.", "refseq_id": "RefSeq transcript accession(s) from HGNC (e.g., NM_130786).", "s_het": "Gene constraint score from GeneBayes (Zeng et al. 2024). Scores \u003e0.1 indicate high likelihood of extreme selection.", "sources": "Number and list of sources that include this gene (e.g., \u00273: OMIM, ClinGen, GenCC\u0027)."}
+    const BIGQUERY_COLUMN_TYPES = {"CLINGEN_classification": "STRING", "CLINGEN_disease_label": "STRING", "CLINGEN_disease_mondo_id": "STRING", "CLINGEN_haploinsufficient": "STRING", "CLINGEN_inheritance": "STRING", "CLINVAR_clinical_significance": "STRING", "CLINVAR_phenotypes": "STRING", "CLINVAR_stars": "FLOAT", "CLINVAR_variant_consequences": "STRING", "DBNSFP_disease_description": "STRING", "DBNSFP_essential_gene": "STRING", "DBNSFP_function_description": "STRING", "DBNSFP_hpo_id": "STRING", "DBNSFP_hpo_name": "STRING", "DBNSFP_known_rec_info": "STRING", "DBNSFP_mgi_mouse_phenotype": "STRING", "DBNSFP_orphanet_association_type": "STRING", "DBNSFP_orphanet_disorder": "STRING", "DBNSFP_orphanet_disorder_id": "STRING", "DBNSFP_p_rec": "FLOAT", "DBNSFP_pathway_kegg": "STRING", "DBNSFP_pathway_uniprot": "STRING", "DBNSFP_zfin_zebrafish_phenotype": "STRING", "DECIPHER_disease_names": "STRING", "DECIPHER_inheritance": "STRING", "Discovery_Potential_pct": "FLOAT", "FRIDMAN_inheritance": "STRING", "FRIDMAN_omim_phenotype_id": "STRING", "FRIDMAN_phenotype_category": "STRING", "GENCC_classification": "STRING", "GENCC_disease_name": "STRING", "GENCC_inheritance": "STRING", "GWAS_95_ci_text": "STRING", "GWAS_chr_id": "STRING", "GWAS_chr_pos": "STRING", "GWAS_gene_distance": "STRING", "GWAS_gene_type": "STRING", "GWAS_mondo_category": "STRING", "GWAS_mondo_id": "STRING", "GWAS_mondo_name": "STRING", "GWAS_odds_ratio_or_beta": "FLOAT", "GWAS_p_value": "FLOAT", "LLM_phenotype_summary": "STRING", "MANE_canonical_transcript_ensembl_id": "STRING", "MANE_canonical_transcript_refseq_id": "STRING", "MANE_clinical_transcript_ensembl_id": "STRING", "MANE_clinical_transcript_refseq_id": "STRING", "OMELET_LLM_pct": "FLOAT", "OMELET_XGB_pct": "FLOAT", "OMIM_inheritance": "STRING", "OMIM_mim_number": "STRING", "OMIM_phenotype_description": "STRING", "OMIM_phenotype_mim_number": "STRING", "PANEL_APP_AU_confidence": "STRING", "PANEL_APP_AU_evidence": "STRING", "PANEL_APP_AU_inheritance": "STRING", "PANEL_APP_AU_mode_of_pathogenicity": "STRING", "PANEL_APP_AU_panel_name": "STRING", "PANEL_APP_AU_penetrance": "STRING", "PANEL_APP_AU_phenotypes": "STRING", "PANEL_APP_UK_confidence": "STRING", "PANEL_APP_UK_evidence": "STRING", "PANEL_APP_UK_inheritance": "STRING", "PANEL_APP_UK_mode_of_pathogenicity": "STRING", "PANEL_APP_UK_panel_name": "STRING", "PANEL_APP_UK_penetrance": "STRING", "PANEL_APP_UK_phenotypes": "STRING", "PEPPER_XGB_pct": "FLOAT", "ensembl_gene_id": "STRING", "gene_aliases": "STRING", "gene_chrom": "STRING", "gene_end": "INTEGER", "gene_start": "INTEGER", "gene_symbol": "STRING", "hgnc_gene_id": "STRING", "in_MANE": "BOOLEAN", "inheritance": "STRING", "lof_oe_ci_lower_v4": "FLOAT", "lof_oe_ci_upper_v4": "FLOAT", "lof_oe_v4": "FLOAT", "mis_oe_ci_lower_v4": "FLOAT", "mis_oe_ci_upper_v4": "FLOAT", "mis_oe_v4": "FLOAT", "mis_z_score_v4": "FLOAT", "ncbi_gene_id": "INTEGER", "pLI_v2": "FLOAT", "pLI_v4": "FLOAT", "refseq_id": "STRING", "s_het": "FLOAT", "sources": "STRING"}
 
     const BIGQUERY_COLUMN_GROUPS = ["Core", "Constraint", "OMIM", "ClinVar, ClinGen \u0026 GenCC", "PanelApp UK", "PanelApp AU", "Decipher \u0026 Other Sources", "GWAS Catalog", "dbNSFP"]
 
@@ -1509,6 +1509,56 @@
             getSortColumns: () => ['hgnc_gene_id'],
             getRequiredColumns: () => ['hgnc_gene_id'],
         },
+        refseq_id: {
+            displayName: 'RefSeq ID',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['refseq_id'],
+            getValue: (row) => row['refseq_id'] || '',
+            getSortColumns: () => ['refseq_id'],
+            getRequiredColumns: () => ['refseq_id'],
+        },
+        ncbi_gene_id: {
+            displayName: 'NCBI Gene ID',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['ncbi_gene_id'],
+            // ncbi_gene_id is a nullable INTEGER (NULL when unavailable)
+            getValue: (row) => (row['ncbi_gene_id'] != null && Number(row['ncbi_gene_id']) > 0) ? row['ncbi_gene_id'] : '',
+            getSortColumns: () => ['ncbi_gene_id'],
+            getRequiredColumns: () => ['ncbi_gene_id'],
+        },
+        in_MANE: {
+            displayName: 'In MANE',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['in_MANE'],
+            getValue: (row) => (row['in_MANE'] === true || row['in_MANE'] === 'true') ? 'Yes' : 'No',
+            getSortColumns: () => ['in_MANE'],
+            getRequiredColumns: () => ['in_MANE'],
+        },
+        MANE_canonical_transcript_refseq_id: {
+            displayName: 'MANE Canonical RefSeq',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['MANE_canonical_transcript_refseq_id'],
+            getValue: (row) => row['MANE_canonical_transcript_refseq_id'] || '',
+            getSortColumns: () => ['MANE_canonical_transcript_refseq_id'],
+            getRequiredColumns: () => ['MANE_canonical_transcript_refseq_id'],
+        },
+        MANE_canonical_transcript_ensembl_id: {
+            displayName: 'MANE Canonical Ensembl',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['MANE_canonical_transcript_ensembl_id'],
+            getValue: (row) => row['MANE_canonical_transcript_ensembl_id'] || '',
+            getSortColumns: () => ['MANE_canonical_transcript_ensembl_id'],
+            getRequiredColumns: () => ['MANE_canonical_transcript_ensembl_id'],
+        },
+        MANE_clinical_transcript_refseq_id: {
+            displayName: 'MANE Clinical RefSeq',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['MANE_clinical_transcript_refseq_id'],
+            getValue: (row) => getTruncatedText(row['MANE_clinical_transcript_refseq_id'], 40),
+            getSortColumns: () => ['MANE_clinical_transcript_refseq_id'],
+            getRequiredColumns: () => ['MANE_clinical_transcript_refseq_id'],
+        },
+        MANE_clinical_transcript_ensembl_id: {
+            displayName: 'MANE Clinical Ensembl',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['MANE_clinical_transcript_ensembl_id'],
+            getValue: (row) => getTruncatedText(row['MANE_clinical_transcript_ensembl_id'], 40),
+            getSortColumns: () => ['MANE_clinical_transcript_ensembl_id'],
+            getRequiredColumns: () => ['MANE_clinical_transcript_ensembl_id'],
+        },
         gene_chrom: {
             displayName: 'Chrom',
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['gene_chrom'],
@@ -1872,10 +1922,11 @@
     const buildSearchWhereClause = (rawQuery) => {
         if (!rawQuery || !rawQuery.trim()) return ''
 
-        // Check for comma-separated list of queries. Use a lookbehind/lookahead so that commas
-        // between digits (eg. thousands-separators in genomic coordinates like chr17:43,044,295-43,125,483)
-        // are preserved instead of being treated as list separators.
-        const queries = rawQuery.split(/(?<!\d),(?!\d)/).map(q => q.trim()).filter(q => q)
+        // Check for comma-separated list of queries. Split on any comma EXCEPT one sitting between
+        // two digits, so thousands-separators in genomic coordinates (eg. chr17:43,044,295-43,125,483)
+        // are preserved while gene lists still split correctly even when a symbol ends in a digit
+        // (eg. "SMN1, CFTR" or "SMN1,CFTR" -> ["SMN1", "CFTR"]).
+        const queries = rawQuery.split(/(?<!\d),|,(?!\d)/).map(q => q.trim()).filter(q => q)
         if (queries.length > 1) {
             const clauses = queries.map(q => buildSingleSearchWhereClause(q)).filter(c => c)
             if (clauses.length === 0) return ''
@@ -1909,9 +1960,29 @@
             return `(UPPER(hgnc_gene_id) = UPPER('${escapedQ}'))`
         }
 
-        // Ensembl gene ID: ENSG00000000001
-        if (/^ENSG\d+$/i.test(q)) {
-            return `(UPPER(ensembl_gene_id) = UPPER('${escapedQ}'))`
+        // Ensembl gene ID (optional version, matched version-insensitively): ENSG00000000001[.N]
+        if (/^ENSG\d+(\.\d+)?$/i.test(q)) {
+            return `(UPPER(ensembl_gene_id) = UPPER('${escapeSqlString(q.replace(/\.\d+$/, ''))}'))`
+        }
+
+        // NCBI Gene ID (Entrez): all digits.
+        if (/^\d+$/.test(q)) {
+            return `(ncbi_gene_id = ${Number(q)})`
+        }
+
+        // RefSeq accession (gene/transcript, optional version): NM_/NR_/NG_/NP_/XM_/XR_/XP_. Matched
+        // version-insensitively against the HGNC gene-level RefSeq id and the MANE RefSeq accessions.
+        if (/^[NX][MRGP]_\d+(\.\d+)?$/i.test(q)) {
+            const rs = q.replace(/\.\d+$/, '').toUpperCase()
+            const concat = `UPPER(CONCAT(${REFSEQ_MATCH_COLUMNS.map(c => `IFNULL(${c}, '')`).join(", ';', ")}))`
+            return `(EXISTS(SELECT 1 FROM UNNEST(REGEXP_EXTRACT_ALL(${concat}, r'[A-Z]+_[0-9]+')) rs WHERE rs = '${escapeSqlString(rs)}'))`
+        }
+
+        // MANE Ensembl transcript ID (optional version), matched version-insensitively.
+        if (/^ENST\d+(\.\d+)?$/i.test(q)) {
+            const t = q.replace(/\.\d+$/, '').toUpperCase()
+            const concat = `UPPER(CONCAT(IFNULL(MANE_canonical_transcript_ensembl_id, ''), ';', IFNULL(MANE_clinical_transcript_ensembl_id, '')))`
+            return `(EXISTS(SELECT 1 FROM UNNEST(REGEXP_EXTRACT_ALL(${concat}, r'ENST[0-9]+')) t WHERE t = '${escapeSqlString(t)}'))`
         }
 
         // HPO term ID: HP:0001250. DBNSFP_hpo_id is semicolon-separated, so match as substring.
@@ -1934,6 +2005,226 @@
         const textClauses = phenotypeColumns.map(col => `UPPER(${col}) LIKE UPPER('%${escapedQ}%')`)
         const geneClause = `UPPER(gene_symbol) = UPPER('${escapedQ}') OR UPPER(gene_aliases) LIKE UPPER('%${escapedQ}%')`
         return `(${geneClause} OR ${textClauses.join(' OR ')})`
+    }
+
+    // ----- Gene-panel / gene-list search helpers -----
+    // These support searching a list of genes (typed comma-separated, or uploaded as a TXT/TSV
+    // file) against the structured gene identifier columns, plus a "found vs. missing" report.
+
+    // Classify a single search token as a gene identifier. Returns 'ensembl', 'hgnc', 'refseq',
+    // 'symbol', or 'other'. 'other' covers genomic regions (contain ':'), multi-word disease phrases
+    // (contain whitespace), and anything else that is not shaped like a gene identifier.
+    const classifyGeneToken = (token) => {
+        const t = String(token == null ? '' : token).trim()
+        if (!t) return 'other'
+        const up = t.toUpperCase()
+        if (/^ENSG\d+(\.\d+)?$/.test(up)) return 'ensembl'
+        if (/^HGNC:\d+$/.test(up)) return 'hgnc'
+        // RefSeq accession: transcript (NM_/NR_/XM_/XR_), gene (NG_), or protein (NP_/XP_), optional version.
+        if (/^[NX][MRGP]_\d+(\.\d+)?$/.test(up)) return 'refseq'
+        // Gene-symbol shape: starts alphanumeric, then letters/digits/-/_/. with no whitespace
+        // or ':'. This excludes regions like chr1:100-200 and phrases like "limb girdle".
+        if (/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(t)) return 'symbol'
+        return 'other'
+    }
+
+    // RefSeq accession columns matched for RefSeq gene/transcript IDs: HGNC gene-level RefSeq plus the
+    // MANE Select / Plus-Clinical transcript RefSeq accessions. Version suffixes are ignored on both
+    // sides. (These columns were added to the pipeline; the BigQuery table must be regenerated for
+    // RefSeq matching to work.)
+    const REFSEQ_MATCH_COLUMNS = ['refseq_id', 'MANE_canonical_transcript_refseq_id', 'MANE_clinical_transcript_refseq_id']
+
+    // Extra SELECT-list columns needed so the found/missing partition can see RefSeq accessions --
+    // but only when the token list actually contains a RefSeq id, so panels of only symbols/IDs don't
+    // reference these columns (which may not yet exist in the deployed table).
+    const refseqSelectColsFor = (tokens) => tokens.some(t => classifyGeneToken(t) === 'refseq') ? `, ${REFSEQ_MATCH_COLUMNS.join(', ')}` : ''
+
+    // Stricter test used only to decide whether a TYPED comma-separated list should be treated as a
+    // gene panel (and get a found/missing banner). Requires an explicit gene ID, or a symbol token
+    // that carries a digit or an uppercase letter -- this keeps lowercase free-text disease words
+    // (eg. "ataxia", "epilepsy") from being mistaken for gene symbols and mislabeled "not found".
+    const isTypedPanelToken = (token) => {
+        const kind = classifyGeneToken(token)
+        if (kind === 'ensembl' || kind === 'hgnc' || kind === 'refseq') return true
+        if (kind !== 'symbol') return false
+        return /\d/.test(token) || /[A-Z]/.test(token)
+    }
+
+    // Build a WHERE clause matching any of the given gene identifiers against the structured
+    // gene_symbol / gene_aliases / ensembl_gene_id / hgnc_gene_id / RefSeq columns (OR across fields
+    // and across the whole list). Non-gene-shaped tokens ('other') are ignored. Returns '' if none.
+    const buildStructuredGeneListClause = (tokens) => {
+        const symbols = new Set(), ensembl = new Set(), hgnc = new Set(), refseq = new Set()
+        for (const token of tokens) {
+            const kind = classifyGeneToken(token)
+            const up = String(token).trim().toUpperCase()
+            // ensembl_gene_id / RefSeq accessions are matched version-insensitively; drop any ".NN".
+            if (kind === 'ensembl') ensembl.add(up.replace(/\.\d+$/, ''))
+            else if (kind === 'hgnc') hgnc.add(up)
+            else if (kind === 'refseq') refseq.add(up.replace(/\.\d+$/, ''))
+            else if (kind === 'symbol') symbols.add(up)
+        }
+        const sqlList = (s) => Array.from(s).map(v => `'${escapeSqlString(v)}'`).join(', ')
+        const parts = []
+        if (symbols.size) {
+            parts.push(`UPPER(gene_symbol) IN UNNEST([${sqlList(symbols)}])`)
+            // gene_aliases is a comma-separated list of alternate symbols; match any exactly.
+            parts.push(`EXISTS(SELECT 1 FROM UNNEST(SPLIT(UPPER(gene_aliases), ',')) alias WHERE TRIM(alias) IN UNNEST([${sqlList(symbols)}]))`)
+        }
+        if (ensembl.size) parts.push(`UPPER(ensembl_gene_id) IN UNNEST([${sqlList(ensembl)}])`)
+        if (hgnc.size) parts.push(`UPPER(hgnc_gene_id) IN UNNEST([${sqlList(hgnc)}])`)
+        if (refseq.size) {
+            // Extract every RefSeq accession (version stripped) from the gene-level + MANE RefSeq
+            // columns and match against the version-stripped tokens.
+            const concat = `UPPER(CONCAT(${REFSEQ_MATCH_COLUMNS.map(c => `IFNULL(${c}, '')`).join(", ';', ")}))`
+            parts.push(`EXISTS(SELECT 1 FROM UNNEST(REGEXP_EXTRACT_ALL(${concat}, r'[A-Z]+_[0-9]+')) rs WHERE rs IN UNNEST([${sqlList(refseq)}]))`)
+        }
+        if (!parts.length) return ''
+        return `(${parts.join(' OR ')})`
+    }
+
+    // Normalize a chromosome name to match gene_chrom (Ensembl seq_region.name): drop any "chr"
+    // prefix, uppercase, and map mitochondrial "M" to "MT".
+    const normalizeChrom = (c) => {
+        let up = String(c == null ? '' : c).trim().toUpperCase().replace(/^CHR/, '')
+        if (up === 'M') up = 'MT'
+        return up
+    }
+
+    // Parse a BED file's text into deduplicated regions. Uses the first 3 columns as
+    // chrom, start (0-based), end (1-based half-open). Comment/track/browser and malformed
+    // lines are skipped. Returns [{chrom (normalized), start0, end1, label}].
+    const parseRegionsFromBedText = (text) => {
+        const regions = []
+        const seen = new Set()
+        for (const line of String(text || '').split(/\r\n|\r|\n/)) {
+            const trimmed = line.trim()
+            if (!trimmed || /^(#|track\b|browser\b)/i.test(trimmed)) continue
+            const cols = trimmed.split(/\s+/)
+            if (cols.length < 3 || !/^\d+$/.test(cols[1]) || !/^\d+$/.test(cols[2])) continue
+            const chrom = normalizeChrom(cols[0])
+            if (!chrom) continue
+            const start0 = parseInt(cols[1], 10)
+            const end1 = parseInt(cols[2], 10)
+            const key = `${chrom}:${start0}-${end1}`
+            if (seen.has(key)) continue
+            seen.add(key)
+            regions.push({ chrom, start0, end1, label: `${cols[0].trim()}:${start0}-${end1}` })
+        }
+        return regions
+    }
+
+    // Parse the first column of an uploaded TXT/TSV/CSV file into deduplicated gene identifiers and
+    // hg38 regions (original casing preserved for display). Splits rows on newlines and takes the
+    // first tab- or comma-delimited field. A field shaped like an hg38 region (eg. chr1:1000-2000,
+    // 1-based inclusive as in the search box) becomes a region; anything else is treated as a gene
+    // identifier (symbol, alias, HGNC, ENSG, or RefSeq). A leading header row is skipped. Returns
+    // { genes: [token], regions: [{chrom, start0, end1, label}] }.
+    const parseUploadedListFile = (text) => {
+        const genes = [], regions = []
+        const seenGene = new Set(), seenRegion = new Set()
+        const headerRegExp = /^(gene|genes|gene[_ ]?symbol|gene[_ ]?name|gene[_ ]?id|symbol|hgnc([_ ]?id)?|ensembl([_ ]?gene[_ ]?id)?|region|regions|locus|coordinates?)$/i
+        const lines = String(text || '').split(/\r\n|\r|\n/)
+        for (let i = 0; i < lines.length; i++) {
+            // Take the first TAB field first so a region using comma thousands-separators
+            // (chr17:43,044,295-43,125,483) is not chopped apart before the region test runs.
+            const field = lines[i].split('\t')[0].trim()
+            if (!field) continue
+            const regionMatch = field.match(REFERENCE_REGION_REGEXP)
+            if (regionMatch) {
+                const chrom = normalizeChrom(regionMatch[1])
+                const start1 = parseInt(regionMatch[2].replace(/,/g, ''), 10)
+                const end1 = parseInt(regionMatch[3].replace(/,/g, ''), 10)
+                const key = `${chrom}:${start1}-${end1}`
+                if (chrom && !seenRegion.has(key)) {
+                    seenRegion.add(key)
+                    // Store 0-based start so region-overlap logic is shared with BED (start0 = start1 - 1).
+                    regions.push({ chrom, start0: start1 - 1, end1, label: field })
+                }
+            } else {
+                // Non-region row: take the first comma field (handles CSV) as the gene token, and
+                // keep it only if it is shaped like a gene identifier. Free-text phrases (spaces,
+                // etc.) are dropped so they can't silently widen the search into a whole-table query.
+                const token = field.split(',')[0].trim()
+                if (i === 0 && headerRegExp.test(token)) continue  // skip header row
+                if (token && classifyGeneToken(token) !== 'other') {
+                    const key = token.toUpperCase()
+                    if (!seenGene.has(key)) { seenGene.add(key); genes.push(token) }
+                }
+            }
+        }
+        return { genes, regions }
+    }
+
+    // Build a WHERE clause matching genes that overlap any of the given regions. BED coordinates
+    // are 0-based start / 1-based end; gene_start/gene_end are 1-based inclusive, so a gene overlaps
+    // a region iff gene_start <= end1 AND gene_end > start0. Returns '' if there are no regions.
+    const buildRegionListClause = (regions) => {
+        const structs = regions.map(r => `STRUCT('${escapeSqlString(r.chrom)}' AS c, ${r.start0} AS s, ${r.end1} AS e)`)
+        if (!structs.length) return ''
+        return `EXISTS(SELECT 1 FROM UNNEST([${structs.join(', ')}]) r WHERE gene_chrom = r.c AND gene_start <= r.e AND gene_end > r.s)`
+    }
+
+    // Given the input regions and the gene rows returned by a region-overlap lookup (each with
+    // gene_chrom, gene_start, gene_end), partition the input regions into { matched, missing }
+    // (arrays of region labels): matched = overlaps >= 1 gene, missing = overlaps none.
+    const partitionRegionMatches = (regions, rows) => {
+        const byChrom = new Map()
+        for (const row of (rows || [])) {
+            const c = String(row.gene_chrom == null ? '' : row.gene_chrom).toUpperCase()
+            if (!byChrom.has(c)) byChrom.set(c, [])
+            byChrom.get(c).push({ s: Number(row.gene_start), e: Number(row.gene_end) })
+        }
+        const matched = [], missing = []
+        const seen = new Set()
+        for (const region of regions) {
+            const key = `${region.chrom}:${region.start0}-${region.end1}`
+            if (seen.has(key)) continue
+            seen.add(key)
+            const genes = byChrom.get(region.chrom) || []
+            const ok = genes.some(g => g.s <= region.end1 && g.e > region.start0)
+            ;(ok ? matched : missing).push(region.label)
+        }
+        return { matched, missing }
+    }
+
+    // Given the input gene tokens and the rows returned by a structured gene-list lookup (with
+    // gene_symbol, gene_aliases, ensembl_gene_id, hgnc_gene_id, and -- when RefSeq tokens are present
+    // -- the RefSeq columns), partition the input tokens into { matched, missing } (both arrays of
+    // original-cased tokens, deduplicated). 'other' tokens are excluded from both.
+    const partitionGeneListMatches = (tokens, matchedRows) => {
+        const symbolSet = new Set(), ensemblSet = new Set(), hgncSet = new Set(), refseqSet = new Set()
+        for (const row of (matchedRows || [])) {
+            if (row.gene_symbol) symbolSet.add(String(row.gene_symbol).toUpperCase())
+            if (row.gene_aliases) {
+                for (const alias of String(row.gene_aliases).split(',')) {
+                    const v = alias.trim().toUpperCase()
+                    if (v) symbolSet.add(v)
+                }
+            }
+            if (row.ensembl_gene_id) ensemblSet.add(String(row.ensembl_gene_id).toUpperCase().replace(/\.\d+$/, ''))
+            if (row.hgnc_gene_id) hgncSet.add(String(row.hgnc_gene_id).toUpperCase())
+            for (const col of REFSEQ_MATCH_COLUMNS) {
+                const accs = row[col] ? String(row[col]).toUpperCase().match(/[A-Z]+_[0-9]+/g) : null
+                if (accs) for (const a of accs) refseqSet.add(a)  // version already excluded by the regex
+            }
+        }
+        const matched = [], missing = []
+        const seen = new Set()
+        for (const token of tokens) {
+            const kind = classifyGeneToken(token)
+            if (kind === 'other') continue
+            const up = String(token).trim().toUpperCase()
+            const key = (kind === 'ensembl' || kind === 'refseq') ? up.replace(/\.\d+$/, '') : up
+            if (seen.has(key)) continue
+            seen.add(key)
+            const ok = kind === 'ensembl' ? ensemblSet.has(key)
+                : kind === 'hgnc' ? hgncSet.has(key)
+                : kind === 'refseq' ? refseqSet.has(key)
+                : symbolSet.has(key)
+            ;(ok ? matched : missing).push(String(token).trim())
+        }
+        return { matched, missing }
     }
 
     /**
@@ -1978,7 +2269,9 @@
                 // load_bigquery.py fills NaN in object columns with '' before upload, so
                 // absent string values are stored as empty strings, not NULL. Match both.
                 const colType = BIGQUERY_COLUMN_TYPES[col]
-                if (colType !== 'INTEGER' && colType !== 'FLOAT') {
+                // INTEGER/FLOAT/BOOLEAN columns store real NULLs (never empty strings), so a plain
+                // IS NULL / IS NOT NULL is correct; string columns may hold '' instead of NULL.
+                if (colType !== 'INTEGER' && colType !== 'FLOAT' && colType !== 'BOOLEAN') {
                     clause = op === 'IS NULL'
                         ? `(${col} IS NULL OR ${col} = '')`
                         : `(${col} IS NOT NULL AND ${col} != '')`
@@ -1989,11 +2282,17 @@
                 clause = `${col} ${op} '${escapeSqlString(val)}'`
             } else {
                 const colType = BIGQUERY_COLUMN_TYPES[col]
-                const isNumericCol = colType === 'INTEGER' || colType === 'FLOAT'
-                if (isNumericCol && val.trim() !== '' && isFinite(Number(val))) {
-                    clause = `${col} ${op} ${Number(val)}`
+                if (colType === 'BOOLEAN') {
+                    // Accept true/false, yes/no, or 1/0 (case-insensitive). validateForm() rejects anything
+                    // else before we get here, so this never silently coerces unexpected text to false.
+                    clause = `${col} ${op} ${/^(true|yes|y|1)$/i.test(val.trim()) ? 'true' : 'false'}`
                 } else {
-                    clause = `${col} ${op} '${escapeSqlString(val)}'`
+                    const isNumericCol = colType === 'INTEGER' || colType === 'FLOAT'
+                    if (isNumericCol && val.trim() !== '' && isFinite(Number(val))) {
+                        clause = `${col} ${op} ${Number(val)}`
+                    } else {
+                        clause = `${col} ${op} '${escapeSqlString(val)}'`
+                    }
                 }
             }
             items.push({ conjunction, clause })
@@ -2391,6 +2690,14 @@
         const geneSymbol = row['gene_symbol'] || ''
         const hgncId = row['hgnc_gene_id'] || ''
         const geneId = row['ensembl_gene_id'] || ''
+        const refseqId = row['refseq_id'] || ''
+        // ncbi_gene_id is a nullable INTEGER (NULL/absent when unavailable)
+        const ncbiGeneId = (row['ncbi_gene_id'] != null && Number(row['ncbi_gene_id']) > 0) ? String(row['ncbi_gene_id']) : ''
+        const inMANE = row['in_MANE'] === true || row['in_MANE'] === 'true'
+        const maneSelectRefseq = row['MANE_canonical_transcript_refseq_id'] || ''
+        const maneSelectEnsembl = row['MANE_canonical_transcript_ensembl_id'] || ''
+        const maneClinicalRefseq = row['MANE_clinical_transcript_refseq_id'] || ''
+        const maneClinicalEnsembl = row['MANE_clinical_transcript_ensembl_id'] || ''
         const displayName = geneSymbol || hgncId || geneId || 'Unknown'
         const chrom = row['gene_chrom'] || ''
         const start = row['gene_start']
@@ -2410,12 +2717,21 @@
         $('#back-to-search-link').attr('href', `index.html#${urlArgs}`)
 
         // --- Left column (row1-box1) ---
+        // Link helpers for RefSeq/Ensembl transcript accessions (values may be single or "; "/","-joined)
+        const encU = encodeURIComponent
+        const refseqLink = (acc) => `<a href="https://www.ncbi.nlm.nih.gov/nuccore/${encU(acc)}" target="_blank" class="action-link">${acc}</a>`
+        const enstLink = (t) => `<a href="https://ensembl.org/Homo_sapiens/Transcript/Summary?t=${encU(t)}" target="_blank" class="action-link">${t}</a>`
+        const linkIdList = (val, fn) => (val || '').split(/[;,]\s*/).map(s => s.trim()).filter(Boolean).map(fn).join(', ')
+        const maneSelectParts = [maneSelectRefseq ? linkIdList(maneSelectRefseq, refseqLink) : '', maneSelectEnsembl ? linkIdList(maneSelectEnsembl, enstLink) : ''].filter(Boolean).join(' &nbsp;/&nbsp; ')
+        const maneClinicalParts = [maneClinicalRefseq ? linkIdList(maneClinicalRefseq, refseqLink) : '', maneClinicalEnsembl ? linkIdList(maneClinicalEnsembl, enstLink) : ''].filter(Boolean).join(' &nbsp;/&nbsp; ')
+
         let box1 = '<table class="locus-info-table">'
         box1 += `<tr><td class="locus-info-label">Gene Symbol:</td><td style="font-weight: bold; font-size: 1.1em;">${geneSymbol}</td></tr>`
         box1 += `<tr><td class="locus-info-label">HGNC ID:</td><td>${hgncId ? `<a href="https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/${hgncId}" target="_blank" class="action-link">${hgncId}</a>` : ''}</td></tr>`
         box1 += `<tr><td class="locus-info-label">Gene ID:</td><td>${geneId ? `<a href="https://ensembl.org/Homo_sapiens/Gene/Summary?g=${geneId}" target="_blank" class="action-link">${geneId}</a>` : ''}</td></tr>`
+        box1 += `<tr><td class="locus-info-label">RefSeq ID:</td><td>${refseqId ? linkIdList(refseqId, refseqLink) : ''}</td></tr>`
+        box1 += `<tr><td class="locus-info-label">NCBI Gene ID:</td><td>${ncbiGeneId ? `<a href="https://www.ncbi.nlm.nih.gov/gene/${encU(ncbiGeneId)}" target="_blank" class="action-link">${ncbiGeneId}</a>` : ''}</td></tr>`
         box1 += `<tr><td class="locus-info-label">Aliases:</td><td>${row['gene_aliases'] || ''}</td></tr>`
-        box1 += `<tr><td class="locus-info-label">Coordinates (hg38):</td><td>${coordinates}</td></tr>`
         box1 += `<tr><td class="locus-info-label">Inheritance:</td><td>${renderInheritanceCell(row['inheritance'], 999)}</td></tr>`
         const sourceBadgeIds = {
             geneSymbol,
@@ -2426,26 +2742,6 @@
         box1 += `<tr><td class="locus-info-label">Sources:</td><td>${getSourcesBadges(row['sources'], sourceBadgeIds)}</td></tr>`
         box1 += '</table>'
         $('#locus-page-row1-box1').html(box1)
-
-        // Coordinates click handler: open IGV.js at this gene's locus (with the standard padding).
-        $('#coordinates-igv-link').click(async () => {
-            const c = $('#coordinates-igv-link').data('chrom')
-            const s = parseInt($('#coordinates-igv-link').data('start'), 10)
-            const e = parseInt($('#coordinates-igv-link').data('end'), 10)
-            if (!c || Number.isNaN(s) || Number.isNaN(e)) return
-            const paddedStart = Math.max(0, s - IGV_LOCUS_PADDING)
-            const paddedEnd = e + IGV_LOCUS_PADDING
-            GLOBAL_PAGE_STATE['igvLoc'] = `${c}:${paddedStart}-${paddedEnd}`
-            if (GLOBAL_PAGE_STATE['showIGV'] !== 1) {
-                GLOBAL_PAGE_STATE['showIGV'] = 1
-                $('#igv-row').show()
-                $('#show-igv-divider-text').hide()
-                $('#hide-igv-divider-text').show()
-            }
-            writePersistentPageStateToUrl()
-            await updateIgv()
-            $('#igv-row')[0].scrollIntoView({ behavior: 'smooth' })
-        })
 
         // --- Right column (row1-box2) ---
         let box2 = '<table class="locus-info-table">'
@@ -2467,6 +2763,11 @@
         const omeletLlmIcon = omeletLlmPct && omeletLlmHelp ? `<i class="question circle outline icon" style="margin-left: 10px; cursor: pointer;" data-html="${enrichHelpText(omeletLlmHelp)}"></i>` : ''
         const dispoIcon = dispoPct && dispoHelp ? `<i class="question circle outline icon" style="margin-left: 10px; cursor: pointer;" data-html="${enrichHelpText(dispoHelp)}"></i>` : ''
 
+        box2 += `<tr><td class="locus-info-label">MANE Select:</td><td>${maneSelectParts || (inMANE ? 'Yes' : 'No')}</td></tr>`
+        if (maneClinicalParts) {
+            box2 += `<tr><td class="locus-info-label">MANE Plus Clinical:</td><td>${maneClinicalParts}</td></tr>`
+        }
+        box2 += `<tr><td class="locus-info-label">Coordinates (hg38):</td><td>${coordinates}</td></tr>`
         box2 += `<tr><td class="locus-info-label">pLI (v2):</td><td>${pliV2}</td></tr>`
         box2 += `<tr><td class="locus-info-label">pLI (v4.1.1):</td><td>${pliV4}</td></tr>`
         box2 += `<tr><td class="locus-info-label">LOEUF (v4.1.1):</td><td>${loeuf}</td></tr>`
@@ -2476,6 +2777,27 @@
 
         box2 += '</table>'
         $('#locus-page-row1-box2').html(box2)
+
+        // Coordinates click handler: open IGV.js at this gene's locus (with the standard padding).
+        // Bound after box2 renders, since #coordinates-igv-link now lives in the right column.
+        $('#coordinates-igv-link').click(async () => {
+            const c = $('#coordinates-igv-link').data('chrom')
+            const s = parseInt($('#coordinates-igv-link').data('start'), 10)
+            const e = parseInt($('#coordinates-igv-link').data('end'), 10)
+            if (!c || Number.isNaN(s) || Number.isNaN(e)) return
+            const paddedStart = Math.max(0, s - IGV_LOCUS_PADDING)
+            const paddedEnd = e + IGV_LOCUS_PADDING
+            GLOBAL_PAGE_STATE['igvLoc'] = `${c}:${paddedStart}-${paddedEnd}`
+            if (GLOBAL_PAGE_STATE['showIGV'] !== 1) {
+                GLOBAL_PAGE_STATE['showIGV'] = 1
+                $('#igv-row').show()
+                $('#show-igv-divider-text').hide()
+                $('#hide-igv-divider-text').show()
+            }
+            writePersistentPageStateToUrl()
+            await updateIgv()
+            $('#igv-row')[0].scrollIntoView({ behavior: 'smooth' })
+        })
 
         // --- External Resource Links ---
         const externalLinksLine1 = []
@@ -2495,7 +2817,8 @@
         if (geneSymbol) externalLinksLine1.push(link('HGMD', `https://my.qiagendigitalinsights.com/bbp/view/hgmd/pro/gene.php?gene=${enc(geneSymbol)}`))
         if (geneSymbol) externalLinksLine1.push(link('MalaCards', `https://www.malacards.org/search/results?query=${enc(geneSymbol)}`))
         if (geneId) externalLinksLine1.push(link('GeneCards', `https://www.genecards.org/cgi-bin/carddisp.pl?gene=${enc(geneId)}`))
-        if (geneId) externalLinksLine1.push(link('NCBI Gene', `https://www.ncbi.nlm.nih.gov/gene/?term=${enc(geneId)}`))
+        if (ncbiGeneId) externalLinksLine1.push(link('NCBI Gene', `https://www.ncbi.nlm.nih.gov/gene/${enc(ncbiGeneId)}`))
+        else if (geneId) externalLinksLine1.push(link('NCBI Gene', `https://www.ncbi.nlm.nih.gov/gene/?term=${enc(geneId)}`))
         if (geneSymbol) externalLinksLine1.push(link('Monarch', `https://monarchinitiative.org/explore?search=${enc(geneSymbol)}#search`))
         if (geneSymbol) externalLinksLine1.push(link('Orphanet', `https://www.orpha.net/en/disease/gene/${enc(geneSymbol)}`))
         if (hgncId) externalLinksLine1.push(link('MARRVEL', `https://marrvel.org/human/gene/${enc(hgncId.replace('HGNC:', ''))}`))

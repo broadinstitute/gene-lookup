@@ -682,6 +682,56 @@
             getSortColumns: () => ['hgnc_gene_id'],
             getRequiredColumns: () => ['hgnc_gene_id'],
         },
+        refseq_id: {
+            displayName: 'RefSeq ID',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['refseq_id'],
+            getValue: (row) => row['refseq_id'] || '',
+            getSortColumns: () => ['refseq_id'],
+            getRequiredColumns: () => ['refseq_id'],
+        },
+        ncbi_gene_id: {
+            displayName: 'NCBI Gene ID',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['ncbi_gene_id'],
+            // ncbi_gene_id is a nullable INTEGER (NULL when unavailable)
+            getValue: (row) => (row['ncbi_gene_id'] != null && Number(row['ncbi_gene_id']) > 0) ? row['ncbi_gene_id'] : '',
+            getSortColumns: () => ['ncbi_gene_id'],
+            getRequiredColumns: () => ['ncbi_gene_id'],
+        },
+        in_MANE: {
+            displayName: 'In MANE',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['in_MANE'],
+            getValue: (row) => (row['in_MANE'] === true || row['in_MANE'] === 'true') ? 'Yes' : 'No',
+            getSortColumns: () => ['in_MANE'],
+            getRequiredColumns: () => ['in_MANE'],
+        },
+        MANE_canonical_transcript_refseq_id: {
+            displayName: 'MANE Canonical RefSeq',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['MANE_canonical_transcript_refseq_id'],
+            getValue: (row) => row['MANE_canonical_transcript_refseq_id'] || '',
+            getSortColumns: () => ['MANE_canonical_transcript_refseq_id'],
+            getRequiredColumns: () => ['MANE_canonical_transcript_refseq_id'],
+        },
+        MANE_canonical_transcript_ensembl_id: {
+            displayName: 'MANE Canonical Ensembl',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['MANE_canonical_transcript_ensembl_id'],
+            getValue: (row) => row['MANE_canonical_transcript_ensembl_id'] || '',
+            getSortColumns: () => ['MANE_canonical_transcript_ensembl_id'],
+            getRequiredColumns: () => ['MANE_canonical_transcript_ensembl_id'],
+        },
+        MANE_clinical_transcript_refseq_id: {
+            displayName: 'MANE Clinical RefSeq',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['MANE_clinical_transcript_refseq_id'],
+            getValue: (row) => getTruncatedText(row['MANE_clinical_transcript_refseq_id'], 40),
+            getSortColumns: () => ['MANE_clinical_transcript_refseq_id'],
+            getRequiredColumns: () => ['MANE_clinical_transcript_refseq_id'],
+        },
+        MANE_clinical_transcript_ensembl_id: {
+            displayName: 'MANE Clinical Ensembl',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['MANE_clinical_transcript_ensembl_id'],
+            getValue: (row) => getTruncatedText(row['MANE_clinical_transcript_ensembl_id'], 40),
+            getSortColumns: () => ['MANE_clinical_transcript_ensembl_id'],
+            getRequiredColumns: () => ['MANE_clinical_transcript_ensembl_id'],
+        },
         gene_chrom: {
             displayName: 'Chrom',
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['gene_chrom'],
@@ -1045,10 +1095,11 @@
     const buildSearchWhereClause = (rawQuery) => {
         if (!rawQuery || !rawQuery.trim()) return ''
 
-        // Check for comma-separated list of queries. Use a lookbehind/lookahead so that commas
-        // between digits (eg. thousands-separators in genomic coordinates like chr17:43,044,295-43,125,483)
-        // are preserved instead of being treated as list separators.
-        const queries = rawQuery.split(/(?<!\d),(?!\d)/).map(q => q.trim()).filter(q => q)
+        // Check for comma-separated list of queries. Split on any comma EXCEPT one sitting between
+        // two digits, so thousands-separators in genomic coordinates (eg. chr17:43,044,295-43,125,483)
+        // are preserved while gene lists still split correctly even when a symbol ends in a digit
+        // (eg. "SMN1, CFTR" or "SMN1,CFTR" -> ["SMN1", "CFTR"]).
+        const queries = rawQuery.split(/(?<!\d),|,(?!\d)/).map(q => q.trim()).filter(q => q)
         if (queries.length > 1) {
             const clauses = queries.map(q => buildSingleSearchWhereClause(q)).filter(c => c)
             if (clauses.length === 0) return ''
@@ -1082,9 +1133,29 @@
             return `(UPPER(hgnc_gene_id) = UPPER('${escapedQ}'))`
         }
 
-        // Ensembl gene ID: ENSG00000000001
-        if (/^ENSG\d+$/i.test(q)) {
-            return `(UPPER(ensembl_gene_id) = UPPER('${escapedQ}'))`
+        // Ensembl gene ID (optional version, matched version-insensitively): ENSG00000000001[.N]
+        if (/^ENSG\d+(\.\d+)?$/i.test(q)) {
+            return `(UPPER(ensembl_gene_id) = UPPER('${escapeSqlString(q.replace(/\.\d+$/, ''))}'))`
+        }
+
+        // NCBI Gene ID (Entrez): all digits.
+        if (/^\d+$/.test(q)) {
+            return `(ncbi_gene_id = ${Number(q)})`
+        }
+
+        // RefSeq accession (gene/transcript, optional version): NM_/NR_/NG_/NP_/XM_/XR_/XP_. Matched
+        // version-insensitively against the HGNC gene-level RefSeq id and the MANE RefSeq accessions.
+        if (/^[NX][MRGP]_\d+(\.\d+)?$/i.test(q)) {
+            const rs = q.replace(/\.\d+$/, '').toUpperCase()
+            const concat = `UPPER(CONCAT(${REFSEQ_MATCH_COLUMNS.map(c => `IFNULL(${c}, '')`).join(", ';', ")}))`
+            return `(EXISTS(SELECT 1 FROM UNNEST(REGEXP_EXTRACT_ALL(${concat}, r'[A-Z]+_[0-9]+')) rs WHERE rs = '${escapeSqlString(rs)}'))`
+        }
+
+        // MANE Ensembl transcript ID (optional version), matched version-insensitively.
+        if (/^ENST\d+(\.\d+)?$/i.test(q)) {
+            const t = q.replace(/\.\d+$/, '').toUpperCase()
+            const concat = `UPPER(CONCAT(IFNULL(MANE_canonical_transcript_ensembl_id, ''), ';', IFNULL(MANE_clinical_transcript_ensembl_id, '')))`
+            return `(EXISTS(SELECT 1 FROM UNNEST(REGEXP_EXTRACT_ALL(${concat}, r'ENST[0-9]+')) t WHERE t = '${escapeSqlString(t)}'))`
         }
 
         // HPO term ID: HP:0001250. DBNSFP_hpo_id is semicolon-separated, so match as substring.
@@ -1107,6 +1178,226 @@
         const textClauses = phenotypeColumns.map(col => `UPPER(${col}) LIKE UPPER('%${escapedQ}%')`)
         const geneClause = `UPPER(gene_symbol) = UPPER('${escapedQ}') OR UPPER(gene_aliases) LIKE UPPER('%${escapedQ}%')`
         return `(${geneClause} OR ${textClauses.join(' OR ')})`
+    }
+
+    // ----- Gene-panel / gene-list search helpers -----
+    // These support searching a list of genes (typed comma-separated, or uploaded as a TXT/TSV
+    // file) against the structured gene identifier columns, plus a "found vs. missing" report.
+
+    // Classify a single search token as a gene identifier. Returns 'ensembl', 'hgnc', 'refseq',
+    // 'symbol', or 'other'. 'other' covers genomic regions (contain ':'), multi-word disease phrases
+    // (contain whitespace), and anything else that is not shaped like a gene identifier.
+    const classifyGeneToken = (token) => {
+        const t = String(token == null ? '' : token).trim()
+        if (!t) return 'other'
+        const up = t.toUpperCase()
+        if (/^ENSG\d+(\.\d+)?$/.test(up)) return 'ensembl'
+        if (/^HGNC:\d+$/.test(up)) return 'hgnc'
+        // RefSeq accession: transcript (NM_/NR_/XM_/XR_), gene (NG_), or protein (NP_/XP_), optional version.
+        if (/^[NX][MRGP]_\d+(\.\d+)?$/.test(up)) return 'refseq'
+        // Gene-symbol shape: starts alphanumeric, then letters/digits/-/_/. with no whitespace
+        // or ':'. This excludes regions like chr1:100-200 and phrases like "limb girdle".
+        if (/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(t)) return 'symbol'
+        return 'other'
+    }
+
+    // RefSeq accession columns matched for RefSeq gene/transcript IDs: HGNC gene-level RefSeq plus the
+    // MANE Select / Plus-Clinical transcript RefSeq accessions. Version suffixes are ignored on both
+    // sides. (These columns were added to the pipeline; the BigQuery table must be regenerated for
+    // RefSeq matching to work.)
+    const REFSEQ_MATCH_COLUMNS = ['refseq_id', 'MANE_canonical_transcript_refseq_id', 'MANE_clinical_transcript_refseq_id']
+
+    // Extra SELECT-list columns needed so the found/missing partition can see RefSeq accessions --
+    // but only when the token list actually contains a RefSeq id, so panels of only symbols/IDs don't
+    // reference these columns (which may not yet exist in the deployed table).
+    const refseqSelectColsFor = (tokens) => tokens.some(t => classifyGeneToken(t) === 'refseq') ? `, ${REFSEQ_MATCH_COLUMNS.join(', ')}` : ''
+
+    // Stricter test used only to decide whether a TYPED comma-separated list should be treated as a
+    // gene panel (and get a found/missing banner). Requires an explicit gene ID, or a symbol token
+    // that carries a digit or an uppercase letter -- this keeps lowercase free-text disease words
+    // (eg. "ataxia", "epilepsy") from being mistaken for gene symbols and mislabeled "not found".
+    const isTypedPanelToken = (token) => {
+        const kind = classifyGeneToken(token)
+        if (kind === 'ensembl' || kind === 'hgnc' || kind === 'refseq') return true
+        if (kind !== 'symbol') return false
+        return /\d/.test(token) || /[A-Z]/.test(token)
+    }
+
+    // Build a WHERE clause matching any of the given gene identifiers against the structured
+    // gene_symbol / gene_aliases / ensembl_gene_id / hgnc_gene_id / RefSeq columns (OR across fields
+    // and across the whole list). Non-gene-shaped tokens ('other') are ignored. Returns '' if none.
+    const buildStructuredGeneListClause = (tokens) => {
+        const symbols = new Set(), ensembl = new Set(), hgnc = new Set(), refseq = new Set()
+        for (const token of tokens) {
+            const kind = classifyGeneToken(token)
+            const up = String(token).trim().toUpperCase()
+            // ensembl_gene_id / RefSeq accessions are matched version-insensitively; drop any ".NN".
+            if (kind === 'ensembl') ensembl.add(up.replace(/\.\d+$/, ''))
+            else if (kind === 'hgnc') hgnc.add(up)
+            else if (kind === 'refseq') refseq.add(up.replace(/\.\d+$/, ''))
+            else if (kind === 'symbol') symbols.add(up)
+        }
+        const sqlList = (s) => Array.from(s).map(v => `'${escapeSqlString(v)}'`).join(', ')
+        const parts = []
+        if (symbols.size) {
+            parts.push(`UPPER(gene_symbol) IN UNNEST([${sqlList(symbols)}])`)
+            // gene_aliases is a comma-separated list of alternate symbols; match any exactly.
+            parts.push(`EXISTS(SELECT 1 FROM UNNEST(SPLIT(UPPER(gene_aliases), ',')) alias WHERE TRIM(alias) IN UNNEST([${sqlList(symbols)}]))`)
+        }
+        if (ensembl.size) parts.push(`UPPER(ensembl_gene_id) IN UNNEST([${sqlList(ensembl)}])`)
+        if (hgnc.size) parts.push(`UPPER(hgnc_gene_id) IN UNNEST([${sqlList(hgnc)}])`)
+        if (refseq.size) {
+            // Extract every RefSeq accession (version stripped) from the gene-level + MANE RefSeq
+            // columns and match against the version-stripped tokens.
+            const concat = `UPPER(CONCAT(${REFSEQ_MATCH_COLUMNS.map(c => `IFNULL(${c}, '')`).join(", ';', ")}))`
+            parts.push(`EXISTS(SELECT 1 FROM UNNEST(REGEXP_EXTRACT_ALL(${concat}, r'[A-Z]+_[0-9]+')) rs WHERE rs IN UNNEST([${sqlList(refseq)}]))`)
+        }
+        if (!parts.length) return ''
+        return `(${parts.join(' OR ')})`
+    }
+
+    // Normalize a chromosome name to match gene_chrom (Ensembl seq_region.name): drop any "chr"
+    // prefix, uppercase, and map mitochondrial "M" to "MT".
+    const normalizeChrom = (c) => {
+        let up = String(c == null ? '' : c).trim().toUpperCase().replace(/^CHR/, '')
+        if (up === 'M') up = 'MT'
+        return up
+    }
+
+    // Parse a BED file's text into deduplicated regions. Uses the first 3 columns as
+    // chrom, start (0-based), end (1-based half-open). Comment/track/browser and malformed
+    // lines are skipped. Returns [{chrom (normalized), start0, end1, label}].
+    const parseRegionsFromBedText = (text) => {
+        const regions = []
+        const seen = new Set()
+        for (const line of String(text || '').split(/\r\n|\r|\n/)) {
+            const trimmed = line.trim()
+            if (!trimmed || /^(#|track\b|browser\b)/i.test(trimmed)) continue
+            const cols = trimmed.split(/\s+/)
+            if (cols.length < 3 || !/^\d+$/.test(cols[1]) || !/^\d+$/.test(cols[2])) continue
+            const chrom = normalizeChrom(cols[0])
+            if (!chrom) continue
+            const start0 = parseInt(cols[1], 10)
+            const end1 = parseInt(cols[2], 10)
+            const key = `${chrom}:${start0}-${end1}`
+            if (seen.has(key)) continue
+            seen.add(key)
+            regions.push({ chrom, start0, end1, label: `${cols[0].trim()}:${start0}-${end1}` })
+        }
+        return regions
+    }
+
+    // Parse the first column of an uploaded TXT/TSV/CSV file into deduplicated gene identifiers and
+    // hg38 regions (original casing preserved for display). Splits rows on newlines and takes the
+    // first tab- or comma-delimited field. A field shaped like an hg38 region (eg. chr1:1000-2000,
+    // 1-based inclusive as in the search box) becomes a region; anything else is treated as a gene
+    // identifier (symbol, alias, HGNC, ENSG, or RefSeq). A leading header row is skipped. Returns
+    // { genes: [token], regions: [{chrom, start0, end1, label}] }.
+    const parseUploadedListFile = (text) => {
+        const genes = [], regions = []
+        const seenGene = new Set(), seenRegion = new Set()
+        const headerRegExp = /^(gene|genes|gene[_ ]?symbol|gene[_ ]?name|gene[_ ]?id|symbol|hgnc([_ ]?id)?|ensembl([_ ]?gene[_ ]?id)?|region|regions|locus|coordinates?)$/i
+        const lines = String(text || '').split(/\r\n|\r|\n/)
+        for (let i = 0; i < lines.length; i++) {
+            // Take the first TAB field first so a region using comma thousands-separators
+            // (chr17:43,044,295-43,125,483) is not chopped apart before the region test runs.
+            const field = lines[i].split('\t')[0].trim()
+            if (!field) continue
+            const regionMatch = field.match(REFERENCE_REGION_REGEXP)
+            if (regionMatch) {
+                const chrom = normalizeChrom(regionMatch[1])
+                const start1 = parseInt(regionMatch[2].replace(/,/g, ''), 10)
+                const end1 = parseInt(regionMatch[3].replace(/,/g, ''), 10)
+                const key = `${chrom}:${start1}-${end1}`
+                if (chrom && !seenRegion.has(key)) {
+                    seenRegion.add(key)
+                    // Store 0-based start so region-overlap logic is shared with BED (start0 = start1 - 1).
+                    regions.push({ chrom, start0: start1 - 1, end1, label: field })
+                }
+            } else {
+                // Non-region row: take the first comma field (handles CSV) as the gene token, and
+                // keep it only if it is shaped like a gene identifier. Free-text phrases (spaces,
+                // etc.) are dropped so they can't silently widen the search into a whole-table query.
+                const token = field.split(',')[0].trim()
+                if (i === 0 && headerRegExp.test(token)) continue  // skip header row
+                if (token && classifyGeneToken(token) !== 'other') {
+                    const key = token.toUpperCase()
+                    if (!seenGene.has(key)) { seenGene.add(key); genes.push(token) }
+                }
+            }
+        }
+        return { genes, regions }
+    }
+
+    // Build a WHERE clause matching genes that overlap any of the given regions. BED coordinates
+    // are 0-based start / 1-based end; gene_start/gene_end are 1-based inclusive, so a gene overlaps
+    // a region iff gene_start <= end1 AND gene_end > start0. Returns '' if there are no regions.
+    const buildRegionListClause = (regions) => {
+        const structs = regions.map(r => `STRUCT('${escapeSqlString(r.chrom)}' AS c, ${r.start0} AS s, ${r.end1} AS e)`)
+        if (!structs.length) return ''
+        return `EXISTS(SELECT 1 FROM UNNEST([${structs.join(', ')}]) r WHERE gene_chrom = r.c AND gene_start <= r.e AND gene_end > r.s)`
+    }
+
+    // Given the input regions and the gene rows returned by a region-overlap lookup (each with
+    // gene_chrom, gene_start, gene_end), partition the input regions into { matched, missing }
+    // (arrays of region labels): matched = overlaps >= 1 gene, missing = overlaps none.
+    const partitionRegionMatches = (regions, rows) => {
+        const byChrom = new Map()
+        for (const row of (rows || [])) {
+            const c = String(row.gene_chrom == null ? '' : row.gene_chrom).toUpperCase()
+            if (!byChrom.has(c)) byChrom.set(c, [])
+            byChrom.get(c).push({ s: Number(row.gene_start), e: Number(row.gene_end) })
+        }
+        const matched = [], missing = []
+        const seen = new Set()
+        for (const region of regions) {
+            const key = `${region.chrom}:${region.start0}-${region.end1}`
+            if (seen.has(key)) continue
+            seen.add(key)
+            const genes = byChrom.get(region.chrom) || []
+            const ok = genes.some(g => g.s <= region.end1 && g.e > region.start0)
+            ;(ok ? matched : missing).push(region.label)
+        }
+        return { matched, missing }
+    }
+
+    // Given the input gene tokens and the rows returned by a structured gene-list lookup (with
+    // gene_symbol, gene_aliases, ensembl_gene_id, hgnc_gene_id, and -- when RefSeq tokens are present
+    // -- the RefSeq columns), partition the input tokens into { matched, missing } (both arrays of
+    // original-cased tokens, deduplicated). 'other' tokens are excluded from both.
+    const partitionGeneListMatches = (tokens, matchedRows) => {
+        const symbolSet = new Set(), ensemblSet = new Set(), hgncSet = new Set(), refseqSet = new Set()
+        for (const row of (matchedRows || [])) {
+            if (row.gene_symbol) symbolSet.add(String(row.gene_symbol).toUpperCase())
+            if (row.gene_aliases) {
+                for (const alias of String(row.gene_aliases).split(',')) {
+                    const v = alias.trim().toUpperCase()
+                    if (v) symbolSet.add(v)
+                }
+            }
+            if (row.ensembl_gene_id) ensemblSet.add(String(row.ensembl_gene_id).toUpperCase().replace(/\.\d+$/, ''))
+            if (row.hgnc_gene_id) hgncSet.add(String(row.hgnc_gene_id).toUpperCase())
+            for (const col of REFSEQ_MATCH_COLUMNS) {
+                const accs = row[col] ? String(row[col]).toUpperCase().match(/[A-Z]+_[0-9]+/g) : null
+                if (accs) for (const a of accs) refseqSet.add(a)  // version already excluded by the regex
+            }
+        }
+        const matched = [], missing = []
+        const seen = new Set()
+        for (const token of tokens) {
+            const kind = classifyGeneToken(token)
+            if (kind === 'other') continue
+            const up = String(token).trim().toUpperCase()
+            const key = (kind === 'ensembl' || kind === 'refseq') ? up.replace(/\.\d+$/, '') : up
+            if (seen.has(key)) continue
+            seen.add(key)
+            const ok = kind === 'ensembl' ? ensemblSet.has(key)
+                : kind === 'hgnc' ? hgncSet.has(key)
+                : kind === 'refseq' ? refseqSet.has(key)
+                : symbolSet.has(key)
+            ;(ok ? matched : missing).push(String(token).trim())
+        }
+        return { matched, missing }
     }
 
     /**
@@ -1151,7 +1442,9 @@
                 // load_bigquery.py fills NaN in object columns with '' before upload, so
                 // absent string values are stored as empty strings, not NULL. Match both.
                 const colType = BIGQUERY_COLUMN_TYPES[col]
-                if (colType !== 'INTEGER' && colType !== 'FLOAT') {
+                // INTEGER/FLOAT/BOOLEAN columns store real NULLs (never empty strings), so a plain
+                // IS NULL / IS NOT NULL is correct; string columns may hold '' instead of NULL.
+                if (colType !== 'INTEGER' && colType !== 'FLOAT' && colType !== 'BOOLEAN') {
                     clause = op === 'IS NULL'
                         ? `(${col} IS NULL OR ${col} = '')`
                         : `(${col} IS NOT NULL AND ${col} != '')`
@@ -1162,11 +1455,17 @@
                 clause = `${col} ${op} '${escapeSqlString(val)}'`
             } else {
                 const colType = BIGQUERY_COLUMN_TYPES[col]
-                const isNumericCol = colType === 'INTEGER' || colType === 'FLOAT'
-                if (isNumericCol && val.trim() !== '' && isFinite(Number(val))) {
-                    clause = `${col} ${op} ${Number(val)}`
+                if (colType === 'BOOLEAN') {
+                    // Accept true/false, yes/no, or 1/0 (case-insensitive). validateForm() rejects anything
+                    // else before we get here, so this never silently coerces unexpected text to false.
+                    clause = `${col} ${op} ${/^(true|yes|y|1)$/i.test(val.trim()) ? 'true' : 'false'}`
                 } else {
-                    clause = `${col} ${op} '${escapeSqlString(val)}'`
+                    const isNumericCol = colType === 'INTEGER' || colType === 'FLOAT'
+                    if (isNumericCol && val.trim() !== '' && isFinite(Number(val))) {
+                        clause = `${col} ${op} ${Number(val)}`
+                    } else {
+                        clause = `${col} ${op} '${escapeSqlString(val)}'`
+                    }
                 }
             }
             items.push({ conjunction, clause })

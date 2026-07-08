@@ -30,8 +30,10 @@ Now, try generating this type of summary for the following phenotype description
 
 """
 
-# read the combined table
-df = pd.read_table(args.combined_table)
+# read the combined table. ncbi_gene_id is forced to str so its empty cells stay empty and its
+# integer values aren't coerced to floats (e.g. "1.0") when written back out; load_bigquery.py then
+# reads it as nullable Int64 so missing ids become BigQuery NULLs rather than 0.
+df = pd.read_table(args.combined_table, dtype={"ncbi_gene_id": "str"})
 
 def summarize_phenotypes(row):
 
@@ -78,7 +80,10 @@ df["LLM_phenotype_summary"] = df.apply(summarize_phenotypes, axis=1)
 
 # move the LLM_phenotype_summary column to be after the 'inheritance' column
 initial_columns = [
-    "ensembl_gene_id", "hgnc_gene_id", "gene_symbol", "gene_aliases",  "pLI_v2", "pLI_v4", "lof_oe_ci_upper_v4", "mis_oe_ci_upper_v4", "s_het",
+    "ensembl_gene_id", "hgnc_gene_id", "refseq_id", "ncbi_gene_id", "gene_symbol", "gene_aliases",
+    "in_MANE", "MANE_canonical_transcript_refseq_id", "MANE_canonical_transcript_ensembl_id",
+    "MANE_clinical_transcript_refseq_id", "MANE_clinical_transcript_ensembl_id",
+    "pLI_v2", "pLI_v4", "lof_oe_ci_upper_v4", "mis_oe_ci_upper_v4", "s_het",
     "inheritance",  "LLM_phenotype_summary", "sources",
     "gene_chrom", "gene_start", "gene_end",
 ]

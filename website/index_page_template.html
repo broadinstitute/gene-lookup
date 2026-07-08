@@ -102,14 +102,21 @@
                                 ataxia
                             </a>, <a href="index.html?#showRs=1&q=chr1%3A1000000-2000000">
                                 chr1:1000000-2000000
+                            </a>, <a href="index.html?#showRs=1&q=SMN1%2C%20CFTR%2C%20DMD">
+                                SMN1, CFTR, DMD
                             </a>
                         </span>
                     </div>
+                    <!-- Chip shown when a gene list file has been uploaded (ChatGPT-style attachment) -->
+                    <div id="gene-file-chip-container" style="display:none; margin-bottom: 8px;"></div>
                     <div class="ui action input">
-                        <input type="text" id="search-query" name="search-query" placeholder="Search by gene (SMN1), disease (ataxia), or region (chr1:1000000-2000000)">
+                        <button id="gene-file-upload-button" class="ui basic icon button" type="button" data-html="Upload genes or regions (TSV/TXT/BED) to search for a whole panel at once" data-position="top center" style="border-top-right-radius: 0; border-bottom-right-radius: 0;"><i class="plus icon"></i></button>
+                        <input type="text" id="search-query" name="search-query" placeholder="Search by gene, disease, or region — or a comma-separated gene list (SMN1, CFTR, DMD)">
                         <button id="filter-button" class="ui basic icon button" type="button" data-html="Show or hide additional filters" data-position="top center"><i class="filter icon rotated" style="transition: transform 0.3s;"></i></button>
                         <button id="search-button" class="ui primary button" type="submit">Search</button>
                     </div>
+                    <!-- Hidden native file input driven by the (+) button and the upload modal -->
+                    <input type="file" id="gene-file-input" accept=".txt,.tsv,.csv,.bed,.gz,.txt.gz,.tsv.gz,.csv.gz,.bed.gz,text/plain,text/tab-separated-values,text/csv,application/gzip" style="display:none">
                 </div>
             </form>
 
@@ -241,6 +248,11 @@
                         <span>Loading...</span>
                     </div>
                 </div>
+                <!-- Gene-panel "found vs. missing" summary, shown for gene-list searches -->
+                <div id="gene-panel-summary" class="ui message" style="display:none; margin-bottom: 1em;">
+                    <i class="close icon"></i>
+                    <div id="gene-panel-summary-content"></div>
+                </div>
                 <div class="pagination-container top-pagination"></div>
                 <div id="results-table"></div>
                 <div class="pagination-container bottom-pagination"></div>
@@ -252,6 +264,43 @@
             </div>
         </div>
         <div class="one wide column"></div>
+    </div>
+</div>
+
+<!-- modal dialog for uploading a gene list file -->
+<div class="ui modal" id="gene-file-upload-modal">
+    <i class="close icon"></i>
+    <div class="header">Upload genes or regions</div>
+    <div class="content">
+        <p>Search for multiple genes or regions at once. Drag &amp; drop a TSV, TXT, or BED file below,
+           or click to select one. Files can be gzip-compressed (ie. have a .gz extension).</p>
+        <ul style="margin-top: 0;">
+            <li><b>TXT / TSV</b> &mdash; the first column contains gene symbols, gene ids (HGNC, ENSG, or RefSeq), or hg38 genomic regions &mdash; one per row. A header row is optional.</li>
+            <li><b>BED</b> &mdash; the first 3 columns represent the hg38 coordinates: chrom, start, end (0-based, half-open).</li>
+        </ul>
+        <div id="gene-file-dropzone" style="border: 2px dashed #b0b8c4; border-radius: 8px; padding: 40px 20px; text-align: center; color: #667; cursor: pointer; transition: background-color 0.15s, border-color 0.15s;">
+            <i class="file alternate outline icon" style="font-size: 2.5em; color: #9aa4b2;"></i>
+            <div style="margin-top: 10px; font-size: 1.05em;">Drag &amp; drop a file here, or <span style="color: #2185d0; text-decoration: underline;">browse</span></div>
+            <div style="margin-top: 6px; font-size: 0.85em; color: #99a;">TSV / TXT / BED &nbsp;(can be .gz compressed)</div>
+        </div>
+        <div id="gene-file-upload-error" class="ui negative message" style="display:none; margin-top: 12px;"></div>
+    </div>
+    <div class="actions">
+        <div class="ui deny button">Cancel</div>
+    </div>
+</div>
+
+<!-- modal dialog listing all "not found" genes from a gene-panel search -->
+<div class="ui modal" id="gene-panel-missing-modal">
+    <i class="close icon"></i>
+    <div class="header">Genes not found</div>
+    <div class="content">
+        <p id="gene-panel-missing-modal-subtitle" style="color:#667;"></p>
+        <textarea id="gene-panel-missing-modal-text" readonly rows="16" style="width:100%; font-family: monospace; font-size: 0.95em; resize: vertical;"></textarea>
+    </div>
+    <div class="actions">
+        <div id="gene-panel-missing-modal-copy" class="ui button"><i class="copy icon"></i> Copy</div>
+        <div class="ui positive button">Close</div>
     </div>
 </div>
 
@@ -303,10 +352,19 @@
             const key = URL_PARAM_REVERSE_ALIASES[urlKey] || urlKey
             if (key in DEFAULT_GLOBAL_PAGE_STATE && value != null) {
                 if (preferExisting && GLOBAL_PAGE_STATE[key] !== DEFAULT_GLOBAL_PAGE_STATE[key]) continue
-                // Convert string values to appropriate types
-                GLOBAL_PAGE_STATE[key] = value === 'true' ? true :
-                                        value === 'false' ? false :
-                                        !isNaN(value) ? Number(value) : value
+                // Convert string values to the type of the key's default value. Coercing purely by
+                // "looks like a number" was wrong in two ways: a purely-numeric search query (e.g.
+                // q=12345, plausible for an NCBI Gene ID) became a Number and broke string callers, and
+                // an empty numeric param (e.g. pliThreshold=) became 0 via Number('') and fabricated a
+                // filter. Only genuinely number-typed keys are coerced, and only for non-empty values.
+                const defaultVal = DEFAULT_GLOBAL_PAGE_STATE[key]
+                if (typeof defaultVal === 'boolean') {
+                    GLOBAL_PAGE_STATE[key] = value === 'true'
+                } else if (typeof defaultVal === 'number') {
+                    GLOBAL_PAGE_STATE[key] = (value !== '' && !isNaN(value)) ? Number(value) : value
+                } else {
+                    GLOBAL_PAGE_STATE[key] = value
+                }
                 if (key === 'showColumns') {
                     let names = value.split(SHOW_COLUMNS_VALUE_DELIMITER)
                     // Validate: drop any unrecognized column names
@@ -746,6 +804,14 @@
     }
 
     const getOperatorsForType = (colType) => {
+        if (colType === 'BOOLEAN') {
+            return [
+                { value: '=', label: '=' },
+                { value: '!=', label: '≠' },
+                { value: 'IS NULL', label: 'IS NULL' },
+                { value: 'IS NOT NULL', label: 'IS NOT NULL' },
+            ]
+        }
         if (colType === 'INTEGER' || colType === 'FLOAT') {
             return [
                 { value: '=', label: '=' },
@@ -791,6 +857,7 @@
     const getPlaceholderForType = (colType) => {
         if (colType === 'FLOAT') return 'e.g., 0.5'
         if (colType === 'INTEGER') return 'e.g., 3'
+        if (colType === 'BOOLEAN') return 'true or false'
         return 'e.g., value'
     }
 
@@ -1110,7 +1177,9 @@
             $('body').css('cursor', 'wait')
 
             const sortColumn = GLOBAL_PAGE_STATE['sc'] || DEFAULT_SORT_COLUMN
-            const sortDirection = GLOBAL_PAGE_STATE['sd'] || DEFAULT_SORT_DIRECTION
+            // Only ASC/DESC are valid; coerce anything else (incl. a value injected via the URL) to ASC
+            // so it cannot inject into the ORDER BY clause below.
+            const sortDirection = GLOBAL_PAGE_STATE['sd'] === 'DESC' ? 'DESC' : 'ASC'
             let sortExpression = sortColumn
             if (TABLE_COLUMNS[sortColumn] && TABLE_COLUMNS[sortColumn].getSortColumns) {
                 sortExpression = TABLE_COLUMNS[sortColumn].getSortColumns().join(` ${sortDirection}, `)
@@ -1493,12 +1562,11 @@
     /**
      * Build all search and filter conditions as an array of SQL WHERE clause strings.
      */
-    const buildAllConditions = () => {
+    // Conditions from the custom-filter rows and the advanced-filter panel (inheritance, sources,
+    // min-sources, constraint scores). Excludes the search query and any uploaded gene/region file,
+    // so it can be reused by the gene-panel summary (which supplies its own panel clause).
+    const buildFilterConditions = () => {
         const conditions = []
-
-        // Search query
-        const searchClause = buildSearchWhereClause(GLOBAL_PAGE_STATE['searchQuery'])
-        if (searchClause) conditions.push(searchClause)
 
         // Custom filters from custom filter rows
         const customClause = buildCustomFiltersWhereClause()
@@ -1558,6 +1626,329 @@
         return conditions
     }
 
+    const buildAllConditions = () => {
+        const conditions = []
+
+        // Uploaded file (gene list or BED regions): restrict to those genes/regions, ANDed with any
+        // keywords typed in the search box (e.g. upload a panel, type "epilepsy" to narrow it).
+        // When a file is attached, never fall through to an unrestricted whole-table query: if it
+        // somehow produced no clause, match zero rows instead (upload is normally rejected when empty).
+        if (UPLOADED_FILE) {
+            conditions.push(buildUploadedFileClause() || 'FALSE')
+        }
+
+        // Search query. If the box holds a recognized typed gene panel, match it structurally (the
+        // same matching the found/missing summary uses) so the table and banner never disagree;
+        // otherwise fall back to the broad free-text search.
+        const typedPanel = getTypedPanelTokens()
+        const searchClause = typedPanel
+            ? buildStructuredGeneListClause(typedPanel)
+            : buildSearchWhereClause(GLOBAL_PAGE_STATE['searchQuery'])
+        if (searchClause) conditions.push(searchClause)
+
+        conditions.push(...buildFilterConditions())
+
+        return conditions
+    }
+
+    // ===== Gene-panel search: upload genes/regions (TSV/TXT/BED) + found-vs-missing summary =====
+
+    // The currently uploaded file, kept in memory only (not the URL hash) so arbitrarily large panels
+    // are supported; a page reload clears it. Shape:
+    //   { name, genes: [token, ...], regions: [{chrom, start0, end1, label}, ...] }
+    // A TXT/TSV first column may mix gene identifiers and hg38 regions; a BED file yields regions.
+    let UPLOADED_FILE = null
+    // Incremented on each fresh search so a slow summary query for a superseded search is discarded.
+    let panelSearchSeq = 0
+    // The current "not found" list (genes or region labels), for the "more..." modal and copy actions.
+    let panelMissing = []
+    const MAX_INLINE_MISSING = 20
+
+    const legacyCopyText = (text) => {
+        const ta = document.createElement('textarea')
+        ta.value = text
+        ta.style.position = 'fixed'
+        ta.style.opacity = '0'
+        document.body.appendChild(ta)
+        ta.select()
+        try { document.execCommand('copy') } catch (e) { /* ignore */ }
+        document.body.removeChild(ta)
+    }
+    const copyTextToClipboard = (text) => {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).catch(() => legacyCopyText(text))
+        } else {
+            legacyCopyText(text)
+        }
+    }
+
+    // Short "N genes" / "N regions" / "N items" label describing the uploaded file's contents.
+    const uploadedItemsLabel = () => {
+        const g = UPLOADED_FILE ? UPLOADED_FILE.genes.length : 0
+        const r = UPLOADED_FILE ? UPLOADED_FILE.regions.length : 0
+        if (g && r) return `${(g + r).toLocaleString()} items`
+        if (r) return `${r.toLocaleString()} region${r === 1 ? '' : 's'}`
+        return `${g.toLocaleString()} gene${g === 1 ? '' : 's'}`
+    }
+
+    // Render (or hide) the uploaded-file chip above the search box.
+    const renderUploadedFileChip = () => {
+        const $container = $('#gene-file-chip-container')
+        if (!UPLOADED_FILE) {
+            $container.hide().empty()
+            return
+        }
+        $container.html(`
+            <div class="ui label" style="display: inline-flex; align-items: center; padding: 8px 10px; font-size: 0.95em;">
+                <i class="file alternate outline icon"></i>
+                <span style="margin: 0 6px;">${escapeHtml(UPLOADED_FILE.name)}</span>
+                <span style="color: #667; font-weight: normal;">${uploadedItemsLabel()}</span>
+                <i class="delete icon" id="gene-file-chip-remove" title="Remove uploaded file" style="cursor: pointer; margin-left: 8px;"></i>
+            </div>
+        `).show()
+    }
+
+    const clearUploadedFile = () => {
+        UPLOADED_FILE = null
+        renderUploadedFileChip()
+        // Discard any in-flight summary query and clear the now-orphaned banner.
+        panelSearchSeq++
+        hidePanelSummary()
+    }
+
+    // Read a file's text, transparently decompressing gzip (.gz) via DecompressionStream.
+    const readUploadedFileText = async (file) => {
+        if (/\.gz$/i.test(file.name)) {
+            if (typeof DecompressionStream === 'undefined') {
+                throw new Error('This browser cannot decompress .gz files. Please upload an uncompressed file.')
+            }
+            return await new Response(file.stream().pipeThrough(new DecompressionStream('gzip'))).text()
+        }
+        return await file.text()
+    }
+
+    // .bed / .bed.gz are parsed as 3-column genomic regions; everything else (TXT/TSV) has its first
+    // column parsed into gene identifiers and/or hg38 regions.
+    const isBedFileName = (name) => /\.bed(\.gz)?$/i.test(String(name || ''))
+
+    // Read a chosen/dropped file, parse it (TXT/TSV list or BED regions), show the chip, close the modal.
+    const handleUploadedFile = async (file) => {
+        const $err = $('#gene-file-upload-error')
+        $err.hide().empty()
+        if (!file) return
+        try {
+            const text = await readUploadedFileText(file)
+            const name = file.name || 'uploaded file'
+            const parsed = isBedFileName(name)
+                ? { genes: [], regions: parseRegionsFromBedText(text) }
+                : parseUploadedListFile(text)
+            if (!parsed.genes.length && !parsed.regions.length) {
+                $err.html(isBedFileName(name)
+                    ? '<b>No regions found.</b> Expected a BED file with chrom, start, and end in the first 3 columns.'
+                    : '<b>Nothing to search.</b> The first column should contain gene symbols/IDs or hg38 regions.').show()
+                return
+            }
+            UPLOADED_FILE = { name, genes: parsed.genes, regions: parsed.regions }
+            renderUploadedFileChip()
+            $('#gene-file-upload-modal').modal('hide')
+        } catch (e) {
+            console.error('Error reading uploaded file:', e)
+            $err.html('<b>Could not read the file.</b> ' + escapeHtml(e.message || 'Please try again.')).show()
+        }
+    }
+
+    // --- upload UI wiring ---
+    $('#gene-file-upload-button').click(() => {
+        $('#gene-file-upload-error').hide().empty()
+        $('#gene-file-upload-modal').modal('show')
+    })
+    $('#gene-file-dropzone').click(() => $('#gene-file-input').click())
+    $('#gene-file-input').on('change', function() {
+        handleUploadedFile(this.files && this.files[0])
+        this.value = ''  // allow re-selecting the same file name later
+    })
+    const $geneDropzone = $('#gene-file-dropzone')
+    $geneDropzone.on('dragover dragenter', (e) => {
+        e.preventDefault(); e.stopPropagation()
+        $geneDropzone.css({ backgroundColor: '#eef6ff', borderColor: '#2185d0' })
+    })
+    $geneDropzone.on('dragleave dragend drop', (e) => {
+        e.preventDefault(); e.stopPropagation()
+        $geneDropzone.css({ backgroundColor: '', borderColor: '#b0b8c4' })
+    })
+    $geneDropzone.on('drop', (e) => {
+        const dt = e.originalEvent.dataTransfer
+        handleUploadedFile(dt && dt.files && dt.files[0])
+    })
+    // remove chip (delegated: the chip is re-rendered on each change)
+    $('#gene-file-chip-container').on('click', '#gene-file-chip-remove', clearUploadedFile)
+
+    // Build the WHERE clause restricting results to the uploaded file's genes and/or regions
+    // (a gene match OR a region overlap).
+    const buildUploadedFileClause = () => {
+        if (!UPLOADED_FILE) return ''
+        const parts = []
+        if (UPLOADED_FILE.genes.length) {
+            const c = buildStructuredGeneListClause(UPLOADED_FILE.genes)
+            if (c) parts.push(c)
+        }
+        if (UPLOADED_FILE.regions.length) {
+            const c = buildRegionListClause(UPLOADED_FILE.regions)
+            if (c) parts.push(c)
+        }
+        return parts.length ? `(${parts.join(' OR ')})` : ''
+    }
+
+    // --- found-vs-missing summary ---
+    const hidePanelSummary = () => { $('#gene-panel-summary').hide().removeClass('positive warning') }
+
+    // Fetch all rows matching `clause`, selecting `selectCols`, paging past the 10k row cap if needed.
+    const fetchMatchedRows = async (selectCols, clause) => {
+        const pageSize = 10000
+        let startIndex = 0
+        const rows = []
+        while (true) {
+            const sql = `SELECT DISTINCT ${selectCols} FROM ${COMPLETE_TABLE_ID} WHERE ${clause}`
+            const res = await queryBigQuery(sql, startIndex, pageSize)
+            if (res && res.rows && res.rows.length) rows.push(...res.rows)
+            if (!res || !res.rows || res.rows.length < pageSize) break
+            startIndex += pageSize
+        }
+        return rows
+    }
+
+    // Wording for the summary banner. When the counts are narrowed by a keyword/filter, the missing
+    // items are present in the DB but didn't match the search, so avoid "not found in the database".
+    const panelWording = (noun, narrowed) => {
+        if (noun === 'region') {
+            return narrowed
+                ? { allFoundText: 'overlap a matching gene', notFoundText: 'had no matching gene' }
+                : { allFoundText: 'overlap a gene', notFoundText: 'had no overlapping gene' }
+        }
+        if (noun === 'item') {
+            return narrowed
+                ? { allFoundText: 'matched your search', notFoundText: 'did not match your search' }
+                : { allFoundText: 'were found', notFoundText: 'were not found' }
+        }
+        return narrowed
+            ? { allFoundText: 'matched your search', notFoundText: 'did not match your search' }
+            : { allFoundText: 'were found in the database', notFoundText: 'were not found in the database' }
+    }
+
+    // If the search box holds a recognized typed gene panel -- >= 2 comma-separated tokens, each
+    // shaped like a gene identifier (isTypedPanelToken excludes lowercase free-text disease words)
+    // -- return the token array; otherwise null. When a file is attached the box is a keyword, not a
+    // panel. Shared by buildAllConditions (results query) and getPanelSummaryPlan (summary) so both
+    // apply the same structured matching to a typed panel.
+    const getTypedPanelTokens = () => {
+        if (UPLOADED_FILE) return null
+        // Split on any comma except one between two digits (matches buildSearchWhereClause).
+        const typed = String(GLOBAL_PAGE_STATE['searchQuery'] || '').split(/(?<!\d),|,(?!\d)/).map(q => q.trim()).filter(q => q)
+        return (typed.length >= 2 && typed.every(isTypedPanelToken)) ? typed : null
+    }
+
+    // Determine the found-vs-missing plan for the current search, or null when none applies. The
+    // summary clause ANDs the panel clause with any typed keyword (file mode) and active filters, so
+    // the counts reflect the actual (possibly narrowed) result set.
+    const getPanelSummaryPlan = () => {
+        const filterConds = buildFilterConditions()
+
+        if (UPLOADED_FILE && (UPLOADED_FILE.genes.length || UPLOADED_FILE.regions.length)) {
+            const genes = UPLOADED_FILE.genes, regions = UPLOADED_FILE.regions
+            const panelClause = buildUploadedFileClause()
+            if (!panelClause) return null
+            const kwClause = buildSearchWhereClause(GLOBAL_PAGE_STATE['searchQuery'])
+            const narrowed = !!kwClause || filterConds.length > 0
+            const noun = (genes.length && regions.length) ? 'item' : (regions.length ? 'region' : 'gene')
+            return {
+                clause: [panelClause, kwClause, ...filterConds].filter(Boolean).join(' AND '),
+                // Select both gene-id and coordinate columns so genes and regions can both be checked
+                // (plus RefSeq columns only when the file contains RefSeq ids).
+                selectCols: 'gene_symbol, gene_aliases, ensembl_gene_id, hgnc_gene_id, gene_chrom, gene_start, gene_end' + refseqSelectColsFor(genes),
+                partition: (rows) => {
+                    const gm = genes.length ? partitionGeneListMatches(genes, rows) : { matched: [], missing: [] }
+                    const rm = regions.length ? partitionRegionMatches(regions, rows) : { matched: [], missing: [] }
+                    return { matched: gm.matched.concat(rm.matched), missing: gm.missing.concat(rm.missing) }
+                },
+                noun, ...panelWording(noun, narrowed),
+            }
+        }
+        // Typed gene panel (the box IS the list, so there's no separate keyword; filters still narrow).
+        const typed = getTypedPanelTokens()
+        if (!typed) return null
+        const panelClause = buildStructuredGeneListClause(typed)
+        if (!panelClause) return null
+        return {
+            clause: [panelClause, ...filterConds].filter(Boolean).join(' AND '),
+            selectCols: 'gene_symbol, gene_aliases, ensembl_gene_id, hgnc_gene_id' + refseqSelectColsFor(typed),
+            partition: (rows) => partitionGeneListMatches(typed, rows),
+            noun: 'gene', ...panelWording('gene', filterConds.length > 0),
+        }
+    }
+
+    const renderPanelSummary = ({ matched, missing }, plan) => {
+        const total = matched.length + missing.length
+        if (total === 0) { hidePanelSummary(); return }
+
+        panelMissing = missing
+        const noun = plan.noun
+        const nounPl = (n) => `${noun}${n === 1 ? '' : 's'}`
+        const $summary = $('#gene-panel-summary')
+        $summary.data('noun', noun)
+        $summary.removeClass('positive warning').addClass(missing.length === 0 ? 'positive' : 'warning')
+
+        let html
+        if (missing.length === 0) {
+            html = `All <b>${total.toLocaleString()}</b> ${nounPl(total)} ${plan.allFoundText}.`
+        } else {
+            html = `<b>${missing.length.toLocaleString()}</b> out of <b>${total.toLocaleString()}</b> ${nounPl(total)} ${plan.notFoundText}: `
+            const shown = missing.slice(0, MAX_INLINE_MISSING)
+            html += `<span style="font-family: monospace;">${shown.map(escapeHtml).join(', ')}</span>`
+            if (missing.length > shown.length) {
+                html += ` <a href="#" id="gene-panel-more-missing">more (${(missing.length - shown.length).toLocaleString()})&hellip;</a>`
+            }
+            html += ` &nbsp;&middot;&nbsp;<a href="#" id="gene-panel-copy-missing"><i class="copy icon"></i>copy list</a>`
+        }
+        $('#gene-panel-summary-content').html(html)
+        $summary.show()
+    }
+
+    // Compute and render the found-vs-missing summary for the current search. Runs concurrently with
+    // the main results query; `mySeq` guards against rendering results from a superseded search.
+    const updatePanelSummary = async (mySeq) => {
+        hidePanelSummary()  // clear any stale banner immediately; re-shown once this search's summary is ready
+        const plan = getPanelSummaryPlan()
+        if (!plan) return
+        try {
+            const rows = await fetchMatchedRows(plan.selectCols, plan.clause)
+            if (mySeq !== panelSearchSeq) return  // a newer search has started
+            renderPanelSummary(plan.partition(rows), plan)
+        } catch (e) {
+            console.error('Error computing gene-panel summary:', e)
+            if (mySeq === panelSearchSeq) hidePanelSummary()
+        }
+    }
+
+    // summary interactions
+    $('#gene-panel-summary').on('click', '.close.icon', () => $('#gene-panel-summary').hide())
+    $('#gene-panel-summary').on('click', '#gene-panel-more-missing', (e) => {
+        e.preventDefault()
+        const noun = $('#gene-panel-summary').data('noun') || 'gene'
+        $('#gene-panel-missing-modal .header').text(noun === 'region' ? 'Regions not found' : 'Genes not found')
+        $('#gene-panel-missing-modal-subtitle').text(`${panelMissing.length.toLocaleString()} ${noun}${panelMissing.length === 1 ? '' : 's'} not found:`)
+        $('#gene-panel-missing-modal-text').val(panelMissing.join('\n'))
+        $('#gene-panel-missing-modal').modal('show')
+    })
+    $('#gene-panel-summary').on('click', '#gene-panel-copy-missing', (e) => {
+        e.preventDefault()
+        copyTextToClipboard(panelMissing.join('\n'))
+        $(e.currentTarget).html('<i class="check icon"></i>copied')
+    })
+    $('#gene-panel-missing-modal-copy').click(function() {
+        copyTextToClipboard($('#gene-panel-missing-modal-text').val())
+        $(this).html('<i class="check icon"></i> Copied')
+    })
+
     const performSearch = async (showTableWhileLoading = false) => {
         // Remove any error messages and no results message
         $('#error-message').hide()
@@ -1581,6 +1972,12 @@
             GLOBAL_PAGE_STATE['searchQuery'] = $('#search-query').val()
             GLOBAL_PAGE_STATE['customFilters'] = serializeCustomFilters()
 
+            // Kick off the gene-panel found-vs-missing summary concurrently with the main query.
+            // Only on a fresh search; pagination/sort (showTableWhileLoading) keeps the current one.
+            if (!showTableWhileLoading) {
+                updatePanelSummary(++panelSearchSeq)
+            }
+
             // Build conditions
             const conditions = buildAllConditions()
 
@@ -1600,7 +1997,9 @@
             const selectColumns = Array.from(requiredColumnsSet).join(', ')
 
             const sortColumn = GLOBAL_PAGE_STATE['sc'] || DEFAULT_SORT_COLUMN
-            const sortDirection = GLOBAL_PAGE_STATE['sd'] || DEFAULT_SORT_DIRECTION
+            // Only ASC/DESC are valid; coerce anything else (incl. a value injected via the URL) to ASC
+            // so it cannot inject into the ORDER BY clause below.
+            const sortDirection = GLOBAL_PAGE_STATE['sd'] === 'DESC' ? 'DESC' : 'ASC'
 
             let sortExpression = sortColumn
             if (TABLE_COLUMNS[sortColumn] && TABLE_COLUMNS[sortColumn].getSortColumns) {
@@ -1685,22 +2084,24 @@
     // Validate custom filters
     const validateForm = () => {
         // Validate constraint score inputs
+        // Use Number() (not parseFloat), which rejects trailing junk like "0.9abc" (parseFloat would
+        // silently accept the "0.9" prefix).
         const pliThreshold = $('input[name="pliThreshold"]').val()
-        if (pliThreshold && (isNaN(parseFloat(pliThreshold)) || parseFloat(pliThreshold) < 0 || parseFloat(pliThreshold) > 1)) {
+        if (pliThreshold && (isNaN(Number(pliThreshold)) || Number(pliThreshold) < 0 || Number(pliThreshold) > 1)) {
             if (GLOBAL_PAGE_STATE['showAdvFilters'] !== 1) toggleAdvancedSearch()
             $('#form-error-message').html(`<b>ERROR:</b> The pLI threshold '${escapeHtml(pliThreshold)}' must be a number between 0 and 1`).show()
             return false
         }
 
         const loeufThreshold = $('input[name="loeufThreshold"]').val()
-        if (loeufThreshold && (isNaN(parseFloat(loeufThreshold)) || parseFloat(loeufThreshold) < 0)) {
+        if (loeufThreshold && (isNaN(Number(loeufThreshold)) || Number(loeufThreshold) < 0)) {
             if (GLOBAL_PAGE_STATE['showAdvFilters'] !== 1) toggleAdvancedSearch()
             $('#form-error-message').html(`<b>ERROR:</b> The LOEUF threshold '${escapeHtml(loeufThreshold)}' is invalid`).show()
             return false
         }
 
         const moeufThreshold = $('input[name="moeufThreshold"]').val()
-        if (moeufThreshold && (isNaN(parseFloat(moeufThreshold)) || parseFloat(moeufThreshold) < 0)) {
+        if (moeufThreshold && (isNaN(Number(moeufThreshold)) || Number(moeufThreshold) < 0)) {
             if (GLOBAL_PAGE_STATE['showAdvFilters'] !== 1) toggleAdvancedSearch()
             $('#form-error-message').html(`<b>ERROR:</b> The MOEUF threshold '${escapeHtml(moeufThreshold)}' is invalid`).show()
             return false
@@ -1747,6 +2148,13 @@
             if (op !== 'IS NULL' && op !== 'IS NOT NULL' && colInfo && (colInfo.type === 'INTEGER' || colInfo.type === 'FLOAT') && (val.trim() === '' || !isFinite(Number(val)))) {
                 if (GLOBAL_PAGE_STATE['showAdvFilters'] !== 1) toggleAdvancedSearch()
                 $('#form-error-message').html(`<b>ERROR:</b> The value '${escapeHtml(val)}' is not a valid number for the <i>${displayName}</i> filter`).show()
+                $row.addClass('error')
+                customFilterValid = false
+                return false
+            }
+            if (op !== 'IS NULL' && op !== 'IS NOT NULL' && colInfo && colInfo.type === 'BOOLEAN' && !/^(true|false|yes|no|y|n|1|0)$/i.test(String(val).trim())) {
+                if (GLOBAL_PAGE_STATE['showAdvFilters'] !== 1) toggleAdvancedSearch()
+                $('#form-error-message').html(`<b>ERROR:</b> The value '${escapeHtml(val)}' is not valid for the <i>${displayName}</i> filter (use true or false)`).show()
                 $row.addClass('error')
                 customFilterValid = false
                 return false

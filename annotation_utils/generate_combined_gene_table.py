@@ -19,6 +19,7 @@ from annotation_utils.get_decipher_genes import get_decipher_gene_table
 from annotation_utils.get_clinvar_table import get_clinvar_gene_disease_table
 from annotation_utils.get_constraint_scores import get_constraint_scores
 from annotation_utils.get_dbnsfp_gene_table import get_dbnsfp_gene_table
+from annotation_utils.get_MANE_table import get_MANE_ensembl_transcript_table
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--skip-gwas", action="store_true", help="Don't add columns related to GWAS catalog rare disease records")
@@ -60,6 +61,20 @@ ENSG_to_HGNC_map = get_ensg_id_to_hgnc_id_map()
 df_hgnc = get_hgnc_table()
 ENSG_to_gene_name_map = dict(zip(df_hgnc["Ensembl gene ID"], df_hgnc["Approved symbol"]))
 ENSG_to_gene_name_aliases_map = dict(zip(df_hgnc["Ensembl gene ID"], df_hgnc["Alias symbols"]))
+ENSG_to_refseq_map = dict(zip(df_hgnc["Ensembl gene ID"], df_hgnc["RefSeq IDs"]))
+ENSG_to_ncbi_gene_id_map = dict(zip(df_hgnc["Ensembl gene ID"], df_hgnc["NCBI Gene ID"]))
+
+# MANE transcripts (canonical = "MANE Select", one per gene; clinical = "MANE Plus Clinical", 0+ per gene).
+# The MANE summary table's Ensembl_Gene is versioned (ENSG...N), so strip the version to match ensembl_gene_id.
+df_mane = get_MANE_ensembl_transcript_table()
+df_mane["ensembl_gene_id"] = df_mane["Ensembl_Gene"].str.replace(r"\.\d+$", "", regex=True)
+df_mane_select = df_mane[df_mane["MANE_status"] == "MANE Select"]
+df_mane_plus_clinical = df_mane[df_mane["MANE_status"] == "MANE Plus Clinical"]
+MANE_gene_ids = set(df_mane_select["ensembl_gene_id"])
+ENSG_to_MANE_canonical_refseq_map = dict(zip(df_mane_select["ensembl_gene_id"], df_mane_select["RefSeq_nuc"]))
+ENSG_to_MANE_canonical_ensembl_map = dict(zip(df_mane_select["ensembl_gene_id"], df_mane_select["Ensembl_nuc"]))
+ENSG_to_MANE_clinical_refseq_map = df_mane_plus_clinical.groupby("ensembl_gene_id")["RefSeq_nuc"].apply(lambda x: separator.join(x)).to_dict()
+ENSG_to_MANE_clinical_ensembl_map = df_mane_plus_clinical.groupby("ensembl_gene_id")["Ensembl_nuc"].apply(lambda x: separator.join(x)).to_dict()
 
 """
 Example:
@@ -695,6 +710,22 @@ df_combined.drop(columns=["CLINGEN_hgnc_gene_id", "GENCC_hgnc_gene_id"], inplace
 
 df_combined["gene_symbol"] = df_combined["ensembl_gene_id"].map(ENSG_to_gene_name_map).str.upper()
 df_combined["gene_aliases"] = df_combined["ensembl_gene_id"].map(ENSG_to_gene_name_aliases_map).str.upper()
+
+# RefSeq / NCBI gene identifiers from HGNC. ncbi_gene_id is written as an integer string, with "" for
+# genes that have no NCBI id, so it loads into BigQuery as INTEGER with real NULLs (load_bigquery.py reads
+# INTEGER columns as nullable Int64 with na_values=[""]). It is stringified here (rather than left as a
+# float column) so the pure-digit id doesn't round-trip through the TSVs as "1.0"; add_phenotype_summary_using_AI.py
+# reads it back with dtype=str to keep the empty cells empty.
+df_combined["refseq_id"] = df_combined["ensembl_gene_id"].map(ENSG_to_refseq_map)
+df_combined["ncbi_gene_id"] = df_combined["ensembl_gene_id"].map(ENSG_to_ncbi_gene_id_map).apply(
+    lambda x: "" if pd.isna(x) else str(int(x)))
+
+# MANE transcript annotations
+df_combined["in_MANE"] = df_combined["ensembl_gene_id"].isin(MANE_gene_ids)
+df_combined["MANE_canonical_transcript_refseq_id"] = df_combined["ensembl_gene_id"].map(ENSG_to_MANE_canonical_refseq_map)
+df_combined["MANE_canonical_transcript_ensembl_id"] = df_combined["ensembl_gene_id"].map(ENSG_to_MANE_canonical_ensembl_map)
+df_combined["MANE_clinical_transcript_refseq_id"] = df_combined["ensembl_gene_id"].map(ENSG_to_MANE_clinical_refseq_map)
+df_combined["MANE_clinical_transcript_ensembl_id"] = df_combined["ensembl_gene_id"].map(ENSG_to_MANE_clinical_ensembl_map)
 #if df_combined["hgnc_gene_id"].isna().sum() > 0:
 #    print(f"WARNING: {df_combined['hgnc_gene_id'].isna().sum():,d} genes had no HGNC id")
 #    print(df_combined[df_combined["hgnc_gene_id"].isna()])
@@ -761,7 +792,10 @@ def summarize_inheritance(row):
 df_combined["inheritance"] = df_combined.apply(summarize_inheritance, axis=1)
 
 # move the gene_id, hgnc_gene_id, gene_symbol, and gene_aliases columns to the front
-initial_columns = ["ensembl_gene_id", "hgnc_gene_id", "gene_symbol", "gene_aliases", "pLI_v2", "pLI_v4", "lof_oe_ci_upper_v4", "mis_oe_ci_upper_v4", "s_het", "inheritance", "sources"]
+initial_columns = ["ensembl_gene_id", "hgnc_gene_id", "refseq_id", "ncbi_gene_id", "gene_symbol", "gene_aliases",
+                   "in_MANE", "MANE_canonical_transcript_refseq_id", "MANE_canonical_transcript_ensembl_id",
+                   "MANE_clinical_transcript_refseq_id", "MANE_clinical_transcript_ensembl_id",
+                   "pLI_v2", "pLI_v4", "lof_oe_ci_upper_v4", "mis_oe_ci_upper_v4", "s_het", "inheritance", "sources"]
 df_combined = df_combined[initial_columns + [c for c in df_combined.columns if c not in initial_columns]]
 #df_combined.sort_values(by=["sources", "gene_id"], inplace=True)
 

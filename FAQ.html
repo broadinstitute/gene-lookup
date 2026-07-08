@@ -15,6 +15,7 @@
 <div style="padding-bottom: 5px;"><a href="#q3"><b>Q3:</b> &nbsp; What are the constraint scores?</a></div>
 <div style="padding-bottom: 5px;"><a href="#q4"><b>Q4:</b> &nbsp; What is the phenotype summary?</a></div>
 <div style="padding-bottom: 5px;"><a href="#q5"><b>Q5:</b> &nbsp; How do I report issues or suggest improvements?</a></div>
+<div style="padding-bottom: 5px;"><a href="#q6"><b>Q6:</b> &nbsp; How do I search a list of genes or a gene panel?</a></div>
 
 <hr class="separator">
 <a name="q1"></a>
@@ -86,6 +87,27 @@ The summary is created by aggregating phenotype descriptions from the data sourc
 <b>Q5: How do I report issues or suggest improvements?</b><br />
 <br />
 Open an issue on the <a href="https://github.com/broadinstitute/gene-lookup/issues" target="_blank">GitHub repository</a> or email <i>weisburd</i><i>@</i><i>broadinstitute.org</i><br />
+
+<hr class="separator">
+<a name="q6"></a>
+<b>Q6: How do I search a list of genes or a gene panel?</b><br />
+<br />
+There are two ways to search many genes at once &mdash; useful for reviewing or developing gene panels:<br />
+<br />
+<div style="margin-left: 20px">
+<ul>
+    <li><b>Type a comma-separated list</b> into the search box, e.g. <a href="index.html#showRs=1&q=SMN1%2C%20CFTR%2C%20DMD" target="_blank">SMN1, CFTR, DMD</a>.</li>
+    <li><b>Upload a file</b> using the <b>+</b> button in the search box. Drag &amp; drop or choose a TSV, TXT, or BED file (all optionally gzip-compressed, e.g. <b>.txt.gz</b>):
+        <ul>
+            <li><b>TXT</b> / <b>TSV</b> whose first column contains gene symbols, gene IDs (HGNC, ENSG, or RefSeq), or hg38 genomic regions (e.g. chr1:1000000-2000000), one per row. A header row is optional.</li>
+            <li><b>BED</b> whose first 3 columns are the hg38 coordinates chrom, start, end (0-based, half-open). Genes overlapping those regions are returned.</li>
+        </ul>
+    </li>
+</ul>
+</div>
+Uploaded genes are matched against gene symbols, aliases, and IDs. After a gene-list search, a summary shows how many of your genes were <b>found</b> in the database and lists any that were <b>not found</b> (with a link to see the full list). Uploaded regions (BED, or regions in a TXT/TSV) report how many <b>overlap a gene</b> and list any with no overlapping gene.<br />
+<br />
+You can also <b>narrow a panel by keyword</b>: upload a gene list, then type a disease or phenotype term (e.g. <i>epilepsy</i>) in the search box before searching to see which of your panel genes are associated with that term.<br />
 
 </div>
 <div style="padding-bottom: 700px;"></div>

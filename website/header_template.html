@@ -755,39 +755,6 @@
             getSortColumns: () => ['PEPPER_XGB_pct'],
             getRequiredColumns: () => ['PEPPER_XGB_pct'],
         },
-        OMIM_mim_number: {
-            displayName: 'OMIM MIM #',
-            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['OMIM_mim_number'],
-            getValue: (row) => {
-                if (!row['OMIM_mim_number']) return ''
-                return row['OMIM_mim_number'].split(';').map(mim =>
-                    `<a href="https://omim.org/entry/${mim.trim()}" target="_blank" class="action-link">${mim.trim()}</a>`
-                ).join('; ')
-            },
-            getSortColumns: () => ['OMIM_mim_number'],
-            getRequiredColumns: () => ['OMIM_mim_number'],
-        },
-        OMIM_phenotype_mim_number: {
-            displayName: 'OMIM Phenotype MIM #',
-            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['OMIM_phenotype_mim_number'],
-            getValue: (row) => row['OMIM_phenotype_mim_number'] || '',
-            getSortColumns: () => ['OMIM_phenotype_mim_number'],
-            getRequiredColumns: () => ['OMIM_phenotype_mim_number'],
-        },
-        OMIM_inheritance: {
-            displayName: 'OMIM Inheritance',
-            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['OMIM_inheritance'],
-            getValue: (row) => row['OMIM_inheritance'] || '',
-            getSortColumns: () => ['OMIM_inheritance'],
-            getRequiredColumns: () => ['OMIM_inheritance'],
-        },
-        OMIM_phenotype_description: {
-            displayName: 'OMIM Phenotype',
-            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['OMIM_phenotype_description'],
-            getValue: (row) => getTruncatedText(row['OMIM_phenotype_description'], 80),
-            getSortColumns: () => ['OMIM_phenotype_description'],
-            getRequiredColumns: () => ['OMIM_phenotype_description'],
-        },
         CLINGEN_disease_label: {
             displayName: 'ClinGen Disease',
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['CLINGEN_disease_label'],

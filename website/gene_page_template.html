@@ -417,7 +417,10 @@
         }
 
         // --- Source: OMIM ---
-        if (hasAnyValue(row['OMIM_mim_number'], row['OMIM_phenotype_mim_number'], row['OMIM_inheritance'], row['OMIM_phenotype_description'])) {
+        // OMIM phenotype MIM #, inheritance, and phenotype description are intentionally not shown
+        // to avoid redistributing OMIM's licensed content. Only the gene MIM # (a numeric identifier
+        // linking to omim.org) is displayed.
+        if (hasAnyValue(row['OMIM_mim_number'])) {
             const mimNumbersList = dedupSemicolonArray(row['OMIM_mim_number'])
             const omimTitle = mimNumbersList.length > 0
                 ? `<a href="https://omim.org/entry/${mimNumbersList[0]}" target="_blank" class="action-link">OMIM</a>`
@@ -427,9 +430,6 @@
                 `<a href="https://omim.org/entry/${m}" target="_blank" class="action-link">${m}</a>`
             ).join('; ')
             html += `<tr><td class="locus-info-label">MIM #:</td><td>${mimLinks}</td></tr>`
-            html += `<tr><td class="locus-info-label">Phenotype MIM #:</td><td>${dedupSemicolon(row['OMIM_phenotype_mim_number'])}</td></tr>`
-            html += `<tr><td class="locus-info-label">Inheritance:</td><td>${dedupSemicolon(row['OMIM_inheritance'])}</td></tr>`
-            html += `<tr><td class="locus-info-label">Phenotype:</td><td style="white-space: normal;">${dedupSemicolon(row['OMIM_phenotype_description'])}</td></tr>`
             html += '</table></div>'
             $('#source-omim').html(html)
         }

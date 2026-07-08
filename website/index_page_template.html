@@ -319,6 +319,15 @@
                 }
             }
         }
+
+        // Validate the sort column the same way showColumns is validated above: an old URL may
+        // reference a column that no longer exists in the results table (e.g. a since-removed
+        // OMIM column). Without this, performSearch would silently ORDER BY that hidden column
+        // with no visible sort indicator, so fall back to the default sort.
+        if (!RESULTS_TABLE_COLUMN_NAMES.includes(GLOBAL_PAGE_STATE['sc'])) {
+            GLOBAL_PAGE_STATE['sc'] = DEFAULT_GLOBAL_PAGE_STATE['sc']
+            GLOBAL_PAGE_STATE['sd'] = DEFAULT_GLOBAL_PAGE_STATE['sd']
+        }
     }
 
     const readAndApplyPersistentPageStateFromUrl = async () => {

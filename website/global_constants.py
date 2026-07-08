@@ -7,8 +7,8 @@ as the single source of truth for column documentation across the project.
 # Export group names for organizing columns in the export dialog
 GROUP_CORE = "Core"
 GROUP_CONSTRAINT = "Constraint"
-GROUP_OMIM_CLINVAR = "OMIM & ClinVar"
-GROUP_CLINGEN_GENCC = "ClinGen & GenCC"
+GROUP_OMIM = "OMIM"
+GROUP_CLINVAR_CLINGEN_GENCC = "ClinVar, ClinGen & GenCC"
 GROUP_PANEL_APP_UK = "PanelApp UK"
 GROUP_PANEL_APP_AU = "PanelApp AU"
 GROUP_DECIPHER_OTHER = "Decipher & Other Sources"
@@ -18,8 +18,8 @@ GROUP_DBNSFP = "dbNSFP"
 GROUP_ORDER = [
     GROUP_CORE,
     GROUP_CONSTRAINT,
-    GROUP_OMIM_CLINVAR,
-    GROUP_CLINGEN_GENCC,
+    GROUP_OMIM,
+    GROUP_CLINVAR_CLINGEN_GENCC,
     GROUP_PANEL_APP_UK,
     GROUP_PANEL_APP_AU,
     GROUP_DECIPHER_OTHER,
@@ -272,14 +272,16 @@ BIGQUERY_COLUMNS = [
     },
 
     # OMIM
+    # allowExport is False for OMIM columns to avoid redistributing OMIM's licensed content
+    # (phenotype/inheritance text) via TSV/JSON export. They remain available for custom filtering.
     {
         "type": "STRING",
         "name": "OMIM_mim_number",
         "description": "OMIM gene MIM number(s) (semicolon-separated if multiple).",
         "displayName": "OMIM MIM Number",
         "allowCustomFilter": True,
-        "allowExport": True,
-        "group": GROUP_OMIM_CLINVAR,
+        "allowExport": False,
+        "group": GROUP_OMIM,
     },
     {
         "type": "STRING",
@@ -287,8 +289,8 @@ BIGQUERY_COLUMNS = [
         "description": "OMIM phenotype MIM number(s) (semicolon-separated if multiple).",
         "displayName": "OMIM Phenotype MIM Number",
         "allowCustomFilter": True,
-        "allowExport": True,
-        "group": GROUP_OMIM_CLINVAR,
+        "allowExport": False,
+        "group": GROUP_OMIM,
     },
     {
         "type": "STRING",
@@ -296,8 +298,8 @@ BIGQUERY_COLUMNS = [
         "description": "Inheritance mode(s) from OMIM (semicolon-separated if multiple).",
         "displayName": "OMIM Inheritance",
         "allowCustomFilter": True,
-        "allowExport": True,
-        "group": GROUP_OMIM_CLINVAR,
+        "allowExport": False,
+        "group": GROUP_OMIM,
     },
     {
         "type": "STRING",
@@ -305,8 +307,46 @@ BIGQUERY_COLUMNS = [
         "description": "Phenotype description(s) from OMIM (semicolon-separated if multiple).",
         "displayName": "OMIM Phenotype",
         "allowCustomFilter": True,
+        "allowExport": False,
+        "group": GROUP_OMIM,
+    },
+
+    # ClinVar
+    {
+        "type": "STRING",
+        "name": "CLINVAR_phenotypes",
+        "description": "Phenotype(s) from ClinVar for pathogenic/likely pathogenic variants in this gene.",
+        "displayName": "ClinVar Phenotypes",
+        "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_OMIM_CLINVAR,
+        "group": GROUP_CLINVAR_CLINGEN_GENCC,
+    },
+    {
+        "type": "STRING",
+        "name": "CLINVAR_clinical_significance",
+        "description": "Clinical significance categories from ClinVar for variants in this gene.",
+        "displayName": "ClinVar Significance",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_CLINVAR_CLINGEN_GENCC,
+    },
+    {
+        "type": "FLOAT",
+        "name": "CLINVAR_stars",
+        "description": "ClinVar review status gold stars for variants in this gene.",
+        "displayName": "ClinVar Stars",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_CLINVAR_CLINGEN_GENCC,
+    },
+    {
+        "type": "STRING",
+        "name": "CLINVAR_variant_consequences",
+        "description": "Major variant consequence types from ClinVar for pathogenic/likely pathogenic variants in this gene.",
+        "displayName": "ClinVar Consequences",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_CLINVAR_CLINGEN_GENCC,
     },
 
     # ClinGen
@@ -317,7 +357,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "ClinGen Disease",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_CLINGEN_GENCC,
+        "group": GROUP_CLINVAR_CLINGEN_GENCC,
     },
     {
         "type": "STRING",
@@ -326,7 +366,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "ClinGen MONDO ID",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_CLINGEN_GENCC,
+        "group": GROUP_CLINVAR_CLINGEN_GENCC,
     },
     {
         "type": "STRING",
@@ -335,7 +375,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "ClinGen Inheritance",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_CLINGEN_GENCC,
+        "group": GROUP_CLINVAR_CLINGEN_GENCC,
     },
     {
         "type": "STRING",
@@ -344,7 +384,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "ClinGen Classification",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_CLINGEN_GENCC,
+        "group": GROUP_CLINVAR_CLINGEN_GENCC,
     },
     {
         "type": "STRING",
@@ -353,7 +393,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "ClinGen Haploinsufficiency",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_CLINGEN_GENCC,
+        "group": GROUP_CLINVAR_CLINGEN_GENCC,
     },
 
     # GenCC
@@ -364,7 +404,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "GenCC Disease",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_CLINGEN_GENCC,
+        "group": GROUP_CLINVAR_CLINGEN_GENCC,
     },
     {
         "type": "STRING",
@@ -373,7 +413,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "GenCC Classification",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_CLINGEN_GENCC,
+        "group": GROUP_CLINVAR_CLINGEN_GENCC,
     },
     {
         "type": "STRING",
@@ -382,7 +422,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "GenCC Inheritance",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_CLINGEN_GENCC,
+        "group": GROUP_CLINVAR_CLINGEN_GENCC,
     },
 
     # PanelApp UK
@@ -533,44 +573,6 @@ BIGQUERY_COLUMNS = [
         "allowCustomFilter": True,
         "allowExport": True,
         "group": GROUP_DECIPHER_OTHER,
-    },
-
-    # ClinVar
-    {
-        "type": "STRING",
-        "name": "CLINVAR_phenotypes",
-        "description": "Phenotype(s) from ClinVar for pathogenic/likely pathogenic variants in this gene.",
-        "displayName": "ClinVar Phenotypes",
-        "allowCustomFilter": True,
-        "allowExport": True,
-        "group": GROUP_OMIM_CLINVAR,
-    },
-    {
-        "type": "STRING",
-        "name": "CLINVAR_clinical_significance",
-        "description": "Clinical significance categories from ClinVar for variants in this gene.",
-        "displayName": "ClinVar Significance",
-        "allowCustomFilter": True,
-        "allowExport": True,
-        "group": GROUP_OMIM_CLINVAR,
-    },
-    {
-        "type": "FLOAT",
-        "name": "CLINVAR_stars",
-        "description": "ClinVar review status gold stars for variants in this gene.",
-        "displayName": "ClinVar Stars",
-        "allowCustomFilter": True,
-        "allowExport": True,
-        "group": GROUP_OMIM_CLINVAR,
-    },
-    {
-        "type": "STRING",
-        "name": "CLINVAR_variant_consequences",
-        "description": "Major variant consequence types from ClinVar for pathogenic/likely pathogenic variants in this gene.",
-        "displayName": "ClinVar Consequences",
-        "allowCustomFilter": True,
-        "allowExport": True,
-        "group": GROUP_OMIM_CLINVAR,
     },
 
     # Fridman

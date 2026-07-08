@@ -92,9 +92,6 @@ jobs:
     - name: Clear stale GenCC cache (schema changed)
       run: rm -f ~/.annotations/gencc_table.*.tsv.gz
 
-    - name: Clear stale OMIM cache (schema changed - added ncbi_gene_id column)
-      run: rm -f ~/.annotations/omim_table.*.tsv.gz
-
     - name: Generate combined gene table
       env:
         OMIM_KEY: ${{ secrets.OMIM_KEY }}

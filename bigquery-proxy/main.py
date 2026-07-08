@@ -40,6 +40,7 @@ def _get_signing_credentials():
 
 BIGQUERY_PROJECT = "cmg-analysis"
 BIGQUERY_DATASET = "gene_lookup"
+BIGQUERY_TABLE = "combined_gene_disease_association_table"
 
 
 def return_query_results(client, result_table, start_index=0, page_size=100):
@@ -239,16 +240,35 @@ def query_gene_lookup_db(request):
 
     sql = str(sql).strip()
 
-    # Validate that the query is a SELECT from the expected project/dataset
-    select_pattern = rf"^SELECT\s+.+\s+FROM[\s`]+{re.escape(BIGQUERY_PROJECT)}\.{re.escape(BIGQUERY_DATASET)}\."
-    if not re.search(select_pattern, sql, re.IGNORECASE | re.DOTALL):
-        response_dict = {"error": f"Invalid SQL query: {sql}. It must be a SELECT from the expected project and dataset."}
+    # Structural validation runs against a normalized copy of the query with (a) single-quoted string
+    # literals blanked out — so user search text (which may contain words like "drop" or dotted values)
+    # can't trip the keyword/table checks below — and (b) backtick identifier-quotes removed, so
+    # per-identifier quoting like `proj`.`ds`.`tbl` can't smuggle a table reference past the checks.
+    sql_norm = re.sub(r"'(?:[^'\\]|\\.|'')*'", "''", sql)
+    sql_norm = sql_norm.replace("`", "")
+
+    approved_table = f"{BIGQUERY_PROJECT}.{BIGQUERY_DATASET}.{BIGQUERY_TABLE}"
+
+    # Validate that the query is a SELECT whose first FROM targets exactly the approved table.
+    select_pattern = rf"^SELECT\s+.+\s+FROM\s+{re.escape(approved_table)}\b"
+    if not re.search(select_pattern, sql_norm, re.IGNORECASE | re.DOTALL):
+        response_dict = {"error": f"Invalid SQL query: {sql}. It must be a SELECT from {approved_table}."}
         print(f"ERROR: {response_dict['error']}")
         return jsonify(response_dict), 400, response_headers
 
-    # Block SQL keywords that could be used for injection (UNION, subqueries, DML, DDL, etc.)
+    # Reject any fully-qualified table reference that isn't the approved table. The SELECT check above
+    # only anchors the FIRST FROM; this blocks JOINs, comma-joins, and subquery FROMs that would read
+    # other tables (or pseudo-tables) the service account can access.
+    for table_ref in re.findall(r"[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+\.[A-Za-z0-9_-]+", sql_norm):
+        if table_ref != approved_table:
+            response_dict = {"error": f"Invalid SQL query: references a table other than {approved_table}"}
+            print(f"ERROR: {response_dict['error']}")
+            return jsonify(response_dict), 400, response_headers
+
+    # Block SQL keywords that could be used for injection (UNION, subqueries, DML, DDL, etc.). Checked on
+    # the string-blanked copy so a legitimate search for text like "drop attacks" isn't rejected.
     forbidden_pattern = r"\b(UNION|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|TRUNCATE|EXEC|EXECUTE|CALL|INTO\s+OUTFILE|INFORMATION_SCHEMA)\b"
-    if re.search(forbidden_pattern, sql, re.IGNORECASE):
+    if re.search(forbidden_pattern, sql_norm, re.IGNORECASE):
         response_dict = {"error": f"SQL query contains forbidden keywords: {sql}"}
         print(f"ERROR: {response_dict['error']}")
         return jsonify(response_dict), 400, response_headers

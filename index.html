@@ -820,6 +820,14 @@
                     $(`input[name="${trackName}"]`).prop('checked', isChecked)
                 })
 
+                // Restore the persisted custom track URLs into the inputs each time the dialog opens.
+                // These inputs are created empty (and the initial page-load restore in
+                // readAndApplyPersistentPageStateFromUrl runs before they exist), so without this the
+                // Apply handler below would read blank inputs and wipe custom tracks loaded from the URL.
+                for (let i = 1; i <= 3; i++) {
+                    $(`#igv-custom-track-url-${i}`).val(GLOBAL_PAGE_STATE[`igv_custom_track_url_${i}`] || '')
+                }
+
                 $('#igv-track-selection-dialog').modal('show')
                 $('.question').popup({ on: 'click' })
             })
@@ -1068,22 +1076,25 @@
         return `<span style="color: ${t.color}; font-weight: 600;">${alias}</span>`
     })
 
-    // Truncate the plain text at maxLen plain chars by walking semicolon-separated parts, then
-    // colorize each kept part. Returns { display, truncated } where display is the (possibly
-    // truncated) colorized HTML and truncated is whether truncation happened.
+    // Truncate the plain text at maxLen plain chars by walking comma-separated parts, then
+    // colorize each kept part. The input comes from dedupInheritance(), which joins values with
+    // ", ", so we must split on the same ", " delimiter for the value-boundary truncation to work
+    // (splitting on ";" would never match and would always fall through to a mid-token slice).
+    // Returns { display, truncated } where display is the (possibly truncated) colorized HTML and
+    // truncated is whether truncation happened.
     const truncateInheritanceForCell = (text, maxLen) => {
         if (text.length <= maxLen) return { display: colorizeInheritanceText(text), truncated: false }
-        const parts = text.split(';').map(p => p.trim()).filter(Boolean)
+        const parts = text.split(',').map(p => p.trim()).filter(Boolean)
         const kept = []
         let lenSoFar = 0
         for (const p of parts) {
-            const partLen = p.length + (kept.length > 0 ? 2 : 0)  // "; " separator
+            const partLen = p.length + (kept.length > 0 ? 2 : 0)  // ", " separator
             if (lenSoFar + partLen > maxLen - 3) break             // leave room for "..."
             kept.push(p)
             lenSoFar += partLen
         }
         if (kept.length === 0) return { display: colorizeInheritanceText(parts[0].slice(0, maxLen - 3)) + '…', truncated: true }
-        return { display: colorizeInheritanceText(kept.join('; ')) + '…', truncated: true }
+        return { display: colorizeInheritanceText(kept.join(', ')) + '…', truncated: true }
     }
 
     // Collect the inheritance types referenced in `text`, in INHERITANCE_TYPES (declared) order.
@@ -1392,6 +1403,11 @@
         return `<span class="show-popup" data-html="<div style='max-width:400px'>${escapeHtml(text)}</div>">${escapeHtml(text.substring(0, maxLen))}...</span>`
     }
 
+    // INTENTIONAL (do not flag as a bug): TABLE_COLUMNS defines only the columns shown in / toggleable
+    // into the results table. It deliberately does NOT include every column from global_constants.py's
+    // BIGQUERY_COLUMNS. In particular the dbNSFP (DBNSFP_*) columns and the GeneBayes s_het score are
+    // filter/export-only (allowCustomFilter / allowExport in BIGQUERY_COLUMNS) and are intentionally
+    // omitted here to keep the results table uncluttered; they remain usable via custom filters and export.
     let TABLE_COLUMNS = {
         gene_symbol: {
             displayName: 'Gene',
@@ -2522,8 +2538,9 @@
                     <!-- Chip shown when a gene list file has been uploaded (ChatGPT-style attachment) -->
                     <div id="gene-file-chip-container" style="display:none; margin-bottom: 8px;"></div>
                     <div class="ui action input">
-                        <button id="gene-file-upload-button" class="ui basic icon button" type="button" data-html="Upload genes or regions (TSV/TXT/BED) to search for a whole panel at once" data-position="top center" style="border-top-right-radius: 0; border-bottom-right-radius: 0;"><i class="plus icon"></i></button>
-                        <input type="text" id="search-query" name="search-query" placeholder="Search by gene, disease, or region — or a comma-separated gene list (SMN1, CFTR, DMD)">
+                        <input type="text" id="search-query" name="search-query" placeholder="Search by gene, disease, or hg38 region — or a comma-separated gene list (SMN1, CFTR, DMD)" style="padding-right: 42px;">
+                        <!-- Upload button overlaid inside the input's right edge (negative margin), just left of the filter -->
+                        <button id="gene-file-upload-button" class="ui icon button" type="button" data-html="Upload genes or regions (TSV/TXT/BED) to search for a whole panel at once" data-position="top center" style="margin-left: -42px; width: 38px; padding: 0; background: transparent; box-shadow: none; color: #999; z-index: 3;"><i class="plus icon"></i></button>
                         <button id="filter-button" class="ui basic icon button" type="button" data-html="Show or hide additional filters" data-position="top center"><i class="filter icon rotated" style="transition: transform 0.3s;"></i></button>
                         <button id="search-button" class="ui primary button" type="submit">Search</button>
                     </div>
@@ -2956,7 +2973,7 @@
                 </div>
                 <div class="export-selector">
                     <span class="export-label"><b>Export to:</b></span>
-                    <div class="ui selection dropdown export-dropdown" id="export-dropdown" style="min-width: 120px">
+                    <div class="ui selection dropdown export-dropdown" style="min-width: 120px">
                         <input type="hidden" name="export-format">
                         <i class="dropdown icon"></i>
                         <div class="default text">Select format</div>
@@ -3984,55 +4001,59 @@
         const customClause = buildCustomFiltersWhereClause()
         if (customClause) conditions.push(customClause)
 
-        if (GLOBAL_PAGE_STATE['showAdvFilters'] === 1) {
-            // Inheritance mode filter
-            const inheritanceClauses = []
-            if ($('input[name="keepAD"]').prop('checked')) inheritanceClauses.push("UPPER(inheritance) LIKE '%AD%'")
-            if ($('input[name="keepAR"]').prop('checked')) inheritanceClauses.push("UPPER(inheritance) LIKE '%AR%'")
-            // Upstream sources normalize X-linked to XR/XD (OMIM/GenCC/PanelApp/Decipher); ClinGen leaves it as XL.
-            if ($('input[name="keepXL"]').prop('checked')) inheritanceClauses.push("(UPPER(inheritance) LIKE '%XL%' OR UPPER(inheritance) LIKE '%XR%' OR UPPER(inheritance) LIKE '%XD%')")
-            if ($('input[name="keepMito"]').prop('checked')) inheritanceClauses.push("UPPER(inheritance) LIKE '%MITO%'")
-            if (inheritanceClauses.length > 0) {
-                conditions.push(`(${inheritanceClauses.join(' OR ')})`)
-            }
+        // Standard advanced filters (inheritance / source / min-sources / constraint scores). These
+        // are applied whenever their checkbox/input is set, regardless of whether the advanced-filter
+        // panel is currently expanded — the controls keep their state when the panel is collapsed, so
+        // gating on showAdvFilters used to silently drop them on the next pagination/sort search while
+        // still applying custom filters. Reading the (possibly hidden) controls is safe: unset controls
+        // contribute no clause, so this is a no-op unless the user has actually set a filter.
 
-            // Source filter
-            const sourceClauses = []
-            if ($('input[name="keepOMIM"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%OMIM%'")
-            if ($('input[name="keepClinGen"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%CLINGEN%'")
-            if ($('input[name="keepGenCC"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%GENCC%'")
-            if ($('input[name="keepPanelAppUK"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%PANELAPPUK%'")
-            if ($('input[name="keepPanelAppAU"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%PANELAPPAU%'")
-            if ($('input[name="keepDecipher"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%DECIPHER%'")
-            if ($('input[name="keepClinVar"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%CLINVAR%'")
-            if ($('input[name="keepGWAS"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%GWAS%'")
-            if ($('input[name="keepFridman"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%FRIDMAN%'")
-            if (sourceClauses.length > 0) {
-                conditions.push(`(${sourceClauses.join(' OR ')})`)
-            }
+        // Inheritance mode filter
+        const inheritanceClauses = []
+        if ($('input[name="keepAD"]').prop('checked')) inheritanceClauses.push("UPPER(inheritance) LIKE '%AD%'")
+        if ($('input[name="keepAR"]').prop('checked')) inheritanceClauses.push("UPPER(inheritance) LIKE '%AR%'")
+        // Upstream sources normalize X-linked to XR/XD (OMIM/GenCC/PanelApp/Decipher); ClinGen leaves it as XL.
+        if ($('input[name="keepXL"]').prop('checked')) inheritanceClauses.push("(UPPER(inheritance) LIKE '%XL%' OR UPPER(inheritance) LIKE '%XR%' OR UPPER(inheritance) LIKE '%XD%')")
+        if ($('input[name="keepMito"]').prop('checked')) inheritanceClauses.push("UPPER(inheritance) LIKE '%MITO%'")
+        if (inheritanceClauses.length > 0) {
+            conditions.push(`(${inheritanceClauses.join(' OR ')})`)
+        }
 
-            // Minimum number of sources
-            const minSources = $('input[name="minSources"]').val()
-            if (minSources && parseInt(minSources) > 0) {
-                conditions.push(`CAST(SPLIT(sources, ':')[OFFSET(0)] AS INT64) >= ${parseInt(minSources)}`)
-            }
+        // Source filter
+        const sourceClauses = []
+        if ($('input[name="keepOMIM"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%OMIM%'")
+        if ($('input[name="keepClinGen"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%CLINGEN%'")
+        if ($('input[name="keepGenCC"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%GENCC%'")
+        if ($('input[name="keepPanelAppUK"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%PANELAPPUK%'")
+        if ($('input[name="keepPanelAppAU"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%PANELAPPAU%'")
+        if ($('input[name="keepDecipher"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%DECIPHER%'")
+        if ($('input[name="keepClinVar"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%CLINVAR%'")
+        if ($('input[name="keepGWAS"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%GWAS%'")
+        if ($('input[name="keepFridman"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%FRIDMAN%'")
+        if (sourceClauses.length > 0) {
+            conditions.push(`(${sourceClauses.join(' OR ')})`)
+        }
 
-            // Constraint score filters
-            const pliThreshold = $('input[name="pliThreshold"]').val()
-            if (pliThreshold && !isNaN(parseFloat(pliThreshold))) {
-                conditions.push(`pLI_v4 >= ${parseFloat(pliThreshold)}`)
-            }
+        // Minimum number of sources
+        const minSources = $('input[name="minSources"]').val()
+        if (minSources && parseInt(minSources) > 0) {
+            conditions.push(`CAST(SPLIT(sources, ':')[OFFSET(0)] AS INT64) >= ${parseInt(minSources)}`)
+        }
 
-            const loeufThreshold = $('input[name="loeufThreshold"]').val()
-            if (loeufThreshold && !isNaN(parseFloat(loeufThreshold))) {
-                conditions.push(`lof_oe_ci_upper_v4 <= ${parseFloat(loeufThreshold)}`)
-            }
+        // Constraint score filters
+        const pliThreshold = $('input[name="pliThreshold"]').val()
+        if (pliThreshold && !isNaN(parseFloat(pliThreshold))) {
+            conditions.push(`pLI_v4 >= ${parseFloat(pliThreshold)}`)
+        }
 
-            const moeufThreshold = $('input[name="moeufThreshold"]').val()
-            if (moeufThreshold && !isNaN(parseFloat(moeufThreshold))) {
-                conditions.push(`mis_oe_ci_upper_v4 <= ${parseFloat(moeufThreshold)}`)
-            }
+        const loeufThreshold = $('input[name="loeufThreshold"]').val()
+        if (loeufThreshold && !isNaN(parseFloat(loeufThreshold))) {
+            conditions.push(`lof_oe_ci_upper_v4 <= ${parseFloat(loeufThreshold)}`)
+        }
 
+        const moeufThreshold = $('input[name="moeufThreshold"]').val()
+        if (moeufThreshold && !isNaN(parseFloat(moeufThreshold))) {
+            conditions.push(`mis_oe_ci_upper_v4 <= ${parseFloat(moeufThreshold)}`)
         }
 
         return conditions

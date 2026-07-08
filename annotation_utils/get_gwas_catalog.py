@@ -82,9 +82,15 @@ def get_gwas_catalog_rare_disease_records():
 
     df_gwas = _download_gwas_catalog()
     df_gwas = df_gwas[df_gwas["MAPPED_TRAIT_URI"].notna()]
-    df_gwas["MONDO_ID"] = df_gwas["MAPPED_TRAIT_URI"].apply(os.path.basename).str.replace("_", ":")
+    # MAPPED_TRAIT_URI can be a comma-separated list of ontology URIs. Take the first URI whose ontology
+    # id is a known rare-disease MONDO term; os.path.basename on the whole comma-joined string would only
+    # ever see the last URI, dropping multi-trait rows whose rare-disease term isn't listed last.
+    df_gwas["MONDO_ID"] = df_gwas["MAPPED_TRAIT_URI"].apply(
+        lambda uris: next((mondo_id for mondo_id in
+            (os.path.basename(u.strip()).replace("_", ":") for u in str(uris).split(","))
+            if mondo_id in mondo_rare_disease_term_lookup), None))
 
-    df_gwas = df_gwas[df_gwas["MONDO_ID"].isin(mondo_rare_disease_term_lookup)]
+    df_gwas = df_gwas[df_gwas["MONDO_ID"].notna()]
     df_gwas = df_gwas[[
         "MONDO_ID",
         "CHR_ID",

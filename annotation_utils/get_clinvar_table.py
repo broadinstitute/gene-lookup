@@ -1,7 +1,5 @@
 import hail as hl
 import hailtop.fs as hfs
-import os
-import pandas as pd
 from annotation_utils.cache_utils import cache_data_table
 
 """
@@ -108,19 +106,13 @@ Counter({'Uncertain significance': 1778465,
 def get_clinvar_gene_disease_table():
     # ht.clinvar_release_date.collect()
 
-    # Filter to transcripts that are MANE Select or MANE Plus Clinical
-    # List downloaded from http://tark.ensembl.org/web/manelist/
-    df_mane = pd.read_csv(os.path.join(os.path.dirname(__file__), "data", "MANE_select_and_plus_ENSG_ids.csv"))
-    mane_transcripts = [transcript_id.split(".")[0] for transcript_id in df_mane["ENST_ids"]]
-
-
     ht = hl.read_table("gs://gnomad-v4-data-pipeline/output/clinvar/clinvar_grch38_annotated_2.ht")
 
     # check if clinical_significance string (when converted to lower case) contains "pathogenic" but not "pathogenicity"
     ht = ht.filter(hl.str(ht.clinical_significance).lower().contains("pathogenic") & ~hl.str(ht.clinical_significance).lower().contains("pathogenicity"), keep=True)
 
-    # get the set of ENSG gene ids from the transcript_consequences field using 
-    ht = ht.annotate(gene_id = hl.array(hl.set(ht.transcript_consequences.filter(lambda x: x.gene_id.startswith("ENSG")).map(lambda x: x.gene_id))))  #  & hl.set(mane_transcripts).contains(x.transcript_id)
+    # Collect the set of ENSG gene ids from the transcript_consequences field (across all transcripts).
+    ht = ht.annotate(gene_id = hl.array(hl.set(ht.transcript_consequences.filter(lambda x: x.gene_id.startswith("ENSG")).map(lambda x: x.gene_id))))
 
     # filter out rows where gene_ids is empty
     ht = ht.filter(hl.len(ht.gene_id) > 0, keep=True)

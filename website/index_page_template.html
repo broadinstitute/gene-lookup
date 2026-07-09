@@ -117,7 +117,7 @@
                         <button id="search-button" class="ui primary button" type="submit">Search</button>
                     </div>
                     <!-- Hidden native file input driven by the (+) button and the upload modal -->
-                    <input type="file" id="gene-file-input" accept=".txt,.tsv,.csv,.bed,.gz,.txt.gz,.tsv.gz,.csv.gz,.bed.gz,text/plain,text/tab-separated-values,text/csv,application/gzip" style="display:none">
+                    <input type="file" id="gene-file-input" multiple accept=".txt,.tsv,.csv,.bed,.gz,.txt.gz,.tsv.gz,.csv.gz,.bed.gz,text/plain,text/tab-separated-values,text/csv,application/gzip" style="display:none">
                 </div>
             </form>
 
@@ -280,8 +280,8 @@
         </ul>
         <div id="gene-file-dropzone" style="border: 2px dashed #b0b8c4; border-radius: 8px; padding: 40px 20px; text-align: center; color: #667; cursor: pointer; transition: background-color 0.15s, border-color 0.15s;">
             <i class="file alternate outline icon" style="font-size: 2.5em; color: #9aa4b2;"></i>
-            <div style="margin-top: 10px; font-size: 1.05em;">Drag &amp; drop a file here, or <span style="color: #2185d0; text-decoration: underline;">browse</span></div>
-            <div style="margin-top: 6px; font-size: 0.85em; color: #99a;">TSV / TXT / BED &nbsp;(can be .gz compressed)</div>
+            <div style="margin-top: 10px; font-size: 1.05em;">Drag &amp; drop one or more files here, or <span style="color: #2185d0; text-decoration: underline;">browse</span></div>
+            <div style="margin-top: 6px; font-size: 0.85em; color: #99a;">TXT / TSV / BED &nbsp;(can be .gz compressed)</div>
         </div>
         <div id="gene-file-upload-error" class="ui negative message" style="display:none; margin-top: 12px;"></div>
     </div>
@@ -408,18 +408,27 @@
         }
         console.log("Starting to initialize page. GLOBAL_PAGE_STATE:", GLOBAL_PAGE_STATE)
 
-        // igv
+        // igv. The else branches make this idempotent: popstate (browser Back/Forward) re-runs this after
+        // resetting state to defaults, so panels must be explicitly hidden when their state is no longer 1 —
+        // otherwise they'd stay visible from a prior state.
         if (GLOBAL_PAGE_STATE['showIGV'] === 1) {
             $('#igv-row').show()
             $('#show-igv-divider-text').hide()
             $('#hide-igv-divider-text').show()
             await updateIgv()
+        } else {
+            $('#igv-row').hide()
+            $('#hide-igv-divider-text').hide()
+            $('#show-igv-divider-text').show()
         }
 
         // advanced search wrapper
         if (GLOBAL_PAGE_STATE['showAdvFilters'] === 1) {
             $('#advanced-search-form').show()
             $('#filter-button .filter.icon').removeClass('rotated')
+        } else {
+            $('#advanced-search-form').hide()
+            $('#filter-button .filter.icon').addClass('rotated')
         }
 
         // search
@@ -460,6 +469,17 @@
         if (GLOBAL_PAGE_STATE['showRs'] === 1) {
             if (!validateForm()) return
             await performSearch(false)
+        } else {
+            // Restored to a no-results state (e.g. browser Back/Forward to the default URL): clear the
+            // previous search's results, pagination, and panel summary so stale results aren't left
+            // visible under an empty search box.
+            window.searchResults = null
+            $('#results-table').empty().hide()
+            $('.top-pagination').hide()
+            $('.bottom-pagination').hide()
+            $('.no-results').hide()
+            $('#error-message').hide()
+            hidePanelSummary()
         }
     }
 
@@ -1148,6 +1168,11 @@
     // --- End Custom Filter Logic ---
 
     const performExport = async (value, selectedColumns = null) => {
+        // Exports rebuild the WHERE clause from the current filter inputs, so validate them first (same
+        // gate as Search) — otherwise an invalid threshold could be silently truncated into the exported query.
+        if (!validateForm()) {
+            return
+        }
         let fileFormat
         if (value === 'json') {
             fileFormat = 'JSON'
@@ -1175,6 +1200,12 @@
 
         try {
             $('body').css('cursor', 'wait')
+
+            // Refresh search query + custom filters from the current UI before building conditions (as
+            // performSearch does), so the export reflects the same filters the user currently sees rather
+            // than whatever the last search happened to set (buildAllConditions reads these from state).
+            GLOBAL_PAGE_STATE['searchQuery'] = $('#search-query').val()
+            GLOBAL_PAGE_STATE['customFilters'] = serializeCustomFilters()
 
             const sortColumn = GLOBAL_PAGE_STATE['sc'] || DEFAULT_SORT_COLUMN
             // Only ASC/DESC are valid; coerce anything else (incl. a value injected via the URL) to ASC
@@ -1353,6 +1384,10 @@
         if (!results.rows || results.rows.length === 0) {
             resultsTableElement.html('<div class="no-results">No matching results found</div>')
             $('.pagination-container').hide()
+            // Persist showRs=1 for empty results too (mirrors the non-empty path below), so reloading or
+            // sharing a zero-result search URL re-runs the search and restores the "No matching results" state.
+            GLOBAL_PAGE_STATE['showRs'] = 1
+            writePersistentPageStateToUrl()
             return
         }
 
@@ -1395,8 +1430,7 @@
                         value = columnObject.getValue(row)
                     }
 
-                    const cellStyle = columnObject?.getCellStyle ? columnObject.getCellStyle(row) : ''
-                    tableHtml += `<td style="padding: 3px 5px 3px 10px;${cellStyle}">${value != null ? value : ''}</td>`
+                    tableHtml += `<td style="padding: 3px 5px 3px 10px;">${value != null ? value : ''}</td>`
                 }
             })
 
@@ -1406,25 +1440,14 @@
                 ? `<span class="action-link results-table-igv-link" data-row-index="${index}">IGV</span>`
                 : ''
 
-            // Gene detail page link — prefer hgnc_gene_id, fall back to ensembl_gene_id.
-            // Carry the current search state in the gene page hash so its "Back to search page"
-            // link can return the user to the same results.
-            //
-            // Strip igvLoc from the carried state — the gene page must initialize its IGV viewer
-            // at the displayed gene's own coordinates, not at whatever locus the user had pinned
-            // on the search page (which would point to a different row's gene).
-            const hgncId = row['hgnc_gene_id'] || ''
-            const geneIdForLink = row['ensembl_gene_id'] || ''
-            const searchStateParams = new URLSearchParams(window.location.hash.substring(1))
-            searchStateParams.delete('igvLoc')
-            const searchStateHash = searchStateParams.toString()
-            const searchStateSuffix = searchStateHash ? `&${searchStateHash}` : ''
-            let geneLink = ''
-            if (hgncId) {
-                geneLink = `<a href="gene.html#hgnc_gene_id=${encodeURIComponent(hgncId)}${searchStateSuffix}" class="ui basic mini button" style="padding: 5px 10px; color: #2185d0; font-weight: 500; border: 1px solid #2185d0; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">gene &gt;</a>`
-            } else if (geneIdForLink) {
-                geneLink = `<a href="gene.html#ensembl_gene_id=${encodeURIComponent(geneIdForLink)}${searchStateSuffix}" class="ui basic mini button" style="padding: 5px 10px; color: #2185d0; font-weight: 500; border: 1px solid #2185d0; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">gene &gt;</a>`
-            }
+            // Gene detail page link — uses the shared geneDetailUrl() helper (header_template.html) so it
+            // stays in sync with the Gene-column link. The helper carries the current search state (minus
+            // igvLoc, which is gene-specific) so the gene page's "Back to search page" link restores the
+            // same results.
+            const geneDetailHref = geneDetailUrl(row['hgnc_gene_id'] || '', row['ensembl_gene_id'] || '')
+            const geneLink = geneDetailHref
+                ? `<a href="${geneDetailHref}" class="ui basic mini button" style="padding: 5px 10px; color: #2185d0; font-weight: 500; border: 1px solid #2185d0; box-shadow: 0 1px 2px rgba(0,0,0,0.08);">gene &gt;</a>`
+                : ''
             const igvGeneSpacer = igvLink && geneLink ? '<span style="display: inline-block; width: 10px;"></span>' : ''
             tableHtml += `<td style="padding: 8px 10px; white-space: nowrap; text-align: right;">${igvLink}${igvGeneSpacer}${geneLink}</td>`
             tableHtml += '</tr>'
@@ -1581,10 +1604,13 @@
 
         // Inheritance mode filter
         const inheritanceClauses = []
-        if ($('input[name="keepAD"]').prop('checked')) inheritanceClauses.push("UPPER(inheritance) LIKE '%AD%'")
-        if ($('input[name="keepAR"]').prop('checked')) inheritanceClauses.push("UPPER(inheritance) LIKE '%AR%'")
+        // Also match the verbose long-form strings that some sources leave unmapped (e.g. OMIM's
+        // "Isolated cases, Autosomal dominant"): "AUTOSOMAL DOMINANT" contains no "AD" substring, so the
+        // short-code LIKE alone would silently exclude such genes even though their cell renders as AD/AR/XL.
+        if ($('input[name="keepAD"]').prop('checked')) inheritanceClauses.push("(UPPER(inheritance) LIKE '%AD%' OR UPPER(inheritance) LIKE '%AUTOSOMAL DOMINANT%')")
+        if ($('input[name="keepAR"]').prop('checked')) inheritanceClauses.push("(UPPER(inheritance) LIKE '%AR%' OR UPPER(inheritance) LIKE '%AUTOSOMAL RECESSIVE%')")
         // Upstream sources normalize X-linked to XR/XD (OMIM/GenCC/PanelApp/Decipher); ClinGen leaves it as XL.
-        if ($('input[name="keepXL"]').prop('checked')) inheritanceClauses.push("(UPPER(inheritance) LIKE '%XL%' OR UPPER(inheritance) LIKE '%XR%' OR UPPER(inheritance) LIKE '%XD%')")
+        if ($('input[name="keepXL"]').prop('checked')) inheritanceClauses.push("(UPPER(inheritance) LIKE '%XL%' OR UPPER(inheritance) LIKE '%XR%' OR UPPER(inheritance) LIKE '%XD%' OR UPPER(inheritance) LIKE '%X-LINKED%')")
         if ($('input[name="keepMito"]').prop('checked')) inheritanceClauses.push("UPPER(inheritance) LIKE '%MITO%'")
         if (inheritanceClauses.length > 0) {
             conditions.push(`(${inheritanceClauses.join(' OR ')})`)
@@ -1664,6 +1690,13 @@
     let UPLOADED_FILE = null
     // Incremented on each fresh search so a slow summary query for a superseded search is discarded.
     let panelSearchSeq = 0
+    // Monotonic sequence for the MAIN results query, so an earlier (slower) response from rapid
+    // pagination/sort clicks can't overwrite a later search's results (mirrors panelSearchSeq).
+    let mainSearchSeq = 0
+    // The panel found-vs-missing query clause behind the most recently issued summary. Used so refresh
+    // actions (sort/paginate) re-run the summary only when the underlying panel query actually changed
+    // (e.g. the user edited a filter), rather than leaving a stale banner or re-querying needlessly.
+    let lastPanelSummaryKey = null
     // The current "not found" list (genes or region labels), for the "more..." modal and copy actions.
     let panelMissing = []
     const MAX_INLINE_MISSING = 20
@@ -1735,29 +1768,66 @@
     // column parsed into gene identifiers and/or hg38 regions.
     const isBedFileName = (name) => /\.bed(\.gz)?$/i.test(String(name || ''))
 
-    // Read a chosen/dropped file, parse it (TXT/TSV list or BED regions), show the chip, close the modal.
-    const handleUploadedFile = async (file) => {
+    // Read and parse one file into { genes, regions } (throws on a read/decompress error).
+    const parseOneFile = async (file) => {
+        const text = await readUploadedFileText(file)
+        return isBedFileName(file.name)
+            ? { genes: [], regions: parseRegionsFromBedText(text) }
+            : parseUploadedListFile(text)
+    }
+
+    // Handle one or more chosen/dropped files: parse each independently (so mixed TXT/TSV/BED work),
+    // then search the UNION of their parsed items — genes deduped by exact identifier, regions deduped
+    // by chrom:start0-end1. Files that fail to read are skipped and reported; the readable ones still
+    // apply. Shows the chip and closes the modal on full success.
+    const handleUploadedFiles = async (fileList) => {
         const $err = $('#gene-file-upload-error')
         $err.hide().empty()
-        if (!file) return
-        try {
-            const text = await readUploadedFileText(file)
-            const name = file.name || 'uploaded file'
-            const parsed = isBedFileName(name)
-                ? { genes: [], regions: parseRegionsFromBedText(text) }
-                : parseUploadedListFile(text)
-            if (!parsed.genes.length && !parsed.regions.length) {
-                $err.html(isBedFileName(name)
-                    ? '<b>No regions found.</b> Expected a BED file with chrom, start, and end in the first 3 columns.'
-                    : '<b>Nothing to search.</b> The first column should contain gene symbols/IDs or hg38 regions.').show()
-                return
+        const files = fileList ? Array.from(fileList) : []
+        if (!files.length) return
+
+        const allGenes = []
+        const allRegions = []
+        const okNames = []
+        const failed = []
+        for (const file of files) {
+            try {
+                const parsed = await parseOneFile(file)
+                allGenes.push(...parsed.genes)
+                allRegions.push(...parsed.regions)
+                okNames.push(file.name || 'uploaded file')
+            } catch (e) {
+                console.error('Error reading uploaded file:', file.name, e)
+                failed.push(file.name || 'a file')
             }
-            UPLOADED_FILE = { name, genes: parsed.genes, regions: parsed.regions }
-            renderUploadedFileChip()
+        }
+
+        // Union / dedup across all files.
+        const genes = [...new Set(allGenes)]
+        const seenRegions = new Set()
+        const regions = allRegions.filter((r) => {
+            const key = `${r.chrom}:${r.start0}-${r.end1}`
+            if (seenRegions.has(key)) return false
+            seenRegions.add(key)
+            return true
+        })
+
+        if (!genes.length && !regions.length) {
+            $err.html(failed.length
+                ? `<b>Could not read the file${failed.length > 1 ? 's' : ''}.</b> ${escapeHtml(failed.join(', '))}`
+                : '<b>Nothing to search.</b> The first column should contain gene symbols/IDs or hg38 regions (or upload a BED file).').show()
+            return
+        }
+
+        const name = okNames.length === 1 ? okNames[0] : `${okNames.length} files`
+        UPLOADED_FILE = { name, genes, regions }
+        renderUploadedFileChip()
+
+        if (failed.length) {
+            // Keep the readable files' union, but leave the modal open so the skipped-files notice is seen.
+            $err.html(`<b>Skipped ${failed.length} file${failed.length > 1 ? 's' : ''} that could not be read:</b> ${escapeHtml(failed.join(', '))}`).show()
+        } else {
             $('#gene-file-upload-modal').modal('hide')
-        } catch (e) {
-            console.error('Error reading uploaded file:', e)
-            $err.html('<b>Could not read the file.</b> ' + escapeHtml(e.message || 'Please try again.')).show()
         }
     }
 
@@ -1768,8 +1838,8 @@
     })
     $('#gene-file-dropzone').click(() => $('#gene-file-input').click())
     $('#gene-file-input').on('change', function() {
-        handleUploadedFile(this.files && this.files[0])
-        this.value = ''  // allow re-selecting the same file name later
+        handleUploadedFiles(this.files)
+        this.value = ''  // allow re-selecting the same file name(s) later
     })
     const $geneDropzone = $('#gene-file-dropzone')
     $geneDropzone.on('dragover dragenter', (e) => {
@@ -1782,7 +1852,7 @@
     })
     $geneDropzone.on('drop', (e) => {
         const dt = e.originalEvent.dataTransfer
-        handleUploadedFile(dt && dt.files && dt.files[0])
+        handleUploadedFiles(dt && dt.files)
     })
     // remove chip (delegated: the chip is re-rendered on each change)
     $('#gene-file-chip-container').on('click', '#gene-file-chip-remove', clearUploadedFile)
@@ -1812,7 +1882,10 @@
         let startIndex = 0
         const rows = []
         while (true) {
-            const sql = `SELECT DISTINCT ${selectCols} FROM ${COMPLETE_TABLE_ID} WHERE ${clause}`
+            // ORDER BY the selected columns so pagination is deterministic — without a stable sort,
+            // BigQuery's page boundaries can skip/duplicate rows across pages, corrupting the
+            // found-vs-missing partition for panels that match more than one page (>10000 rows).
+            const sql = `SELECT DISTINCT ${selectCols} FROM ${COMPLETE_TABLE_ID} WHERE ${clause} ORDER BY ${selectCols}`
             const res = await queryBigQuery(sql, startIndex, pageSize)
             if (res && res.rows && res.rows.length) rows.push(...res.rows)
             if (!res || !res.rows || res.rows.length < pageSize) break
@@ -1868,7 +1941,7 @@
                 clause: [panelClause, kwClause, ...filterConds].filter(Boolean).join(' AND '),
                 // Select both gene-id and coordinate columns so genes and regions can both be checked
                 // (plus RefSeq columns only when the file contains RefSeq ids).
-                selectCols: 'gene_symbol, gene_aliases, ensembl_gene_id, hgnc_gene_id, gene_chrom, gene_start, gene_end' + refseqSelectColsFor(genes),
+                selectCols: 'gene_symbol, gene_aliases, ensembl_gene_id, hgnc_gene_id, gene_chrom, gene_start, gene_end' + refseqSelectColsFor(genes) + ncbiSelectColsFor(genes),
                 partition: (rows) => {
                     const gm = genes.length ? partitionGeneListMatches(genes, rows) : { matched: [], missing: [] }
                     const rm = regions.length ? partitionRegionMatches(regions, rows) : { matched: [], missing: [] }
@@ -1884,7 +1957,7 @@
         if (!panelClause) return null
         return {
             clause: [panelClause, ...filterConds].filter(Boolean).join(' AND '),
-            selectCols: 'gene_symbol, gene_aliases, ensembl_gene_id, hgnc_gene_id' + refseqSelectColsFor(typed),
+            selectCols: 'gene_symbol, gene_aliases, ensembl_gene_id, hgnc_gene_id' + refseqSelectColsFor(typed) + ncbiSelectColsFor(typed),
             partition: (rows) => partitionGeneListMatches(typed, rows),
             noun: 'gene', ...panelWording('gene', filterConds.length > 0),
         }
@@ -1954,6 +2027,17 @@
     })
 
     const performSearch = async (showTableWhileLoading = false) => {
+        // Validate the filter inputs on EVERY search path — Search button, sort, pagination, page-size,
+        // and URL restore all funnel through here. Without this, the showTableWhileLoading paths (sort/
+        // paginate) would rebuild the query from unvalidated inputs, letting buildFilterConditions'
+        // parseFloat silently accept junk like "0.9abc" or emit `col >= 'text'` for a numeric column.
+        // validateForm is idempotent and returns true silently for valid input.
+        if (!validateForm()) {
+            return
+        }
+        // Guard against out-of-order responses: rapid pagination/sort can have two queries in flight, and
+        // the slower one must not overwrite the newer one's results (see the mySeq check after the fetch).
+        const mySeq = ++mainSearchSeq
         // Remove any error messages and no results message
         $('#error-message').hide()
         $('.no-results').hide()
@@ -1976,9 +2060,14 @@
             GLOBAL_PAGE_STATE['searchQuery'] = $('#search-query').val()
             GLOBAL_PAGE_STATE['customFilters'] = serializeCustomFilters()
 
-            // Kick off the gene-panel found-vs-missing summary concurrently with the main query.
-            // Only on a fresh search; pagination/sort (showTableWhileLoading) keeps the current one.
-            if (!showTableWhileLoading) {
+            // Kick off the gene-panel found-vs-missing summary concurrently with the main query. On a
+            // fresh search always refresh it; on a refresh action (sort/paginate, showTableWhileLoading)
+            // refresh it only if the panel query changed — otherwise the banner would show stale
+            // found/missing counts after the user edits a filter and then sorts/paginates.
+            const summaryPlan = getPanelSummaryPlan()
+            const summaryKey = summaryPlan ? summaryPlan.clause : null
+            if (!showTableWhileLoading || summaryKey !== lastPanelSummaryKey) {
+                lastPanelSummaryKey = summaryKey
                 updatePanelSummary(++panelSearchSeq)
             }
 
@@ -2016,7 +2105,9 @@
             const startIndex = GLOBAL_PAGE_STATE['pageSize'] * (GLOBAL_PAGE_STATE['currentPage'] - 1)
             const pageSize = GLOBAL_PAGE_STATE['pageSize']
 
-            window.searchResults = await queryBigQuery(query, startIndex, pageSize)
+            const results = await queryBigQuery(query, startIndex, pageSize)
+            if (mySeq !== mainSearchSeq) return  // a newer search started while this query was in flight
+            window.searchResults = results
 
             // Reset navigation index for new search results
             window.igvNavIndex = 0
@@ -2043,6 +2134,11 @@
             GLOBAL_PAGE_STATE['pliThreshold'] = $('input[name="pliThreshold"]').val()
             GLOBAL_PAGE_STATE['loeufThreshold'] = $('input[name="loeufThreshold"]').val()
             GLOBAL_PAGE_STATE['moeufThreshold'] = $('input[name="moeufThreshold"]').val()
+            // Mark results as shown BEFORE writing the URL and rendering rows: displaySearchResults()
+            // builds each row's gene-detail link from window.location.hash (via geneDetailUrl), so showRs
+            // must already be in the hash — otherwise a first search's gene links omit showRs=1 and the
+            // gene page's "Back to search page" link returns without re-running the search.
+            GLOBAL_PAGE_STATE['showRs'] = 1
             writePersistentPageStateToUrl()
 
             displaySearchResults()
@@ -2185,14 +2281,23 @@
 
         // Update igvLoc if the search query is a genomic region
         const searchQuery = $('#search-query').val()
+        let isRegionSearch = false
         if (searchQuery) {
             const regionMatch = searchQuery.trim().match(REFERENCE_REGION_REGEXP)
             if (regionMatch) {
                 GLOBAL_PAGE_STATE['igvLoc'] = searchQuery.trim()
+                isRegionSearch = true
             }
         }
 
         await performSearch(false)
+
+        // If a region was searched and the IGV browser is already open, move it to the new locus.
+        // updateIgv() otherwise only runs when the IGV panel is first opened, so an already-visible
+        // browser would stay at the previous locus even though igvLoc/URL moved.
+        if (isRegionSearch && GLOBAL_PAGE_STATE['showIGV'] === 1) {
+            await updateIgv()
+        }
     }
 
     $('#search-form').submit(handleSearch)

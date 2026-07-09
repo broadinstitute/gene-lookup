@@ -24,7 +24,12 @@ def get_current_ensembl_database():
     with pymysql.connect(host=ENSEMBL_HOST_EAST, user="anonymous") as conn:
         with conn.cursor() as cursor:
             cursor.execute("SHOW DATABASES LIKE 'homo_sapiens_core_%_38'")
-            databases = sorted([row[0] for row in cursor.fetchall()])
+            # Sort by the numeric Ensembl release (the second-to-last "_"-delimited field) rather than
+            # lexicographically, so e.g. release 116 sorts after release 99 (lexicographic "99" > "116").
+            databases = sorted(
+                (row[0] for row in cursor.fetchall()),
+                key=lambda name: int(name.split("_")[-2]),
+            )
 
     if not databases:
         raise RuntimeError("No homo_sapiens_core_*_38 databases found on Ensembl server")

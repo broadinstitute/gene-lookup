@@ -196,9 +196,18 @@
             const key = URL_PARAM_REVERSE_ALIASES[urlKey] || urlKey
             if (key in DEFAULT_GLOBAL_PAGE_STATE && value != null) {
                 if (preferExisting && GLOBAL_PAGE_STATE[key] !== DEFAULT_GLOBAL_PAGE_STATE[key]) continue
-                GLOBAL_PAGE_STATE[key] = value === 'true' ? true :
-                                        value === 'false' ? false :
-                                        !isNaN(value) ? Number(value) : value
+                // Coerce by the type of the key's default value rather than by "looks like a number":
+                // Number('') === 0 would otherwise turn an empty param (e.g. #igvLoc=) into 0, and a
+                // purely-numeric string value would be turned into a Number and break string callers.
+                // (Mirrors the hardened coercion in index_page_template.html.)
+                const defaultVal = DEFAULT_GLOBAL_PAGE_STATE[key]
+                if (typeof defaultVal === 'boolean') {
+                    GLOBAL_PAGE_STATE[key] = value === 'true'
+                } else if (typeof defaultVal === 'number') {
+                    GLOBAL_PAGE_STATE[key] = (value !== '' && !isNaN(value)) ? Number(value) : value
+                } else {
+                    GLOBAL_PAGE_STATE[key] = value
+                }
             }
         }
     }
@@ -234,6 +243,13 @@
             $('#igv-row').show()
             $('#show-igv-divider-text').hide()
             $('#hide-igv-divider-text').show()
+        } else {
+            // Idempotent restore: popstate (browser Back/Forward) re-runs this after resetting state to
+            // defaults, so explicitly hide the IGV row when showIGV is no longer 1 — otherwise it would
+            // stay visible from a prior state.
+            $('#igv-row').hide()
+            $('#hide-igv-divider-text').hide()
+            $('#show-igv-divider-text').show()
         }
 
         // Restore custom track URLs
@@ -338,7 +354,7 @@
         const pliV2 = renderConstraintValue(row['pLI_v2'], 'pLI_v2', 'pLI (v2)')
         const pliV4 = renderConstraintValue(row['pLI_v4'], 'pLI_v4', 'pLI (v4.1.1)')
         const loeuf = renderConstraintInterval(row['lof_oe_v4'], row['lof_oe_ci_lower_v4'], row['lof_oe_ci_upper_v4'], 'LOEUF', 'LOEUF (v4.1.1)')
-        const misInterval = renderConstraintInterval(row['mis_oe_v4'], row['mis_oe_ci_lower_v4'], row['mis_oe_ci_upper_v4'], null, '')
+        const misInterval = renderConstraintInterval(row['mis_oe_v4'], row['mis_oe_ci_lower_v4'], row['mis_oe_ci_upper_v4'], 'MOEUF', 'MOEUF (v4.1.1)')
         const misZBadge = renderConstraintBadge(row['mis_z_score_v4'], 'Missense_Z', 'Missense Z (v4.1.1)')
         const moeuf = misInterval && misZBadge ? `${misInterval} &nbsp; Z = ${misZBadge}`
             : misInterval ? misInterval
@@ -404,12 +420,12 @@
         if (geneSymbol) externalLinksLine1.push(link('ClinVar', SOURCES.ClinVar.url({ geneSymbol })))
         if (geneSymbol) externalLinksLine1.push(link('HGMD', `https://my.qiagendigitalinsights.com/bbp/view/hgmd/pro/gene.php?gene=${enc(geneSymbol)}`))
         if (geneSymbol) externalLinksLine1.push(link('MalaCards', `https://www.malacards.org/search/results?query=${enc(geneSymbol)}`))
-        if (geneId) externalLinksLine1.push(link('GeneCards', `https://www.genecards.org/cgi-bin/carddisp.pl?gene=${enc(geneId)}`))
+        if (geneSymbol) externalLinksLine1.push(link('GeneCards', `https://www.genecards.org/cgi-bin/carddisp.pl?gene=${enc(geneSymbol)}`))
         if (ncbiGeneId) externalLinksLine1.push(link('NCBI Gene', `https://www.ncbi.nlm.nih.gov/gene/${enc(ncbiGeneId)}`))
         else if (geneId) externalLinksLine1.push(link('NCBI Gene', `https://www.ncbi.nlm.nih.gov/gene/?term=${enc(geneId)}`))
         if (geneSymbol) externalLinksLine1.push(link('Monarch', `https://monarchinitiative.org/explore?search=${enc(geneSymbol)}#search`))
         if (geneSymbol) externalLinksLine1.push(link('Orphanet', `https://www.orpha.net/en/disease/gene/${enc(geneSymbol)}`))
-        if (hgncId) externalLinksLine1.push(link('MARRVEL', `https://marrvel.org/human/gene/${enc(hgncId.replace('HGNC:', ''))}`))
+        if (ncbiGeneId) externalLinksLine1.push(link('MARRVEL', `https://marrvel.org/human/gene/${enc(ncbiGeneId)}`))
         if (geneId) externalLinksLine2.push(link('gnomAD', `https://gnomad.broadinstitute.org/gene/${enc(geneId)}?dataset=gnomad_r4`))
         if (geneSymbol) externalLinksLine2.push(link('primAD', `https://primad.basespace.illumina.com/gene/${enc(geneSymbol)}`))
         if (geneSymbol) externalLinksLine2.push(link('MGI', `https://www.informatics.jax.org/marker/summary?nomen=${enc(geneSymbol)}`))
@@ -554,7 +570,7 @@
         // --- Source: ClinVar ---
         if (hasAnyValue(row['CLINVAR_phenotypes'], row['CLINVAR_clinical_significance'], row['CLINVAR_stars'], row['CLINVAR_variant_consequences'])) {
             const clinvarTitle = geneSymbol
-                ? `<a href="https://www.ncbi.nlm.nih.gov/clinvar?term=${encodeURIComponent(geneSymbol)}[gene]" target="_blank" class="action-link">ClinVar</a>`
+                ? `<a href="${SOURCES.ClinVar.url({ geneSymbol })}" target="_blank" class="action-link">ClinVar</a>`
                 : 'ClinVar'
             let html = `<div class="source-section"><h4>${clinvarTitle}</h4><table class="locus-info-table">`
             html += `<tr><td class="locus-info-label">Phenotypes:</td><td style="white-space: normal;">${dedupSemicolon(row['CLINVAR_phenotypes'])}</td></tr>`

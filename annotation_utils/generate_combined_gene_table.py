@@ -14,6 +14,7 @@ from annotation_utils.get_hgnc_table import get_hgnc_table, get_hgnc_to_ensg_id_
 from annotation_utils.get_panel_app_table import get_panel_app_table
 from annotation_utils.get_ensembl_db_info import get_transcript_id_to_gene_id, get_gene_metadata
 from annotation_utils.get_gwas_catalog import get_gwas_catalog_rare_disease_records
+from annotation_utils.get_mondo_ontology import get_cancer_or_infectious_mondo_ids
 from annotation_utils.get_gencc_table import get_gencc_table
 from annotation_utils.get_decipher_genes import get_decipher_gene_table
 from annotation_utils.get_clinvar_table import get_clinvar_gene_disease_table
@@ -131,6 +132,13 @@ print("Getting OMIM table")
 df_omim = get_omim_table()
 print(f"Got {len(df_omim):,d} rows from OMIM")
 
+# A restored OMIM cache written before phenotype_classification was added won't have that column (and the
+# OMIM cache can't be force-refreshed without a working download key). Add it empty so the column selection
+# and groupby below don't KeyError; the summarizer treats an empty OMIM classification as "keep" (drops
+# only Nondisease/Susceptibility), so OMIM stays as-is until its cache is next rebuilt.
+if "phenotype_classification" not in df_omim.columns:
+    df_omim["phenotype_classification"] = ""
+
 # Recover a missing Ensembl gene id from OMIM's Entrez (NCBI) gene id via the HGNC NCBI->ENSG bridge,
 # so disease loci that OMIM lists without an Ensembl xref aren't dropped just for lacking one. This is
 # strictly id-based (Entrez id -> HGNC -> ENSG); gene-symbol matching is deliberately NOT used because
@@ -164,6 +172,7 @@ df_omim = df_omim[[
     "phenotype_mim_number",
     "phenotype_inheritance",
     "phenotype_description",
+    "phenotype_classification",
     #"phenotypic_series_number",
     #"gene_symbols",
     #"gene_description",
@@ -179,6 +188,7 @@ df_omim = df_omim.rename(columns={
     "phenotype_mim_number": "OMIM_phenotype_mim_number",
     "phenotype_inheritance": "OMIM_inheritance",
     "phenotype_description": "OMIM_phenotype_description",
+    "phenotype_classification": "OMIM_phenotype_classification",
     #"phenotypic_series_number": "OMIM_phenotypic_series_number",
     #"oe_lof_upper": "LOEUF",
     #"pLI": "pLI",
@@ -198,6 +208,8 @@ df_omim = df_omim.groupby("OMIM_gene_id").agg({
     "OMIM_phenotype_mim_number": lambda x: separator.join(normalize_nulls(v) for v in x),
     "OMIM_inheritance": lambda x: separator.join(normalize_nulls(v) for v in x),
     "OMIM_phenotype_description": lambda x: separator.join(normalize_nulls(v) for v in x),
+    # kept aligned 1:1 with OMIM_phenotype_description (same group order) so the summarizer can filter by it
+    "OMIM_phenotype_classification": lambda x: separator.join(normalize_nulls(v) for v in x),
     #"OMIM_phenotypic_series_number": lambda x: separator.join(normalize_nulls(v) for v in x),
     #"LOEUF": lambda x: normalize_nulls(x.iloc[0]),
     #"pLI": lambda x: normalize_nulls(x.iloc[0]),
@@ -267,7 +279,12 @@ df_clingen = df_clingen.set_index("GENE ID (HGNC)").join(df_clingen_haploinsuffi
 df_clingen["CLINGEN_gene_id"] = df_clingen["GENE ID (HGNC)"].map(HGNC_to_ENSG_map)
 df_clingen["CLINGEN_hgnc_gene_id"] = df_clingen["GENE ID (HGNC)"]
 hgnc_ids_with_missing_esng = df_clingen[df_clingen['CLINGEN_gene_id'].isna()]['GENE ID (HGNC)'].unique()
-assert len(hgnc_ids_with_missing_esng) == 0, f"Could not convert the following HGNC ids to ENSG: {', '.join(hgnc_ids_with_missing_esng)}"
+if len(hgnc_ids_with_missing_esng) > 0:
+    # Drop+warn rather than assert, matching how GenCC/OMIM/PanelApp handle an unmappable id. A single new
+    # or edge-case ClinGen HGNC id on a routine data refresh should not abort the entire combined-table build.
+    print("\t", f"WARNING: dropping {len(hgnc_ids_with_missing_esng)} ClinGen rows whose HGNC id could not be "
+          f"mapped to an ENSG id: {', '.join(hgnc_ids_with_missing_esng)}")
+    df_clingen = df_clingen[df_clingen['CLINGEN_gene_id'].notna()]
 
 df_clingen = df_clingen[[
     "CLINGEN_gene_id",
@@ -540,7 +557,11 @@ if include_GWAS:
     GENE_DISTANCE            20297.0
     """
 
-    df_gwas = df_gwas[~df_gwas["MONDO_CATEGORY"].isin({"cancer or benign tumor", "infectious disease"})]
+    # Exclude cancer and infectious-disease associations, identified by MONDO descent rather than by
+    # MONDO_CATEGORY: MONDO_CATEGORY holds one of the top-level groupings under MONDO:0700096 (e.g. "disease
+    # by etiologic mechanism"), so it never equals "cancer or benign tumor" / "infectious disease" and the
+    # old name-based filter silently matched nothing.
+    df_gwas = df_gwas[~df_gwas["MONDO_ID"].isin(get_cancer_or_infectious_mondo_ids())]
 
     df_gwas.rename(columns={
         "MONDO_ID": "GWAS_mondo_id",
@@ -643,15 +664,24 @@ df_gencc.set_index("GENCC_gene_id", inplace=True)
 print("Getting Decipher table")
 df_decipher = get_decipher_gene_table()
 
+# A restored DECIPHER cache written before the classifications column was added won't have it; add it empty
+# so the rename + groupby below don't KeyError. Empty classifications make the summarizer's strict DECIPHER
+# filter contribute nothing (safe) until the DECIPHER cache is rebuilt with real classifications.
+if "classifications" not in df_decipher.columns:
+    df_decipher["classifications"] = ""
+
 df_decipher.rename(columns={
     "gene_id": "DECIPHER_gene_id",
     "inheritance_modes": "DECIPHER_inheritance",
     "disease_names": "DECIPHER_disease_names",
+    "classifications": "DECIPHER_classifications",
 }, inplace=True)
 
 df_decipher = df_decipher.groupby("DECIPHER_gene_id").agg({
     "DECIPHER_inheritance": lambda x: separator.join(normalize_nulls(v) for v in x),
     "DECIPHER_disease_names": lambda x: separator.join(normalize_nulls(v) for v in x),
+    # kept aligned 1:1 with DECIPHER_disease_names so the summarizer can filter to positive associations
+    "DECIPHER_classifications": lambda x: separator.join(normalize_nulls(v) for v in x),
 }).reset_index()
 
 df_decipher.set_index("DECIPHER_gene_id", inplace=True)

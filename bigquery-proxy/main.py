@@ -30,10 +30,32 @@ def _get_signing_credentials():
     global _SIGNING_CREDENTIALS, _SIGNING_SA_EMAIL
     if _SIGNING_CREDENTIALS is None:
         credentials, _ = google.auth.default()
-        _SIGNING_CREDENTIALS = credentials
-        _SIGNING_SA_EMAIL = getattr(credentials, "service_account_email", None) \
+        # Refresh before reading service_account_email: compute-metadata credentials (Cloud Functions/Run)
+        # report service_account_email as the literal "default" until the first refresh populates the real
+        # address, so reading it beforehand would cache the wrong signer identity. Treat "default" as
+        # unresolved so the K_SERVICE_ACCOUNT / FUNCTION_IDENTITY fallbacks still apply.
+        if not credentials.valid:
+            credentials.refresh(google.auth.transport.requests.Request())
+        sa_email = getattr(credentials, "service_account_email", None)
+        if sa_email == "default":
+            sa_email = None
+        sa_email = sa_email \
             or os.getenv("K_SERVICE_ACCOUNT") \
             or os.getenv("FUNCTION_IDENTITY")
+        if not sa_email:
+            # user ADC (e.g. `gcloud auth application-default login`) has no service_account_email, so V4
+            # signing via IAM signBlob can't work. Fail with an actionable message instead of the opaque
+            # AttributeError/ValueError generate_signed_url would otherwise raise. Resolve into locals and
+            # raise BEFORE assigning the module globals, so a failed first call leaves the cache empty and a
+            # later call (e.g. after the user sets FUNCTION_IDENTITY) re-attempts resolution.
+            raise RuntimeError(
+                "Cannot generate a V4 signed URL: no service-account identity is available. This path "
+                "requires the Cloud Function runtime service account (or the K_SERVICE_ACCOUNT / "
+                "FUNCTION_IDENTITY env var). User credentials from `gcloud auth application-default login` "
+                "cannot sign; set FUNCTION_IDENTITY to a service account email for local testing."
+            )
+        _SIGNING_CREDENTIALS = credentials
+        _SIGNING_SA_EMAIL = sa_email
     if not _SIGNING_CREDENTIALS.valid:
         _SIGNING_CREDENTIALS.refresh(google.auth.transport.requests.Request())
     return _SIGNING_CREDENTIALS, _SIGNING_SA_EMAIL
@@ -41,6 +63,26 @@ def _get_signing_credentials():
 BIGQUERY_PROJECT = "cmg-analysis"
 BIGQUERY_DATASET = "gene_lookup"
 BIGQUERY_TABLE = "combined_gene_disease_association_table"
+
+# Columns that must never be exported to file (OMIM's licensed content). Mirrors allowExport:False in
+# website/global_constants.py. Enforced server-side because the client-side export allowlist can be
+# bypassed by POSTing raw SQL (e.g. `SELECT *`) directly to this endpoint.
+NON_EXPORTABLE_COLUMNS = {
+    "OMIM_mim_number",
+    "OMIM_phenotype_mim_number",
+    "OMIM_inheritance",
+    "OMIM_phenotype_description",
+}
+
+
+def _all_schema_field_names(fields):
+    """Yield every field name in a BigQuery schema, recursing into RECORD/STRUCT subfields — so a
+    non-exportable column nested inside a `SELECT AS STRUCT ...` (whose top-level field is the struct)
+    can't hide from the export-column check."""
+    for field in fields:
+        yield field.name
+        if field.fields:
+            yield from _all_schema_field_names(field.fields)
 
 
 def return_query_results(client, result_table, start_index=0, page_size=100):
@@ -246,12 +288,14 @@ def query_gene_lookup_db(request):
 
     sql = str(sql).strip()
 
-    # Structural validation runs against a normalized copy of the query with (a) single-quoted string
-    # literals blanked out — so user search text (which may contain words like "drop" or dotted values)
-    # can't trip the keyword/table checks below — (b) backtick identifier-quotes removed, so
+    # Structural validation runs against a normalized copy of the query with (a) single- and double-quoted
+    # string literals blanked out — so user search text (which may contain words like "drop", semicolons, or
+    # dotted values) can't trip the keyword/table checks below — (b) backtick identifier-quotes removed, so
     # per-identifier quoting like `proj`.`ds`.`tbl` can't smuggle a table reference past the checks, and
     # (c) whitespace around the dot operator collapsed, so `proj . ds . tbl` can't evade the checks.
+    # BigQuery accepts both '...' and "..." string literals, so both must be blanked.
     sql_norm = re.sub(r"'(?:[^'\\]|\\.|'')*'", "''", sql)
+    sql_norm = re.sub(r'"(?:[^"\\]|\\.|"")*"', '""', sql_norm)
     sql_norm = sql_norm.replace("`", "")
     sql_norm = re.sub(r"\s*\.\s*", ".", sql_norm)
 
@@ -273,10 +317,27 @@ def query_gene_lookup_db(request):
         print(f"ERROR: {response_dict['error']}")
         return jsonify(response_dict), 400, response_headers
 
+    # After the approved table in the FROM clause, only a standard trailing clause (WHERE/GROUP/HAVING/
+    # QUALIFY/WINDOW/ORDER/LIMIT) or the end of the query may follow — never a comma cross-join, JOIN, or
+    # table alias introducing a second row source. This blocks row-amplification like
+    # `FROM <table>, UNNEST(GENERATE_ARRAY(1, 1e9))` or `FROM <table>, <table>`, whose output cardinality
+    # is not bounded by the maximum_bytes_billed (bytes-scanned) cap. UNNEST inside a WHERE subquery is
+    # unaffected because it appears after WHERE (the site uses that pattern for rs/transcript/region search).
+    from_tail_match = re.search(
+        rf"\bFROM\s+{re.escape(approved_table)}\b(?P<tail>.*)$", sql_norm, re.IGNORECASE | re.DOTALL)
+    tail = from_tail_match.group("tail") if from_tail_match else ""
+    if not re.match(r"\s*($|(WHERE|GROUP|HAVING|QUALIFY|WINDOW|ORDER|LIMIT)\b)", tail, re.IGNORECASE):
+        response_dict = {"error": "Invalid SQL query: only a single-table SELECT with standard WHERE/GROUP/ORDER/LIMIT clauses is allowed (no joins, comma-joins, or table functions in the FROM clause)."}
+        print(f"ERROR: {response_dict['error']}")
+        return jsonify(response_dict), 400, response_headers
+
     # Block SQL keywords that could be used for injection or side effects (UNION, subqueries, DML, DDL,
     # BigQuery statements like EXPORT DATA / LOAD DATA / MERGE, scripting, and IAM changes). Checked on
     # the string-blanked copy so a legitimate search for text like "drop attacks" isn't rejected.
-    forbidden_pattern = r"\b(UNION|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|TRUNCATE|MERGE|EXPORT|LOAD|GRANT|REVOKE|ASSERT|BEGIN|DECLARE|EXEC|EXECUTE|CALL|INTO\s+OUTFILE|INFORMATION_SCHEMA)\b"
+    # GENERATE_ARRAY / GENERATE_DATE_ARRAY / GENERATE_TIMESTAMP_ARRAY are row-generation primitives that
+    # can synthesize huge row counts without scanning storage (so the bytes-billed cap doesn't bound them);
+    # the site never uses them, so they're forbidden anywhere in the query.
+    forbidden_pattern = r"\b(UNION|INSERT|UPDATE|DELETE|DROP|CREATE|ALTER|TRUNCATE|MERGE|EXPORT|LOAD|GRANT|REVOKE|ASSERT|BEGIN|DECLARE|EXEC|EXECUTE|CALL|INTO\s+OUTFILE|INFORMATION_SCHEMA|GENERATE_ARRAY|GENERATE_DATE_ARRAY|GENERATE_TIMESTAMP_ARRAY)\b"
     if re.search(forbidden_pattern, sql_norm, re.IGNORECASE):
         response_dict = {"error": f"SQL query contains forbidden keywords: {sql}"}
         print(f"ERROR: {response_dict['error']}")
@@ -314,6 +375,28 @@ def query_gene_lookup_db(request):
 
     export_to_file_format = data.get("export_to_file_format")
     if export_to_file_format:
+        # Enforce the non-exportable (OMIM-licensed) column policy server-side, since a raw POST to this
+        # endpoint bypasses the client-side export allowlist. Two complementary checks:
+        #  (1) result-schema names, recursing into nested RECORD/STRUCT subfields — catches `SELECT *`,
+        #      verbatim `SELECT OMIM_x`, and `SELECT AS STRUCT *` (where OMIM fields are nested);
+        #  (2) SELECT-list text (everything before the approved-table FROM) — catches aliases/expressions
+        #      like `SELECT OMIM_x AS y` / `CONCAT(OMIM_x, ...)` that (1) misses because the output field
+        #      is renamed. Only the SELECT list is checked, so a non-exportable column used purely in a
+        #      WHERE filter (allowed — its values never reach the exported file) is not rejected.
+        from_match = re.search(rf"\bFROM\s+{re.escape(approved_table)}\b", sql_norm, re.IGNORECASE)
+        select_list = sql_norm[:from_match.start()] if from_match else sql_norm
+        schema_field_names = set(_all_schema_field_names(result_table.schema))
+        disallowed_columns = sorted({
+            name for name in schema_field_names if name in NON_EXPORTABLE_COLUMNS
+        } | {
+            column for column in NON_EXPORTABLE_COLUMNS
+            if re.search(rf"\b{re.escape(column)}\b", select_list, re.IGNORECASE)
+        })
+        if disallowed_columns:
+            response_dict = {"error": f"Export is not permitted for these columns: {', '.join(disallowed_columns)}"}
+            print(f"ERROR: {response_dict['error']}")
+            return jsonify(response_dict), 400, response_headers
+
         response_json, response_status_code = export_to_file(
             client, result_table, export_to_file_format)
 

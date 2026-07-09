@@ -92,6 +92,12 @@ jobs:
     - name: Clear stale GenCC cache (schema changed)
       run: rm -f ~/.annotations/gencc_table.*.tsv.gz
 
+    - name: Clear stale MONDO cache (now stores multi-parent parent_ids for the cancer/infectious exclusion)
+      run: rm -f ~/.annotations/download_mondo_obo_file.*.json.gz
+
+    - name: Clear stale dbNSFP cache (now adds DBNSFP_orphanet_positive_disorder for the phenotype summarizer)
+      run: rm -f ~/.annotations/dbnsfp_gene_table.*.tsv.gz
+
     - name: Generate combined gene table
       env:
         OMIM_KEY: ${{ secrets.OMIM_KEY }}

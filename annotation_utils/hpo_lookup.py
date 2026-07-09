@@ -31,6 +31,10 @@ def download_hpo_obo_file():
             hpo_id = value
             hpo_id_to_record[hpo_id] = {
                 'hpo_id': hpo_id,
+                # HPO is a DAG: a term can have several is_a parents. parent_id keeps only the last one,
+                # while parent_ids keeps them all so get_category_id() can find a clinical category even
+                # when the last is_a points to a non-phenotype branch (e.g. an inheritance/modifier term).
+                'parent_ids': [],
                 'is_category': False,
             }
         elif line.startswith("is_a: "):
@@ -41,6 +45,7 @@ def download_hpo_obo_file():
             if is_a == "HP:0000118":
                 hpo_id_to_record[hpo_id]['is_category'] = True
             hpo_id_to_record[hpo_id]['parent_id'] = is_a
+            hpo_id_to_record[hpo_id]['parent_ids'].append(is_a)
         elif line.startswith("name: "):
             hpo_id_to_record[hpo_id]['name'] = value
         elif line.startswith("def: "):
@@ -79,6 +84,26 @@ def parse_hpo_terms_arg(hpo_terms_arg, hpo_id_to_record):
     return results
 
 
+def _get_parent_ids(hpo_id_to_record, hpo_id):
+    """Return the list of direct is_a parents for hpo_id: the multi-parent parent_ids list, falling back
+    to the single parent_id for records parsed before parent_ids existed (e.g. a stale cache)."""
+    record = hpo_id_to_record[hpo_id]
+    return record.get("parent_ids") or ([record["parent_id"]] if record.get("parent_id") else [])
+
+
+def get_ancestor_ids(hpo_id_to_record, hpo_id):
+    """Return a set with hpo_id and all of its ancestor ids, traversing the full multi-parent DAG (cycle-safe)."""
+    ancestor_ids = set()
+    stack = [hpo_id]
+    while stack:
+        current_id = stack.pop()
+        if current_id in ancestor_ids or current_id not in hpo_id_to_record:
+            continue
+        ancestor_ids.add(current_id)
+        stack.extend(_get_parent_ids(hpo_id_to_record, current_id))
+    return ancestor_ids
+
+
 def get_category_id(hpo_id_to_record, hpo_id):
     """For a given hpo_id, get the hpo id of it's top-level category (eg. 'cardiovascular') and
     return it. If the hpo_id belongs to multiple top-level categories, return one of them.
@@ -90,15 +115,26 @@ def get_category_id(hpo_id_to_record, hpo_id):
     if 'parent_id' not in hpo_id_to_record[hpo_id]:
         return None
 
-    while hpo_id_to_record[hpo_id]['parent_id'] != "HP:0000118":
+    # Primary: walk the single (last-is_a) parent chain, which preserves historical category assignments.
+    node = hpo_id
+    while hpo_id_to_record[node]['parent_id'] != "HP:0000118":
+        node = hpo_id_to_record[node]['parent_id']
+        if node == "HP:0000001" or 'parent_id' not in hpo_id_to_record.get(node, {}):
+            node = None
+            break
+        if node not in hpo_id_to_record:
+            raise ValueError("Unknown HPO id: %s" % node)
+    if node is not None:
+        return node
 
-        hpo_id = hpo_id_to_record[hpo_id]['parent_id']
-        if hpo_id == "HP:0000001":
-            return None
-        if hpo_id not in hpo_id_to_record:
-            raise ValueError("Unknown HPO id: %s" % hpo_id)
-
-    return hpo_id
+    # Fallback: HPO is a DAG, so the single last-is_a chain can dead-end at the ontology root even when the
+    # term is under the "Phenotypic abnormality" category via another is_a parent. Return the (deterministic)
+    # smallest ancestor that is a direct child of HP:0000118.
+    top_level_categories = sorted(
+        ancestor_id for ancestor_id in get_ancestor_ids(hpo_id_to_record, hpo_id)
+        if "HP:0000118" in _get_parent_ids(hpo_id_to_record, ancestor_id)
+    )
+    return top_level_categories[0] if top_level_categories else None
 
 
 def main():
@@ -124,11 +160,11 @@ def main():
         sys.exit(1)
 
     category_field_width = max(len(hpo_id_to_record[hpo_term]["category"]) for hpo_term in hpo_terms)
-    for hpo_term in sorted(hpo_terms, key=lambda hpo_term: (hpo_id_to_record[hpo_term]['category_id'], hpo_term)):
+    for hpo_term in sorted(hpo_terms, key=lambda hpo_term: (hpo_id_to_record[hpo_term]['category_id'] or '', hpo_term)):
         record = hpo_id_to_record[hpo_term]
 
         if args.verbose:
-            definition = record['definition'].split("[")[0].strip('" .').replace('\\"', '"')
+            definition = (record.get('definition') or '').split("[")[0].strip('" .').replace('\\"', '"')
             definition = f"    ({definition})"
         else:
             category = record["category"]

@@ -19,6 +19,7 @@ OUTPUT_COLUMNS = [
     'end',
     'mim_number',
     'phenotype_map_method',
+    'phenotype_classification',
     'phenotype_mim_number',
     'phenotype_inheritance',
     'gene_symbols',
@@ -148,6 +149,22 @@ def parse_genemap2_records(omim_line_fields):
 
             record_with_phenotype = dict(output_record)  # copy
             record_with_phenotype["phenotype_description"] = phenotype_match.group(1)
+            # Capture OMIM's phenotype prefix as a classification (the regex strips the [ ] / { } markers,
+            # so record it here before that information is lost). Kept aligned 1:1 with phenotype_description
+            # so downstream consumers (e.g. the LLM summarizer) can include only positive associations:
+            #   ?  -> Provisional (tentative but real association)
+            #   [] -> Nondisease  (nondisease phenotype, e.g. a lab measurement / blood group)
+            #   {} -> Susceptibility (risk-factor contribution, not a Mendelian disease-causing association)
+            #   (none) -> Confirmed
+            matched_prefix_text = phenotype_match.group(0).lstrip()
+            if matched_prefix_text.startswith("["):
+                record_with_phenotype["phenotype_classification"] = "Nondisease"
+            elif matched_prefix_text.startswith("{"):
+                record_with_phenotype["phenotype_classification"] = "Susceptibility"
+            elif phenotype_match.group(1).startswith("?"):
+                record_with_phenotype["phenotype_classification"] = "Provisional"
+            else:
+                record_with_phenotype["phenotype_classification"] = "Confirmed"
             record_with_phenotype["phenotype_mim_number"] = int(phenotype_match.group(3)) if phenotype_match.group(3) else None
             record_with_phenotype["phenotype_map_method"] = int(phenotype_match.group(4))
             record_with_phenotype["phenotype_inheritance"] = phenotype_match.group(6) or None

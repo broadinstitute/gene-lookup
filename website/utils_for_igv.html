@@ -115,12 +115,26 @@
                         writePersistentPageStateToUrl()
                     }
                 })
+                // Also clear any custom-track URL matching the removed track. Without this, generateIgvConfig()
+                // re-adds the (still-persisted) custom URL on the next IGV/page reload, so the removed track reappears.
+                // Compare against the trimmed state value because generateIgvConfig() loads the track with
+                // url.trim(), so track.url is trimmed while the persisted state may still hold whitespace.
+                for (let i = 1; i <= 3; i++) {
+                    const key = `igv_custom_track_url_${i}`
+                    if (GLOBAL_PAGE_STATE[key] && GLOBAL_PAGE_STATE[key].trim() === track.url) {
+                        GLOBAL_PAGE_STATE[key] = ''
+                        $(`#igv-custom-track-url-${i}`).val('')
+                        writePersistentPageStateToUrl()
+                    }
+                }
             })
 
             window.igvBrowser.on('locuschange', (locus) => {
                 if (locus[0] && locus[0].chr && locus[0].start && locus[0].end) {
                     GLOBAL_PAGE_STATE['igvLoc'] = `${locus[0].chr}:${parseInt(locus[0].start)}-${parseInt(locus[0].end)}`
-                    writePersistentPageStateToUrl()
+                    // replaceHistory=true: locuschange fires continuously during drag/zoom, so replace the
+                    // current history entry instead of pushing one per intermediate coordinate.
+                    writePersistentPageStateToUrl(true)
                 }
             })
 

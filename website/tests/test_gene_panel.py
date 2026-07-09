@@ -259,3 +259,64 @@ def test_chip_remove_clears_banner(index_page, tmp_path):
     wait_summary_contains(index_page, "NOTAREALGENE")
     index_page.click("#gene-file-chip-remove")
     assert not index_page.is_visible("#gene-panel-summary")
+
+
+def test_multi_file_upload_unions_genes(index_page, console_errors, tmp_path):
+    """Uploading several files searches the UNION of their genes, deduped across files."""
+    f1 = tmp_path / "panel1.txt"
+    f1.write_text("SMN1\nCFTR\n")
+    f2 = tmp_path / "panel2.txt"
+    f2.write_text("CFTR\nDMD\n")  # CFTR overlaps f1 -> must be counted once in the union
+    index_page.set_input_files("#gene-file-input", [str(f1), str(f2)])
+    index_page.wait_for_selector("#gene-file-chip-container", state="visible", timeout=10000)
+
+    chip = index_page.inner_text("#gene-file-chip-container")
+    assert "2 files" in chip, f"chip should name 2 files, got: {chip}"
+    assert "3 genes" in chip, f"union of SMN1/CFTR/DMD should be 3 genes, got: {chip}"
+
+    index_page.click("#search-button")
+    wait_summary_contains(index_page, "All 3 genes were found")
+    assert "All 3 genes were found in the database" in summary_text(index_page)
+    wait_results_contain(index_page, "DMD")
+    assert real_errors(console_errors) == [], f"JS errors: {real_errors(console_errors)}"
+
+
+def test_multi_file_upload_mixes_genes_and_regions(index_page, console_errors, tmp_path):
+    """A gene-list file and a BED file uploaded together union into genes + regions."""
+    genes = tmp_path / "genes.txt"
+    genes.write_text("BRCA1\n")
+    regions = tmp_path / "regions.bed"
+    # chr7:117480025-117668665 (1-based) overlaps CFTR.
+    regions.write_text("chr7\t117480024\t117668665\tCFTR_region\n")
+    index_page.set_input_files("#gene-file-input", [str(genes), str(regions)])
+    index_page.wait_for_selector("#gene-file-chip-container", state="visible", timeout=10000)
+
+    chip = index_page.inner_text("#gene-file-chip-container")
+    assert "2 files" in chip, f"chip should name 2 files, got: {chip}"
+    assert "2 items" in chip, f"1 gene + 1 region should be 2 items, got: {chip}"
+
+    index_page.click("#search-button")
+    wait_results_contain(index_page, "BRCA1")
+    assert real_errors(console_errors) == [], f"JS errors: {real_errors(console_errors)}"
+
+
+def test_multi_file_upload_skips_unreadable_file(index_page, tmp_path):
+    """An unreadable file among several is skipped and reported; the readable ones still apply."""
+    good = tmp_path / "good.txt"
+    good.write_text("BRCA1\nCFTR\n")
+    bad = tmp_path / "bad.gz"
+    bad.write_bytes(b"this is not valid gzip content\n")  # .gz name but not gzip -> read error
+    # Open the upload modal first: the skipped-file notice lives inside it (as when a user browses/drops).
+    index_page.click("#gene-file-upload-button")
+    index_page.wait_for_selector("#gene-file-upload-modal", state="visible", timeout=5000)
+    index_page.set_input_files("#gene-file-input", [str(good), str(bad)])
+
+    # The readable file's genes are still loaded (chip names only the file that was read).
+    index_page.wait_for_selector("#gene-file-chip-container", state="visible", timeout=10000)
+    chip = index_page.inner_text("#gene-file-chip-container")
+    assert "good.txt" in chip and "2 genes" in chip, f"chip: {chip}"
+
+    # The skipped file is reported (modal stays open with the notice).
+    index_page.wait_for_selector("#gene-file-upload-error", state="visible", timeout=5000)
+    err = index_page.inner_text("#gene-file-upload-error")
+    assert "Skipped 1 file" in err and "bad.gz" in err, f"error notice: {err}"

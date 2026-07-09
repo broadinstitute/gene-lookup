@@ -144,32 +144,15 @@
         background: white;
     }
 
-    .igv-number-of-loci-column {
-        text-align: right !important;
-        white-space: nowrap;
-    }
-
     .igv-track-checkbox {
         margin-right: 15px;
         margin-bottom: 10px;
         display: block;
     }
 
-    .question, .disease-associated-icon {
+    .question {
         margin-left: 10px;
         cursor: pointer;
-    }
-
-    .igv-row-sidebar-title {
-        font-family: Lato, "Helvetica Neue", Arial, Helvetica, sans-serif;
-        font-size: 18px;
-        font-weight: 700;
-    }
-
-    .igv-row-sidebar-text {
-        display: block;
-        font-family: Lato, "Helvetica Neue", Arial, Helvetica, sans-serif;
-        font-size: 14px;
     }
 
     #show-igv-divider {
@@ -209,10 +192,6 @@
         font-size: 0.8em;
         margin-left: 5px;
         transition: transform 0.2s;
-    }
-
-    .info-font-size {
-        font-size: 1.12em;
     }
 
     #search-query {
@@ -307,14 +286,6 @@
         font-size: 1.1em;
         font-weight: 300;
         height: 100%;
-    }
-
-    .disease-associated-row {
-        background-color: #ffdddd !important;
-    }
-
-    .disease-associated-row:hover {
-        background-color: #eae9fc !important;
     }
 
     .loading-indicator .ui.loader {
@@ -467,12 +438,6 @@
 
     #results-area {
         position: relative;
-    }
-
-    .action-cell {
-        cursor: pointer;
-        color: #2185d0;
-        transition: all 0.2s;
     }
 
     .action-link {
@@ -775,12 +740,26 @@
                         writePersistentPageStateToUrl()
                     }
                 })
+                // Also clear any custom-track URL matching the removed track. Without this, generateIgvConfig()
+                // re-adds the (still-persisted) custom URL on the next IGV/page reload, so the removed track reappears.
+                // Compare against the trimmed state value because generateIgvConfig() loads the track with
+                // url.trim(), so track.url is trimmed while the persisted state may still hold whitespace.
+                for (let i = 1; i <= 3; i++) {
+                    const key = `igv_custom_track_url_${i}`
+                    if (GLOBAL_PAGE_STATE[key] && GLOBAL_PAGE_STATE[key].trim() === track.url) {
+                        GLOBAL_PAGE_STATE[key] = ''
+                        $(`#igv-custom-track-url-${i}`).val('')
+                        writePersistentPageStateToUrl()
+                    }
+                }
             })
 
             window.igvBrowser.on('locuschange', (locus) => {
                 if (locus[0] && locus[0].chr && locus[0].start && locus[0].end) {
                     GLOBAL_PAGE_STATE['igvLoc'] = `${locus[0].chr}:${parseInt(locus[0].start)}-${parseInt(locus[0].end)}`
-                    writePersistentPageStateToUrl()
+                    // replaceHistory=true: locuschange fires continuously during drag/zoom, so replace the
+                    // current history entry instead of pushing one per intermediate coordinate.
+                    writePersistentPageStateToUrl(true)
                 }
             })
 
@@ -956,7 +935,7 @@
     // Support common query-string variant used by external links
     URL_PARAM_REVERSE_ALIASES['search-query'] = 'searchQuery'
 
-    const writePersistentPageStateToUrl = () => {
+    const writePersistentPageStateToUrl = (replaceHistory = false) => {
         // Create object with only non-default values
         const nonDefaultParams = {}
         for (const [key, value] of Object.entries(GLOBAL_PAGE_STATE)) {
@@ -973,8 +952,14 @@
         // Get current hash to check if state has changed
         const currentHash = window.location.hash
         if (currentHash !== hash) {
-            // Update URL and add to browser history
-            window.history.pushState(null, '', hash)
+            // Update URL. Pass replaceHistory=true for high-frequency updates (e.g. IGV drag/zoom
+            // locuschange) to replace the current history entry rather than pushing a new one, so the
+            // browser Back button isn't flooded with dozens of intermediate coordinate hashes.
+            if (replaceHistory) {
+                window.history.replaceState(null, '', hash)
+            } else {
+                window.history.pushState(null, '', hash)
+            }
         }
     }
 
@@ -1025,6 +1010,21 @@
         return out
     }
     const dedupSemicolon = (s) => dedupSemicolonArray(s).join('; ')
+
+    // Build a gene-detail page URL from a row's ids, carrying the current search state (minus igvLoc, which
+    // is gene-specific) in the hash so the gene page's "Back to search page" link restores the same results.
+    // Shared by the Gene-column link and the per-row "gene >" button so the two can't drift apart. Prefers
+    // hgnc_gene_id, falls back to ensembl_gene_id; returns '' when neither id is available.
+    const geneDetailUrl = (hgncId, geneId) => {
+        const idParam = hgncId
+            ? `hgnc_gene_id=${encodeURIComponent(hgncId)}`
+            : (geneId ? `ensembl_gene_id=${encodeURIComponent(geneId)}` : '')
+        if (!idParam) return ''
+        const searchStateParams = new URLSearchParams(window.location.hash.substring(1))
+        searchStateParams.delete('igvLoc')
+        const searchStateHash = searchStateParams.toString()
+        return `gene.html#${idParam}${searchStateHash ? `&${searchStateHash}` : ''}`
+    }
 
     // Inheritance types — colors and aliases (short codes + verbose long-form strings). Used to
     // colorize occurrences in inheritance cells and build the on-click explanation popup. The
@@ -1413,13 +1413,9 @@
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['gene_symbol'],
             getValue: (row) => {
                 const symbol = row['gene_symbol'] || row['hgnc_gene_id'] || row['ensembl_gene_id'] || ''
-                const hgncId = row['hgnc_gene_id'] || ''
-                const geneId = row['ensembl_gene_id'] || ''
-                if (hgncId) {
-                    return `<a href="gene.html#hgnc_gene_id=${encodeURIComponent(hgncId)}" class="action-link" style="font-weight: bold;">${symbol}</a>`
-                }
-                if (geneId) {
-                    return `<a href="gene.html#ensembl_gene_id=${encodeURIComponent(geneId)}" class="action-link" style="font-weight: bold;">${symbol}</a>`
+                const url = geneDetailUrl(row['hgnc_gene_id'] || '', row['ensembl_gene_id'] || '')
+                if (url) {
+                    return `<a href="${url}" class="action-link" style="font-weight: bold;">${symbol}</a>`
                 }
                 return `<span style="font-weight: bold;">${symbol}</span>`
             },
@@ -1608,7 +1604,7 @@
             displayName: 'MOEUF',
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['mis_oe_ci_upper_v4'],
             getValue: (row) => {
-                const interval = renderConstraintInterval(row['mis_oe_v4'], row['mis_oe_ci_lower_v4'], row['mis_oe_ci_upper_v4'], null, '')
+                const interval = renderConstraintInterval(row['mis_oe_v4'], row['mis_oe_ci_lower_v4'], row['mis_oe_ci_upper_v4'], 'MOEUF', 'MOEUF (v4.1.1)')
                 const zBadge = renderConstraintBadge(row['mis_z_score_v4'], 'Missense_Z', 'Missense Z (v4.1.1)')
                 if (!interval) return zBadge ? `Z = ${zBadge}` : ''
                 return zBadge ? `${interval} &nbsp; Z = ${zBadge}` : interval
@@ -2038,6 +2034,9 @@
         if (/^HGNC:\d+$/.test(up)) return 'hgnc'
         // RefSeq accession: transcript (NM_/NR_/XM_/XR_), gene (NG_), or protein (NP_/XP_), optional version.
         if (/^[NX][MRGP]_\d+(\.\d+)?$/.test(up)) return 'refseq'
+        // NCBI/Entrez gene ID: all digits. Must be tested BEFORE the gene-symbol shape below (which also
+        // matches pure digits); gene symbols are never purely numeric, so a numeric token is an NCBI id.
+        if (/^\d+$/.test(t)) return 'ncbi'
         // Gene-symbol shape: starts alphanumeric, then letters/digits/-/_/. with no whitespace
         // or ':'. This excludes regions like chr1:100-200 and phrases like "limb girdle".
         if (/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(t)) return 'symbol'
@@ -2055,13 +2054,17 @@
     // reference these columns (which may not yet exist in the deployed table).
     const refseqSelectColsFor = (tokens) => tokens.some(t => classifyGeneToken(t) === 'refseq') ? `, ${REFSEQ_MATCH_COLUMNS.join(', ')}` : ''
 
+    // ncbi_gene_id is only added to the found/missing summary SELECT when the token list contains a
+    // numeric NCBI id, so panels of only symbols/IDs don't reference it needlessly.
+    const ncbiSelectColsFor = (tokens) => tokens.some(t => classifyGeneToken(t) === 'ncbi') ? ', ncbi_gene_id' : ''
+
     // Stricter test used only to decide whether a TYPED comma-separated list should be treated as a
     // gene panel (and get a found/missing banner). Requires an explicit gene ID, or a symbol token
     // that carries a digit or an uppercase letter -- this keeps lowercase free-text disease words
     // (eg. "ataxia", "epilepsy") from being mistaken for gene symbols and mislabeled "not found".
     const isTypedPanelToken = (token) => {
         const kind = classifyGeneToken(token)
-        if (kind === 'ensembl' || kind === 'hgnc' || kind === 'refseq') return true
+        if (kind === 'ensembl' || kind === 'hgnc' || kind === 'refseq' || kind === 'ncbi') return true
         if (kind !== 'symbol') return false
         return /\d/.test(token) || /[A-Z]/.test(token)
     }
@@ -2070,7 +2073,7 @@
     // gene_symbol / gene_aliases / ensembl_gene_id / hgnc_gene_id / RefSeq columns (OR across fields
     // and across the whole list). Non-gene-shaped tokens ('other') are ignored. Returns '' if none.
     const buildStructuredGeneListClause = (tokens) => {
-        const symbols = new Set(), ensembl = new Set(), hgnc = new Set(), refseq = new Set()
+        const symbols = new Set(), ensembl = new Set(), hgnc = new Set(), refseq = new Set(), ncbi = new Set()
         for (const token of tokens) {
             const kind = classifyGeneToken(token)
             const up = String(token).trim().toUpperCase()
@@ -2078,6 +2081,7 @@
             if (kind === 'ensembl') ensembl.add(up.replace(/\.\d+$/, ''))
             else if (kind === 'hgnc') hgnc.add(up)
             else if (kind === 'refseq') refseq.add(up.replace(/\.\d+$/, ''))
+            else if (kind === 'ncbi') ncbi.add(String(token).trim())
             else if (kind === 'symbol') symbols.add(up)
         }
         const sqlList = (s) => Array.from(s).map(v => `'${escapeSqlString(v)}'`).join(', ')
@@ -2089,6 +2093,9 @@
         }
         if (ensembl.size) parts.push(`UPPER(ensembl_gene_id) IN UNNEST([${sqlList(ensembl)}])`)
         if (hgnc.size) parts.push(`UPPER(hgnc_gene_id) IN UNNEST([${sqlList(hgnc)}])`)
+        // ncbi_gene_id is an INTEGER column, so match against unquoted numeric literals (the tokens are
+        // guaranteed pure digits by classifyGeneToken), mirroring the single-search `ncbi_gene_id = N` path.
+        if (ncbi.size) parts.push(`ncbi_gene_id IN UNNEST([${Array.from(ncbi).join(', ')}])`)
         if (refseq.size) {
             // Extract every RefSeq accession (version stripped) from the gene-level + MANE RefSeq
             // columns and match against the version-stripped tokens.
@@ -2143,10 +2150,13 @@
         const lines = String(text || '').split(/\r\n|\r|\n/)
         for (let i = 0; i < lines.length; i++) {
             // Take the first TAB field first so a region using comma thousands-separators
-            // (chr17:43,044,295-43,125,483) is not chopped apart before the region test runs.
+            // (chr17:43,044,295-43,125,483) is not chopped apart before the region test runs. Then fall
+            // back to the first comma-delimited field so a multi-column CSV row like
+            // "chr17:43044295-43125483,note" still parses its region instead of being dropped (the region
+            // regex is anchored ^...$, so the whole "...,note" field wouldn't match).
             const field = lines[i].split('\t')[0].trim()
             if (!field) continue
-            const regionMatch = field.match(REFERENCE_REGION_REGEXP)
+            const regionMatch = field.match(REFERENCE_REGION_REGEXP) || field.split(',')[0].trim().match(REFERENCE_REGION_REGEXP)
             if (regionMatch) {
                 const chrom = normalizeChrom(regionMatch[1])
                 const start1 = parseInt(regionMatch[2].replace(/,/g, ''), 10)
@@ -2155,7 +2165,7 @@
                 if (chrom && !seenRegion.has(key)) {
                     seenRegion.add(key)
                     // Store 0-based start so region-overlap logic is shared with BED (start0 = start1 - 1).
-                    regions.push({ chrom, start0: start1 - 1, end1, label: field })
+                    regions.push({ chrom, start0: start1 - 1, end1, label: regionMatch[0].trim() })
                 }
             } else {
                 // Non-region row: take the first comma field (handles CSV) as the gene token, and
@@ -2209,7 +2219,7 @@
     // -- the RefSeq columns), partition the input tokens into { matched, missing } (both arrays of
     // original-cased tokens, deduplicated). 'other' tokens are excluded from both.
     const partitionGeneListMatches = (tokens, matchedRows) => {
-        const symbolSet = new Set(), ensemblSet = new Set(), hgncSet = new Set(), refseqSet = new Set()
+        const symbolSet = new Set(), ensemblSet = new Set(), hgncSet = new Set(), refseqSet = new Set(), ncbiSet = new Set()
         for (const row of (matchedRows || [])) {
             if (row.gene_symbol) symbolSet.add(String(row.gene_symbol).toUpperCase())
             if (row.gene_aliases) {
@@ -2220,6 +2230,7 @@
             }
             if (row.ensembl_gene_id) ensemblSet.add(String(row.ensembl_gene_id).toUpperCase().replace(/\.\d+$/, ''))
             if (row.hgnc_gene_id) hgncSet.add(String(row.hgnc_gene_id).toUpperCase())
+            if (row.ncbi_gene_id != null && row.ncbi_gene_id !== '') ncbiSet.add(String(row.ncbi_gene_id))
             for (const col of REFSEQ_MATCH_COLUMNS) {
                 const accs = row[col] ? String(row[col]).toUpperCase().match(/[A-Z]+_[0-9]+/g) : null
                 if (accs) for (const a of accs) refseqSet.add(a)  // version already excluded by the regex
@@ -2237,6 +2248,7 @@
             const ok = kind === 'ensembl' ? ensemblSet.has(key)
                 : kind === 'hgnc' ? hgncSet.has(key)
                 : kind === 'refseq' ? refseqSet.has(key)
+                : kind === 'ncbi' ? ncbiSet.has(key)
                 : symbolSet.has(key)
             ;(ok ? matched : missing).push(String(token).trim())
         }
@@ -2624,9 +2636,18 @@
             const key = URL_PARAM_REVERSE_ALIASES[urlKey] || urlKey
             if (key in DEFAULT_GLOBAL_PAGE_STATE && value != null) {
                 if (preferExisting && GLOBAL_PAGE_STATE[key] !== DEFAULT_GLOBAL_PAGE_STATE[key]) continue
-                GLOBAL_PAGE_STATE[key] = value === 'true' ? true :
-                                        value === 'false' ? false :
-                                        !isNaN(value) ? Number(value) : value
+                // Coerce by the type of the key's default value rather than by "looks like a number":
+                // Number('') === 0 would otherwise turn an empty param (e.g. #igvLoc=) into 0, and a
+                // purely-numeric string value would be turned into a Number and break string callers.
+                // (Mirrors the hardened coercion in index_page_template.html.)
+                const defaultVal = DEFAULT_GLOBAL_PAGE_STATE[key]
+                if (typeof defaultVal === 'boolean') {
+                    GLOBAL_PAGE_STATE[key] = value === 'true'
+                } else if (typeof defaultVal === 'number') {
+                    GLOBAL_PAGE_STATE[key] = (value !== '' && !isNaN(value)) ? Number(value) : value
+                } else {
+                    GLOBAL_PAGE_STATE[key] = value
+                }
             }
         }
     }
@@ -2662,6 +2683,13 @@
             $('#igv-row').show()
             $('#show-igv-divider-text').hide()
             $('#hide-igv-divider-text').show()
+        } else {
+            // Idempotent restore: popstate (browser Back/Forward) re-runs this after resetting state to
+            // defaults, so explicitly hide the IGV row when showIGV is no longer 1 — otherwise it would
+            // stay visible from a prior state.
+            $('#igv-row').hide()
+            $('#hide-igv-divider-text').hide()
+            $('#show-igv-divider-text').show()
         }
 
         // Restore custom track URLs
@@ -2766,7 +2794,7 @@
         const pliV2 = renderConstraintValue(row['pLI_v2'], 'pLI_v2', 'pLI (v2)')
         const pliV4 = renderConstraintValue(row['pLI_v4'], 'pLI_v4', 'pLI (v4.1.1)')
         const loeuf = renderConstraintInterval(row['lof_oe_v4'], row['lof_oe_ci_lower_v4'], row['lof_oe_ci_upper_v4'], 'LOEUF', 'LOEUF (v4.1.1)')
-        const misInterval = renderConstraintInterval(row['mis_oe_v4'], row['mis_oe_ci_lower_v4'], row['mis_oe_ci_upper_v4'], null, '')
+        const misInterval = renderConstraintInterval(row['mis_oe_v4'], row['mis_oe_ci_lower_v4'], row['mis_oe_ci_upper_v4'], 'MOEUF', 'MOEUF (v4.1.1)')
         const misZBadge = renderConstraintBadge(row['mis_z_score_v4'], 'Missense_Z', 'Missense Z (v4.1.1)')
         const moeuf = misInterval && misZBadge ? `${misInterval} &nbsp; Z = ${misZBadge}`
             : misInterval ? misInterval
@@ -2832,12 +2860,12 @@
         if (geneSymbol) externalLinksLine1.push(link('ClinVar', SOURCES.ClinVar.url({ geneSymbol })))
         if (geneSymbol) externalLinksLine1.push(link('HGMD', `https://my.qiagendigitalinsights.com/bbp/view/hgmd/pro/gene.php?gene=${enc(geneSymbol)}`))
         if (geneSymbol) externalLinksLine1.push(link('MalaCards', `https://www.malacards.org/search/results?query=${enc(geneSymbol)}`))
-        if (geneId) externalLinksLine1.push(link('GeneCards', `https://www.genecards.org/cgi-bin/carddisp.pl?gene=${enc(geneId)}`))
+        if (geneSymbol) externalLinksLine1.push(link('GeneCards', `https://www.genecards.org/cgi-bin/carddisp.pl?gene=${enc(geneSymbol)}`))
         if (ncbiGeneId) externalLinksLine1.push(link('NCBI Gene', `https://www.ncbi.nlm.nih.gov/gene/${enc(ncbiGeneId)}`))
         else if (geneId) externalLinksLine1.push(link('NCBI Gene', `https://www.ncbi.nlm.nih.gov/gene/?term=${enc(geneId)}`))
         if (geneSymbol) externalLinksLine1.push(link('Monarch', `https://monarchinitiative.org/explore?search=${enc(geneSymbol)}#search`))
         if (geneSymbol) externalLinksLine1.push(link('Orphanet', `https://www.orpha.net/en/disease/gene/${enc(geneSymbol)}`))
-        if (hgncId) externalLinksLine1.push(link('MARRVEL', `https://marrvel.org/human/gene/${enc(hgncId.replace('HGNC:', ''))}`))
+        if (ncbiGeneId) externalLinksLine1.push(link('MARRVEL', `https://marrvel.org/human/gene/${enc(ncbiGeneId)}`))
         if (geneId) externalLinksLine2.push(link('gnomAD', `https://gnomad.broadinstitute.org/gene/${enc(geneId)}?dataset=gnomad_r4`))
         if (geneSymbol) externalLinksLine2.push(link('primAD', `https://primad.basespace.illumina.com/gene/${enc(geneSymbol)}`))
         if (geneSymbol) externalLinksLine2.push(link('MGI', `https://www.informatics.jax.org/marker/summary?nomen=${enc(geneSymbol)}`))
@@ -2982,7 +3010,7 @@
         // --- Source: ClinVar ---
         if (hasAnyValue(row['CLINVAR_phenotypes'], row['CLINVAR_clinical_significance'], row['CLINVAR_stars'], row['CLINVAR_variant_consequences'])) {
             const clinvarTitle = geneSymbol
-                ? `<a href="https://www.ncbi.nlm.nih.gov/clinvar?term=${encodeURIComponent(geneSymbol)}[gene]" target="_blank" class="action-link">ClinVar</a>`
+                ? `<a href="${SOURCES.ClinVar.url({ geneSymbol })}" target="_blank" class="action-link">ClinVar</a>`
                 : 'ClinVar'
             let html = `<div class="source-section"><h4>${clinvarTitle}</h4><table class="locus-info-table">`
             html += `<tr><td class="locus-info-label">Phenotypes:</td><td style="white-space: normal;">${dedupSemicolon(row['CLINVAR_phenotypes'])}</td></tr>`

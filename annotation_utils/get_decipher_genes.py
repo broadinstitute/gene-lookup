@@ -141,7 +141,7 @@ def get_decipher_gene_table():
 
     data = response.json()
 
-    genes = data.get("content").get("genes")
+    genes = (data.get("content") or {}).get("genes")
 
     if not genes:
         raise ValueError(f"Failed to get genes from {url}: {data}")
@@ -158,21 +158,30 @@ def get_decipher_gene_table():
             gene_id = gencc.get("ensembl_gene_ensg")
             disease_name = gencc.get("disease_name")
             inheritance_mode = rename_inheritance_mode(gencc.get("inheritance_mode", ""))
+            # GenCC validity classification (Definitive/Strong/Moderate/Limited/Supportive/Disputed/Refuted),
+            # kept aligned with disease_names so the LLM summarizer can include only positive associations.
+            # The DECIPHER API's field name for this varies, so try the known variants; an unrecognized or
+            # missing value just won't match the summarizer's positive set, dropping that disease from the
+            # summary (never mislabeling a disputed/refuted association as positive).
+            classification = (gencc.get("classification_name") or gencc.get("classification_title")
+                              or gencc.get("classification") or "")
 
             if gene_id and disease_name:
-                gene_id_to_disease_name[gene_id].add((inheritance_mode, disease_name))
+                gene_id_to_disease_name[gene_id].add((inheritance_mode, disease_name, classification))
                 #if inheritance_mode:
                 #    inheritance_mode_counter[inheritance_mode] += 1
 
-        for gene_id, disease_name_and_inheritance_mode in gene_id_to_disease_name.items():
-            sorted_disease_name_and_inheritance_mode = sorted(disease_name_and_inheritance_mode)
-            inheritance_modes = "; ".join([x[0] for x in sorted_disease_name_and_inheritance_mode])
-            disease_names = "; ".join([x[1] for x in sorted_disease_name_and_inheritance_mode])
+        for gene_id, disease_tuples in gene_id_to_disease_name.items():
+            sorted_disease_tuples = sorted(disease_tuples)
+            inheritance_modes = "; ".join([x[0] for x in sorted_disease_tuples])
+            disease_names = "; ".join([x[1] for x in sorted_disease_tuples])
+            classifications = "; ".join([x[2] for x in sorted_disease_tuples])
 
             output_records.append({
                 "gene_id": gene_id,
                 "inheritance_modes": inheritance_modes,
                 "disease_names": disease_names,
+                "classifications": classifications,
             })
 
         

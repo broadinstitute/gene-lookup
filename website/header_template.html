@@ -121,7 +121,7 @@
     // Support common query-string variant used by external links
     URL_PARAM_REVERSE_ALIASES['search-query'] = 'searchQuery'
 
-    const writePersistentPageStateToUrl = () => {
+    const writePersistentPageStateToUrl = (replaceHistory = false) => {
         // Create object with only non-default values
         const nonDefaultParams = {}
         for (const [key, value] of Object.entries(GLOBAL_PAGE_STATE)) {
@@ -138,8 +138,14 @@
         // Get current hash to check if state has changed
         const currentHash = window.location.hash
         if (currentHash !== hash) {
-            // Update URL and add to browser history
-            window.history.pushState(null, '', hash)
+            // Update URL. Pass replaceHistory=true for high-frequency updates (e.g. IGV drag/zoom
+            // locuschange) to replace the current history entry rather than pushing a new one, so the
+            // browser Back button isn't flooded with dozens of intermediate coordinate hashes.
+            if (replaceHistory) {
+                window.history.replaceState(null, '', hash)
+            } else {
+                window.history.pushState(null, '', hash)
+            }
         }
     }
 
@@ -190,6 +196,21 @@
         return out
     }
     const dedupSemicolon = (s) => dedupSemicolonArray(s).join('; ')
+
+    // Build a gene-detail page URL from a row's ids, carrying the current search state (minus igvLoc, which
+    // is gene-specific) in the hash so the gene page's "Back to search page" link restores the same results.
+    // Shared by the Gene-column link and the per-row "gene >" button so the two can't drift apart. Prefers
+    // hgnc_gene_id, falls back to ensembl_gene_id; returns '' when neither id is available.
+    const geneDetailUrl = (hgncId, geneId) => {
+        const idParam = hgncId
+            ? `hgnc_gene_id=${encodeURIComponent(hgncId)}`
+            : (geneId ? `ensembl_gene_id=${encodeURIComponent(geneId)}` : '')
+        if (!idParam) return ''
+        const searchStateParams = new URLSearchParams(window.location.hash.substring(1))
+        searchStateParams.delete('igvLoc')
+        const searchStateHash = searchStateParams.toString()
+        return `gene.html#${idParam}${searchStateHash ? `&${searchStateHash}` : ''}`
+    }
 
     // Inheritance types — colors and aliases (short codes + verbose long-form strings). Used to
     // colorize occurrences in inheritance cells and build the on-click explanation popup. The
@@ -578,13 +599,9 @@
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['gene_symbol'],
             getValue: (row) => {
                 const symbol = row['gene_symbol'] || row['hgnc_gene_id'] || row['ensembl_gene_id'] || ''
-                const hgncId = row['hgnc_gene_id'] || ''
-                const geneId = row['ensembl_gene_id'] || ''
-                if (hgncId) {
-                    return `<a href="gene.html#hgnc_gene_id=${encodeURIComponent(hgncId)}" class="action-link" style="font-weight: bold;">${symbol}</a>`
-                }
-                if (geneId) {
-                    return `<a href="gene.html#ensembl_gene_id=${encodeURIComponent(geneId)}" class="action-link" style="font-weight: bold;">${symbol}</a>`
+                const url = geneDetailUrl(row['hgnc_gene_id'] || '', row['ensembl_gene_id'] || '')
+                if (url) {
+                    return `<a href="${url}" class="action-link" style="font-weight: bold;">${symbol}</a>`
                 }
                 return `<span style="font-weight: bold;">${symbol}</span>`
             },
@@ -773,7 +790,7 @@
             displayName: 'MOEUF',
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['mis_oe_ci_upper_v4'],
             getValue: (row) => {
-                const interval = renderConstraintInterval(row['mis_oe_v4'], row['mis_oe_ci_lower_v4'], row['mis_oe_ci_upper_v4'], null, '')
+                const interval = renderConstraintInterval(row['mis_oe_v4'], row['mis_oe_ci_lower_v4'], row['mis_oe_ci_upper_v4'], 'MOEUF', 'MOEUF (v4.1.1)')
                 const zBadge = renderConstraintBadge(row['mis_z_score_v4'], 'Missense_Z', 'Missense Z (v4.1.1)')
                 if (!interval) return zBadge ? `Z = ${zBadge}` : ''
                 return zBadge ? `${interval} &nbsp; Z = ${zBadge}` : interval
@@ -1203,6 +1220,9 @@
         if (/^HGNC:\d+$/.test(up)) return 'hgnc'
         // RefSeq accession: transcript (NM_/NR_/XM_/XR_), gene (NG_), or protein (NP_/XP_), optional version.
         if (/^[NX][MRGP]_\d+(\.\d+)?$/.test(up)) return 'refseq'
+        // NCBI/Entrez gene ID: all digits. Must be tested BEFORE the gene-symbol shape below (which also
+        // matches pure digits); gene symbols are never purely numeric, so a numeric token is an NCBI id.
+        if (/^\d+$/.test(t)) return 'ncbi'
         // Gene-symbol shape: starts alphanumeric, then letters/digits/-/_/. with no whitespace
         // or ':'. This excludes regions like chr1:100-200 and phrases like "limb girdle".
         if (/^[A-Za-z0-9][A-Za-z0-9._-]*$/.test(t)) return 'symbol'
@@ -1220,13 +1240,17 @@
     // reference these columns (which may not yet exist in the deployed table).
     const refseqSelectColsFor = (tokens) => tokens.some(t => classifyGeneToken(t) === 'refseq') ? `, ${REFSEQ_MATCH_COLUMNS.join(', ')}` : ''
 
+    // ncbi_gene_id is only added to the found/missing summary SELECT when the token list contains a
+    // numeric NCBI id, so panels of only symbols/IDs don't reference it needlessly.
+    const ncbiSelectColsFor = (tokens) => tokens.some(t => classifyGeneToken(t) === 'ncbi') ? ', ncbi_gene_id' : ''
+
     // Stricter test used only to decide whether a TYPED comma-separated list should be treated as a
     // gene panel (and get a found/missing banner). Requires an explicit gene ID, or a symbol token
     // that carries a digit or an uppercase letter -- this keeps lowercase free-text disease words
     // (eg. "ataxia", "epilepsy") from being mistaken for gene symbols and mislabeled "not found".
     const isTypedPanelToken = (token) => {
         const kind = classifyGeneToken(token)
-        if (kind === 'ensembl' || kind === 'hgnc' || kind === 'refseq') return true
+        if (kind === 'ensembl' || kind === 'hgnc' || kind === 'refseq' || kind === 'ncbi') return true
         if (kind !== 'symbol') return false
         return /\d/.test(token) || /[A-Z]/.test(token)
     }
@@ -1235,7 +1259,7 @@
     // gene_symbol / gene_aliases / ensembl_gene_id / hgnc_gene_id / RefSeq columns (OR across fields
     // and across the whole list). Non-gene-shaped tokens ('other') are ignored. Returns '' if none.
     const buildStructuredGeneListClause = (tokens) => {
-        const symbols = new Set(), ensembl = new Set(), hgnc = new Set(), refseq = new Set()
+        const symbols = new Set(), ensembl = new Set(), hgnc = new Set(), refseq = new Set(), ncbi = new Set()
         for (const token of tokens) {
             const kind = classifyGeneToken(token)
             const up = String(token).trim().toUpperCase()
@@ -1243,6 +1267,7 @@
             if (kind === 'ensembl') ensembl.add(up.replace(/\.\d+$/, ''))
             else if (kind === 'hgnc') hgnc.add(up)
             else if (kind === 'refseq') refseq.add(up.replace(/\.\d+$/, ''))
+            else if (kind === 'ncbi') ncbi.add(String(token).trim())
             else if (kind === 'symbol') symbols.add(up)
         }
         const sqlList = (s) => Array.from(s).map(v => `'${escapeSqlString(v)}'`).join(', ')
@@ -1254,6 +1279,9 @@
         }
         if (ensembl.size) parts.push(`UPPER(ensembl_gene_id) IN UNNEST([${sqlList(ensembl)}])`)
         if (hgnc.size) parts.push(`UPPER(hgnc_gene_id) IN UNNEST([${sqlList(hgnc)}])`)
+        // ncbi_gene_id is an INTEGER column, so match against unquoted numeric literals (the tokens are
+        // guaranteed pure digits by classifyGeneToken), mirroring the single-search `ncbi_gene_id = N` path.
+        if (ncbi.size) parts.push(`ncbi_gene_id IN UNNEST([${Array.from(ncbi).join(', ')}])`)
         if (refseq.size) {
             // Extract every RefSeq accession (version stripped) from the gene-level + MANE RefSeq
             // columns and match against the version-stripped tokens.
@@ -1308,10 +1336,13 @@
         const lines = String(text || '').split(/\r\n|\r|\n/)
         for (let i = 0; i < lines.length; i++) {
             // Take the first TAB field first so a region using comma thousands-separators
-            // (chr17:43,044,295-43,125,483) is not chopped apart before the region test runs.
+            // (chr17:43,044,295-43,125,483) is not chopped apart before the region test runs. Then fall
+            // back to the first comma-delimited field so a multi-column CSV row like
+            // "chr17:43044295-43125483,note" still parses its region instead of being dropped (the region
+            // regex is anchored ^...$, so the whole "...,note" field wouldn't match).
             const field = lines[i].split('\t')[0].trim()
             if (!field) continue
-            const regionMatch = field.match(REFERENCE_REGION_REGEXP)
+            const regionMatch = field.match(REFERENCE_REGION_REGEXP) || field.split(',')[0].trim().match(REFERENCE_REGION_REGEXP)
             if (regionMatch) {
                 const chrom = normalizeChrom(regionMatch[1])
                 const start1 = parseInt(regionMatch[2].replace(/,/g, ''), 10)
@@ -1320,7 +1351,7 @@
                 if (chrom && !seenRegion.has(key)) {
                     seenRegion.add(key)
                     // Store 0-based start so region-overlap logic is shared with BED (start0 = start1 - 1).
-                    regions.push({ chrom, start0: start1 - 1, end1, label: field })
+                    regions.push({ chrom, start0: start1 - 1, end1, label: regionMatch[0].trim() })
                 }
             } else {
                 // Non-region row: take the first comma field (handles CSV) as the gene token, and
@@ -1374,7 +1405,7 @@
     // -- the RefSeq columns), partition the input tokens into { matched, missing } (both arrays of
     // original-cased tokens, deduplicated). 'other' tokens are excluded from both.
     const partitionGeneListMatches = (tokens, matchedRows) => {
-        const symbolSet = new Set(), ensemblSet = new Set(), hgncSet = new Set(), refseqSet = new Set()
+        const symbolSet = new Set(), ensemblSet = new Set(), hgncSet = new Set(), refseqSet = new Set(), ncbiSet = new Set()
         for (const row of (matchedRows || [])) {
             if (row.gene_symbol) symbolSet.add(String(row.gene_symbol).toUpperCase())
             if (row.gene_aliases) {
@@ -1385,6 +1416,7 @@
             }
             if (row.ensembl_gene_id) ensemblSet.add(String(row.ensembl_gene_id).toUpperCase().replace(/\.\d+$/, ''))
             if (row.hgnc_gene_id) hgncSet.add(String(row.hgnc_gene_id).toUpperCase())
+            if (row.ncbi_gene_id != null && row.ncbi_gene_id !== '') ncbiSet.add(String(row.ncbi_gene_id))
             for (const col of REFSEQ_MATCH_COLUMNS) {
                 const accs = row[col] ? String(row[col]).toUpperCase().match(/[A-Z]+_[0-9]+/g) : null
                 if (accs) for (const a of accs) refseqSet.add(a)  // version already excluded by the regex
@@ -1402,6 +1434,7 @@
             const ok = kind === 'ensembl' ? ensemblSet.has(key)
                 : kind === 'hgnc' ? hgncSet.has(key)
                 : kind === 'refseq' ? refseqSet.has(key)
+                : kind === 'ncbi' ? ncbiSet.has(key)
                 : symbolSet.has(key)
             ;(ok ? matched : missing).push(String(token).trim())
         }

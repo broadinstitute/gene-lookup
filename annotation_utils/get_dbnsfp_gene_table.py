@@ -29,6 +29,16 @@ COLUMN_RENAME_MAP = {
 # Columns used to determine if a gene is disease-associated
 DISEASE_FILTER_COLUMNS = ["Orphanet_disorder", "Disease_description", "HPO_id"]
 
+# Orphanet association types EXCLUDED from the positive-only disorder list used by the LLM phenotype
+# summarizer (they are not genuine causal gene-disease associations). Every other type is kept, including
+# "Candidate gene tested in", "Modifying germline mutation in", "Role in the phenotype of", and all
+# "Disease-causing ... mutation(s) in" variants.
+ORPHANET_EXCLUDED_ASSOCIATION_TYPES = {
+    "Biomarker tested in",
+    "Major susceptibility factor in",
+    "Part of a fusion gene in",
+}
+
 
 def is_non_empty(value):
     """Check if a value is non-empty (not NaN, not '.', not empty string)."""
@@ -89,6 +99,21 @@ def get_dbnsfp_gene_table():
     string_cols = [c for c in df.columns if c != "Ensembl_gene" and c != "DBNSFP_p_rec"]
     for col in string_cols:
         df[col] = df[col].str.replace(r";\s*", "; ", regex=True)
+
+    # Positive-only Orphanet disorders for the LLM phenotype summarizer. This is separate from (and does
+    # not modify) the displayed DBNSFP_orphanet_disorder / DBNSFP_orphanet_association_type columns. Per
+    # row the disorder and association-type columns are aligned "; "-joined lists, so we pair them and keep
+    # only disorders whose association type is not in ORPHANET_EXCLUDED_ASSOCIATION_TYPES. A row whose two
+    # lists don't line up contributes nothing (conservative — never emits a non-positive association).
+    if "DBNSFP_orphanet_disorder" in df.columns and "DBNSFP_orphanet_association_type" in df.columns:
+        def _positive_orphanet_disorders(row):
+            disorders = [d.strip() for d in str(row["DBNSFP_orphanet_disorder"]).split("; ")]
+            types = [t.strip() for t in str(row["DBNSFP_orphanet_association_type"]).split("; ")]
+            if len(disorders) != len(types):
+                return ""
+            return "; ".join(d for d, t in zip(disorders, types)
+                             if d and t not in ORPHANET_EXCLUDED_ASSOCIATION_TYPES)
+        df["DBNSFP_orphanet_positive_disorder"] = df.apply(_positive_orphanet_disorders, axis=1)
 
     # Merge rows that share an Ensembl_gene by concatenating unique "; "-separated parts
     # from every source row's value (so data from row "ENSG1;ENSG2" and row "ENSG2;ENSG3"

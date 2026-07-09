@@ -35,6 +35,26 @@ Now, try generating this type of summary for the following phenotype description
 # reads it as nullable Int64 so missing ids become BigQuery NULLs rather than 0.
 df = pd.read_table(args.combined_table, dtype={"ncbi_gene_id": "str"})
 
+# Phenotype columns in the combined table use "; " to join the per-gene, per-source values (see
+# `separator` in generate_combined_gene_table.py). ClinGen/GenCC/PanelApp additionally carry a per-label
+# classification/confidence column joined in the SAME order, so we can split both and keep only positives.
+SEPARATOR = "; "
+
+# IMPORTANT — POSITIVE ASSOCIATIONS ONLY: the LLM summary must describe phenotypes only from gene-disease
+# associations that a source actually supports, never ones it disputes/refutes or rates as low-confidence.
+# The combined table intentionally retains negative-evidence rows (their level is preserved in a parallel
+# classification column), so this summarizer filters each source to its positive associations before
+# prompting (drops ClinGen/GenCC/DECIPHER "Disputed"/"Refuted", non-"Green" PanelApp, OMIM Nondisease/
+# Susceptibility, and Orphanet biomarker/susceptibility/fusion). OMIM provisional ("?") associations and
+# Orphanet "candidate" associations are intentionally KEPT (still real, if tentative). This filtering is
+# independent of what the pipeline loads into BigQuery / displays on the gene page for each source.
+CLINGEN_POSITIVE_CLASSIFICATIONS = {"Definitive", "Strong", "Moderate", "Limited"}  # drop Disputed/Refuted/No Known Disease Relationship
+GENCC_POSITIVE_CLASSIFICATIONS = {"Definitive", "Strong", "Moderate", "Limited", "Supportive"}  # drop Disputed/Refuted Evidence
+DECIPHER_POSITIVE_CLASSIFICATIONS = {"Definitive", "Strong", "Moderate", "Limited", "Supportive"}  # DECIPHER GenCC validity; drop Disputed/Refuted
+PANELAPP_POSITIVE_CONFIDENCE = {"3"}  # PanelApp "Green" (diagnostic-grade); drop 2=Amber, 1/0=Red
+OMIM_DROP_CLASSIFICATIONS = {"Nondisease", "Susceptibility"}  # drop [] / {}; keep Confirmed, Provisional (?), and unclassified
+
+
 def _has_content(v):
     """True if `v` carries an actual phenotype value.
 
@@ -47,23 +67,84 @@ def _has_content(v):
     return not pd.isna(v) and str(v).strip(" ;,\t\r\n") != ""
 
 
+def _positive_labels(labels_value, classifications_value, keep_classifications, strict=False):
+    """Return the phenotype labels whose aligned classification is in `keep_classifications`.
+
+    `labels_value` and `classifications_value` are the two "; "-joined columns for one gene, built by the
+    same per-source groupby in generate_combined_gene_table.py, so token i of the labels pairs with token
+    i of the classifications. On a token-count mismatch (e.g. a label that itself contains "; ", or a
+    classification column missing entirely): with strict=False keep all non-empty labels (used where the
+    labels are otherwise acceptable, e.g. OMIM); with strict=True drop everything (used where an unfiltered
+    label could be a disputed/refuted association we must never emit, e.g. DECIPHER).
+    """
+    if not _has_content(labels_value):
+        return []
+    labels = [l.strip() for l in str(labels_value).split(SEPARATOR)]
+    classifications = [c.strip() for c in str(classifications_value).split(SEPARATOR)]
+    if len(labels) != len(classifications):
+        return [] if strict else [l for l in labels if l]
+    return [l for l, c in zip(labels, classifications) if l and c in keep_classifications]
+
+
+def _labels_excluding(labels_value, classifications_value, drop_classifications):
+    """Return the phenotype labels whose aligned classification is NOT in `drop_classifications`.
+
+    Unlike _positive_labels (allowlist), this is a denylist: labels with an empty/unknown classification
+    are KEPT. Used for OMIM, where we drop only Nondisease "[]" / Susceptibility "{}" and keep everything
+    else (Confirmed, Provisional "?", and — on a cache written before OMIM_phenotype_classification existed
+    — unclassified entries, so OMIM stays as-is until its cache is rebuilt).
+    """
+    if not _has_content(labels_value):
+        return []
+    labels = [l.strip() for l in str(labels_value).split(SEPARATOR)]
+    classifications = [c.strip() for c in str(classifications_value).split(SEPARATOR)]
+    if len(labels) != len(classifications):
+        return [l for l in labels if l]
+    return [l for l, c in zip(labels, classifications) if l and c not in drop_classifications]
+
+
 def summarize_phenotypes(row):
 
-    # concatenate the phenotypes into a single string, by source
+    # Concatenate the phenotypes into a single string, by source — POSITIVE associations only (see the
+    # module-level note). Each source is filtered by its own positive criterion so that what feeds the LLM
+    # is independent of what the pipeline loads into BigQuery / displays on the gene page for that source:
+    #   - OMIM: keep Confirmed + Provisional (drop Nondisease "[]" / Susceptibility "{}") via the aligned
+    #     OMIM_phenotype_classification column.
+    #   - ClinGen/GenCC/DECIPHER: keep positive validity classifications (drop Disputed/Refuted) via each
+    #     source's aligned *_classification(s) column. DECIPHER uses strict=True so that if its
+    #     classification column is ever missing/misaligned it contributes nothing rather than risk emitting
+    #     a disputed/refuted association.
+    #   - PanelApp UK/AU: keep only "Green" (confidence 3) via the aligned confidence column.
+    #   - ClinVar (P/LP variants only), Fridman (curated), dbNSFP disease (UniProt involvement-in-disease)
+    #     and dbNSFP HPO (HPO term NAMES, not ids) are inherently positive-only and pass through unfiltered.
+    #   - Orphanet uses DBNSFP_orphanet_positive_disorder, pre-filtered upstream to genuine disease
+    #     associations (candidate/modifier kept; biomarker/susceptibility/fusion dropped).
     phenotypes = []
-    for label, phenotype_column in [
-        ("OMIM", "OMIM_phenotype_description"),
-        ("CLINGEN", "CLINGEN_disease_label"),
-        ("GENCC", "GENCC_disease_name"),
-        ("PANEL_APP_UK", "PANEL_APP_UK_phenotypes"),
-        ("PANEL_APP_AU", "PANEL_APP_AU_phenotypes"),
-        ("CLINVAR", "CLINVAR_phenotypes"),
-        ("FRIDMAN", "FRIDMAN_phenotype_category"),
-        ("ORPHANET", "DBNSFP_orphanet_disorder"),
-        ("DBNSFP_DISEASE", "DBNSFP_disease_description"),
-    ]:
-        if phenotype_column in row and _has_content(row[phenotype_column]):
-            phenotypes.append(f"{label}: {row[phenotype_column]}")
+
+    def add_source(label, value):
+        if _has_content(value):
+            phenotypes.append(f"{label}: {value}")
+
+    add_source("OMIM", SEPARATOR.join(_labels_excluding(
+        row.get("OMIM_phenotype_description"), row.get("OMIM_phenotype_classification"), OMIM_DROP_CLASSIFICATIONS)))
+    # strict=True for the allowlist sources: their label columns retain disputed/refuted/non-Green
+    # associations, so on any label↔classification token mismatch we must drop (never keep-all, which
+    # could emit a negative association). Only OMIM (denylist above) keeps unclassified labels.
+    add_source("CLINGEN", SEPARATOR.join(_positive_labels(
+        row.get("CLINGEN_disease_label"), row.get("CLINGEN_classification"), CLINGEN_POSITIVE_CLASSIFICATIONS, strict=True)))
+    add_source("GENCC", SEPARATOR.join(_positive_labels(
+        row.get("GENCC_disease_name"), row.get("GENCC_classification"), GENCC_POSITIVE_CLASSIFICATIONS, strict=True)))
+    add_source("DECIPHER", SEPARATOR.join(_positive_labels(
+        row.get("DECIPHER_disease_names"), row.get("DECIPHER_classifications"), DECIPHER_POSITIVE_CLASSIFICATIONS, strict=True)))
+    add_source("PANEL_APP_UK", SEPARATOR.join(_positive_labels(
+        row.get("PANEL_APP_UK_phenotypes"), row.get("PANEL_APP_UK_confidence"), PANELAPP_POSITIVE_CONFIDENCE, strict=True)))
+    add_source("PANEL_APP_AU", SEPARATOR.join(_positive_labels(
+        row.get("PANEL_APP_AU_phenotypes"), row.get("PANEL_APP_AU_confidence"), PANELAPP_POSITIVE_CONFIDENCE, strict=True)))
+    add_source("CLINVAR", row.get("CLINVAR_phenotypes"))
+    add_source("FRIDMAN", row.get("FRIDMAN_phenotype_category"))
+    add_source("ORPHANET", row.get("DBNSFP_orphanet_positive_disorder"))
+    add_source("DBNSFP_DISEASE", row.get("DBNSFP_disease_description"))
+    add_source("DBNSFP_HPO", row.get("DBNSFP_hpo_name"))
 
     if not phenotypes:
         if "GWAS_mondo_name" in row and _has_content(row["GWAS_mondo_name"]):

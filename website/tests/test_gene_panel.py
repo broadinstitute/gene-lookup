@@ -157,6 +157,16 @@ def test_bed_file_upload(index_page, console_errors, tmp_path):
     assert real_errors(console_errors) == [], f"JS errors: {real_errors(console_errors)}"
 
 
+def test_bed_empty_interval_skipped(index_page, tmp_path):
+    """A zero-length BED interval (start == end) is skipped, not counted as a region."""
+    f = tmp_path / "empty.bed"
+    # chr17 interval overlaps BRCA1 (valid); the chr1 line is an empty half-open interval.
+    f.write_text("chr17\t43044294\t43125483\tBRCA1\nchr1\t100\t100\tempty\n")
+    upload(index_page, f)
+    # Only the valid interval is kept; the empty one is dropped.
+    assert "1 region" in index_page.inner_text("#gene-file-chip-container")
+
+
 def test_gzip_gene_file_upload(index_page, tmp_path):
     """A gzip-compressed gene list is decompressed and parsed."""
     f = tmp_path / "panel.txt.gz"

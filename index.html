@@ -2130,6 +2130,7 @@
             if (!chrom) continue
             const start0 = parseInt(cols[1], 10)
             const end1 = parseInt(cols[2], 10)
+            if (end1 <= start0) continue  // skip empty/reversed intervals (BED is 0-based half-open)
             const key = `${chrom}:${start0}-${end1}`
             if (seen.has(key)) continue
             seen.add(key)
@@ -2713,8 +2714,8 @@
     <div class="content">
         <p>Search for multiple genes or regions at once. Files can be gzip-compressed (ie. have a .gz extension).</p>
         <ul style="margin-top: 0;">
-            <li><b>TXT / TSV</b> &mdash; the first column contains gene symbols, gene ids (HGNC, ENSG, or RefSeq), or hg38 genomic regions &mdash; one per row. A header row is optional.</li>
-            <li><b>BED</b> &mdash; the first 3 columns represent the hg38 coordinates: chrom, start, end (0-based, half-open).</li>
+            <li><b>TXT / TSV</b> &mdash; the first column should contain gene symbols, gene ids (HGNC, ENSG, or RefSeq), or hg38 genomic regions &mdash; one per row. A header row is optional.</li>
+            <li><b>BED</b> &mdash; the first 3 columns should contain the hg38 coordinates: chrom, start, end (0-based, half-open).</li>
         </ul>
         <div id="gene-file-dropzone" style="border: 2px dashed #b0b8c4; border-radius: 8px; padding: 40px 20px; text-align: center; color: #667; cursor: pointer; transition: background-color 0.15s, border-color 0.15s;">
             <i class="file alternate outline icon" style="font-size: 2.5em; color: #9aa4b2;"></i>

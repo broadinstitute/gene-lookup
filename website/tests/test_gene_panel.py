@@ -113,6 +113,29 @@ def test_txt_regions_upload(index_page, console_errors, tmp_path):
     assert real_errors(console_errors) == [], f"JS errors: {real_errors(console_errors)}"
 
 
+def test_drop_file_on_main_search_box(index_page, console_errors, tmp_path):
+    """Dropping a file directly on the main search box (not just in the upload modal) behaves the
+    same as dropping it into the modal's dropzone."""
+    page = index_page
+    data_transfer = page.evaluate_handle(
+        """() => {
+            const dt = new DataTransfer()
+            const file = new File(['BRCA1\\nCFTR\\n'], 'dropped_on_search_box.tsv', { type: 'text/tab-separated-values' })
+            dt.items.add(file)
+            return dt
+        }"""
+    )
+    page.dispatch_event("#gene-main-search-dropzone", "drop", {"dataTransfer": data_transfer})
+    page.wait_for_selector("#gene-file-chip-container", state="visible", timeout=10000)
+    chip = page.inner_text("#gene-file-chip-container")
+    assert "dropped_on_search_box.tsv" in chip and "2 genes" in chip
+
+    page.click("#search-button")
+    wait_summary_contains(page, "All 2 genes were found")
+    wait_results_contain(page, "BRCA1")
+    assert real_errors(console_errors) == [], f"JS errors: {real_errors(console_errors)}"
+
+
 def test_txt_mixed_genes_and_regions(index_page, console_errors, tmp_path):
     """A TXT mixing a gene and a region is treated as 'items' (gene found, region not)."""
     f = tmp_path / "mixed.txt"

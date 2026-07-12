@@ -2548,7 +2548,7 @@
                     </div>
                     <!-- Chip shown when a gene list file has been uploaded (ChatGPT-style attachment) -->
                     <div id="gene-file-chip-container" style="display:none; margin-bottom: 8px;"></div>
-                    <div class="ui action input">
+                    <div class="ui action input" id="gene-main-search-dropzone" style="transition: background-color 0.15s, border-radius 0.15s;">
                         <input type="text" id="search-query" name="search-query" placeholder="Search by gene, disease, or hg38 region — or a comma-separated gene list (SMN1, CFTR, DMD)" style="padding-right: 42px;">
                         <!-- Upload button overlaid inside the input's right edge (negative margin), just left of the filter -->
                         <button id="gene-file-upload-button" class="ui icon button" type="button" data-html="Upload genes or regions (TSV/TXT/BED) to search for a whole panel at once" data-position="top center" style="margin-left: -42px; width: 38px; padding: 0; background: transparent; box-shadow: none; color: #999; z-index: 3;"><i class="plus icon"></i></button>
@@ -4295,6 +4295,30 @@
     })
     // remove chip (delegated: the chip is re-rendered on each change)
     $('#gene-file-chip-container').on('click', '#gene-file-chip-remove', clearUploadedFile)
+
+    // Dropping a file directly on the main search box does the same thing as dropping it in the
+    // upload modal's dropzone (same parsing via handleUploadedFiles). Only react when the drag
+    // carries files (not e.g. a text selection being dragged into the input).
+    const $mainSearchDropzone = $('#gene-main-search-dropzone')
+    const isFileDrag = (e) => {
+        const types = e.originalEvent.dataTransfer && e.originalEvent.dataTransfer.types
+        return !!types && Array.prototype.indexOf.call(types, 'Files') !== -1
+    }
+    $mainSearchDropzone.on('dragover dragenter', (e) => {
+        if (!isFileDrag(e)) return
+        e.preventDefault(); e.stopPropagation()
+        $mainSearchDropzone.css({ backgroundColor: '#eef6ff', borderRadius: '4px' })
+    })
+    $mainSearchDropzone.on('dragleave dragend drop', (e) => {
+        if (!isFileDrag(e)) return
+        e.preventDefault(); e.stopPropagation()
+        $mainSearchDropzone.css({ backgroundColor: '', borderRadius: '' })
+    })
+    $mainSearchDropzone.on('drop', (e) => {
+        if (!isFileDrag(e)) return
+        const dt = e.originalEvent.dataTransfer
+        handleUploadedFiles(dt && dt.files)
+    })
 
     // Build the WHERE clause restricting results to the uploaded file's genes and/or regions
     // (a gene match OR a region overlap).

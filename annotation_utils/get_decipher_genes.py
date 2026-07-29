@@ -134,6 +134,8 @@ def get_decipher_gene_table():
     response = requests.get(url, headers={
         "accept": "application/json",
         "x-requested-with": "XMLHttpRequest",
+        # Without a Referer from the DECIPHER site itself, the endpoint returns 403 {"error":"Access Denied"}
+        "Referer": "https://www.deciphergenomics.org/genes",
     })
 
     if not response.ok:

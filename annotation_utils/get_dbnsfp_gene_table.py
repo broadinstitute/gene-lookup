@@ -4,7 +4,7 @@ import os
 import pandas as pd
 import requests
 
-from annotation_utils.cache_utils import cache_data_table, read_cached_table
+from annotation_utils.cache_utils import cache_data_table, read_cached_table, record_source_last_updated
 
 DBNSFP_BASE_URL = "https://dist.genos.us/academic"
 
@@ -59,6 +59,7 @@ def get_dbnsfp_gene_table():
         response = requests.get(url)
         response.raise_for_status()
         df = pd.read_table(io.BytesIO(response.content), compression="gzip", dtype=str)
+        record_source_last_updated("dbnsfp")
     except Exception as e:
         # The dbNSFP download key (dist.genos.us) expires/rotates periodically. This shows up as an HTTP
         # error from the download, or as a non-gzip error body that fails to parse. In either case, fall

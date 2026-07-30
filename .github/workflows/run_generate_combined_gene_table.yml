@@ -122,8 +122,21 @@ jobs:
 
     - name: Update website with new date and regenerate HTML
       run: |
-        TODAY=$(date -u +%Y-%m-%d)
-        echo "{\"data_last_updated_date\": \"$TODAY\"}" > website/data_last_updated_date.json
+        # OMIM and dbNSFP fall back to their stale cached tables when their download key expires, so
+        # their per-source dates come from ~/.annotations rather than today's date.
+        python3 - << 'EOF'
+        import json
+        import time
+        from annotation_utils.cache_utils import read_source_last_updated
+
+        source_dates = read_source_last_updated()
+        with open("website/data_last_updated_date.json", "wt") as f:
+            json.dump({
+                "data_last_updated_date": time.strftime("%Y-%m-%d", time.gmtime()),
+                "omim_last_updated_date": source_dates.get("omim", ""),
+                "dbnsfp_last_updated_date": source_dates.get("dbnsfp", ""),
+            }, f, indent=2)
+        EOF
         pip install jinja2
         cd website && python3 generate_website.py
 

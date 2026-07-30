@@ -9,7 +9,7 @@ import urllib.request
 from tqdm import tqdm
 import re
 
-from annotation_utils.cache_utils import cache_data_table, read_cached_table
+from annotation_utils.cache_utils import cache_data_table, read_cached_table, record_source_last_updated
 
 load_dotenv()
 
@@ -212,6 +212,7 @@ def get_omim_table():
                     records.append(record)
 
         omim_df = pd.DataFrame(records)
+        record_source_last_updated("omim")
     except Exception as e:
         # The OMIM download key expires/rotates periodically. This shows up either as an HTTP 403 from
         # the download, or as an HTTP 200 whose body is an "account inactive/expired" page that then

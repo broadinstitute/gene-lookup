@@ -27,9 +27,10 @@ custom_filter_columns_json = json.dumps(custom_filter_columns)
 exportable_columns = get_exportable_columns()
 exportable_columns_json = json.dumps(exportable_columns)
 
-# Read the data last updated date for use in templates
+# Read the data last updated dates for use in templates. The per-source dates are empty unless that
+# source recorded a successful download, in which case the templates omit its "last updated" label.
 with open("data_last_updated_date.json", "r") as f:
-    data_last_updated_date = json.load(f).get("data_last_updated_date", "")
+    last_updated_dates = json.load(f)
 
 for template_file in glob.glob("*_page_template.html"):
     print(f"Processing {template_file}")
@@ -42,7 +43,9 @@ for template_file in glob.glob("*_page_template.html"):
         custom_filter_columns_json=custom_filter_columns_json,
         exportable_columns_json=exportable_columns_json,
         constraint_thresholds_json=json.dumps(CONSTRAINT_THRESHOLDS),
-        data_last_updated_date=data_last_updated_date,
+        data_last_updated_date=last_updated_dates.get("data_last_updated_date", ""),
+        omim_last_updated_date=last_updated_dates.get("omim_last_updated_date", ""),
+        dbnsfp_last_updated_date=last_updated_dates.get("dbnsfp_last_updated_date", ""),
     )
 
     output_html_path = os.path.join("../", template_file.replace("_page_template", ""))

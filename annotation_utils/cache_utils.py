@@ -8,6 +8,7 @@ import re
 import time
 
 CACHE_DIR = os.path.expanduser("~/.annotations")
+SOURCE_LAST_UPDATED_PATH = os.path.join(CACHE_DIR, "source_last_updated.json")
 
 # Read FORCE_DOWNLOAD at call time (not import time) so callers can set the env var after
 # importing modules that wrap themselves with these decorators.
@@ -19,6 +20,27 @@ def _cache_file_path(function_name, args, kwargs, ext="tsv.gz"):
     """Return the cache file path for a decorated function called with the given args/kwargs."""
     h = hashlib.sha256(f"{function_name} {args} {frozenset(sorted(kwargs.items()))}".encode()).hexdigest()[:10]
     return os.path.join(CACHE_DIR, re.sub("^get_", "", function_name) + f".{h}.{ext}")
+
+
+def read_source_last_updated():
+    """Return a {source_name: "YYYY-MM-DD"} dict recording when each source was last downloaded successfully."""
+    if os.path.isfile(SOURCE_LAST_UPDATED_PATH):
+        with open(SOURCE_LAST_UPDATED_PATH) as f:
+            return json.load(f)
+    return {}
+
+
+def record_source_last_updated(source_name):
+    """Record today's UTC date as the last successful download date for source_name.
+
+    Sources whose download key expires (OMIM, dbNSFP) fall back to their stale cached table instead of
+    failing the pipeline, so this is called only after a fresh download succeeds. The recorded date then
+    stays put while a source is stuck on its stale cache, which makes that staleness visible on the website.
+    """
+    dates = read_source_last_updated()
+    dates[source_name] = time.strftime("%Y-%m-%d", time.gmtime())
+    with open(SOURCE_LAST_UPDATED_PATH, "wt") as f:
+        json.dump(dates, f, indent=2, sort_keys=True)
 
 
 def read_cached_table(function_name, *args, **kwargs):

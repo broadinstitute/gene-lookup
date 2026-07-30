@@ -10,6 +10,9 @@ import time
 CACHE_DIR = os.path.expanduser("~/.annotations")
 SOURCE_LAST_UPDATED_PATH = os.path.join(CACHE_DIR, "source_last_updated.json")
 
+# Marks a DataFrame that was read from the cache rather than downloaded
+FROM_CACHE_ATTR = "read_from_cache"
+
 # Read FORCE_DOWNLOAD at call time (not import time) so callers can set the env var after
 # importing modules that wrap themselves with these decorators.
 def _force_download():
@@ -48,10 +51,13 @@ def read_cached_table(function_name, *args, **kwargs):
 
     Intended as a fallback when a fresh download fails: it returns the last successfully cached
     table even if it's older than the normal 5-day freshness window, or None if no cache exists.
+    The returned table is tagged with FROM_CACHE_ATTR so cache_data_table won't write it back out.
     """
     cache_file_path = _cache_file_path(function_name, args, kwargs)
     if os.path.isfile(cache_file_path):
-        return pd.read_table(cache_file_path)
+        df = pd.read_table(cache_file_path)
+        df.attrs[FROM_CACHE_ATTR] = True
+        return df
     return None
 
 
@@ -85,10 +91,13 @@ def cache_data_table(get_table_func):
         # call the underlying function
         df = get_table_func(*args, **kwargs)
 
-        # save result to cache
-        df.to_csv(cache_file_path, header=True, index=False, sep="\t")
+        # save result to cache, unless the function fell back to the stale cached table (see
+        # read_cached_table). Re-saving that table would bump its mtime and restart the 5-day
+        # freshness window above, so it would never expire and the download would never be retried.
+        if not df.attrs.get(FROM_CACHE_ATTR):
+            df.to_csv(cache_file_path, header=True, index=False, sep="\t")
+            print(f"Saved {len(df):,d} rows to cache file {cache_file_path}")
 
-        print(f"Saved {len(df):,d} rows to cache file {cache_file_path}")
         return df
 
     return wrapper

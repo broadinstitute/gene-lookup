@@ -2446,6 +2446,12 @@
         margin-top: 0;
     }
 
+    .source-last-updated {
+        color: #999;
+        font-size: calc(1em - 2px);
+        margin-left: 15px;
+    }
+
     #external-links {
         padding-left: 15px;
     }
@@ -2906,7 +2912,7 @@
             const omimTitle = mimNumbersList.length > 0
                 ? `<a href="https://omim.org/entry/${mimNumbersList[0]}" target="_blank" class="action-link">OMIM</a>`
                 : 'OMIM'
-            let html = `<div class="source-section"><h4>${omimTitle}</h4><table class="locus-info-table">`
+            let html = `<div class="source-section"><h4>${omimTitle}<span class="source-last-updated">(last updated: 2026-07-30)</span></h4><table class="locus-info-table">`
             const mimLinks = mimNumbersList.map(m =>
                 `<a href="https://omim.org/entry/${m}" target="_blank" class="action-link">${m}</a>`
             ).join('; ')
@@ -3034,7 +3040,7 @@
 
         // --- Source: dbNSFP ---
         if (hasAnyValue(row['DBNSFP_orphanet_disorder'], row['DBNSFP_function_description'], row['DBNSFP_disease_description'], row['DBNSFP_hpo_name'], row['DBNSFP_mgi_mouse_phenotype'], row['DBNSFP_zfin_zebrafish_phenotype'])) {
-            let html = '<div class="source-section"><h4>dbNSFP</h4><table class="locus-info-table">'
+            let html = '<div class="source-section"><h4>dbNSFP<span class="source-last-updated">(last updated: 2026-07-30)</span></h4><table class="locus-info-table">'
             html += `<tr><td class="locus-info-label">Orphanet Disorder:</td><td style="white-space: normal;">${dedupSemicolon(row['DBNSFP_orphanet_disorder'])}</td></tr>`
             html += `<tr><td class="locus-info-label">Function:</td><td style="white-space: normal;">${dedupSemicolon(row['DBNSFP_function_description'])}</td></tr>`
             html += `<tr><td class="locus-info-label">Disease:</td><td style="white-space: normal;">${dedupSemicolon(row['DBNSFP_disease_description'])}</td></tr>`

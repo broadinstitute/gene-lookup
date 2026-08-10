@@ -7,13 +7,7 @@ import requests
 from annotation_utils.cache_utils import cache_data_table, read_cached_table, record_source_last_updated
 
 DBNSFP_BASE_URL = "https://dist.genos.us/academic"
-
-# dbNSFP 5.4 was released 2026-08-01 and keeps every column this module reads, but the academic
-# download key we have only serves 5.3: dbNSFP5.4_gene.gz returns 404 while dbNSFP5.3_gene.gz
-# downloads fine. Moving to 5.4 requires requesting a new access code from https://www.dbnsfp.org/download
-# first; bumping this constant before then would make every run 404 and silently fall back to the
-# stale 5.3 cache below.
-DBNSFP_VERSION = "5.3"
+DBNSFP_VERSION = "5.4"
 
 # Columns to extract from dbNSFP, mapped to output column names
 COLUMN_RENAME_MAP = {

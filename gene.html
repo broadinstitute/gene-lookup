@@ -3040,7 +3040,7 @@
 
         // --- Source: dbNSFP ---
         if (hasAnyValue(row['DBNSFP_orphanet_disorder'], row['DBNSFP_function_description'], row['DBNSFP_disease_description'], row['DBNSFP_hpo_name'], row['DBNSFP_mgi_mouse_phenotype'], row['DBNSFP_zfin_zebrafish_phenotype'])) {
-            let html = '<div class="source-section"><h4>dbNSFP<span class="source-last-updated">(last updated: 2026-07-30)</span></h4><table class="locus-info-table">'
+            let html = '<div class="source-section"><h4>dbNSFP<span class="source-last-updated">(last updated: 2026-08-10)</span></h4><table class="locus-info-table">'
             html += `<tr><td class="locus-info-label">Orphanet Disorder:</td><td style="white-space: normal;">${dedupSemicolon(row['DBNSFP_orphanet_disorder'])}</td></tr>`
             html += `<tr><td class="locus-info-label">Function:</td><td style="white-space: normal;">${dedupSemicolon(row['DBNSFP_function_description'])}</td></tr>`
             html += `<tr><td class="locus-info-label">Disease:</td><td style="white-space: normal;">${dedupSemicolon(row['DBNSFP_disease_description'])}</td></tr>`

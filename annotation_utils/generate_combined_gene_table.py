@@ -19,7 +19,7 @@ from annotation_utils.get_gencc_table import get_gencc_table
 from annotation_utils.get_decipher_genes import get_decipher_gene_table
 from annotation_utils.get_clinvar_table import get_clinvar_gene_disease_table
 from annotation_utils.get_constraint_scores import get_constraint_scores
-from annotation_utils.get_dbnsfp_gene_table import get_dbnsfp_gene_table
+from annotation_utils.get_dbnsfp_gene_table import get_dbnsfp_gene_table, DBNSFP_VERSION
 from annotation_utils.get_MANE_table import get_MANE_ensembl_transcript_table
 
 parser = argparse.ArgumentParser()
@@ -534,7 +534,7 @@ if include_Fridman:
 df_dbnsfp = None
 if include_dbNSFP:
     print("Getting dbNSFP gene table")
-    df_dbnsfp = get_dbnsfp_gene_table()
+    df_dbnsfp = get_dbnsfp_gene_table(DBNSFP_VERSION)
     df_dbnsfp.rename(columns={"gene_id": "DBNSFP_gene_id"}, inplace=True)
     df_dbnsfp["InDbNSFP"] = True
     df_dbnsfp.set_index("DBNSFP_gene_id", inplace=True)

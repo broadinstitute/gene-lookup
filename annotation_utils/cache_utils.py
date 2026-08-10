@@ -1,4 +1,5 @@
 import functools
+import glob
 import gzip
 import hashlib
 import json
@@ -46,19 +47,22 @@ def record_source_last_updated(source_name):
         json.dump(dates, f, indent=2, sort_keys=True)
 
 
-def read_cached_table(function_name, *args, **kwargs):
-    """Return the cached DataFrame for the given cache_data_table function regardless of age.
+def read_cached_table(function_name):
+    """Return the newest cached DataFrame for the given cache_data_table function regardless of age.
 
     Intended as a fallback when a fresh download fails: it returns the last successfully cached
     table even if it's older than the normal 5-day freshness window, or None if no cache exists.
+    Which arguments produced that table is deliberately ignored, so a source whose cache key
+    includes a version (dbNSFP) can still fall back to the previous version's table on the first
+    run after a version bump, rather than failing the whole pipeline.
     The returned table is tagged with FROM_CACHE_ATTR so cache_data_table won't write it back out.
     """
-    cache_file_path = _cache_file_path(function_name, args, kwargs)
-    if os.path.isfile(cache_file_path):
-        df = pd.read_table(cache_file_path)
-        df.attrs[FROM_CACHE_ATTR] = True
-        return df
-    return None
+    cache_file_paths = glob.glob(os.path.join(CACHE_DIR, re.sub("^get_", "", function_name) + ".*.tsv.gz"))
+    if not cache_file_paths:
+        return None
+    df = pd.read_table(max(cache_file_paths, key=os.path.getmtime))
+    df.attrs[FROM_CACHE_ATTR] = True
+    return df
 
 
 def cache_data_table(get_table_func):

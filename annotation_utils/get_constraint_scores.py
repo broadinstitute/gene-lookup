@@ -2,6 +2,12 @@ import pandas as pd
 from annotation_utils.cache_utils import cache_data_table
 from annotation_utils.get_ensembl_db_info import get_transcript_id_to_gene_id
 
+# Per-gene score percentiles from the gnomAD v4 flagship paper. This URL is pinned to a commit
+# rather than to "main" because the paper repo renumbered its supplementary datasets on 2026-08-03
+# (this table went from supp_dataset_2.tsv to supp_dataset_3.tsv), so "main" silently started
+# returning a different table without the ensg column and broke the pipeline.
+GNOMAD_V4_FLAGSHIP_SCORES_URL = "https://raw.githubusercontent.com/atgu/gnomAD_v4_flagship_paper/e6843fdaadf0c6fddb14c0c38d395ac547edd321/Supplementary%20Datasets/supp_dataset_3.tsv"
+
 
 @cache_data_table
 def _get_gnomAD_v2_constraint():
@@ -241,7 +247,7 @@ def _get_s_het_scores():
 
 
 @cache_data_table
-def _get_gnomAD_v4_flagship_scores():
+def _get_gnomAD_v4_flagship_scores(url):
     """Download per-gene score percentiles from the gnomAD v4 flagship paper
     (Guez, Goodrich et al. 2026, Supplementary Dataset).
 
@@ -253,8 +259,12 @@ def _get_gnomAD_v4_flagship_scores():
         OMELET_XGB_pct          - Bayesian posterior combining PEPPER_XGB with LOEUF-MIS
         OMELET_LLM_pct          - Bayesian posterior combining PEPPER_LLM with LOEUF-MIS
         Discovery_Potential_pct - constraint exceeding literature-derived clinical evidence
+
+    The URL is passed as an argument so it becomes part of the @cache_data_table cache key.
+    Pointing this at a different dataset then invalidates any stale cache instead of silently
+    reusing the previously downloaded table.
     """
-    df = pd.read_table("https://raw.githubusercontent.com/atgu/gnomAD_v4_flagship_paper/main/Supplementary%20Datasets/supp_dataset_2.tsv")
+    df = pd.read_table(url)
     df = df[df["ensg"].notna() & df["ensg"].str.startswith("ENSG")]
     df = df[[
         "ensg",
@@ -273,7 +283,7 @@ def get_constraint_scores():
     df = _get_gnomAD_v2_constraint()
     df2 = _get_gnomAD_v4_constraint()
     df3 = _get_s_het_scores()
-    df4 = _get_gnomAD_v4_flagship_scores()
+    df4 = _get_gnomAD_v4_flagship_scores(GNOMAD_V4_FLAGSHIP_SCORES_URL)
 
     df = df.set_index("gene_id").join(df2.set_index("gene_id"), how="outer")
     df = df.join(df3.set_index("gene_id"), how="outer")

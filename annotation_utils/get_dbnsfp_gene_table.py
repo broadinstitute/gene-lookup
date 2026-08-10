@@ -7,6 +7,7 @@ import requests
 from annotation_utils.cache_utils import cache_data_table, read_cached_table, record_source_last_updated
 
 DBNSFP_BASE_URL = "https://dist.genos.us/academic"
+DBNSFP_VERSION = "5.4"
 
 # Columns to extract from dbNSFP, mapped to output column names
 COLUMN_RENAME_MAP = {
@@ -48,14 +49,20 @@ def is_non_empty(value):
 
 
 @cache_data_table
-def get_dbnsfp_gene_table():
+def get_dbnsfp_gene_table(version):
+    """Download the dbNSFP gene table for the given release and return it as a pandas DataFrame.
+
+    The version is passed as an argument so it becomes part of the @cache_data_table cache key.
+    Bumping DBNSFP_VERSION then invalidates any stale cache instead of silently reusing the
+    previous release's table.
+    """
     dbnsfp_key = os.environ.get("DBNSFP_KEY", "")
     if not dbnsfp_key:
         raise ValueError("DBNSFP_KEY environment variable is not set")
 
     try:
-        url = f"{DBNSFP_BASE_URL}/{dbnsfp_key}/dbNSFP5.3_gene.gz"
-        print(f"Downloading dbNSFP5.3 gene table from {DBNSFP_BASE_URL}/...")
+        url = f"{DBNSFP_BASE_URL}/{dbnsfp_key}/dbNSFP{version}_gene.gz"
+        print(f"Downloading dbNSFP{version} gene table from {DBNSFP_BASE_URL}/...")
         response = requests.get(url)
         response.raise_for_status()
         df = pd.read_table(io.BytesIO(response.content), compression="gzip", dtype=str)
@@ -149,6 +156,6 @@ def get_dbnsfp_gene_table():
 
 
 if __name__ == "__main__":
-    df = get_dbnsfp_gene_table()
+    df = get_dbnsfp_gene_table(DBNSFP_VERSION)
     print(df.shape)
     print(df.head())

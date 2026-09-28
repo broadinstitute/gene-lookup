@@ -1,6 +1,6 @@
 import hail as hl
 import hailtop.fs as hfs
-from annotation_utils.cache_utils import cache_data_table
+from annotation_utils.cache_utils import cache_data_table, record_source_version
 
 """
 ----------------------------------------
@@ -104,9 +104,11 @@ Counter({'Uncertain significance': 1778465,
 
 @cache_data_table
 def get_clinvar_gene_disease_table():
-    # ht.clinvar_release_date.collect()
-
     ht = hl.read_table("gs://gnomad-v4-data-pipeline/output/clinvar/clinvar_grch38_annotated_2.ht")
+
+    # ClinVar releases weekly rather than by version number, and the gnomAD table records the release
+    # date of the ClinVar dump it was built from.
+    record_source_version("clinvar", date_label=f"released: {hl.eval(ht.clinvar_release_date)}")
 
     # INTENTIONAL (do not flag as a bug): this ClinVar column is defined as "gene has Pathogenic /
     # Likely pathogenic ClinVar variants", so we deliberately keep only pathogenic classifications and

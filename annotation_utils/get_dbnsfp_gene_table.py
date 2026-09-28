@@ -4,7 +4,7 @@ import os
 import pandas as pd
 import requests
 
-from annotation_utils.cache_utils import cache_data_table, read_cached_table, record_source_last_updated
+from annotation_utils.cache_utils import cache_data_table, read_cached_table, record_source_version, utc_today
 
 DBNSFP_BASE_URL = "https://dist.genos.us/academic"
 DBNSFP_VERSION = "5.4"
@@ -66,7 +66,10 @@ def get_dbnsfp_gene_table(version):
         response = requests.get(url)
         response.raise_for_status()
         df = pd.read_table(io.BytesIO(response.content), compression="gzip", dtype=str)
-        record_source_last_updated("dbnsfp")
+        # Record the download date alongside the version: the version string alone stays put while the
+        # cached table ages, so it would hide how stale the data is whenever the key expires and the
+        # fallback below serves an old cache.
+        record_source_version("dbnsfp", version=f"v{version}", date_label=f"downloaded: {utc_today()}")
     except Exception as e:
         # The dbNSFP download key (dist.genos.us) expires/rotates periodically. This shows up as an HTTP
         # error from the download, or as a non-gzip error body that fails to parse. In either case, fall

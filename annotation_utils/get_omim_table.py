@@ -9,7 +9,7 @@ import urllib.request
 from tqdm import tqdm
 import re
 
-from annotation_utils.cache_utils import cache_data_table, read_cached_table, record_source_last_updated
+from annotation_utils.cache_utils import cache_data_table, read_cached_table, record_source_version, utc_today
 
 load_dotenv()
 
@@ -94,13 +94,21 @@ def download_file(url, to_dir=".", force_download=False, verbose=True):
 
 
 def get_file_header(f):
+    """Parse the genemap2 comment block and return (header_fields, generated_date).
+
+    OMIM doesn't version its releases, but genemap2.txt starts with a "# Generated: YYYY-MM-DD" line
+    recording when OMIM built the file. generated_date is "" if that line is missing.
+    """
     header_fields = None
+    generated_date = ""
     for i, line in enumerate(f):
         line = line.rstrip('\r\n')
         if line.startswith("# Chrom") and header_fields is None:
             header_fields = [c.lower().replace(' ', '_') for c in line.lstrip('# ').split('\t')]
 
             break
+        elif line.startswith("# Generated:"):
+            generated_date = line[len("# Generated:"):].strip()
         elif not line or line.startswith("#"):
             continue
         elif line.startswith('This account is inactive') or line.startswith('This account has expired'):
@@ -115,7 +123,7 @@ def get_file_header(f):
             print(f"Renamed header field to gene_symbols")
         renamed_header_fields.append(header_field)
 
-    return renamed_header_fields
+    return renamed_header_fields, generated_date
 
 
 def parse_genemap2_records(omim_line_fields):
@@ -201,7 +209,7 @@ def get_omim_table():
         print(f'Parsing {file_path}')
         records = []
         with open(file_path) as f:
-            header_fields = get_file_header(f)
+            header_fields, generated_date = get_file_header(f)
 
             for line in tqdm(f, unit=" records"):
                 omim_line_fields = dict(zip(header_fields, line.rstrip('\r\n').split('\t')))
@@ -212,7 +220,8 @@ def get_omim_table():
                     records.append(record)
 
         omim_df = pd.DataFrame(records)
-        record_source_last_updated("omim")
+        record_source_version("omim", date_label=(
+            f"released: {generated_date}" if generated_date else f"downloaded: {utc_today()}"))
     except Exception as e:
         # The OMIM download key expires/rotates periodically. This shows up either as an HTTP 403 from
         # the download, or as an HTTP 200 whose body is an "account inactive/expired" page that then

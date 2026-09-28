@@ -110,20 +110,25 @@ jobs:
 
     - name: Update website with new date and regenerate HTML
       run: |
-        # OMIM and dbNSFP fall back to their stale cached tables when their download key expires, so
-        # their per-source dates come from ~/.annotations rather than today's date.
+        # Per-source version/date labels come from ~/.annotations, where each source records them only
+        # after a successful download. A source that fell back to its stale cached table (OMIM and dbNSFP
+        # do this when their download key expires) therefore keeps the label describing that cached data.
         python3 - << 'EOF'
         import json
-        import time
-        from annotation_utils.cache_utils import read_source_last_updated
+        import os
+        from annotation_utils.cache_utils import read_source_versions, utc_today
 
-        source_dates = read_source_last_updated()
         with open("website/data_last_updated_date.json", "wt") as f:
-            json.dump({
-                "data_last_updated_date": time.strftime("%Y-%m-%d", time.gmtime()),
-                "omim_last_updated_date": source_dates.get("omim", ""),
-                "dbnsfp_last_updated_date": source_dates.get("dbnsfp", ""),
-            }, f, indent=2)
+            json.dump({"data_last_updated_date": utc_today()}, f, indent=2)
+
+        # Merge into the committed labels rather than replacing them. A run where every source served its
+        # still-fresh cached table records nothing new, so a wholesale overwrite would publish an empty file
+        # and strip every heading's label.
+        source_versions_path = "website/source_versions.json"
+        source_versions = json.load(open(source_versions_path)) if os.path.isfile(source_versions_path) else {}
+        source_versions.update(read_source_versions())
+        with open(source_versions_path, "wt") as f:
+            json.dump(source_versions, f, indent=2, sort_keys=True)
         EOF
         pip install jinja2
         cd website && python3 generate_website.py
@@ -132,7 +137,7 @@ jobs:
       run: |
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
-        git add website/data_last_updated_date.json index.html gene.html
+        git add website/data_last_updated_date.json website/source_versions.json index.html gene.html
         git diff --cached --quiet && exit 0
         git commit -m "Update website date to $(date -u +%Y-%m-%d)"
         # Retry pull --rebase + push to handle the race where another commit lands

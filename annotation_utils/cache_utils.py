@@ -9,7 +9,7 @@ import re
 import time
 
 CACHE_DIR = os.path.expanduser("~/.annotations")
-SOURCE_LAST_UPDATED_PATH = os.path.join(CACHE_DIR, "source_last_updated.json")
+SOURCE_VERSIONS_PATH = os.path.join(CACHE_DIR, "source_versions.json")
 
 # Marks a DataFrame that was read from the cache rather than downloaded
 FROM_CACHE_ATTR = "read_from_cache"
@@ -26,25 +26,41 @@ def _cache_file_path(function_name, args, kwargs, ext="tsv.gz"):
     return os.path.join(CACHE_DIR, re.sub("^get_", "", function_name) + f".{h}.{ext}")
 
 
-def read_source_last_updated():
-    """Return a {source_name: "YYYY-MM-DD"} dict recording when each source was last downloaded successfully."""
-    if os.path.isfile(SOURCE_LAST_UPDATED_PATH):
-        with open(SOURCE_LAST_UPDATED_PATH) as f:
+def utc_today():
+    """Return today's UTC date as a "YYYY-MM-DD" string."""
+    return time.strftime("%Y-%m-%d", time.gmtime())
+
+
+def read_source_versions():
+    """Return a {source_name: {"version": ..., "date_label": ...}} dict of website heading labels."""
+    if os.path.isfile(SOURCE_VERSIONS_PATH):
+        with open(SOURCE_VERSIONS_PATH) as f:
             return json.load(f)
     return {}
 
 
-def record_source_last_updated(source_name):
-    """Record today's UTC date as the last successful download date for source_name.
+def record_source_version(source_name, version="", date_label=""):
+    """Record the version and/or date to show next to source_name's heading on the website.
+
+    Only dbNSFP publishes a version number, so most sources pass just a date_label. That label is
+    already formatted because only the source itself knows what its date means: "released: 2026-08-02"
+    when the download exposes the date the source generated the data, and "downloaded: 2026-08-10" when
+    the date our pipeline fetched it is all we have.
 
     Sources whose download key expires (OMIM, dbNSFP) fall back to their stale cached table instead of
-    failing the pipeline, so this is called only after a fresh download succeeds. The recorded date then
-    stays put while a source is stuck on its stale cache, which makes that staleness visible on the website.
+    failing the pipeline, so this is called only after a fresh download succeeds. The recorded values then
+    stay put while a source is stuck on its stale cache, so the heading keeps describing the data actually
+    being served rather than the release we tried and failed to fetch.
+
+    Args:
+        source_name (str): key used by the website templates, for example "omim" or "panelapp_uk"
+        version (str): version string to append to the heading, for example "v5.4"
+        date_label (str): parenthetical date to show in grey, for example "released: 2026-08-02"
     """
-    dates = read_source_last_updated()
-    dates[source_name] = time.strftime("%Y-%m-%d", time.gmtime())
-    with open(SOURCE_LAST_UPDATED_PATH, "wt") as f:
-        json.dump(dates, f, indent=2, sort_keys=True)
+    versions = read_source_versions()
+    versions[source_name] = {"version": version, "date_label": date_label}
+    with open(SOURCE_VERSIONS_PATH, "wt") as f:
+        json.dump(versions, f, indent=2, sort_keys=True)
 
 
 def read_cached_table(function_name):

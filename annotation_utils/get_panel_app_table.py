@@ -2,7 +2,7 @@ import pandas as pd
 import requests
 import time
 
-from annotation_utils.cache_utils import cache_data_table
+from annotation_utils.cache_utils import cache_data_table, record_source_version, utc_today
 
 URL_UK_PANEL_APP = "https://panelapp.genomicsengland.co.uk/api/v1/genes/"
 URL_AUSTRALIA_PANEL_APP = "https://panelapp-aus.org/api/v1/genes/"
@@ -11,7 +11,10 @@ URL_AUSTRALIA_PANEL_APP = "https://panelapp-aus.org/api/v1/genes/"
 def get_panel_app_table():
     """Download the PANEL app table from https://www.genenames.org/download/custom/ and return it as a pandas DataFrame"""
     rows = []
-    for source_label, url in [("PanelApp UK", URL_UK_PANEL_APP), ("PanelApp Australia", URL_AUSTRALIA_PANEL_APP)]:
+    for source_label, source_key, url in [
+        ("PanelApp UK", "panelapp_uk", URL_UK_PANEL_APP),
+        ("PanelApp Australia", "panelapp_au", URL_AUSTRALIA_PANEL_APP),
+    ]:
         data = {
             'next': url
         }
@@ -62,6 +65,10 @@ def get_panel_app_table():
                     "phenotypes": ", ".join(r["phenotypes"]).replace("\t", "  "),
                     "panel_name": r["panel"]["name"],
                 })
+
+        # PanelApp versions each panel separately (a gene can appear on dozens of panels at different
+        # versions), so there is no single release version to show. The download date is all we have.
+        record_source_version(source_key, date_label=f"downloaded: {utc_today()}")
 
         print(f"Retrieved {url}  total rows: {len(rows)}")
 

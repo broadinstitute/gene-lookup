@@ -1,4 +1,4 @@
-from annotation_utils.cache_utils import cache_data_table
+from annotation_utils.cache_utils import cache_data_table, read_cached_table, record_source_version, utc_today
 import collections
 import requests
 from pprint import pprint
@@ -131,22 +131,35 @@ def rename_inheritance_mode(inheritance_mode):
 @cache_data_table
 def get_decipher_gene_table():
     url = "https://www.deciphergenomics.org/data/genes"
-    response = requests.get(url, headers={
-        "accept": "application/json",
-        "x-requested-with": "XMLHttpRequest",
-        # Without a Referer from the DECIPHER site itself, the endpoint returns 403 {"error":"Access Denied"}
-        "Referer": "https://www.deciphergenomics.org/genes",
-    })
+    try:
+        response = requests.get(url, headers={
+            "accept": "application/json",
+            "x-requested-with": "XMLHttpRequest",
+            # Without a Referer from the DECIPHER site itself, the endpoint returns 403 {"error":"Access Denied"}
+            "Referer": "https://www.deciphergenomics.org/genes",
+        })
 
-    if not response.ok:
-        raise ValueError(f"Failed to get data from {url}")
+        if not response.ok:
+            raise ValueError(f"Failed to get data from {url}: HTTP {response.status_code} {response.text[:200]}")
 
-    data = response.json()
+        data = response.json()
 
-    genes = (data.get("content") or {}).get("genes")
+        genes = (data.get("content") or {}).get("genes")
 
-    if not genes:
-        raise ValueError(f"Failed to get genes from {url}: {data}")
+        if not genes:
+            raise ValueError(f"Failed to get genes from {url}: {data}")
+    except Exception as e:
+        # This is an internal endpoint of the DECIPHER website rather than a supported download, and it
+        # has started returning 403 {"error":"Access Denied"} more than once. Fall back to the last
+        # successfully cached DECIPHER table (even if it's stale) rather than failing the whole pipeline.
+        df_stale = read_cached_table("get_decipher_gene_table")
+        if df_stale is not None:
+            print(f"WARNING: DECIPHER download failed ({e}); reusing previously cached DECIPHER table ({len(df_stale):,d} rows)")
+            return df_stale
+        raise
+
+    # This endpoint returns no version or build date, so the download date is all we have.
+    record_source_version("decipher", date_label=f"downloaded: {utc_today()}")
 
     #inheritance_mode_counter = collections.Counter()
     output_records = []

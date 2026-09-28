@@ -27,10 +27,13 @@ custom_filter_columns_json = json.dumps(custom_filter_columns)
 exportable_columns = get_exportable_columns()
 exportable_columns_json = json.dumps(exportable_columns)
 
-# Read the data last updated dates for use in templates. The per-source dates are empty unless that
-# source recorded a successful download, in which case the templates omit its "last updated" label.
 with open("data_last_updated_date.json", "r") as f:
     last_updated_dates = json.load(f)
+
+# Per-source version / release-date labels shown next to each source heading on the gene page. A source
+# stays absent from this file until it records a successful download, and an absent source shows no label.
+# The file itself may not exist yet on a fresh checkout, in which case no source gets a label.
+source_versions = json.load(open("source_versions.json")) if os.path.isfile("source_versions.json") else {}
 
 for template_file in glob.glob("*_page_template.html"):
     print(f"Processing {template_file}")
@@ -44,8 +47,7 @@ for template_file in glob.glob("*_page_template.html"):
         exportable_columns_json=exportable_columns_json,
         constraint_thresholds_json=json.dumps(CONSTRAINT_THRESHOLDS),
         data_last_updated_date=last_updated_dates.get("data_last_updated_date", ""),
-        omim_last_updated_date=last_updated_dates.get("omim_last_updated_date", ""),
-        dbnsfp_last_updated_date=last_updated_dates.get("dbnsfp_last_updated_date", ""),
+        source_versions=source_versions,
     )
 
     output_html_path = os.path.join("../", template_file.replace("_page_template", ""))

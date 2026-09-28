@@ -2,7 +2,7 @@ import pandas as pd
 import requests
 from io import StringIO
 
-from annotation_utils.cache_utils import cache_data_table
+from annotation_utils.cache_utils import cache_data_table, record_source_version, utc_today
 from annotation_utils.get_hgnc_table import get_hgnc_to_ensg_id_map
 
 def _get_clingen_table(url):
@@ -39,6 +39,9 @@ def _get_clingen_table(url):
 def get_clingen_gene_disease_validity_table():
     "Download ClinGen gene-disease validity table and return it as a pandas DataFrame"
     df = _get_clingen_table("https://search.clinicalgenome.org/kb/gene-validity/download")
+    # ClinGen builds this CSV on demand, so its "FILE CREATED:" line is always the date we fetched it
+    # rather than a publication date. The download date is therefore all this source really exposes.
+    record_source_version("clingen", date_label=f"downloaded: {utc_today()}")
     # Normalize ClinGen's mitochondrial token (MT) to match the other sources' MITO so the
     # website's "Mitochondrial" inheritance filter matches ClinGen rows too.
     df["MOI"] = df["MOI"].replace({"MT": "MITO"})

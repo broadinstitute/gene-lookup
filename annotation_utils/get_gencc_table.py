@@ -1,5 +1,9 @@
+import io
 import pandas as pd
-from annotation_utils.cache_utils import cache_data_table
+import requests
+from email.utils import parsedate_to_datetime
+
+from annotation_utils.cache_utils import cache_data_table, record_source_version, utc_today
 from annotation_utils.get_hgnc_table import get_hgnc_table
 
 """Retrieve GenCC submissions
@@ -42,7 +46,18 @@ def get_gencc_table():
     df_hgnc = get_hgnc_table()
     HGNC_to_ENSG_map = dict(zip(df_hgnc["HGNC ID"], df_hgnc["Ensembl gene ID"]))
 
-    df = pd.read_table( "https://search.thegencc.org/download/action/submissions-export-tsv")
+    response = requests.get("https://search.thegencc.org/download/action/submissions-export-tsv")
+    response.raise_for_status()
+    df = pd.read_table(io.StringIO(response.text))
+
+    # GenCC doesn't version this export, but serves it with a Last-Modified header recording when the
+    # file was built. Downloading through requests (rather than handing the URL to pd.read_table) is
+    # what keeps that header reachable. Always record something: the label is otherwise left describing
+    # whichever older download last set it, which is worse than showing only the date we fetched this one.
+    last_modified = response.headers.get("Last-Modified")
+    record_source_version("gencc", date_label=(
+        f"released: {parsedate_to_datetime(last_modified).strftime('%Y-%m-%d')}" if last_modified
+        else f"downloaded: {utc_today()}"))
 
     df["gene_id"] = df["gene_curie"].map(HGNC_to_ENSG_map)
     df["hgnc_gene_id"] = df["gene_curie"]

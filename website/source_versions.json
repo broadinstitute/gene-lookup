@@ -1,6 +1,6 @@
 {
   "clingen": {
-    "date_label": "downloaded: 2026-08-10",
+    "date_label": "downloaded: 2026-09-28",
     "version": ""
   },
   "clinvar": {
@@ -8,7 +8,7 @@
     "version": ""
   },
   "dbnsfp": {
-    "date_label": "downloaded: 2026-08-10",
+    "date_label": "downloaded: 2026-09-28",
     "version": "v5.4"
   },
   "decipher": {
@@ -16,19 +16,19 @@
     "version": ""
   },
   "gencc": {
-    "date_label": "released: 2026-08-02",
+    "date_label": "released: 2026-09-27",
     "version": ""
   },
   "omim": {
-    "date_label": "released: 2026-08-10",
+    "date_label": "released: 2026-09-28",
     "version": ""
   },
   "panelapp_au": {
-    "date_label": "downloaded: 2026-08-10",
+    "date_label": "downloaded: 2026-09-28",
     "version": ""
   },
   "panelapp_uk": {
-    "date_label": "downloaded: 2026-08-10",
+    "date_label": "downloaded: 2026-09-28",
     "version": ""
   }
 }

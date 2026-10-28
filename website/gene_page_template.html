@@ -615,7 +615,10 @@
             html += `<tr><td class="locus-info-label">Gene Effect:</td><td>${dedupSemicolon(row['INTOLEROME_gene_effect'])}</td></tr>`
             html += `<tr><td class="locus-info-label">Inheritance:</td><td>${dedupSemicolon(row['INTOLEROME_inheritance'])}</td></tr>`
             html += `<tr><td class="locus-info-label">Disease:</td><td style="white-space: normal;">${dedupSemicolon(row['INTOLEROME_disease'])}</td></tr>`
-            html += `<tr><td class="locus-info-label">OMIM Phenotype ID:</td><td>${dedupSemicolon(row['INTOLEROME_omim_phenotype_id'])}</td></tr>`
+            const omimPhenotypeLinks = [...new Set(String(row['INTOLEROME_omim_phenotype_id'] || '').split(/[;,]/).map(m => m.trim()).filter(m => m))].map(m =>
+                `<a href="https://omim.org/entry/${encodeURIComponent(m)}" target="_blank" class="action-link">${m}</a>`
+            ).join(', ')
+            html += `<tr><td class="locus-info-label">OMIM Phenotype ID:</td><td style="white-space: normal;">${omimPhenotypeLinks}</td></tr>`
             html += `<tr><td class="locus-info-label">Prenatal Phenotypes:</td><td style="white-space: normal;">${dedupSemicolon(row['INTOLEROME_prenatal_phenotypes'])}</td></tr>`
             html += `<tr><td class="locus-info-label">System Affected:</td><td>${dedupSemicolon(row['INTOLEROME_system_affected'])}</td></tr>`
             const pmidLinks = [...new Set(String(row['INTOLEROME_pmids'] || '').split(/[;,]/).map(p => p.trim()).filter(p => p))].map(p =>

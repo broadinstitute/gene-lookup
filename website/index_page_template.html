@@ -168,6 +168,10 @@
                                 <input type="checkbox" name="keepFridman">
                                 <label>Fridman 2025</label>
                             </div>
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="keepIntolerome">
+                                <label>Intolerome</label>
+                            </div>
                         </div>
                     </div>
 
@@ -325,6 +329,7 @@
     DEFAULT_GLOBAL_PAGE_STATE['keepClinVar'] = 0
     DEFAULT_GLOBAL_PAGE_STATE['keepGWAS'] = 0
     DEFAULT_GLOBAL_PAGE_STATE['keepFridman'] = 0
+    DEFAULT_GLOBAL_PAGE_STATE['keepIntolerome'] = 0
     DEFAULT_GLOBAL_PAGE_STATE['minSources'] = ''
     DEFAULT_GLOBAL_PAGE_STATE['pliThreshold'] = ''
     DEFAULT_GLOBAL_PAGE_STATE['loeufThreshold'] = ''
@@ -448,6 +453,7 @@
         $('input[name="keepClinVar"]').prop('checked', GLOBAL_PAGE_STATE['keepClinVar'] === 1)
         $('input[name="keepGWAS"]').prop('checked', GLOBAL_PAGE_STATE['keepGWAS'] === 1)
         $('input[name="keepFridman"]').prop('checked', GLOBAL_PAGE_STATE['keepFridman'] === 1)
+        $('input[name="keepIntolerome"]').prop('checked', GLOBAL_PAGE_STATE['keepIntolerome'] === 1)
 
         // Restore numeric/text filters
         $('input[name="minSources"]').val(GLOBAL_PAGE_STATE['minSources'])
@@ -1625,6 +1631,7 @@
         if ($('input[name="keepClinVar"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%CLINVAR%'")
         if ($('input[name="keepGWAS"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%GWAS%'")
         if ($('input[name="keepFridman"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%FRIDMAN%'")
+        if ($('input[name="keepIntolerome"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%INTOLEROME%'")
         if (sourceClauses.length > 0) {
             conditions.push(`(${sourceClauses.join(' OR ')})`)
         }
@@ -2206,6 +2213,7 @@
             GLOBAL_PAGE_STATE['keepClinVar'] = $('input[name="keepClinVar"]').prop('checked') ? 1 : 0
             GLOBAL_PAGE_STATE['keepGWAS'] = $('input[name="keepGWAS"]').prop('checked') ? 1 : 0
             GLOBAL_PAGE_STATE['keepFridman'] = $('input[name="keepFridman"]').prop('checked') ? 1 : 0
+            GLOBAL_PAGE_STATE['keepIntolerome'] = $('input[name="keepIntolerome"]').prop('checked') ? 1 : 0
             GLOBAL_PAGE_STATE['minSources'] = $('input[name="minSources"]').val()
             GLOBAL_PAGE_STATE['pliThreshold'] = $('input[name="pliThreshold"]').val()
             GLOBAL_PAGE_STATE['loeufThreshold'] = $('input[name="loeufThreshold"]').val()

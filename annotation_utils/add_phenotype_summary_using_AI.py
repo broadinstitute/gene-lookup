@@ -45,7 +45,7 @@ SEPARATOR = "; "
 # The combined table intentionally retains negative-evidence rows (their level is preserved in a parallel
 # classification column), so this summarizer filters each source to its positive associations before
 # prompting (drops ClinGen/GenCC/DECIPHER "Disputed"/"Refuted", non-"Green" PanelApp, OMIM Nondisease/
-# Susceptibility, and Orphanet biomarker/susceptibility/fusion). OMIM provisional ("?") associations and
+# Susceptibility (also where Intolerome copies OMIM's disease text), and Orphanet biomarker/susceptibility/fusion). OMIM provisional ("?") associations and
 # Orphanet "candidate" associations are intentionally KEPT (still real, if tentative). This filtering is
 # independent of what the pipeline loads into BigQuery / displays on the gene page for each source.
 CLINGEN_POSITIVE_CLASSIFICATIONS = {"Definitive", "Strong", "Moderate", "Limited"}  # drop Disputed/Refuted/No Known Disease Relationship
@@ -103,6 +103,19 @@ def _labels_excluding(labels_value, classifications_value, drop_classifications)
     return [l for l, c in zip(labels, classifications) if l and c not in drop_classifications]
 
 
+def _labels_without_omim_nondisease_or_susceptibility_markers(labels_value):
+    """Return the phenotype labels that don't start with OMIM's Nondisease "[" or Susceptibility "{" marker.
+
+    Used for Intolerome, whose disease text is often copied verbatim from OMIM's phenotype map with these
+    markers still in place (e.g. MST1R: "{Nasopharyngeal carcinoma, susceptibility to, 3}"), so the same
+    associations that OMIM_DROP_CLASSIFICATIONS drops from the OMIM input are dropped here too.
+    """
+    if not _has_content(labels_value):
+        return []
+    labels = [l.strip() for l in str(labels_value).split(SEPARATOR)]
+    return [l for l in labels if l and not l.startswith(("[", "{"))]
+
+
 def summarize_phenotypes(row):
 
     # Concatenate the phenotypes into a single string, by source — POSITIVE associations only (see the
@@ -115,8 +128,11 @@ def summarize_phenotypes(row):
     #     classification column is ever missing/misaligned it contributes nothing rather than risk emitting
     #     a disputed/refuted association.
     #   - PanelApp UK/AU: keep only "Green" (confidence 3) via the aligned confidence column.
-    #   - ClinVar (P/LP variants only), Fridman (curated), dbNSFP disease (UniProt involvement-in-disease)
-    #     and dbNSFP HPO (HPO term NAMES, not ids) are inherently positive-only and pass through unfiltered.
+    #   - ClinVar (P/LP variants only), Fridman (curated), dbNSFP disease (UniProt involvement-in-disease) and
+    #     dbNSFP HPO (HPO term NAMES, not ids) are inherently positive-only and pass through unfiltered.
+    #   - Intolerome (curated lethal genes, including its "Candidate" genes with only 1-2 reports, kept like
+    #     Orphanet "candidate" below): prenatal phenotypes pass through unfiltered, but its disease text is often
+    #     copied from OMIM, so labels still carrying OMIM's Nondisease "[]" / Susceptibility "{}" markers are dropped.
     #   - Orphanet uses DBNSFP_orphanet_positive_disorder, pre-filtered upstream to genuine disease
     #     associations (candidate/modifier kept; biomarker/susceptibility/fusion dropped).
     phenotypes = []
@@ -142,6 +158,9 @@ def summarize_phenotypes(row):
         row.get("PANEL_APP_AU_phenotypes"), row.get("PANEL_APP_AU_confidence"), PANELAPP_POSITIVE_CONFIDENCE, strict=True)))
     add_source("CLINVAR", row.get("CLINVAR_phenotypes"))
     add_source("FRIDMAN", row.get("FRIDMAN_phenotype_category"))
+    add_source("INTOLEROME", SEPARATOR.join(
+        v for v in _labels_without_omim_nondisease_or_susceptibility_markers(row.get("INTOLEROME_disease"))
+        + [row.get("INTOLEROME_prenatal_phenotypes")] if _has_content(v)))
     add_source("ORPHANET", row.get("DBNSFP_orphanet_positive_disorder"))
     add_source("DBNSFP_DISEASE", row.get("DBNSFP_disease_description"))
     add_source("DBNSFP_HPO", row.get("DBNSFP_hpo_name"))

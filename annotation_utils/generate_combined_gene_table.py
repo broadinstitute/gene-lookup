@@ -21,10 +21,12 @@ from annotation_utils.get_clinvar_table import get_clinvar_gene_disease_table
 from annotation_utils.get_constraint_scores import get_constraint_scores
 from annotation_utils.get_dbnsfp_gene_table import get_dbnsfp_gene_table, DBNSFP_VERSION
 from annotation_utils.get_MANE_table import get_MANE_ensembl_transcript_table
+from annotation_utils.get_intolerome_table import get_intolerome_table
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--skip-gwas", action="store_true", help="Don't add columns related to GWAS catalog rare disease records")
 parser.add_argument("--skip-fridman", action="store_true", help="Don't add columns related to the Fridman et al. 2025 list of recessive genes")
+parser.add_argument("--skip-intolerome", action="store_true", help="Don't add columns related to the Intolerome list of genes linked to pregnancy loss, stillbirth, and neonatal death")
 parser.add_argument("--skip-dbnsfp", action="store_true", help="Don't add columns related to dbNSFP gene annotations")
 parser.add_argument("--print-example-genes", action="store_true", help="Print example genes")
 parser.add_argument("--force", action="store_true", help="Force re-download of all data, even if cached")
@@ -35,6 +37,7 @@ if args.force:
 
 include_GWAS = not args.skip_gwas
 include_Fridman = not args.skip_fridman
+include_Intolerome = not args.skip_intolerome
 include_dbNSFP = not args.skip_dbnsfp
 print_example_genes = args.print_example_genes
 
@@ -531,6 +534,63 @@ if include_Fridman:
     df_fridman.set_index("FRIDMAN_gene_id", inplace=True)
 
 
+df_intolerome = None
+if include_Intolerome:
+    print("Getting Intolerome table of genes linked to pregnancy loss, stillbirth, and neonatal death")
+    df_intolerome = get_intolerome_table()
+    print(f"Got {len(df_intolerome):,d} rows from Intolerome")
+
+    # Intolerome identifies genes by NCBI gene id, so resolve them through the same id-based NCBI->ENSG
+    # bridge used for OMIM above rather than through gene symbols.
+    df_intolerome["INTOLEROME_gene_id"] = df_intolerome["ncbi_gene_id"].map(lambda v: NCBI_to_ENSG_map.get(_ncbi_key(v)))
+    no_ensg = df_intolerome["INTOLEROME_gene_id"].isna()
+    if no_ensg.any():
+        print("\t", f"WARNING: dropping {int(no_ensg.sum()):,d} Intolerome rows whose NCBI gene id could not be "
+                    f"mapped to an ENSG id: {', '.join(df_intolerome.loc[no_ensg, 'gene_symbol'].astype(str))}")
+        df_intolerome = df_intolerome[~no_ensg]
+
+    df_intolerome = df_intolerome[[
+        "INTOLEROME_gene_id",
+        "evidence_category",
+        "lethality_timing",
+        "gene_effect",
+        "inheritance",
+        "disease",
+        "omim_phenotype_id",
+        "prenatal_phenotypes",
+        "system_affected",
+        "pmids",
+    ]]
+
+    df_intolerome = df_intolerome.rename(columns={
+        "evidence_category": "INTOLEROME_evidence_category",
+        "lethality_timing": "INTOLEROME_lethality_timing",
+        "gene_effect": "INTOLEROME_gene_effect",
+        "inheritance": "INTOLEROME_inheritance",
+        "disease": "INTOLEROME_disease",
+        "omim_phenotype_id": "INTOLEROME_omim_phenotype_id",
+        "prenatal_phenotypes": "INTOLEROME_prenatal_phenotypes",
+        "system_affected": "INTOLEROME_system_affected",
+        "pmids": "INTOLEROME_pmids",
+    })
+
+    df_intolerome = df_intolerome.groupby("INTOLEROME_gene_id").agg({
+        "INTOLEROME_evidence_category": lambda x: separator.join(normalize_nulls(v) for v in x),
+        "INTOLEROME_lethality_timing": lambda x: separator.join(normalize_nulls(v) for v in x),
+        "INTOLEROME_gene_effect": lambda x: separator.join(normalize_nulls(v) for v in x),
+        "INTOLEROME_inheritance": lambda x: separator.join(normalize_nulls(v) for v in x),
+        "INTOLEROME_disease": lambda x: separator.join(normalize_nulls(v) for v in x),
+        "INTOLEROME_omim_phenotype_id": lambda x: separator.join(normalize_nulls(v) for v in x),
+        "INTOLEROME_prenatal_phenotypes": lambda x: separator.join(normalize_nulls(v) for v in x),
+        "INTOLEROME_system_affected": lambda x: separator.join(normalize_nulls(v) for v in x),
+        "INTOLEROME_pmids": lambda x: separator.join(normalize_nulls(v) for v in x),
+    }).reset_index()
+
+    df_intolerome["InIntolerome"] = True
+
+    df_intolerome.set_index("INTOLEROME_gene_id", inplace=True)
+
+
 df_dbnsfp = None
 if include_dbNSFP:
     print("Getting dbNSFP gene table")
@@ -709,6 +769,7 @@ print(f"Merging "
       f"ClinVar ({len(df_clinvar):,d} rows) " +
       (f"GWAS catalog ({len(df_gwas):,d} rows) " if include_GWAS else "") +
       (f"Fridman ({len(df_fridman):,d} rows) " if include_Fridman else "") +
+      (f"Intolerome ({len(df_intolerome):,d} rows) " if include_Intolerome else "") +
       (f"dbNSFP ({len(df_dbnsfp):,d} rows) " if include_dbNSFP else "")
 )
 
@@ -756,6 +817,12 @@ if include_Fridman:
     df_combined = pd.merge(df_combined, df_fridman, how="outer", left_index=True, right_index=True)  # ANALYSIS_OK[join]: merged on unique per-gene-id index (df_combined uniqueness asserted after each merge)
     assert df_combined.index.is_unique, "The merged dataframe has duplicate gene ids after merging with Fridman"
     print(f"Added {len(df_combined) - len(before):,d} genes from Fridman et al. 2025 list of recessive genes" + (f" - examples: {', '.join(list(set(df_combined.index) - set(before))[:5])}" if print_example_genes else ""))
+
+if include_Intolerome:
+    before = list(df_combined.index)
+    df_combined = pd.merge(df_combined, df_intolerome, how="outer", left_index=True, right_index=True)  # ANALYSIS_OK[join]: merged on unique per-gene-id index (df_combined uniqueness asserted after each merge)
+    assert df_combined.index.is_unique, "The merged dataframe has duplicate gene ids after merging with Intolerome"
+    print(f"Added {len(df_combined) - len(before):,d} genes from Intolerome" + (f" - examples: {', '.join(list(sorted(set(df_combined.index) - set(before)))[:5])}" if print_example_genes else ""))
 
 if include_dbNSFP:
     before = list(df_combined.index)
@@ -857,6 +924,8 @@ def compute_sources_string(row):
         sources.append("GWAS")
     if include_Fridman and row["InFridman"] == True:
         sources.append("Fridman")
+    if include_Intolerome and row["InIntolerome"] == True:
+        sources.append("Intolerome")
     if include_dbNSFP and row["InDbNSFP"] == True:
         sources.append("dbNSFP")
     if row["pLI_v2"] >= pLI_v2_THRESHOLD:
@@ -875,6 +944,8 @@ if include_GWAS:
     df_combined.drop(columns=["InGWAS"], inplace=True)
 if include_Fridman:
     df_combined.drop(columns=["InFridman"], inplace=True)
+if include_Intolerome:
+    df_combined.drop(columns=["InIntolerome"], inplace=True)
 if include_dbNSFP:
     df_combined.drop(columns=["InDbNSFP"], inplace=True)
 
@@ -890,6 +961,8 @@ def summarize_inheritance(row):
     ]
     if include_Fridman:
         columns.append("FRIDMAN_inheritance")
+    if include_Intolerome:
+        columns.append("INTOLEROME_inheritance")
     for column in columns:
         if column in row and isinstance(row[column], str):
             inheritance.update({i.strip() for i in row[column].split(";") if i.strip() and i.strip().lower() != "unknown"})
@@ -914,7 +987,7 @@ print(f"Wrote {len(df_combined):,d} genes to {output_path}")
 
 output_path = f"combined_mendelian_gene_disease_table.only_in_clinvar.tsv.gz"
 df_clinvar_only = df_combined[df_combined["sources"].str.replace(r"\d+: ", "", regex=True).apply(
-    lambda s: "ClinVar" in {x.strip() for x in s.split(",")} and {x.strip() for x in s.split(",")}.issubset({"ClinVar", "Fridman", "dbNSFP"})
+    lambda s: "ClinVar" in {x.strip() for x in s.split(",")} and {x.strip() for x in s.split(",")}.issubset({"ClinVar", "Fridman", "Intolerome", "dbNSFP"})
 )]
 df_clinvar_only.to_csv(output_path, sep="\t", index=False)
 print(f"Wrote {len(df_clinvar_only):,d} genes to {output_path}")

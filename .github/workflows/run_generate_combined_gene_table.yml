@@ -15,21 +15,21 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
 
     - name: Set up Java 11
-      uses: actions/setup-java@v4
+      uses: actions/setup-java@v6
       with:
         distribution: 'temurin'
         java-version: '11'
 
-    - name: Set up Python 3.9
-      uses: actions/setup-python@v4
+    - name: Set up Python 3.11
+      uses: actions/setup-python@v7
       with:
-        python-version: '3.9'
+        python-version: '3.11'
 
     - name: Cache pip dependencies
-      uses: actions/cache@v4
+      uses: actions/cache@v6
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
@@ -37,7 +37,7 @@ jobs:
           ${{ runner.os }}-pip-
 
     - name: Restore annotation data cache
-      uses: actions/cache/restore@v4
+      uses: actions/cache/restore@v6
       with:
         path: ~/.annotations
         key: annotations-cache-${{ github.run_id }}
@@ -45,7 +45,7 @@ jobs:
           annotations-cache-
 
     - name: Restore LLM response cache
-      uses: actions/cache/restore@v4
+      uses: actions/cache/restore@v6
       with:
         path: .cache/llm_response_cache.db
         key: llm-cache-${{ github.run_id }}
@@ -53,7 +53,7 @@ jobs:
           llm-cache-
 
     - name: Authenticate to Google Cloud
-      uses: google-github-actions/auth@v2
+      uses: google-github-actions/auth@v3
       with:
         credentials_json: ${{ secrets.GCP_SERVICE_ACCOUNT_KEY }}
 
@@ -151,7 +151,7 @@ jobs:
         exit 1
 
     - name: Upload generated files as artifacts
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       if: always()
       with:
         name: gene-table-outputs
@@ -160,14 +160,14 @@ jobs:
         retention-days: 30
 
     - name: Save annotation data cache
-      uses: actions/cache/save@v4
+      uses: actions/cache/save@v6
       if: success()
       with:
         path: ~/.annotations
         key: annotations-cache-${{ github.run_id }}
 
     - name: Save LLM response cache
-      uses: actions/cache/save@v4
+      uses: actions/cache/save@v6
       if: success()
       with:
         path: .cache/llm_response_cache.db

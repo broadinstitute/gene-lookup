@@ -170,6 +170,12 @@ class OpenTargetsGeneBurdenTests(unittest.TestCase):
             "projectId": ["AstraZeneca PheWAS Portal", None, None, None],
             "cohortId": ["UK Biobank 470k", "UK Biobank, MDCS,  MCPS", None, None],
             "literature": [["34375979"], None, ["35982159"], None],
+            "urls": [
+                [{"niceName": "AstraZeneca PheWAS Portal", "url": "https://azphewas.com/phenotypeView/a/b/glr"}],
+                [{"niceName": "CVDI Human Disease Portal", "url": "https://hugeamp.org:8000/research.html?pageid=x"}],
+                [],
+                None,
+            ],
             "statisticalMethod": ["flexdmg", "TADA", "TADA", "TADA"],
             "pValueMantissa": [1.677, 2.0, 1.0, 1.0],
             "pValueExponent": [-15, -400, -6, -6],
@@ -179,10 +185,12 @@ class OpenTargetsGeneBurdenTests(unittest.TestCase):
         self.assertEqual(df["disease_id"].tolist(), ["EFO:0022282", "MONDO:0005258", "MONDO:0005258", "MONDO:0005258"])
         self.assertEqual(df["study"].tolist(), ["AstraZeneca PheWAS Portal", "UK Biobank, MDCS, MCPS", "PMID:35982159", ""])
         self.assertEqual(df["study_pubmed_id"].tolist(), ["34375979", "", "35982159", ""])
+        self.assertEqual(df["study_url"].tolist(), [
+            "https://azphewas.com/phenotypeView/a/b/glr", "https://hugeamp.org/research.html?pageid=x", "", ""])
         self.assertAlmostEqual(df["p_value"].tolist()[0], 1.677e-15, delta=1e-27)
         self.assertEqual(df["p_value"].tolist()[1], 0.0)
         self.assertEqual(df["direction_on_trait"].tolist(), ["protect", None, "risk", "risk"])
-        self.assertEqual(df.columns.tolist(), ["gene_id", "disease_id", "study", "study_pubmed_id", "p_value", "direction_on_trait"])
+        self.assertEqual(df.columns.tolist(), ["gene_id", "disease_id", "study", "study_pubmed_id", "study_url", "p_value", "direction_on_trait"])
 
 
 class AcmgSecondaryFindingsTests(unittest.TestCase):

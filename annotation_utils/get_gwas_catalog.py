@@ -93,8 +93,6 @@ def get_gwas_catalog_rare_disease_records():
     df_gwas = df_gwas[df_gwas["MONDO_ID"].notna()]
     df_gwas = df_gwas[[
         "MONDO_ID",
-        "CHR_ID",
-        "CHR_POS",
         "SNPS",
         "UPSTREAM_GENE_ID",
         "DOWNSTREAM_GENE_ID",
@@ -102,13 +100,10 @@ def get_gwas_catalog_rare_disease_records():
         "UPSTREAM_GENE_DISTANCE",
         "DOWNSTREAM_GENE_DISTANCE",
         "P-VALUE",
-        "OR or BETA",
-        "95% CI (TEXT)",
     ]]
     df_gwas["MONDO_NAME"] = df_gwas["MONDO_ID"].apply(lambda x: mondo_rare_disease_term_lookup[x]["name"])
-    df_gwas["MONDO_CATEGORY"] = df_gwas["MONDO_ID"].apply(lambda x: mondo_rare_disease_term_lookup[x].get("category"))
 
-    id_columns = ["MONDO_ID", "MONDO_NAME", "MONDO_CATEGORY", "CHR_ID", "CHR_POS", "SNPS", "P-VALUE", "OR or BETA", "95% CI (TEXT)"]
+    id_columns = ["MONDO_ID", "MONDO_NAME", "SNPS", "P-VALUE"]
 
     # First melt the upstream/downstream gene IDs
     df_genes = df_gwas.melt(

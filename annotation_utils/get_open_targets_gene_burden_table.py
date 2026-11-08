@@ -32,8 +32,8 @@ OPEN_TARGETS_PLATFORM_RELEASES_URL = "https://ftp.ebi.ac.uk/pub/databases/openta
 
 # Passed to get_open_targets_gene_burden_table so that it becomes part of the cache key. Bump it whenever the
 # columns returned by convert_gene_burden_evidence_to_table change, so that a table cached with the old columns
-# is downloaded again instead of reused. Version 2 added study_pubmed_id.
-OPEN_TARGETS_GENE_BURDEN_TABLE_COLUMNS_VERSION = 2
+# is downloaded again instead of reused. Version 2 added study_pubmed_id, version 3 added study_url.
+OPEN_TARGETS_GENE_BURDEN_TABLE_COLUMNS_VERSION = 3
 
 
 def find_latest_open_targets_release(directory_listing_html):
@@ -63,6 +63,18 @@ def _get_first_pubmed_id(pubmed_ids):
     return ""
 
 
+def _get_first_study_url(urls):
+    """Return the first link Open Targets gives for the evidence record, a page on the study's portal (eg. the
+    AstraZeneca PheWAS Portal), or "" if it gives none.
+
+    Links to the CVDI Human Disease Portal point at https://hugeamp.org:8000/, which did not accept connections in
+    November 2026 while the same pages load from https://hugeamp.org/, so the port is dropped.
+    """
+    if urls is None or len(urls) == 0:
+        return ""
+    return (urls[0].get("url") or "").replace("https://hugeamp.org:8000/", "https://hugeamp.org/")
+
+
 def _name_study(project_id, cohort_id, pubmed_ids):
     """Return the project name, else the cohort name, else "PMID:<first PubMed ID>", else ""."""
     for name in (project_id, cohort_id):
@@ -82,8 +94,8 @@ def convert_gene_burden_evidence_to_table(df_evidence):
     Returns:
         pandas.DataFrame: one row per association, with columns gene_id, disease_id (with ":" in place of
             Open Targets' "_", eg. "MONDO:0005258"), study, study_pubmed_id (the PubMed ID of the study's
-            paper, or "" if Open Targets lists none), p_value, direction_on_trait ("risk", "protect", or
-            missing)
+            paper, or "" if Open Targets lists none), study_url (a page on the study's portal, or ""), p_value,
+            direction_on_trait ("risk", "protect", or missing)
     """
     return pd.DataFrame({
         "gene_id": df_evidence["targetId"],
@@ -91,6 +103,7 @@ def convert_gene_burden_evidence_to_table(df_evidence):
         "study": [_name_study(project_id, cohort_id, pubmed_ids) for project_id, cohort_id, pubmed_ids in zip(
             df_evidence["projectId"], df_evidence["cohortId"], df_evidence["literature"])],
         "study_pubmed_id": [_get_first_pubmed_id(pubmed_ids) for pubmed_ids in df_evidence["literature"]],
+        "study_url": [_get_first_study_url(urls) for urls in df_evidence["urls"]],
         # p-values below ~1e-308 underflow to 0.0, which still sorts as the most significant
         "p_value": df_evidence["pValueMantissa"] * 10.0 ** df_evidence["pValueExponent"],
         "direction_on_trait": df_evidence["directionOnTrait"],

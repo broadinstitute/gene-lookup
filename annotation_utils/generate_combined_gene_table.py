@@ -620,21 +620,16 @@ if include_GWAS:
 
     """
     MONDO_ID           MONDO:0016158
-    CHR_ID                         2
-    CHR_POS                241837710
     SNPS                  rs34071003
     P-VALUE                 0.000004
-    OR or BETA                 1.328
-    95% CI (TEXT)    [1.1789-1.4980]
     GENE_ID          ENSG00000204099
     GENE_TYPE               UPSTREAM
     GENE_DISTANCE            20297.0
     """
 
-    # Exclude cancer and infectious-disease associations, identified by MONDO descent rather than by
-    # MONDO_CATEGORY: MONDO_CATEGORY holds one of the top-level groupings under MONDO:0700096 (e.g. "disease
-    # by etiologic mechanism"), so it never equals "cancer or benign tumor" / "infectious disease" and the
-    # old name-based filter silently matched nothing.
+    # Exclude cancer and infectious-disease associations, identified by MONDO descent: MONDO's top-level groupings
+    # under MONDO:0700096 (e.g. "disease by etiologic mechanism") never include "cancer or benign tumor" or
+    # "infectious disease", so they can't be matched by name.
     df_gwas = df_gwas[~df_gwas["MONDO_ID"].isin(get_cancer_or_infectious_mondo_ids())]
 
     # Keep only genome-wide significant associations. The GWAS Catalog lists every association with p < 1e-5,
@@ -649,13 +644,8 @@ if include_GWAS:
     df_gwas.rename(columns={
         "MONDO_ID": "GWAS_mondo_id",
         "MONDO_NAME": "GWAS_mondo_name",
-        "MONDO_CATEGORY": "GWAS_mondo_category",
-        "CHR_ID": "GWAS_chr_id",
-        "CHR_POS": "GWAS_chr_pos",
         "SNPS": "GWAS_snps",
         "P-VALUE": "GWAS_p_value",
-        "OR or BETA": "GWAS_odds_ratio_or_beta",
-        "95% CI (TEXT)": "GWAS_95_ci_text",
         "GENE_ID": "GWAS_gene_id",
         "GENE_TYPE": "GWAS_gene_type",
         "GENE_DISTANCE": "GWAS_gene_distance",
@@ -666,15 +656,10 @@ if include_GWAS:
     df_gwas = df_gwas.groupby("GWAS_gene_id").agg({
         "GWAS_mondo_id": lambda x: separator.join(normalize_nulls(v) for v in x),
         "GWAS_mondo_name": lambda x: separator.join(normalize_nulls(v) for v in x),
-        "GWAS_mondo_category": lambda x: separator.join(normalize_nulls(v) for v in x),
         "GWAS_gene_type": lambda x: separator.join(normalize_nulls(v) for v in x),
         "GWAS_gene_distance": lambda x: separator.join(normalize_nulls(v) for v in x),
-        "GWAS_chr_id": lambda x: separator.join(normalize_nulls(v) for v in x),
-        "GWAS_chr_pos": lambda x: separator.join(normalize_nulls(v) for v in x),
         "GWAS_snps": lambda x: separator.join(normalize_nulls(v) for v in x),
         "GWAS_p_value": lambda x: safe_min(x),
-        "GWAS_odds_ratio_or_beta": lambda x: safe_min(x),
-        "GWAS_95_ci_text": lambda x: separator.join(normalize_nulls(v) for v in x),
     }).reset_index()
 
     df_gwas["InGWAS"] = True
@@ -804,24 +789,34 @@ def format_pubmed_id(pubmed_id):
         return ""
     return str(int(float(pubmed_id)))
 
-# Pair each study name with its paper's PubMed ID so that, after collapsing below, GENE_BURDEN_study_pubmed_id
-# lists each study's PubMed ID in the same position as the study's name in GENE_BURDEN_study ("" if it has none).
-df_gene_burden["study_and_pubmed_id"] = [
-    (study, format_pubmed_id(pubmed_id)) for study, pubmed_id in zip(df_gene_burden["study"], df_gene_burden["study_pubmed_id"])
-]
+df_gene_burden = df_gene_burden.assign(
+    study_pubmed_id=df_gene_burden["study_pubmed_id"].map(format_pubmed_id),
+    # ANALYSIS_OK[imputation]: "" means Open Targets gives no portal link (a cached table reads "" back as NaN)
+    study_url=df_gene_burden["study_url"].fillna(""),
+)
+
+# One entry per gene, disease and study, with the PubMed ID and portal link of the study's most significant
+# association (portal links differ per phenotype), joined with " / " in the same study order so that
+# GENE_BURDEN_study, GENE_BURDEN_study_pubmed_id and GENE_BURDEN_study_url line up value for value.
+df_gene_burden_studies = (
+    # ANALYSIS_OK[imputation]: a record with no study name has "" in a fresh table and NaN in a cached one
+    df_gene_burden[df_gene_burden["study"].fillna("") != ""]
+    .sort_values(["p_value", "study_pubmed_id", "study_url"])
+    .drop_duplicates(["gene_id", "disease_id", "study"])
+    .sort_values(["gene_id", "disease_id", "study"])
+    .groupby(["gene_id", "disease_id"], as_index=False)
+    .agg(study=("study", " / ".join), study_pubmed_id=("study_pubmed_id", " / ".join), study_url=("study_url", " / ".join))
+)
 
 # Open Targets often lists the same gene-disease pair once per study and test method (eg. 75 times for PKD1
 # and polycystic kidney disease), so collapse those into one entry per gene and disease.
-df_gene_burden = df_gene_burden.groupby(["gene_id", "disease_id"]).agg(
+df_gene_burden = df_gene_burden.groupby(["gene_id", "disease_id"], as_index=False).agg(
     p_value=("p_value", "min"),
-    studies_and_pubmed_ids=("study_and_pubmed_id", lambda pairs: tuple(sorted(
-        {(study, pubmed_id) for study, pubmed_id in pairs if isinstance(study, str) and study}))),
     direction_on_trait=("direction_on_trait", join_distinct_non_empty_values),
-).reset_index()
+)
+df_gene_burden = df_gene_burden.merge(df_gene_burden_studies, on=["gene_id", "disease_id"], how="left", validate="one_to_one")
 
 df_gene_burden = df_gene_burden.assign(
-    study=df_gene_burden["studies_and_pubmed_ids"].map(lambda pairs: " / ".join(study for study, _ in pairs)),
-    study_pubmed_id=df_gene_burden["studies_and_pubmed_ids"].map(lambda pairs: " / ".join(pubmed_id for _, pubmed_id in pairs)),
     mondo_name=df_gene_burden["disease_id"].map(lambda mondo_id: mondo_rare_disease_term_lookup[mondo_id]["name"]),
     p_value_text=df_gene_burden["p_value"].map(lambda p: f"{p:.2e}"),
 )
@@ -835,6 +830,7 @@ df_gene_burden = df_gene_burden.rename(columns={
     "mondo_name": "GENE_BURDEN_mondo_name",
     "study": "GENE_BURDEN_study",
     "study_pubmed_id": "GENE_BURDEN_study_pubmed_id",
+    "study_url": "GENE_BURDEN_study_url",
     "direction_on_trait": "GENE_BURDEN_direction_on_trait",
     "p_value_text": "GENE_BURDEN_p_value_per_disease",
     "p_value": "GENE_BURDEN_p_value",
@@ -843,7 +839,7 @@ df_gene_burden = df_gene_burden.rename(columns={
 df_gene_burden = df_gene_burden.groupby("GENE_BURDEN_gene_id").agg({
     **{column: lambda x: separator.join(normalize_nulls(v) for v in x) for column in [
         "GENE_BURDEN_mondo_id", "GENE_BURDEN_mondo_name", "GENE_BURDEN_study", "GENE_BURDEN_study_pubmed_id",
-        "GENE_BURDEN_direction_on_trait", "GENE_BURDEN_p_value_per_disease",
+        "GENE_BURDEN_study_url", "GENE_BURDEN_direction_on_trait", "GENE_BURDEN_p_value_per_disease",
     ]},
     "GENE_BURDEN_p_value": lambda x: safe_min(x),
 }).reset_index()

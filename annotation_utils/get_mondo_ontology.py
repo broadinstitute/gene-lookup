@@ -7,9 +7,9 @@ MONDO_RARE_OWL_URL = "https://purl.obolibrary.org/obo/mondo/subsets/mondo-rare.o
 MONDO_OBO_URL = "https://purl.obolibrary.org/obo/mondo.obo"
 
 # MONDO ids whose descendants (and themselves) are cancer or infectious-disease terms. These are excluded
-# from the GWAS catalog associations (see generate_combined_gene_table.py). They can't be matched via the
-# "category" field because that field holds one of the ~4 direct children of MONDO:0700096 (e.g. "disease by
-# etiologic mechanism"), never "cancer or benign tumor" / "infectious disease" directly.
+# from the GWAS catalog and Open Targets gene burden associations (see generate_combined_gene_table.py). They
+# are matched by descent because MONDO's top-level groupings, the ~4 direct children of MONDO:0700096 (e.g.
+# "disease by etiologic mechanism"), never include "cancer or benign tumor" / "infectious disease" directly.
 CANCER_OR_INFECTIOUS_MONDO_IDS = {
     "MONDO:0045024",  # cancer or benign tumor
     "MONDO:0005550",  # infectious disease
@@ -143,7 +143,7 @@ def download_mondo_obo_file():
                 'mondo_id': mondo_id,
                 'parent_id': None,
                 # MONDO is a DAG: a term can have multiple is_a parents. parent_id keeps only the last one
-                # (used by get_category_id), while parent_ids keeps them all so ancestry-based checks like
+                # (a fallback for stale caches), while parent_ids keeps them all so ancestry-based checks like
                 # get_cancer_or_infectious_mondo_ids() don't miss a branch (e.g. a cancer term whose cancer
                 # parent edge would otherwise be overwritten by a later is_a line).
                 'parent_ids': [],
@@ -176,42 +176,6 @@ def _get_parent_ids(mondo_id_to_record, mondo_id):
     to the single parent_id for records parsed before parent_ids existed (e.g. a stale cache)."""
     record = mondo_id_to_record[mondo_id]
     return record.get("parent_ids") or ([record["parent_id"]] if record.get("parent_id") else [])
-
-
-def get_category_id(mondo_id_to_record, mondo_id):
-    """For a given mondo_id, get the mondo id of it's top-level category (eg. 'cardiovascular') and
-    return it. If the mondo_id belongs to multiple top-level categories, return one of them.
-    """
-
-    if mondo_id == "MONDO:0700096":
-        return None
-
-    if 'parent_id' not in mondo_id_to_record.get(mondo_id, {}):
-        return None
-
-    # Primary: walk the single (last-is_a) parent chain, which preserves historical category assignments.
-    node = mondo_id
-    while mondo_id_to_record[node].get('parent_id') != "MONDO:0700096":
-        if not mondo_id_to_record[node].get('parent_id'):
-            node = None
-            break
-        node = mondo_id_to_record[node].get('parent_id')
-        if node == "MONDO:0700096":
-            node = None
-            break
-        if node not in mondo_id_to_record:
-            raise ValueError("Unknown MONDO id: %s" % node)
-    if node is not None:
-        return node
-
-    # Fallback: MONDO is a DAG, so the single last-is_a chain can dead-end below the root even when the
-    # term is categorizable through another is_a parent. Return the (deterministic) smallest ancestor that
-    # is a direct child of the root MONDO:0700096.
-    top_level_categories = sorted(
-        ancestor_id for ancestor_id in get_ancestor_ids(mondo_id_to_record, mondo_id)
-        if "MONDO:0700096" in _get_parent_ids(mondo_id_to_record, ancestor_id)
-    )
-    return top_level_categories[0] if top_level_categories else None
 
 
 def get_ancestor_ids(mondo_id_to_record, mondo_id):
@@ -260,12 +224,6 @@ def get_mondo_ontology():
     mondo_rare_disease_term_lookup = {
         mondo_id: record for mondo_id, record in mondo_term_lookup.items() if record.get('is_rare')
     }
-
-    # for each mondo term, record its top level category
-    for mondo_id in mondo_rare_disease_term_lookup.keys():
-        record = mondo_term_lookup[mondo_id]
-        record["category_id"] = get_category_id(mondo_term_lookup, mondo_id)
-        record["category"] = mondo_term_lookup[record["category_id"]]["name"] if record["category_id"] else ""
 
     print(f"Parsed {len(mondo_term_lookup):,d} mondo terms from mondo.obo, of which {len(mondo_rare_disease_term_lookup):,d} are rare disease terms")
 

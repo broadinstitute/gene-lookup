@@ -153,8 +153,8 @@
                                 <label>PanelApp AU</label>
                             </div>
                             <div class="ui checkbox">
-                                <input type="checkbox" name="keepDecipher">
-                                <label>Decipher</label>
+                                <input type="checkbox" name="keepG2P">
+                                <label>G2P</label>
                             </div>
                             <div class="ui checkbox">
                                 <input type="checkbox" name="keepClinVar">
@@ -163,6 +163,10 @@
                             <div class="ui checkbox">
                                 <input type="checkbox" name="keepGWAS">
                                 <label>GWAS</label>
+                            </div>
+                            <div class="ui checkbox">
+                                <input type="checkbox" name="keepGeneBurden">
+                                <label>Gene Burden</label>
                             </div>
                             <div class="ui checkbox">
                                 <input type="checkbox" name="keepFridman">
@@ -325,9 +329,10 @@
     DEFAULT_GLOBAL_PAGE_STATE['keepGenCC'] = 0
     DEFAULT_GLOBAL_PAGE_STATE['keepPanelAppUK'] = 0
     DEFAULT_GLOBAL_PAGE_STATE['keepPanelAppAU'] = 0
-    DEFAULT_GLOBAL_PAGE_STATE['keepDecipher'] = 0
+    DEFAULT_GLOBAL_PAGE_STATE['keepG2P'] = 0
     DEFAULT_GLOBAL_PAGE_STATE['keepClinVar'] = 0
     DEFAULT_GLOBAL_PAGE_STATE['keepGWAS'] = 0
+    DEFAULT_GLOBAL_PAGE_STATE['keepGeneBurden'] = 0
     DEFAULT_GLOBAL_PAGE_STATE['keepFridman'] = 0
     DEFAULT_GLOBAL_PAGE_STATE['keepIntolerome'] = 0
     DEFAULT_GLOBAL_PAGE_STATE['minSources'] = ''
@@ -449,9 +454,10 @@
         $('input[name="keepGenCC"]').prop('checked', GLOBAL_PAGE_STATE['keepGenCC'] === 1)
         $('input[name="keepPanelAppUK"]').prop('checked', GLOBAL_PAGE_STATE['keepPanelAppUK'] === 1)
         $('input[name="keepPanelAppAU"]').prop('checked', GLOBAL_PAGE_STATE['keepPanelAppAU'] === 1)
-        $('input[name="keepDecipher"]').prop('checked', GLOBAL_PAGE_STATE['keepDecipher'] === 1)
+        $('input[name="keepG2P"]').prop('checked', GLOBAL_PAGE_STATE['keepG2P'] === 1)
         $('input[name="keepClinVar"]').prop('checked', GLOBAL_PAGE_STATE['keepClinVar'] === 1)
         $('input[name="keepGWAS"]').prop('checked', GLOBAL_PAGE_STATE['keepGWAS'] === 1)
+        $('input[name="keepGeneBurden"]').prop('checked', GLOBAL_PAGE_STATE['keepGeneBurden'] === 1)
         $('input[name="keepFridman"]').prop('checked', GLOBAL_PAGE_STATE['keepFridman'] === 1)
         $('input[name="keepIntolerome"]').prop('checked', GLOBAL_PAGE_STATE['keepIntolerome'] === 1)
 
@@ -1215,14 +1221,17 @@
             // Only ASC/DESC are valid; coerce anything else (incl. a value injected via the URL) to ASC
             // so it cannot inject into the ORDER BY clause below.
             const sortDirection = GLOBAL_PAGE_STATE['sd'] === 'DESC' ? 'DESC' : 'ASC'
+            // NULLS LAST keeps genes without a value (eg. no gene burden p-value) after the genes that have one,
+            // in both directions. BigQuery otherwise puts NULLs first when sorting ascending.
+            const sortOrder = `${sortDirection} NULLS LAST`
             let sortExpression = sortColumn
             if (TABLE_COLUMNS[sortColumn] && TABLE_COLUMNS[sortColumn].getSortColumns) {
-                sortExpression = TABLE_COLUMNS[sortColumn].getSortColumns().join(` ${sortDirection}, `)
+                sortExpression = TABLE_COLUMNS[sortColumn].getSortColumns().join(` ${sortOrder}, `)
             }
 
             const conditions = buildAllConditions()
             const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : ''
-            const query = `SELECT ${selectClause} FROM ${COMPLETE_TABLE_ID} ${whereClause} ORDER BY ${sortExpression} ${sortDirection}`
+            const query = `SELECT ${selectClause} FROM ${COMPLETE_TABLE_ID} ${whereClause} ORDER BY ${sortExpression} ${sortOrder}`
 
             const results = await queryBigQuery(query, null, null, fileFormat)
 
@@ -1613,7 +1622,7 @@
         // short-code LIKE alone would silently exclude such genes even though their cell renders as AD/AR/XL.
         if ($('input[name="keepAD"]').prop('checked')) inheritanceClauses.push("(UPPER(inheritance) LIKE '%AD%' OR UPPER(inheritance) LIKE '%AUTOSOMAL DOMINANT%')")
         if ($('input[name="keepAR"]').prop('checked')) inheritanceClauses.push("(UPPER(inheritance) LIKE '%AR%' OR UPPER(inheritance) LIKE '%AUTOSOMAL RECESSIVE%')")
-        // Upstream sources normalize X-linked to XR/XD (OMIM/GenCC/PanelApp/Decipher); ClinGen leaves it as XL.
+        // Upstream sources normalize X-linked to XR/XD (OMIM/GenCC/PanelApp); ClinGen leaves it as XL.
         if ($('input[name="keepXL"]').prop('checked')) inheritanceClauses.push("(UPPER(inheritance) LIKE '%XL%' OR UPPER(inheritance) LIKE '%XR%' OR UPPER(inheritance) LIKE '%XD%' OR UPPER(inheritance) LIKE '%X-LINKED%')")
         if ($('input[name="keepMito"]').prop('checked')) inheritanceClauses.push("UPPER(inheritance) LIKE '%MITO%'")
         if (inheritanceClauses.length > 0) {
@@ -1627,9 +1636,10 @@
         if ($('input[name="keepGenCC"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%GENCC%'")
         if ($('input[name="keepPanelAppUK"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%PANELAPPUK%'")
         if ($('input[name="keepPanelAppAU"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%PANELAPPAU%'")
-        if ($('input[name="keepDecipher"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%DECIPHER%'")
+        if ($('input[name="keepG2P"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%G2P%'")
         if ($('input[name="keepClinVar"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%CLINVAR%'")
         if ($('input[name="keepGWAS"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%GWAS%'")
+        if ($('input[name="keepGeneBurden"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%GENEBURDEN%'")
         if ($('input[name="keepFridman"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%FRIDMAN%'")
         if ($('input[name="keepIntolerome"]').prop('checked')) sourceClauses.push("UPPER(sources) LIKE '%INTOLEROME%'")
         if (sourceClauses.length > 0) {
@@ -2176,14 +2186,17 @@
             // Only ASC/DESC are valid; coerce anything else (incl. a value injected via the URL) to ASC
             // so it cannot inject into the ORDER BY clause below.
             const sortDirection = GLOBAL_PAGE_STATE['sd'] === 'DESC' ? 'DESC' : 'ASC'
+            // NULLS LAST keeps genes without a value (eg. no gene burden p-value) after the genes that have one,
+            // in both directions. BigQuery otherwise puts NULLs first when sorting ascending.
+            const sortOrder = `${sortDirection} NULLS LAST`
 
             let sortExpression = sortColumn
             if (TABLE_COLUMNS[sortColumn] && TABLE_COLUMNS[sortColumn].getSortColumns) {
-                sortExpression = TABLE_COLUMNS[sortColumn].getSortColumns().join(` ${sortDirection}, `)
+                sortExpression = TABLE_COLUMNS[sortColumn].getSortColumns().join(` ${sortOrder}, `)
             }
 
             const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : ''
-            const query = `SELECT ${selectColumns} FROM ${COMPLETE_TABLE_ID} ${whereClause} ORDER BY ${sortExpression} ${sortDirection}`
+            const query = `SELECT ${selectColumns} FROM ${COMPLETE_TABLE_ID} ${whereClause} ORDER BY ${sortExpression} ${sortOrder}`
 
             const startIndex = GLOBAL_PAGE_STATE['pageSize'] * (GLOBAL_PAGE_STATE['currentPage'] - 1)
             const pageSize = GLOBAL_PAGE_STATE['pageSize']
@@ -2209,9 +2222,10 @@
             GLOBAL_PAGE_STATE['keepGenCC'] = $('input[name="keepGenCC"]').prop('checked') ? 1 : 0
             GLOBAL_PAGE_STATE['keepPanelAppUK'] = $('input[name="keepPanelAppUK"]').prop('checked') ? 1 : 0
             GLOBAL_PAGE_STATE['keepPanelAppAU'] = $('input[name="keepPanelAppAU"]').prop('checked') ? 1 : 0
-            GLOBAL_PAGE_STATE['keepDecipher'] = $('input[name="keepDecipher"]').prop('checked') ? 1 : 0
+            GLOBAL_PAGE_STATE['keepG2P'] = $('input[name="keepG2P"]').prop('checked') ? 1 : 0
             GLOBAL_PAGE_STATE['keepClinVar'] = $('input[name="keepClinVar"]').prop('checked') ? 1 : 0
             GLOBAL_PAGE_STATE['keepGWAS'] = $('input[name="keepGWAS"]').prop('checked') ? 1 : 0
+            GLOBAL_PAGE_STATE['keepGeneBurden'] = $('input[name="keepGeneBurden"]').prop('checked') ? 1 : 0
             GLOBAL_PAGE_STATE['keepFridman'] = $('input[name="keepFridman"]').prop('checked') ? 1 : 0
             GLOBAL_PAGE_STATE['keepIntolerome'] = $('input[name="keepIntolerome"]').prop('checked') ? 1 : 0
             GLOBAL_PAGE_STATE['minSources'] = $('input[name="minSources"]').val()

@@ -150,7 +150,7 @@
     <div class="ui row">
         <div class="three wide column"></div>
         <div class="ten wide column">
-            <div id="source-decipher"></div>
+            <div id="source-g2p"></div>
         </div>
         <div class="three wide column"></div>
     </div>
@@ -172,6 +172,13 @@
         <div class="three wide column"></div>
         <div class="ten wide column">
             <div id="source-intolerome"></div>
+        </div>
+        <div class="three wide column"></div>
+    </div>
+    <div class="ui row">
+        <div class="three wide column"></div>
+        <div class="ten wide column">
+            <div id="source-gene-burden"></div>
         </div>
         <div class="three wide column"></div>
     </div>
@@ -360,6 +367,13 @@
             mimNumber: dedupSemicolonArray(row['OMIM_mim_number'])[0] || '',
         }
         box1 += `<tr><td class="locus-info-label">Sources:</td><td>${getSourcesBadges(row['sources'], sourceBadgeIds)}</td></tr>`
+        const geneReviewsLinks = renderGeneReviewsLinks(row['GENEREVIEWS_nbk_id'], row['GENEREVIEWS_title'])
+        if (geneReviewsLinks) {
+            box1 += `<tr><td class="locus-info-label">GeneReviews:</td><td style="white-space: normal;">${geneReviewsLinks}{{ source_version_label('genereviews') }}</td></tr>`
+        }
+        if (row['in_ACMG_secondary_findings_list'] === true || row['in_ACMG_secondary_findings_list'] === 'true') {
+            box1 += `<tr><td class="locus-info-label">ACMG SF{{ source_version_label('acmg_secondary_findings') }}:</td><td><a href="https://search.clinicalgenome.org/kb/genes/acmgsf" target="_blank" class="action-link">On the ACMG secondary findings list</a></td></tr>`
+        }
         box1 += '</table>'
         $('#locus-page-row1-box1').html(box1)
 
@@ -394,6 +408,14 @@
         box2 += `<tr><td class="locus-info-label">MOEUF (v4.1.1):</td><td>${moeuf}</td></tr>`
         box2 += `<tr><td class="locus-info-label">OMELET LLM %:</td><td>${omeletLlmPct}${omeletLlmIcon}</td></tr>`
         box2 += `<tr><td class="locus-info-label">DisPo %:</td><td>${dispoPct}${dispoIcon}</td></tr>`
+        const pHaplo = renderConstraintValue(row['pHaplo'], 'pHaplo', 'pHaplo (Collins 2022)')
+        const pTriplo = renderConstraintValue(row['pTriplo'], 'pTriplo', 'pTriplo (Collins 2022)')
+        const pHaploHelp = BIGQUERY_COLUMN_DESCRIPTIONS['pHaplo'] || ''
+        const pTriploHelp = BIGQUERY_COLUMN_DESCRIPTIONS['pTriplo'] || ''
+        const pHaploIcon = pHaplo && pHaploHelp ? `<i class="question circle outline icon" style="margin-left: 10px; cursor: pointer;" data-html="${enrichHelpText(pHaploHelp)}"></i>{{ source_version_label('collins_2022') }}` : ''
+        const pTriploIcon = pTriplo && pTriploHelp ? `<i class="question circle outline icon" style="margin-left: 10px; cursor: pointer;" data-html="${enrichHelpText(pTriploHelp)}"></i>{{ source_version_label('collins_2022') }}` : ''
+        box2 += `<tr><td class="locus-info-label">pHaplo:</td><td>${pHaplo}${pHaploIcon}</td></tr>`
+        box2 += `<tr><td class="locus-info-label">pTriplo:</td><td>${pTriplo}${pTriploIcon}</td></tr>`
 
         box2 += '</table>'
         $('#locus-page-row1-box2').html(box2)
@@ -432,7 +454,7 @@
         if (geneSymbol) externalLinksLine1.push(link('PanelAppAU', SOURCES.PanelAppAU.url({ geneSymbol })))
         if (hgncId) externalLinksLine1.push(link('ClinGen', SOURCES.ClinGen.url({ hgncId })))
         if (hgncId) externalLinksLine1.push(link('GenCC', SOURCES.GenCC.url({ hgncId })))
-        if (geneId) externalLinksLine1.push(link('Decipher', SOURCES.Decipher.url({ ensemblId: geneId })))
+        if (geneId) externalLinksLine1.push(link('Decipher', `https://www.deciphergenomics.org/gene/${enc(geneId)}/overview/protein-genomic-info`))
         if (geneSymbol) externalLinksLine1.push(link('ClinVar', SOURCES.ClinVar.url({ geneSymbol })))
         if (geneSymbol) externalLinksLine1.push(link('HGMD', `https://my.qiagendigitalinsights.com/bbp/view/hgmd/pro/gene.php?gene=${enc(geneSymbol)}`))
         if (geneSymbol) externalLinksLine1.push(link('MalaCards', `https://www.malacards.org/search/results?query=${enc(geneSymbol)}`))
@@ -461,6 +483,14 @@
             externalLinksLine2.push(link('PubMed', `https://www.ncbi.nlm.nih.gov/pubmed/?term=(${allNames.map(enc).join('+OR+')})`))
         }
         $('#external-links').html(`<div>${externalLinksLine1.join('')}</div><div style="margin-top: 5px;">${externalLinksLine2.join('')}</div>`)
+
+        // Each section below is filled only when the gene has data for it, so clear them all first. Otherwise
+        // browser Back/Forward between two genes (which re-renders without reloading the page) would leave
+        // the previous gene's sections in place.
+        const sourceSectionIds = ['phenotype-summary-section', 'source-omim', 'source-clingen', 'source-gencc',
+            'source-panelapp-uk', 'source-panelapp-au', 'source-g2p', 'source-clinvar',
+            'source-fridman', 'source-intolerome', 'source-gene-burden', 'source-dbnsfp']
+        sourceSectionIds.forEach(id => $(`#${id}`).empty())
 
         // --- Phenotype Summary ---
         if (row['LLM_phenotype_summary']) {
@@ -571,16 +601,24 @@
             $('#source-panelapp-au').html(html)
         }
 
-        // --- Source: Decipher ---
-        if (hasAnyValue(row['DECIPHER_inheritance'], row['DECIPHER_disease_names'])) {
-            const decipherTitle = geneId
-                ? `<a href="https://www.deciphergenomics.org/gene/${encodeURIComponent(geneId)}/overview/protein-genomic-info" target="_blank" class="action-link">Decipher</a>`
-                : 'Decipher'
-            let html = `<div class="source-section"><h4>${decipherTitle}{{ source_version_label('decipher') }}</h4><table class="locus-info-table">`
-            html += `<tr><td class="locus-info-label">Inheritance:</td><td>${dedupSemicolon(row['DECIPHER_inheritance'])}</td></tr>`
-            html += `<tr><td class="locus-info-label">Disease Names:</td><td style="white-space: normal;">${dedupSemicolon(row['DECIPHER_disease_names'])}</td></tr>`
-            html += '</table></div>'
-            $('#source-decipher').html(html)
+        // --- Source: G2P ---
+        // Each G2P column lists one value per record, in the same order, joined with "; "
+        const g2pRecordIds = String(row['G2P_record_id'] || '').split('; ').map(s => s.trim()).filter(Boolean)
+        if (g2pRecordIds.length > 0) {
+            const g2pColumnValues = ['G2P_disease_name', 'G2P_inheritance', 'G2P_confidence', 'G2P_molecular_mechanism', 'G2P_variant_consequence', 'G2P_panel']
+                .map(column => String(row[column] || '').split('; '))
+            const g2pTitle = geneSymbol
+                ? `<a href="https://www.ebi.ac.uk/gene2phenotype/gene/${encodeURIComponent(geneSymbol)}" target="_blank" class="action-link">Gene2Phenotype (G2P)</a>`
+                : 'Gene2Phenotype (G2P)'
+            let html = `<div class="source-section"><h4>${g2pTitle}{{ source_version_label('g2p') }}</h4><table class="ui very basic compact table">`
+            html += '<thead><tr><th>Disease</th><th>Inheritance</th><th>Confidence</th><th>Molecular Mechanism</th><th>Variant Consequence</th><th>Panel</th></tr></thead><tbody>'
+            g2pRecordIds.forEach((recordId, i) => {
+                const [disease, inheritance, confidence, mechanism, consequence, panel] = g2pColumnValues.map(values => escapeHtml((values[i] || '').trim()))
+                html += `<tr><td style="white-space: normal;"><a href="https://www.ebi.ac.uk/gene2phenotype/lgd/${encodeURIComponent(recordId)}" target="_blank" class="action-link">${disease || escapeHtml(recordId)}</a></td>`
+                html += `<td>${inheritance}</td><td>${confidence}</td><td>${mechanism}</td><td style="white-space: normal;">${consequence}</td><td>${panel}</td></tr>`
+            })
+            html += '</tbody></table></div>'
+            $('#source-g2p').html(html)
         }
 
         // --- Source: ClinVar ---
@@ -629,6 +667,26 @@
             $('#source-intolerome').html(html)
         }
 
+        // --- Source: Open Targets gene burden ---
+        // The MONDO id, name, study, direction and p-value columns list one value per disease, in the same order
+        const geneBurdenMondoIds = String(row['GENE_BURDEN_mondo_id'] || '').split('; ').map(s => s.trim()).filter(Boolean)
+        if (geneBurdenMondoIds.length > 0) {
+            const [mondoNames, studies, directions, pValues] = ['GENE_BURDEN_mondo_name', 'GENE_BURDEN_study', 'GENE_BURDEN_direction_on_trait', 'GENE_BURDEN_p_value_per_disease']
+                .map(column => String(row[column] || '').split('; '))
+            const geneBurdenTitle = geneId
+                ? `<a href="https://platform.opentargets.org/target/${encodeURIComponent(geneId)}" target="_blank" class="action-link">Open Targets Gene Burden</a>`
+                : 'Open Targets Gene Burden'
+            let html = `<div class="source-section"><h4>${geneBurdenTitle}{{ source_version_label('open_targets_gene_burden') }}</h4>`
+            html += '<table class="ui very basic compact table"><thead><tr><th>Disease</th><th>P-value (min)</th><th>Study</th><th>Direction</th></tr></thead><tbody>'
+            geneBurdenMondoIds.forEach((mondoId, i) => {
+                const mondoName = escapeHtml((mondoNames[i] || '').trim())
+                html += `<tr><td style="white-space: normal;">${mondoName} (<a href="https://monarchinitiative.org/${encodeURIComponent(mondoId)}" target="_blank" class="action-link">${escapeHtml(mondoId)}</a>)</td>`
+                html += `<td>${escapeHtml((pValues[i] || '').trim())}</td><td style="white-space: normal;">${escapeHtml((studies[i] || '').trim())}</td><td>${escapeHtml((directions[i] || '').trim())}</td></tr>`
+            })
+            html += '</tbody></table></div>'
+            $('#source-gene-burden').html(html)
+        }
+
         // --- Source: dbNSFP ---
         if (hasAnyValue(row['DBNSFP_orphanet_disorder'], row['DBNSFP_function_description'], row['DBNSFP_disease_description'], row['DBNSFP_hpo_name'], row['DBNSFP_mgi_mouse_phenotype'], row['DBNSFP_zfin_zebrafish_phenotype'])) {
             let html = '<div class="source-section"><h4>dbNSFP{{ source_version_label("dbnsfp") }}</h4><table class="locus-info-table">'
@@ -643,9 +701,6 @@
         }
 
         // Hide grid rows whose source section has no rendered content so they don't add vertical space
-        const sourceSectionIds = ['phenotype-summary-section', 'source-omim', 'source-clingen', 'source-gencc',
-            'source-panelapp-uk', 'source-panelapp-au', 'source-decipher', 'source-clinvar',
-            'source-fridman', 'source-intolerome', 'source-dbnsfp']
         sourceSectionIds.forEach(id => {
             const $div = $(`#${id}`)
             $div.closest('.ui.row').toggle($div.children().length > 0)

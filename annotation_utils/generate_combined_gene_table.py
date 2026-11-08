@@ -1157,12 +1157,6 @@ def summarize_inheritance(row):
 
 df_combined["inheritance"] = df_combined.apply(summarize_inheritance, axis=1)
 
-# DECIPHER is no longer a source, but the website pages currently deployed still query DECIPHER_inheritance and
-# DECIPHER_disease_names (DECIPHER_disease_names in every gene-symbol and disease text search). Keep the DECIPHER
-# columns, empty, until the website update that stops querying them is live.
-for decipher_column in ["DECIPHER_inheritance", "DECIPHER_disease_names", "DECIPHER_classifications"]:
-    df_combined[decipher_column] = ""
-
 # move the gene_id, hgnc_gene_id, gene_symbol, and gene_aliases columns to the front
 initial_columns = ["ensembl_gene_id", "hgnc_gene_id", "refseq_id", "ncbi_gene_id", "gene_symbol", "gene_aliases",
                    "in_MANE", "MANE_canonical_transcript_refseq_id", "MANE_canonical_transcript_ensembl_id",

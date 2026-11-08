@@ -1,5 +1,8 @@
 #from annotation_utils.cache_utils import cache_json
 import collections
+import functools
+import socket
+
 import pymysql
 
 
@@ -12,8 +15,26 @@ import pymysql
 
 ENSEMBL_HOST_EAST = "useastdb.ensembl.org"
 ENSEMBL_HOST_MAIN = "ensembldb.ensembl.org"
+ENSEMBL_MYSQL_PORT = 3306
 
 _CURRENT_ENSEMBL_DATABASE = None
+
+
+@functools.lru_cache(maxsize=None)
+def get_host_for_current_ensembl_databases():
+    """Return the US East mirror if it accepts connections, else the main Ensembl server.
+
+    The current Ensembl release is read from the US East mirror, and older releases from the main server. The
+    US East mirror stopped accepting connections on 2026-11-08 while the main server kept working, so fall back
+    to the main server rather than failing the pipeline.
+    """
+    try:
+        socket.create_connection((ENSEMBL_HOST_EAST, ENSEMBL_MYSQL_PORT), timeout=15).close()
+        return ENSEMBL_HOST_EAST
+    except OSError as e:
+        print(f"WARNING: could not connect to {ENSEMBL_HOST_EAST} ({e!r}), so using {ENSEMBL_HOST_MAIN} instead")
+        return ENSEMBL_HOST_MAIN
+
 
 def get_current_ensembl_database():
     """Query the Ensembl server for the latest GRCh38 core database name."""
@@ -21,7 +42,7 @@ def get_current_ensembl_database():
     if _CURRENT_ENSEMBL_DATABASE is not None:
         return _CURRENT_ENSEMBL_DATABASE
 
-    with pymysql.connect(host=ENSEMBL_HOST_EAST, user="anonymous") as conn:
+    with pymysql.connect(host=get_host_for_current_ensembl_databases(), user="anonymous") as conn:
         with conn.cursor() as cursor:
             cursor.execute("SHOW DATABASES LIKE 'homo_sapiens_core_%_38'")
             # Sort by the numeric Ensembl release (the second-to-last "_"-delimited field) rather than
@@ -72,7 +93,7 @@ def get_gene_metadata(
     if database is None:
         database = get_current_ensembl_database()
     gene_id_to_metadata = {}
-    host = ENSEMBL_HOST_EAST if database == get_current_ensembl_database() else ENSEMBL_HOST_MAIN
+    host = get_host_for_current_ensembl_databases() if database == get_current_ensembl_database() else ENSEMBL_HOST_MAIN
     with pymysql.connect(host=host, user="anonymous", database=database) as conn:
         with conn.cursor() as cursor:
             columns = [
@@ -131,7 +152,7 @@ def get_gene_id_to_transcript_metadata(
     if database is None:
         database = get_current_ensembl_database()
     gene_id_to_transcript_id = collections.defaultdict(list)
-    host = ENSEMBL_HOST_EAST if database == get_current_ensembl_database() else ENSEMBL_HOST_MAIN
+    host = get_host_for_current_ensembl_databases() if database == get_current_ensembl_database() else ENSEMBL_HOST_MAIN
     with pymysql.connect(host=host, user="anonymous", database=database) as conn:
         with conn.cursor() as cursor:
             if only_canonical_transcripts:
@@ -312,7 +333,7 @@ def get_transcript_created_modified_dates(
 def get_ensembl_ENST_to_RefSeq_ids(database=None):
     if database is None:
         database = get_current_ensembl_database()
-    host = ENSEMBL_HOST_EAST if database == get_current_ensembl_database() else ENSEMBL_HOST_MAIN
+    host = get_host_for_current_ensembl_databases() if database == get_current_ensembl_database() else ENSEMBL_HOST_MAIN
     db = pymysql.connect(host=host, user="anonymous", database=database)
     cursor = db.cursor()
     cursor.execute(" ".join([

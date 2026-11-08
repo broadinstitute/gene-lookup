@@ -22,7 +22,8 @@ from annotation_utils.get_dbnsfp_gene_table import get_dbnsfp_gene_table, DBNSFP
 from annotation_utils.get_MANE_table import get_MANE_ensembl_transcript_table
 from annotation_utils.get_intolerome_table import get_intolerome_table
 from annotation_utils.get_g2p_table import get_g2p_table
-from annotation_utils.get_open_targets_gene_burden_table import get_open_targets_gene_burden_table
+from annotation_utils.get_open_targets_gene_burden_table import (
+    get_open_targets_gene_burden_table, OPEN_TARGETS_GENE_BURDEN_TABLE_COLUMNS_VERSION)
 from annotation_utils.get_collins_dosage_sensitivity_scores import get_collins_dosage_sensitivity_scores
 from annotation_utils.get_genereviews_table import get_genereviews_table
 from annotation_utils.get_acmg_secondary_findings_genes import get_acmg_secondary_findings_genes
@@ -774,7 +775,7 @@ df_g2p = df_g2p.groupby("G2P_gene_id").agg({
 df_g2p.set_index("G2P_gene_id", inplace=True)
 
 print("Getting Open Targets gene burden table")
-df_gene_burden = get_open_targets_gene_burden_table()
+df_gene_burden = get_open_targets_gene_burden_table(OPEN_TARGETS_GENE_BURDEN_TABLE_COLUMNS_VERSION)
 
 # Keep only associations with rare-disease MONDO terms other than cancer and infectious diseases, the same
 # subset of traits used for the GWAS Catalog. Most gene burden traits are biomarkers or common diseases.

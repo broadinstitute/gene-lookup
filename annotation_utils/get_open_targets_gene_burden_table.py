@@ -30,6 +30,11 @@ from annotation_utils.cache_utils import cache_data_table, record_source_version
 
 OPEN_TARGETS_PLATFORM_RELEASES_URL = "https://ftp.ebi.ac.uk/pub/databases/opentargets/platform/"
 
+# Passed to get_open_targets_gene_burden_table so that it becomes part of the cache key. Bump it whenever the
+# columns returned by convert_gene_burden_evidence_to_table change, so that a table cached with the old columns
+# is downloaded again instead of reused. Version 2 added study_pubmed_id.
+OPEN_TARGETS_GENE_BURDEN_TABLE_COLUMNS_VERSION = 2
+
 
 def find_latest_open_targets_release(directory_listing_html):
     """Return the newest release (eg. "26.09") in the Open Targets Platform FTP directory listing.
@@ -99,8 +104,12 @@ def _get_url_text(url):
 
 
 @cache_data_table
-def get_open_targets_gene_burden_table():
+def get_open_targets_gene_burden_table(table_columns_version):
     """Download the gene burden evidence from the latest Open Targets Platform release.
+
+    Args:
+        table_columns_version (int): OPEN_TARGETS_GENE_BURDEN_TABLE_COLUMNS_VERSION. It is not used here, but
+            cache_data_table includes it in the cache key, so bumping it makes the pipeline download a fresh table.
 
     Returns:
         pandas.DataFrame: one row per gene-trait association (see convert_gene_burden_evidence_to_table)
@@ -128,4 +137,4 @@ def get_open_targets_gene_burden_table():
 
 
 if __name__ == "__main__":
-    print(get_open_targets_gene_burden_table())
+    print(get_open_targets_gene_burden_table(OPEN_TARGETS_GENE_BURDEN_TABLE_COLUMNS_VERSION))

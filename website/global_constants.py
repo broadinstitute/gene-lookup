@@ -1015,6 +1015,15 @@ BIGQUERY_COLUMNS = [
     },
     {
         "type": "STRING",
+        "name": "GENE_BURDEN_study_url",
+        "description": "Link to the study's portal page for each study in Gene Burden Study (eg. the AstraZeneca PheWAS Portal page for the phenotype), in the same order and with the same ' / ' and semicolon separators (empty where Open Targets gives no portal link).",
+        "displayName": "Gene Burden Study Portal Link",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_GENE_BURDEN,
+    },
+    {
+        "type": "STRING",
         "name": "GENE_BURDEN_direction_on_trait",
         "description": "Whether rare variants in the gene increase (risk) or decrease (protect) the risk of each disease, where reported (semicolon-separated if multiple diseases).",
         "displayName": "Gene Burden Direction",

@@ -757,22 +757,12 @@
         }
 
         // --- Source: Open Targets gene burden ---
-        // The MONDO id, name, study, study PubMed ID, direction and p-value columns list one value per disease, in the same order
+        // The MONDO id, name, study, study PubMed ID, study link, direction and p-value columns list one value per disease, in the same order
         const geneBurdenMondoIds = String(row['GENE_BURDEN_mondo_id'] || '').split('; ').map(s => s.trim()).filter(Boolean)
         if (geneBurdenMondoIds.length > 0) {
-            const [mondoNames, studies, studyPubmedIds, directions, pValues] = ['GENE_BURDEN_mondo_name', 'GENE_BURDEN_study', 'GENE_BURDEN_study_pubmed_id', 'GENE_BURDEN_direction_on_trait', 'GENE_BURDEN_p_value_per_disease']
+            const [mondoNames, directions, pValues] = ['GENE_BURDEN_mondo_name', 'GENE_BURDEN_direction_on_trait', 'GENE_BURDEN_p_value_per_disease']
                 .map(column => String(row[column] || '').split('; '))
-            // Within one disease, several studies are joined with ' / ', and their PubMed IDs are listed in the same
-            // order. Link each study name to its paper, and fall back to plain names if the two lists don't line up.
-            const renderStudiesWithPaperLinks = (studiesText, pubmedIdsText) => {
-                const studyNames = studiesText.split(' / ').map(s => s.trim()).filter(Boolean)
-                const pubmedIds = pubmedIdsText.split(' / ').map(s => s.trim())
-                if (studyNames.length !== pubmedIds.length) return escapeHtml(studyNames.join(' / '))
-                return studyNames.map((studyName, j) => /^\d+$/.test(pubmedIds[j])
-                    ? `<a href="https://pubmed.ncbi.nlm.nih.gov/${pubmedIds[j]}/" target="_blank" class="action-link">${escapeHtml(studyName)}</a>`
-                    : escapeHtml(studyName)
-                ).join(' / ')
-            }
+            const studyLinksPerDisease = getGeneBurdenStudyLinksPerDisease(row)
             const geneBurdenTitle = geneId
                 ? `<a href="https://platform.opentargets.org/target/${encodeURIComponent(geneId)}" target="_blank" class="action-link">Open Targets Gene Burden</a>`
                 : 'Open Targets Gene Burden'
@@ -781,7 +771,7 @@
             geneBurdenMondoIds.forEach((mondoId, i) => {
                 const mondoName = escapeHtml((mondoNames[i] || '').trim())
                 html += `<tr><td style="white-space: normal;">${mondoName} (<a href="https://monarchinitiative.org/${encodeURIComponent(mondoId)}" target="_blank" class="action-link">${escapeHtml(mondoId)}</a>)</td>`
-                html += `<td>${escapeHtml((pValues[i] || '').trim())}</td><td style="white-space: normal;">${renderStudiesWithPaperLinks(studies[i] || '', studyPubmedIds[i] || '')}</td><td>${escapeHtml((directions[i] || '').trim())}</td></tr>`
+                html += `<td>${escapeHtml((pValues[i] || '').trim())}</td><td style="white-space: normal;">${(studyLinksPerDisease[i] || []).map(study => study.html).join(' / ')}</td><td>${escapeHtml((directions[i] || '').trim())}</td></tr>`
             })
             html += '</tbody></table></div>'
             $('#source-gene-burden').html(html)

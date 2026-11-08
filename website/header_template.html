@@ -611,6 +611,33 @@
         ).join(', ')
     }
 
+    // Link a gene burden study name to its page on the study's portal when Open Targets gives one (the AstraZeneca
+    // PheWAS Portal and the CVDI Human Disease Portal), else to its paper on PubMed, else show it as plain text.
+    const renderGeneBurdenStudyLink = (studyName, pubmedId, studyUrl) => {
+        if (/^https:\/\//.test(studyUrl)) return `<a href="${escapeHtml(studyUrl)}" target="_blank" class="action-link">${escapeHtml(studyName)}</a>`
+        if (/^\d+$/.test(pubmedId)) return `<a href="https://pubmed.ncbi.nlm.nih.gov/${pubmedId}/" target="_blank" class="action-link">${escapeHtml(studyName)}</a>`
+        return escapeHtml(studyName)
+    }
+
+    // GENE_BURDEN_study, GENE_BURDEN_study_pubmed_id and GENE_BURDEN_study_url list one value per disease, joined
+    // with "; ", and within each disease one value per study, joined with " / ", in the same order. Return, for each
+    // disease, its studies as {studyName, html} objects, where html is the linked study name. Studies are shown
+    // without links if the three lists don't line up.
+    const getGeneBurdenStudyLinksPerDisease = (row) => {
+        const [studiesPerDisease, pubmedIdsPerDisease, studyUrlsPerDisease] = ['GENE_BURDEN_study', 'GENE_BURDEN_study_pubmed_id', 'GENE_BURDEN_study_url']
+            .map(column => String(row[column] || '').split('; '))
+        return studiesPerDisease.map((studiesText, i) => {
+            const studyNames = studiesText.split(' / ').map(s => s.trim())
+            const pubmedIds = String(pubmedIdsPerDisease[i] || '').split(' / ').map(s => s.trim())
+            const studyUrls = String(studyUrlsPerDisease[i] || '').split(' / ').map(s => s.trim())
+            const areListsAligned = pubmedIds.length === studyNames.length && studyUrls.length === studyNames.length
+            return studyNames.map((studyName, j) => ({
+                studyName,
+                html: areListsAligned ? renderGeneBurdenStudyLink(studyName, pubmedIds[j], studyUrls[j]) : escapeHtml(studyName),
+            })).filter(study => study.studyName)
+        })
+    }
+
     // INTENTIONAL (do not flag as a bug): TABLE_COLUMNS defines only the columns shown in / toggleable
     // into the results table. It deliberately does NOT include every column from global_constants.py's
     // BIGQUERY_COLUMNS. In particular the dbNSFP (DBNSFP_*) columns and the GeneBayes s_het score are
@@ -1241,9 +1268,17 @@
         GENE_BURDEN_study: {
             displayName: 'Gene Burden Study',
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['GENE_BURDEN_study'],
-            getValue: (row) => getTruncatedText(dedupSemicolon(row['GENE_BURDEN_study']), 80),
+            // Each study once, linked to its page for the gene's most significant disease that the study reported
+            // (diseases are listed from most to least significant)
+            getValue: (row) => {
+                const studyNameToLinkHtml = new Map()
+                getGeneBurdenStudyLinksPerDisease(row).flat().forEach(study => {
+                    if (!studyNameToLinkHtml.has(study.studyName)) studyNameToLinkHtml.set(study.studyName, study.html)
+                })
+                return [...studyNameToLinkHtml.values()].join('; ')
+            },
             getSortColumns: () => ['GENE_BURDEN_study'],
-            getRequiredColumns: () => ['GENE_BURDEN_study'],
+            getRequiredColumns: () => ['GENE_BURDEN_study', 'GENE_BURDEN_study_pubmed_id', 'GENE_BURDEN_study_url'],
         },
         GENE_BURDEN_p_value: {
             displayName: 'Gene Burden P-value (min)',

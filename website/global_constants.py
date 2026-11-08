@@ -13,6 +13,7 @@ GROUP_PANEL_APP_UK = "PanelApp UK"
 GROUP_PANEL_APP_AU = "PanelApp AU"
 GROUP_G2P = "Gene2Phenotype (G2P)"
 GROUP_OTHER_SOURCES = "Other Sources"
+GROUP_NEWBORN_SCREENING = "Newborn Screening"
 GROUP_GWAS = "GWAS Catalog"
 GROUP_GENE_BURDEN = "Open Targets Gene Burden"
 GROUP_DBNSFP = "dbNSFP"
@@ -26,6 +27,7 @@ GROUP_ORDER = [
     GROUP_PANEL_APP_AU,
     GROUP_G2P,
     GROUP_OTHER_SOURCES,
+    GROUP_NEWBORN_SCREENING,
     GROUP_GWAS,
     GROUP_GENE_BURDEN,
     GROUP_DBNSFP,
@@ -494,6 +496,53 @@ BIGQUERY_COLUMNS = [
         "group": GROUP_CLINVAR_CLINGEN_GENCC,
     },
 
+    # ClinGen actionability. The first four columns list one value per curation report, in the same order.
+    {
+        "type": "STRING",
+        "name": "CLINGEN_actionability_report_id",
+        "description": "ID(s) of ClinGen's released actionability curation reports that include this gene, eg. AC1084 (semicolon-separated if multiple).",
+        "displayName": "ClinGen Actionability Report",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_CLINVAR_CLINGEN_GENCC,
+    },
+    {
+        "type": "STRING",
+        "name": "CLINGEN_actionability_context",
+        "description": "Whether each ClinGen actionability curation was done for adults or children: Adult or Pediatric (semicolon-separated if multiple reports).",
+        "displayName": "ClinGen Actionability Context",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_CLINVAR_CLINGEN_GENCC,
+    },
+    {
+        "type": "STRING",
+        "name": "CLINGEN_actionability_disease",
+        "description": "Condition of each ClinGen actionability curation report (semicolon-separated if multiple reports).",
+        "displayName": "ClinGen Actionability Condition",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_CLINVAR_CLINGEN_GENCC,
+    },
+    {
+        "type": "STRING",
+        "name": "CLINGEN_actionability_overall_score",
+        "description": "Highest overall actionability score (0 to 12, summing severity, likelihood, effectiveness and nature of the intervention) among each report's outcome-intervention pairs (semicolon-separated if multiple reports; empty if not scored).",
+        "displayName": "ClinGen Actionability Score per Report",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_CLINVAR_CLINGEN_GENCC,
+    },
+    {
+        "type": "FLOAT",
+        "name": "CLINGEN_actionability_max_overall_score",
+        "description": "Highest overall ClinGen actionability score (0 to 12) across all of this gene's adult and pediatric curation reports.",
+        "displayName": "ClinGen Actionability Score (max)",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_CLINVAR_CLINGEN_GENCC,
+    },
+
     # GenCC
     {
         "type": "STRING",
@@ -848,6 +897,35 @@ BIGQUERY_COLUMNS = [
         "allowCustomFilter": True,
         "allowExport": True,
         "group": GROUP_OTHER_SOURCES,
+    },
+
+    # Newborn screening (Minten et al. 2025)
+    {
+        "type": "STRING",
+        "name": "RUSP_category",
+        "description": "Core or Secondary if the disorder linked to this gene is a condition on the US Recommended Uniform Screening Panel (RUSP) for newborn screening, as mapped to genes by Minten et al. 2025.",
+        "displayName": "RUSP Category",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_NEWBORN_SCREENING,
+    },
+    {
+        "type": "FLOAT",
+        "name": "NEWBORN_SEQUENCING_program_count",
+        "description": "Number of the 27 genomic newborn screening programs compared by Minten et al. 2025 whose gene list includes this gene (empty if none do).",
+        "displayName": "Newborn Sequencing Programs (count)",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_NEWBORN_SCREENING,
+    },
+    {
+        "type": "STRING",
+        "name": "NEWBORN_SEQUENCING_programs",
+        "description": "Genomic newborn screening programs whose gene list includes this gene, eg. BabySeq, GUARDIAN Study, Generation Study (comma-separated; from Minten et al. 2025).",
+        "displayName": "Newborn Sequencing Programs",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_NEWBORN_SCREENING,
     },
 
     # GWAS Catalog

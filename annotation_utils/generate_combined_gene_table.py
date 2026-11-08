@@ -26,6 +26,8 @@ from annotation_utils.get_open_targets_gene_burden_table import get_open_targets
 from annotation_utils.get_collins_dosage_sensitivity_scores import get_collins_dosage_sensitivity_scores
 from annotation_utils.get_genereviews_table import get_genereviews_table
 from annotation_utils.get_acmg_secondary_findings_genes import get_acmg_secondary_findings_genes
+from annotation_utils.get_clingen_actionability_table import get_clingen_actionability_table
+from annotation_utils.get_newborn_sequencing_gene_lists import read_newborn_sequencing_gene_lists
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--skip-gwas", action="store_true", help="Don't add columns related to GWAS catalog rare disease records")
@@ -959,7 +961,7 @@ df_combined = pd.merge(df_combined, df_gene_chrom_start_end, how="left", left_in
 df_combined["gene_start"] = df_combined["gene_start"].fillna(0).astype(int)  # ANALYSIS_OK[imputation]: 0 = coordinate unavailable (missing genes warned above); INTEGER col can't hold NaN
 df_combined["gene_end"] = df_combined["gene_end"].fillna(0).astype(int)  # ANALYSIS_OK[imputation]: 0 = coordinate unavailable (missing genes warned above); INTEGER col can't hold NaN
 
-# The next three tables annotate the genes already in the table rather than adding genes to it.
+# The tables below annotate the genes already in the table rather than adding genes to it.
 gene_symbol_to_ensg_id = build_gene_symbol_to_ensg_id_map(df_hgnc)
 
 print("Getting Collins et al. 2022 dosage sensitivity scores")
@@ -1007,6 +1009,48 @@ if len(acmg_secondary_findings_gene_ids) < len(df_acmg_secondary_findings) or ge
     print("\t", f"WARNING: only {len(acmg_secondary_findings_gene_ids & set(df_combined.index)):,d} out of "
                 f"{len(df_acmg_secondary_findings):,d} ACMG secondary findings genes were found in the table")
 df_combined["in_ACMG_secondary_findings_list"] = df_combined.index.isin(acmg_secondary_findings_gene_ids)
+
+print("Getting ClinGen actionability curations")
+df_actionability = get_clingen_actionability_table()
+df_actionability["gene_id"] = df_actionability["gene_symbol"].map(gene_symbol_to_ensg_id)
+no_ensg = df_actionability["gene_id"].isna()
+if no_ensg.any():
+    print("\t", f"WARNING: dropping {int(no_ensg.sum()):,d} ClinGen actionability rows whose gene symbol could not be "
+                f"mapped to an ENSG id: {', '.join(df_actionability.loc[no_ensg, 'gene_symbol'].astype(str))}")
+    df_actionability = df_actionability[~no_ensg]
+# One value per report in each column, in the same order, so the gene page can pair them up
+df_actionability = df_actionability.sort_values(["gene_id", "context", "report_id"])
+df_actionability = df_actionability.groupby("gene_id").agg(
+    CLINGEN_actionability_report_id=("report_id", lambda x: separator.join(x)),
+    CLINGEN_actionability_context=("context", lambda x: separator.join(x)),
+    CLINGEN_actionability_disease=("disease", lambda x: separator.join(x)),
+    CLINGEN_actionability_overall_score=("max_overall_score", lambda x: separator.join(normalize_nulls(v) for v in x)),
+    CLINGEN_actionability_max_overall_score=("max_overall_score", lambda x: safe_max(x)),
+)
+df_combined = pd.merge(df_combined, df_actionability, how="left", left_index=True, right_index=True)  # ANALYSIS_OK[join]: merged on unique per-gene-id index (groupby above)
+assert df_combined.index.is_unique, "The merged dataframe has duplicate gene ids after merging with ClinGen actionability"
+print(f"Added ClinGen actionability curations to {df_combined['CLINGEN_actionability_report_id'].notna().sum():,d} out of {len(df_combined):,d} genes")
+
+print("Reading genomic newborn screening gene lists (Minten et al. 2025)")
+df_newborn_sequencing = read_newborn_sequencing_gene_lists()
+df_newborn_sequencing["gene_id"] = df_newborn_sequencing["gene_symbol"].map(gene_symbol_to_ensg_id)
+no_ensg = df_newborn_sequencing["gene_id"].isna()
+if no_ensg.any():
+    print("\t", f"WARNING: dropping {int(no_ensg.sum()):,d} newborn screening gene list rows whose gene symbol could not "
+                f"be mapped to an ENSG id: {', '.join(df_newborn_sequencing.loc[no_ensg, 'gene_symbol'].astype(str))}")
+    df_newborn_sequencing = df_newborn_sequencing[~no_ensg]
+duplicate_gene_ids = df_newborn_sequencing["gene_id"].duplicated(keep=False)
+if duplicate_gene_ids.any():
+    raise ValueError(f"Several newborn screening gene list rows map to the same gene: "
+                     f"{', '.join(df_newborn_sequencing.loc[duplicate_gene_ids, 'gene_symbol'])}")
+df_newborn_sequencing = df_newborn_sequencing.set_index("gene_id").rename(columns={
+    "rusp_category": "RUSP_category",
+    "program_count": "NEWBORN_SEQUENCING_program_count",
+    "programs": "NEWBORN_SEQUENCING_programs",
+})[["RUSP_category", "NEWBORN_SEQUENCING_program_count", "NEWBORN_SEQUENCING_programs"]]
+df_combined = pd.merge(df_combined, df_newborn_sequencing, how="left", left_index=True, right_index=True)  # ANALYSIS_OK[join]: merged on unique per-gene-id index (duplicates rejected above)
+assert df_combined.index.is_unique, "The merged dataframe has duplicate gene ids after merging with the newborn screening gene lists"
+print(f"Added newborn screening gene list counts to {df_combined['NEWBORN_SEQUENCING_program_count'].notna().sum():,d} out of {len(df_combined):,d} genes")
 
 
 df_combined.reset_index(inplace=True)

@@ -1,5 +1,6 @@
-"""Tests for the parsing functions of the G2P, Collins et al. 2022, GeneReviews, Open Targets gene burden, and
-ACMG secondary findings downloads, and for the HGNC gene symbol lookup they rely on.
+"""Tests for the parsing functions of the G2P, Collins et al. 2022, GeneReviews, Open Targets gene burden, ACMG
+secondary findings, ClinGen actionability and newborn screening gene list sources, and for the HGNC gene symbol
+lookup they rely on.
 
 Run from the repo root with:  python3 -m unittest annotation_utils/gene_annotation_sources_tests.py
 """
@@ -14,7 +15,10 @@ import pandas as pd
 import annotation_utils.cache_utils as cache_utils
 from annotation_utils.get_acmg_secondary_findings_genes import (
     convert_acmg_secondary_findings_response_to_table, parse_acmg_secondary_findings_list_version)
+from annotation_utils.get_clingen_actionability_table import (
+    convert_actionability_summaries_to_gene_table, parse_overall_actionability_score)
 from annotation_utils.get_collins_dosage_sensitivity_scores import parse_collins_dosage_sensitivity_scores
+from annotation_utils.get_newborn_sequencing_gene_lists import convert_minten_data_repository_to_gene_table
 from annotation_utils.get_g2p_table import convert_g2p_records_to_gene_disease_table, find_latest_g2p_release_date
 from annotation_utils.get_genereviews_table import combine_genereviews_gene_symbols_and_titles
 from annotation_utils.get_hgnc_table import build_gene_symbol_to_ensg_id_map
@@ -197,6 +201,59 @@ class AcmgSecondaryFindingsTests(unittest.TestCase):
     def test_incomplete_response_raises(self):
         with self.assertRaises(ValueError):
             convert_acmg_secondary_findings_response_to_table({"total": 84, "rows": [{"symbol": "ABCD1", "hgnc_id": "HGNC:61"}]})
+
+
+class ClinGenActionabilityTests(unittest.TestCase):
+
+    def test_parse_overall_actionability_score(self):
+        self.assertEqual(parse_overall_actionability_score("10CB"), 10)
+        self.assertEqual(parse_overall_actionability_score("7CN"), 7)
+        self.assertIsNone(parse_overall_actionability_score("None"))
+
+    def test_convert_actionability_summaries_to_gene_table(self):
+        df_summary_rows = pd.DataFrame({
+            "docId": ["AC1055", "AC1055", "AC1084", "AC999", "AC998", "AC1034"],
+            "context": ["Adult", "Adult", "Pediatric", "Adult", "Adult", "Adult"],
+            "curationType": ["Gene-Condition", "Gene-Condition", "Gene-Condition", "Gene-Condition", "Variant-Condition", "Gene-Condition"],
+            "geneOrVariant": ["MLH1,MSH2", "MLH1,MSH2", "CYP27A1", "RETRACTED1", "HFE p.C282Y", "(ERR: No gene(s) listed for topic?)"],
+            "disease": ["Mismatch repair cancer syndrome", "Mismatch repair cancer syndrome", "Cerebrotendinous xanthomatosis", "x", "y", "SCN1A-related seizure disorders"],
+            "status-overall": ["Released", "Released", "Released", "Retracted", "Released", "Released"],
+            "overall": ["9CN", "11CB", "None", "8CC", "9CC", "None"],
+        })
+        df = convert_actionability_summaries_to_gene_table(df_summary_rows)
+        self.assertEqual(df["gene_symbol"].tolist(), ["CYP27A1", "MLH1", "MSH2"])
+        self.assertEqual(df["report_id"].tolist(), ["AC1084", "AC1055", "AC1055"])
+        self.assertEqual(df["max_overall_score"].tolist()[1:], [11, 11])
+        self.assertTrue(pd.isna(df["max_overall_score"].tolist()[0]))
+
+
+class NewbornSequencingGeneListsTests(unittest.TestCase):
+
+    def test_convert_minten_data_repository_to_gene_table(self):
+        df_repository = pd.DataFrame({
+            "gene": ["PAH", "C19ORF12", "TTN"],
+            "programs_screened": [2, 1, 0],
+            "rusp": ["Core", None, None],
+            "scr_babyseq": [1, None, None],
+            "scr_guardian": [1, 1, None],
+        })
+        df_codebook = pd.DataFrame([
+            ["programs_screened", "Number out of 27 programs that screen for this gene (observed inclusion)"],
+            ["scr_babyseq", "Inclusion on BabySeq gene list (1 if gene is present)"],
+            ["scr_guardian", "Inclusion on GUARDIAN Study gene list (1 if gene is present)"],
+        ])
+        df = convert_minten_data_repository_to_gene_table(df_repository, df_codebook)
+        self.assertEqual(df.to_dict("records"), [
+            {"gene_symbol": "PAH", "rusp_category": "Core", "program_count": 2, "programs": "BabySeq, GUARDIAN Study"},
+            {"gene_symbol": "C19orf12", "rusp_category": "", "program_count": 1, "programs": "GUARDIAN Study"},
+            {"gene_symbol": "TTN", "rusp_category": "", "program_count": 0, "programs": ""},
+        ])
+
+    def test_mismatched_program_count_raises(self):
+        df_repository = pd.DataFrame({"gene": ["PAH"], "programs_screened": [5], "rusp": ["Core"], "scr_babyseq": [1]})
+        df_codebook = pd.DataFrame([["scr_babyseq", "Inclusion on BabySeq gene list (1 if gene is present)"]])
+        with self.assertRaises(ValueError):
+            convert_minten_data_repository_to_gene_table(df_repository, df_codebook)
 
 
 if __name__ == "__main__":

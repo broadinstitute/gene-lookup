@@ -1,0 +1,4391 @@
+gene_symbol	rusp_category	program_count	programs
+PAH	Core	27	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+GCDH	Core	27	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+ACADM	Core	27	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+ACADVL	Core	27	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+BTD	Core	27	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+MMUT	Core	27	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+SLC22A5	Core	27	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+ASS1	Core	27	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+HADHA	Core	27	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+PCCA	Core	27	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+HLCS	Core	27	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+ASL	Core	27	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+PTS	Secondary	27	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+QDPR	Secondary	27	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+HADHB	Core	27	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+IVD	Core	27	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+MMAA	Core	26	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+GAA	Core	26	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Nurture, PerkinElmer, Sema4
+G6PC1		26	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+MMAB	Core	26	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+PCCB	Core	27	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+OTC		26	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+FAH	Core	26	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Nurture, PerkinElmer, Sema4
+MMACHC	Secondary	26	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+CPT2	Secondary	26	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, Generation Study, GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+IDUA	Core	26	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+CPT1A	Secondary	26	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+GALT	Core	26	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+CBS	Core	25	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Nurture, PerkinElmer, Sema4
+GALK1	Secondary	25	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+HMGCL	Core	27	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+ACAT1	Core	26	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+DBT	Core	25	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, PerkinElmer, Sema4
+SLC25A20	Secondary	25	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+ARG1	Secondary	26	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+IL2RG	Core	25	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, PerkinElmer, Sema4
+BCKDHA	Core	25	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, Generation Study, GNStar, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+BCKDHB	Core	25	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, Generation Study, GNStar, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+IDS	Core	25	BabyDetect, BabyScreen+, BabySeq, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+SLC25A13	Secondary	25	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., FirstSteps, GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+SLC37A4		25	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer
+CPS1		25	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+CFTR	Core	25	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+HBB	Core	25	BabyDetect, BabyScreen+, BabySeq, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, Sema4
+SLC25A15		25	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., FirstSteps, Generation Study, GNStar, GUARDIAN Study, Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+RAG1	Core	23	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Neoseq, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, PerkinElmer, Sema4
+MTRR	Secondary	24	BabyDetect, BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+MTR	Secondary	24	BabyDetect, BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+AGL		24	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., FirstSteps, Generation Study, GNStar, GUARDIAN Study, Lee et al., Luo et al., NEOEXOME, Neoseq, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+ETFDH	Secondary	25	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+CYBB		25	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+SMN1	Core	23	BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Neoseq, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, Sema4
+TAT	Secondary	24	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Nurture, PerkinElmer, Sema4
+BTK		24	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Nurture, PerkinElmer
+HADH	Secondary	24	BabyDetect, BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Igenomix, Mendelics, PerkinElmer, Sema4
+ADA	Core	22	BabyDetect, BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Neoseq, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Igenomix, Nurture, PerkinElmer, Sema4
+ALPL		23	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GUARDIAN Study, Lee et al., Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+GALNS		23	BabyDetect, BabyScreen+, BabySeq, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Luo et al., NEOEXOME, Neoseq, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+ALDOB		23	BabyDetect, BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Lee et al., Luo et al., NEOEXOME, Neoseq, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+NAGS		22	BabyDetect, BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+MMADHC	Secondary	23	BabyDetect, BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Igenomix, Mendelics, PerkinElmer, Sema4
+GCH1	Secondary	23	BabyDetect, BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Igenomix, Mendelics, PerkinElmer, Sema4
+LMBRD1	Secondary	22	BabyDetect, BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., NEOEXOME, Neoseq, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+F9		23	BabyDetect, BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+ETFA	Secondary	22	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Igenomix, Mendelics, PerkinElmer, Sema4
+G6PD		23	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, GNStar, GUARDIAN Study, Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Nurture, PerkinElmer, Sema4
+MLYCD	Secondary	22	BabyDetect, BabyScreen+, BabySeq, Chen et al., GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Nurture, PerkinElmer, Sema4
+MCCC1	Core	22	BabyDetect, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, Prog Gen Puglia, Wang et al., Foresite, Fulgent, Igenomix, Nurture, PerkinElmer, Sema4
+ETFB	Secondary	22	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Igenomix, Mendelics, PerkinElmer, Sema4
+GALE	Secondary	22	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., FirstSteps, GNStar, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Neoseq, NewbornsInSA, Prog Gen Puglia, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+RAG2	Core	22	BabyDetect, BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Neoseq, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Igenomix, Nurture, PerkinElmer, Sema4
+ARSB		22	BabyDetect, BabyScreen+, BabySeq, Chen et al., EarlyCheck, FirstSteps, Generation Study, GUARDIAN Study, Lee et al., Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+CYP11B1		21	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., FirstSteps, Generation Study, Luo et al., NEOEXOME, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+SMPD1		21	BabyDetect, BabyScreen+, BabySeq, Chen et al., FirstSteps, GNStar, GUARDIAN Study, Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Nurture, PerkinElmer, Sema4
+ATP7B		21	BabyDetect, BabyScreen+, BabySeq, Chen et al., EarlyCheck, GNStar, GUARDIAN Study, Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture
+TSHR		24	BabyDetect, BabyScreen+, BabySeq, Chen et al., EarlyCheck, Generation Study, GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, PerkinElmer, Sema4
+ABCD1	Core	20	BabyDetect, BabyScreen+, BabySeq, BeginNGS, EarlyCheck, Generation Study, GNStar, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Foresite, Fulgent, Igenomix, Mendelics, Nurture, Sema4
+RB1		21	BabyDetect, BabyScreen+, BabySeq, Chen et al., EarlyCheck, Generation Study, GNStar, GUARDIAN Study, NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Mendelics, Nurture, PerkinElmer, Sema4
+ALDH7A1		21	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GUARDIAN Study, Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, PerkinElmer, Sema4
+CTNS		20	BabyDetect, BabyScreen+, BabySeq, EarlyCheck, FirstSteps, Generation Study, GUARDIAN Study, Lee et al., Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+MCCC2	Core	22	BabyDetect, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, Prog Gen Puglia, Wang et al., Foresite, Fulgent, Igenomix, Nurture, PerkinElmer, Sema4
+ABCC8		20	BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+DCLRE1C	Core	20	BabyDetect, BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Igenomix, Nurture, PerkinElmer, Sema4
+PHEX		20	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., FirstSteps, Generation Study, GNStar, GUARDIAN Study, Lee et al., Luo et al., Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Igenomix, Mendelics, Nurture
+TH		20	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+HPD	Secondary	21	BabyDetect, BabySeq, BeginNGS, Chen et al., FirstSteps, GNStar, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Neoseq, NESTS, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Nurture, PerkinElmer, Sema4
+GLA		20	BabyScreen+, BabySeq, Chen et al., FirstSteps, GNStar, GUARDIAN Study, Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Wang et al., Foresite, Fulgent, Igenomix, Nurture, PerkinElmer, Sema4
+DUOX2		20	BabyDetect, BabyScreen+, BabySeq, Chen et al., EarlyCheck, Generation Study, GNStar, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NewbornsInSA, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, PerkinElmer, Sema4
+WAS		20	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Mendelics, Nurture
+CYBA		18	BabyDetect, BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, Luo et al., NESTS, NewbornsInSA, Prog Gen Puglia, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+SPR		20	BabyDetect, BabyScreen+, BabySeq, EarlyCheck, FirstSteps, GNStar, GUARDIAN Study, Luo et al., NEOEXOME, Neoseq, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+ATP7A		19	BabyDetect, BabyScreen+, BabySeq, Chen et al., FirstSteps, GUARDIAN Study, Lee et al., Luo et al., NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer
+GAMT	Core	19	BabyDetect, BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, GUARDIAN Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+SLC2A1		19	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., FirstSteps, Generation Study, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+TG		18	BabyDetect, BabyScreen+, BabySeq, EarlyCheck, Generation Study, GNStar, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Neoseq, NewbornsInSA, Screen4Care, Foresite, Fulgent, Igenomix, PerkinElmer, Sema4
+PYGL		19	BabyDetect, BabyScreen+, BabySeq, Chen et al., GNStar, GUARDIAN Study, Luo et al., NEOEXOME, Neoseq, NewbornsInSA, Prog Gen Puglia, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+PCBD1	Secondary	21	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Foresite, Fulgent, Igenomix, Mendelics, PerkinElmer, Sema4
+TPO		18	BabyDetect, BabyScreen+, BabySeq, EarlyCheck, Generation Study, GNStar, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Neoseq, NewbornsInSA, Screen4Care, Foresite, Fulgent, Igenomix, PerkinElmer, Sema4
+LIPA		19	BabyDetect, BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, GUARDIAN Study, Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+GUSB		19	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., FirstSteps, GUARDIAN Study, Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer
+JAK3		21	BabyDetect, BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Neoseq, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Igenomix, PerkinElmer, Sema4
+FBP1		18	BabyDetect, BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, GUARDIAN Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+POU1F1		18	BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, GUARDIAN Study, Luo et al., NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+PRF1		20	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., FirstSteps, Generation Study, GUARDIAN Study, Luo et al., NEOEXOME, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Mendelics, Nurture, PerkinElmer
+AVPR2		18	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NEOEXOME, NESTS, NewbornsInSA, Prog Gen Puglia, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+NPC1		19	BabyScreen+, BabySeq, BeginNGS, Chen et al., FirstSteps, GNStar, GUARDIAN Study, Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Wang et al., Foresite, Fulgent, Igenomix, Nurture, PerkinElmer
+PROP1		19	BabyScreen+, BabySeq, BeginNGS, Chen et al., FirstSteps, Generation Study, GUARDIAN Study, Luo et al., NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+KCNJ11		18	BabyScreen+, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Mendelics, Nurture, PerkinElmer, Sema4
+CD40LG		17	BabyScreen+, BabySeq, Chen et al., Generation Study, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Mendelics, Nurture, PerkinElmer
+GLUD1		18	BabyDetect, BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+ELANE		20	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., FirstSteps, GUARDIAN Study, Luo et al., NEOEXOME, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer
+SCNN1B		17	BabyDetect, BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, Luo et al., NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Igenomix, Mendelics, PerkinElmer
+CYP17A1		18	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., FirstSteps, Generation Study, Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer
+CYP27A1		18	BabyScreen+, BabySeq, Chen et al., EarlyCheck, FirstSteps, Generation Study, GUARDIAN Study, Luo et al., NewbornsInSA, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+GALC		19	BabyScreen+, BabySeq, Chen et al., GNStar, GUARDIAN Study, Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Nurture, PerkinElmer
+ARSA		19	BabyDetect, BabyScreen+, BabySeq, FirstSteps, Generation Study, GUARDIAN Study, Lee et al., Luo et al., NEOEXOME, NESTS, NewbornsInSA, Screen4Care, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+GATM		17	BabyDetect, BabyScreen+, BabySeq, EarlyCheck, Generation Study, GUARDIAN Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+PNPO		18	BabyDetect, BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+MAT1A	Secondary	17	BabyDetect, BabySeq, Chen et al., GNStar, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Neoseq, NESTS, Prog Gen Puglia, Wang et al., Foresite, Fulgent, Igenomix, PerkinElmer, Sema4
+PHKB		17	BabyDetect, BabyScreen+, BabySeq, Chen et al., EarlyCheck, GUARDIAN Study, Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Mendelics, Nurture, PerkinElmer, Sema4
+ABCD4	Secondary	17	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, GNStar, GUARDIAN Study, Jian et al., Lee et al., NEOEXOME, Neoseq, NewbornsInSA, Prog Gen Puglia, Screen4Care, Igenomix, Mendelics, Nurture
+TSHB		18	BabyScreen+, BabySeq, EarlyCheck, Generation Study, GNStar, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NewbornsInSA, Screen4Care, Foresite, Fulgent, Igenomix, Mendelics, PerkinElmer, Sema4
+HSD3B7		18	BabyScreen+, BabySeq, Chen et al., EarlyCheck, Generation Study, GNStar, GUARDIAN Study, NEOEXOME, Neoseq, NewbornsInSA, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+DMD		17	BabySeq, BeginNGS, Chen et al., FirstSteps, GUARDIAN Study, Lee et al., Luo et al., NEOEXOME, NESTS, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Igenomix, Mendelics, Nurture, PerkinElmer
+LHX3		17	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, Luo et al., NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+MTHFR		19	BabyDetect, BabySeq, BeginNGS, Chen et al., EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Neoseq, NESTS, Screen4Care, Wang et al., Igenomix, Mendelics, Nurture
+ADAMTS13		17	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, Luo et al., NEOEXOME, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Mendelics, Nurture, PerkinElmer
+SLC7A7		16	BabyDetect, BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+UNC13D		17	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., FirstSteps, Generation Study, GUARDIAN Study, Luo et al., NEOEXOME, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Mendelics, Nurture
+CYP21A2	Core	16	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, Jian et al., Lee et al., Luo et al., NEOEXOME, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Igenomix, Nurture
+CD3D	Core	17	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Foresite, Fulgent, Igenomix, PerkinElmer, Sema4
+TCN2		17	BabyDetect, BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, GUARDIAN Study, Jian et al., NewbornsInSA, Prog Gen Puglia, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer
+GBA1		16	BabyDetect, BabyScreen+, BabySeq, FirstSteps, GNStar, Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Igenomix, Mendelics, Nurture
+AQP2		17	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NESTS, NewbornsInSA, Prog Gen Puglia, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+HAX1		18	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, GUARDIAN Study, Luo et al., NEOEXOME, NESTS, NewbornsInSA, Prog Gen Puglia, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+STAR		16	BabyDetect, BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Mendelics, Nurture, PerkinElmer, Sema4
+NCF2		17	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, Luo et al., NESTS, NewbornsInSA, Prog Gen Puglia, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer
+F8		16	BabyDetect, BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, GUARDIAN Study, Lee et al., Luo et al., NEOEXOME, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Igenomix, Mendelics
+PAX8		20	BabyDetect, BabyScreen+, BabySeq, EarlyCheck, Generation Study, GNStar, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Foresite, Fulgent, Igenomix, Mendelics, PerkinElmer, Sema4
+SCNN1A		16	BabyDetect, BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, Luo et al., NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Igenomix, Mendelics, PerkinElmer
+NPC2		16	BabyScreen+, BabySeq, BeginNGS, Chen et al., FirstSteps, GNStar, GUARDIAN Study, Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Wang et al., Igenomix, Nurture
+DOCK8		17	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, Jian et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Igenomix, Nurture, PerkinElmer
+COL4A3		16	BabyDetect, BabyScreen+, BabySeq, Chen et al., EarlyCheck, Generation Study, Lee et al., Luo et al., NEOEXOME, NESTS, NewbornsInSA, Wang et al., Foresite, Fulgent, PerkinElmer, Sema4
+COL4A5		16	BabyDetect, BabyScreen+, BabySeq, Chen et al., EarlyCheck, Generation Study, Lee et al., NEOEXOME, NESTS, NewbornsInSA, Prog Gen Puglia, Wang et al., Foresite, Fulgent, PerkinElmer, Sema4
+COL4A4		16	BabyDetect, BabyScreen+, BabySeq, Chen et al., EarlyCheck, Generation Study, Lee et al., Luo et al., NEOEXOME, NESTS, NewbornsInSA, Wang et al., Foresite, Fulgent, PerkinElmer, Sema4
+HSD3B2		16	BabyDetect, BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, NewbornsInSA, Prog Gen Puglia, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+ETHE1		17	BabyScreen+, BabySeq, BeginNGS, FirstSteps, GNStar, Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Foresite, Fulgent, Mendelics, PerkinElmer, Sema4
+VDR		16	BabyScreen+, BabySeq, Generation Study, GNStar, GUARDIAN Study, Luo et al., Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer
+DUOXA2		18	BabyDetect, BabyScreen+, BabySeq, Chen et al., EarlyCheck, Generation Study, GNStar, GUARDIAN Study, NEOEXOME, Neoseq, NewbornsInSA, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, PerkinElmer, Sema4
+CYP27B1		16	BabyScreen+, BabySeq, Generation Study, GNStar, Luo et al., Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer
+ACADSB	Secondary	13	BabyDetect, BabySeq, Chen et al., GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, Prog Gen Puglia, Wang et al., Igenomix
+OAT		15	BabyScreen+, BabySeq, GNStar, GUARDIAN Study, Lee et al., Luo et al., Neoseq, NewbornsInSA, Prog Gen Puglia, Foresite, Fulgent, Igenomix, Nurture, PerkinElmer, Sema4
+KCNQ1		16	BabyDetect, BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, GUARDIAN Study, Luo et al., NEOEXOME, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, PerkinElmer
+PKLR		16	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, Luo et al., NEOEXOME, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Nurture, PerkinElmer
+ZAP70		15	BabyDetect, BabyScreen+, BabySeq, EarlyCheck, Generation Study, GUARDIAN Study, Jian et al., NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Mendelics, Nurture, PerkinElmer
+CYP11B2		16	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, NESTS, NewbornsInSA, Prog Gen Puglia, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+SLC5A5		17	BabyDetect, BabyScreen+, BabySeq, EarlyCheck, Generation Study, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, NewbornsInSA, Screen4Care, Foresite, Fulgent, Igenomix, PerkinElmer, Sema4
+UGT1A1		16	BabyDetect, BabyScreen+, BabySeq, Generation Study, GNStar, Lee et al., Luo et al., NEOEXOME, Neoseq, NewbornsInSA, Foresite, Fulgent, Igenomix, Mendelics, PerkinElmer, Sema4
+IL7R		21	BabyDetect, BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, GNStar, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Neoseq, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Igenomix, PerkinElmer, Sema4
+PHKG2		15	BabyDetect, BabyScreen+, BabySeq, Chen et al., EarlyCheck, GUARDIAN Study, Luo et al., NEOEXOME, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Mendelics, Nurture
+STX11		16	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, Lee et al., Luo et al., NEOEXOME, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Mendelics, Nurture
+RPS19		14	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., FirstSteps, Generation Study, Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Nurture
+AUH	Secondary	15	BabySeq, Chen et al., GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, Prog Gen Puglia, Screen4Care, Wang et al., Igenomix, Nurture
+MPI		15	BabyScreen+, BabySeq, EarlyCheck, FirstSteps, Generation Study, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Mendelics, Nurture, PerkinElmer, Sema4
+PTPRC	Core	12	BabyDetect, BabyScreen+, BabySeq, Generation Study, Jian et al., Luo et al., NEOEXOME, NewbornsInSA, Foresite, Fulgent, PerkinElmer, Sema4
+CD3E	Core	15	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, Jian et al., NewbornsInSA, Prog Gen Puglia, Foresite, Fulgent, Igenomix, PerkinElmer, Sema4
+HBA1	Secondary	15	BabyDetect, BabySeq, BeginNGS, Chen et al., FirstSteps, Jian et al., Lee et al., Luo et al., NEOEXOME, NESTS, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Sema4
+RPE65		14	BabyDetect, BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, Lee et al., Luo et al., NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Igenomix, Nurture
+SLC26A4		17	BabyDetect, BabyScreen+, BabySeq, EarlyCheck, GNStar, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Screen4Care, Wang et al., Foresite, Fulgent, PerkinElmer
+LDLR		14	BabyScreen+, BabySeq, Chen et al., Generation Study, GUARDIAN Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia, Wang et al., Foresite, Fulgent, Nurture, PerkinElmer, Sema4
+WT1		14	BabyScreen+, BabySeq, Generation Study, GNStar, Lee et al., Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Foresite, Fulgent, Nurture, PerkinElmer, Sema4
+GJB2		17	BabyScreen+, BabySeq, EarlyCheck, GNStar, Jian et al., Luo et al., NEOEXOME, Neoseq, NESTS, NewbornsInSA, Prog Gen Puglia, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, PerkinElmer
+GRHPR		13	BabyDetect, BabyScreen+, BabySeq, EarlyCheck, Generation Study, GUARDIAN Study, NewbornsInSA, Foresite, Fulgent, Igenomix, Nurture, PerkinElmer, Sema4
+TSC2		14	BabySeq, BeginNGS, Chen et al., FirstSteps, Lee et al., Luo et al., NEOEXOME, NESTS, Prog Gen Puglia, Wang et al., Foresite, Fulgent, Igenomix, PerkinElmer
+TSC1		14	BabySeq, BeginNGS, Chen et al., FirstSteps, Lee et al., Luo et al., NEOEXOME, NESTS, Prog Gen Puglia, Wang et al., Foresite, Fulgent, Igenomix, PerkinElmer
+AGXT		13	BabyDetect, BabyScreen+, BabySeq, EarlyCheck, Generation Study, GUARDIAN Study, NewbornsInSA, Screen4Care, Foresite, Fulgent, Igenomix, PerkinElmer, Sema4
+STXBP2		15	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, Luo et al., NEOEXOME, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Mendelics, Nurture
+RFXANK		16	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, Jian et al., NewbornsInSA, Prog Gen Puglia, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer
+SH2D1A		16	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., FirstSteps, Generation Study, GUARDIAN Study, Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Mendelics, Nurture
+LYST		13	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, Luo et al., NEOEXOME, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Nurture
+AHCY	Secondary	13	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, NESTS, NewbornsInSA, Prog Gen Puglia, Igenomix
+ACADS	Secondary	14	BabyDetect, BabySeq, Chen et al., GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, Prog Gen Puglia, Wang et al., Igenomix
+HBA2	Secondary	14	BabyDetect, BabySeq, BeginNGS, Chen et al., FirstSteps, Jian et al., Lee et al., NEOEXOME, NESTS, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Sema4
+NAGLU		13	BabyDetect, BabyScreen+, BabySeq, Chen et al., GNStar, Luo et al., NEOEXOME, Neoseq, NewbornsInSA, Prog Gen Puglia, Wang et al., Igenomix, Nurture
+PHKA2		13	BabyDetect, BabyScreen+, BabySeq, Chen et al., EarlyCheck, Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Mendelics, Nurture
+NHEJ1	Core	12	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care
+RPL11		14	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., FirstSteps, Generation Study, Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Nurture
+G6PC3		13	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, GUARDIAN Study, Luo et al., NEOEXOME, NESTS, NewbornsInSA, Prog Gen Puglia, Mendelics, Nurture
+FANCA		14	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., FirstSteps, Luo et al., NEOEXOME, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Nurture
+FOXP3		16	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GNStar, Neoseq, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Mendelics, Nurture, PerkinElmer
+SBDS		14	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Mendelics, Nurture
+CASR		14	BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, NewbornsInSA, Prog Gen Puglia, Foresite, Fulgent, Igenomix, Mendelics, PerkinElmer, Sema4
+SCNN1G		13	BabyDetect, BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, Luo et al., NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Mendelics
+FOXN1		14	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, Jian et al., Luo et al., NewbornsInSA, Prog Gen Puglia, Screen4Care, Mendelics, Nurture
+RET		13	BabyScreen+, BabySeq, EarlyCheck, Generation Study, GUARDIAN Study, Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Nurture, PerkinElmer
+FOLR1		13	BabyDetect, BabyScreen+, BabySeq, FirstSteps, Generation Study, NewbornsInSA, Prog Gen Puglia, Foresite, Fulgent, Mendelics, Nurture, PerkinElmer, Sema4
+DLD		15	BabyDetect, BabySeq, BeginNGS, FirstSteps, GNStar, Luo et al., NEOEXOME, Neoseq, Prog Gen Puglia, Foresite, Fulgent, Mendelics, Nurture, PerkinElmer, Sema4
+RFX5		14	BabyDetect, BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, Jian et al., NEOEXOME, NewbornsInSA, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer
+RFXAP		14	BabyDetect, BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, Jian et al., NEOEXOME, NewbornsInSA, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer
+TAFAZZIN	Secondary	13	BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, Lee et al., Luo et al., Prog Gen Puglia, Foresite, Fulgent, Nurture, PerkinElmer, Sema4
+ACVRL1		13	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Lee et al., Luo et al., NEOEXOME, NESTS, NewbornsInSA, Prog Gen Puglia, Foresite, Fulgent, PerkinElmer
+SLC39A4		13	BabyScreen+, BabySeq, EarlyCheck, Generation Study, GUARDIAN Study, NewbornsInSA, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+TTPA		13	BabyDetect, BabyScreen+, BabySeq, FirstSteps, Generation Study, NewbornsInSA, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+INS		15	BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, Fulgent, Mendelics, PerkinElmer, Sema4
+RPS26		14	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., FirstSteps, Generation Study, Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Nurture
+ATP6V1B1		12	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Mendelics, Nurture
+HMGCS2	Core	12	BabyDetect, BabySeq, Generation Study, GNStar, GUARDIAN Study, Luo et al., Neoseq, Foresite, Fulgent, Mendelics, PerkinElmer, Sema4
+AKR1D1		14	BabyScreen+, BabySeq, EarlyCheck, Generation Study, GUARDIAN Study, NEOEXOME, NewbornsInSA, Foresite, Fulgent, Igenomix, Mendelics, Nurture, PerkinElmer, Sema4
+RPS24		12	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Nurture
+AK2	Core	12	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, Jian et al., NewbornsInSA, Prog Gen Puglia, Mendelics, Nurture
+RPL35A		12	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Nurture
+RPS17		12	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Nurture
+NCF4		13	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, Luo et al., NESTS, NewbornsInSA, Prog Gen Puglia, Igenomix, Mendelics, Nurture
+LPL		13	BabyDetect, BabyScreen+, BabySeq, Generation Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia, Foresite, Fulgent, Mendelics, Nurture, PerkinElmer, Sema4
+TPP1		13	BabyDetect, BabyScreen+, BabySeq, FirstSteps, Generation Study, GUARDIAN Study, Luo et al., NEOEXOME, NewbornsInSA, Screen4Care, Igenomix, Mendelics, Nurture
+SI		12	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Mendelics
+MOCS1		12	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, GUARDIAN Study, Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Mendelics, Nurture
+TCIRG1		13	BabyScreen+, BabySeq, Generation Study, Lee et al., Luo et al., NEOEXOME, NewbornsInSA, Screen4Care, Foresite, Fulgent, Nurture, PerkinElmer, Sema4
+CDH23		12	BabyScreen+, BabySeq, EarlyCheck, Jian et al., Luo et al., NESTS, NewbornsInSA, Wang et al., Foresite, Fulgent, Igenomix, PerkinElmer
+NR0B1		14	BabyScreen+, BabySeq, Chen et al., Generation Study, GUARDIAN Study, Luo et al., NEOEXOME, NewbornsInSA, Wang et al., Foresite, Fulgent, Igenomix, Mendelics, PerkinElmer
+RPL5		12	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Nurture
+MC2R		13	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia, Foresite, Fulgent, Mendelics, Nurture, PerkinElmer
+GCK		12	BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Mendelics, Nurture
+PLPBP		12	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, NewbornsInSA, Prog Gen Puglia, Screen4Care, Igenomix, Mendelics, Nurture
+EFL1		11	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia, Mendelics, Nurture
+SLC19A3		12	BabyDetect, BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, NewbornsInSA, Prog Gen Puglia, Screen4Care, Mendelics, Nurture
+SLC5A1		13	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Mendelics, Nurture
+THRA		16	BabyDetect, BabyScreen+, BabySeq, Generation Study, GNStar, Lee et al., NEOEXOME, Neoseq, NewbornsInSA, Screen4Care, Foresite, Fulgent, Igenomix, Mendelics, PerkinElmer, Sema4
+MEFV		11	BabyScreen+, BabySeq, Chen et al., Generation Study, Luo et al., NEOEXOME, NewbornsInSA, Wang et al., Foresite, Fulgent, PerkinElmer
+SCN1A		13	BabySeq, BeginNGS, Chen et al., FirstSteps, Generation Study, Lee et al., NEOEXOME, Prog Gen Puglia, Wang et al., Foresite, Fulgent, Igenomix, PerkinElmer
+SLC19A2		9	BabyDetect, BabyScreen+, BabySeq, Generation Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia, Mendelics, Nurture
+RPS7		12	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Nurture
+HOGA1		12	BabyDetect, BabyScreen+, BabySeq, EarlyCheck, Generation Study, NewbornsInSA, Foresite, Fulgent, Igenomix, Nurture, PerkinElmer, Sema4
+TBX19		10	BabyDetect, BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, NewbornsInSA, Prog Gen Puglia, Nurture
+FBN1		11	BabyScreen+, BabySeq, Lee et al., Luo et al., NEOEXOME, NESTS, NewbornsInSA, Foresite, Fulgent, PerkinElmer, Sema4
+COL1A1		12	BabyScreen+, BabySeq, Generation Study, Luo et al., NEOEXOME, NESTS, NewbornsInSA, Screen4Care, Foresite, Fulgent, Mendelics, PerkinElmer
+DDC		12	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia, Screen4Care, Mendelics, Nurture
+XIAP		16	BabyDetect, BabyScreen+, BabySeq, BeginNGS, Chen et al., FirstSteps, Generation Study, GUARDIAN Study, Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Wang et al., Mendelics, Nurture
+COQ6		11	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Nurture
+KCNH2		12	BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, Luo et al., NEOEXOME, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, PerkinElmer
+RAB27A		11	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Nurture
+RMRP		11	BabyScreen+, BabySeq, BeginNGS, FirstSteps, GNStar, Jian et al., Luo et al., NEOEXOME, Neoseq, NewbornsInSA, Wang et al.
+CHAT		12	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Nurture
+RPS10		12	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Nurture
+F13B		11	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, Luo et al., NewbornsInSA, Prog Gen Puglia, Nurture
+CHRNE		11	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care
+MUSK		11	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care
+CHRND		11	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care
+MAN2B1		11	BabyScreen+, BabySeq, FirstSteps, GUARDIAN Study, Luo et al., NEOEXOME, NewbornsInSA, Screen4Care, Igenomix, Mendelics, Nurture
+PIK3R1		11	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, Jian et al., NewbornsInSA, Prog Gen Puglia, Screen4Care, Nurture
+F13A1		12	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, Luo et al., NewbornsInSA, Prog Gen Puglia, Screen4Care, Nurture
+PHGDH		13	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia, Foresite, Fulgent, Mendelics, PerkinElmer, Sema4
+SLC46A1		12	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, Jian et al., NewbornsInSA, Prog Gen Puglia, Screen4Care, Mendelics, Nurture
+SLC26A3		11	BabyDetect, BabyScreen+, BabySeq, EarlyCheck, Generation Study, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia, Screen4Care, Mendelics, Nurture
+CIITA		12	BabyDetect, BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, Jian et al., NewbornsInSA, Foresite, Fulgent, Mendelics, Nurture, PerkinElmer
+SLC4A1		11	BabyScreen+, BabySeq, Generation Study, Luo et al., NESTS, NewbornsInSA, Foresite, Fulgent, Nurture, PerkinElmer, Sema4
+BCKDK		11	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, NewbornsInSA, Prog Gen Puglia, Screen4Care, Mendelics, Nurture
+FANCC		11	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Luo et al., NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Nurture
+SCN5A		11	BabySeq, BeginNGS, FirstSteps, Generation Study, NEOEXOME, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Foresite, PerkinElmer
+MTTP		11	BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, NewbornsInSA, Foresite, Fulgent, Mendelics, Nurture, PerkinElmer, Sema4
+DGAT1		11	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia, Mendelics, Nurture
+SLC34A3		11	BabyScreen+, BabySeq, Generation Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia, Foresite, Fulgent, Igenomix, Nurture, PerkinElmer
+FANCG		11	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Luo et al., NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Nurture
+ATP6V0A4		12	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Mendelics, Nurture
+SLC52A2		12	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia, Screen4Care, Mendelics, Nurture
+SLC52A3		12	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia, Screen4Care, Mendelics, Nurture
+IGSF1		13	BabyScreen+, BabySeq, Generation Study, Lee et al., NEOEXOME, NewbornsInSA, Screen4Care, Foresite, Fulgent, Igenomix, Mendelics, PerkinElmer, Sema4
+COLQ		11	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care
+PRKDC		11	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, Jian et al., NewbornsInSA, Prog Gen Puglia, Nurture
+CHRNB1		10	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care
+SRP54		11	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia, Mendelics, Nurture
+MVK		12	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, Luo et al., NewbornsInSA, Prog Gen Puglia, Screen4Care, Igenomix
+USH2A		13	BabyScreen+, BabySeq, Jian et al., Lee et al., Luo et al., NEOEXOME, NESTS, NewbornsInSA, Wang et al., Foresite, Fulgent, Igenomix, PerkinElmer
+ACAD8		19	BabyDetect, BabySeq, Chen et al., GNStar, GUARDIAN Study, Jian et al., Lee et al., Luo et al., NEOEXOME, Neoseq, NESTS, Prog Gen Puglia, Screen4Care, Wang et al., Foresite, Fulgent, Igenomix, Nurture, PerkinElmer
+IYD		12	BabyDetect, BabyScreen+, BabySeq, Generation Study, Lee et al., NEOEXOME, NewbornsInSA, Foresite, Fulgent, Igenomix, PerkinElmer, Sema4
+NBN		11	BabyDetect, BabySeq, BeginNGS, FirstSteps, Generation Study, Jian et al., Luo et al., NEOEXOME, Prog Gen Puglia, Screen4Care, Nurture
+CLCN7		12	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, Lee et al., Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia
+NCF1		9	BabyDetect, BabySeq, BeginNGS, FirstSteps, Luo et al., NESTS, Prog Gen Puglia, Igenomix, Nurture
+NEUROG3		11	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia, Mendelics, Nurture
+KCNJ1		11	BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, Luo et al., NEOEXOME, NESTS, NewbornsInSA, Prog Gen Puglia, Mendelics, Nurture
+NNT		11	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia, Mendelics, Nurture
+MRAP		11	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia, Mendelics, Nurture
+MPL		11	BabyScreen+, BabySeq, GUARDIAN Study, NEOEXOME, NewbornsInSA, Foresite, Fulgent, Mendelics, Nurture, PerkinElmer, Sema4
+DOK7		12	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Nurture
+COL1A2		13	BabyScreen+, BabySeq, Generation Study, Lee et al., Luo et al., NEOEXOME, NESTS, NewbornsInSA, Screen4Care, Foresite, Fulgent, Mendelics, PerkinElmer
+KCNQ2		12	BabySeq, BeginNGS, FirstSteps, Generation Study, NEOEXOME, Prog Gen Puglia, Foresite, Fulgent, Igenomix, Nurture, PerkinElmer, Sema4
+COQ2		10	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, NESTS, NewbornsInSA, Prog Gen Puglia, Screen4Care, Nurture
+ERCC4		10	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, Luo et al., NewbornsInSA, Prog Gen Puglia, Nurture
+AGRN		10	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care
+PMM2		10	BabySeq, BeginNGS, FirstSteps, Generation Study, GNStar, NEOEXOME, Neoseq, NESTS, Screen4Care, Nurture
+RAPSN		12	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Mendelics
+ABCG5		10	BabyScreen+, BabySeq, Chen et al., GNStar, NEOEXOME, Neoseq, NewbornsInSA, Wang et al., Fulgent, Mendelics
+CYP11A1		10	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, NewbornsInSA, Prog Gen Puglia, Screen4Care, Nurture
+OXCT1		11	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia, Mendelics, Nurture
+CHRNA1		12	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Nurture
+MCEE		15	BabyDetect, BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, Luo et al., NEOEXOME, NESTS, NewbornsInSA, Foresite, Fulgent, Igenomix, Nurture, PerkinElmer, Sema4
+LIG4		10	BabyDetect, BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, NewbornsInSA, Nurture
+USH1C		10	BabyScreen+, BabySeq, EarlyCheck, Luo et al., NESTS, NewbornsInSA, Foresite, Fulgent, Igenomix, PerkinElmer
+SLC12A1		10	BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, NEOEXOME, NESTS, NewbornsInSA, Prog Gen Puglia, Mendelics, Nurture
+HESX1		10	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, Luo et al., NewbornsInSA, Prog Gen Puglia, Mendelics, Nurture
+FERMT3		10	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia, Screen4Care, Nurture
+SLC6A8		9	BabyDetect, BabySeq, FirstSteps, GUARDIAN Study, NEOEXOME, Prog Gen Puglia, Screen4Care, Igenomix, Nurture
+CYBC1		8	BabyScreen+, FirstSteps, Generation Study, NewbornsInSA, Prog Gen Puglia, Igenomix, Mendelics, Nurture
+ACAD9		9	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia, Nurture
+POR		11	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, NewbornsInSA, Prog Gen Puglia, Foresite, Fulgent, PerkinElmer
+OTOF		10	BabyScreen+, BabySeq, EarlyCheck, Generation Study, GUARDIAN Study, Luo et al., NESTS, NewbornsInSA, Wang et al., Fulgent
+SCN4A		9	BabySeq, BeginNGS, FirstSteps, Generation Study, Lee et al., Luo et al., NEOEXOME, Prog Gen Puglia, Screen4Care
+CBLIF		10	BabyDetect, BabyScreen+, BabySeq, BeginNGS, EarlyCheck, FirstSteps, Generation Study, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia
+VPS45		10	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia, Mendelics, Nurture
+GLDC		9	BabyDetect, BabySeq, Chen et al., GNStar, Luo et al., NEOEXOME, Neoseq, NESTS, Wang et al.
+SP110		7	BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, Jian et al., NewbornsInSA, Nurture
+AMN		10	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NESTS, NewbornsInSA, Prog Gen Puglia
+COQ4		10	BabyScreen+, BabySeq, BeginNGS, Chen et al., FirstSteps, Generation Study, NewbornsInSA, Prog Gen Puglia, Wang et al., Nurture
+ITGB2		11	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia, Screen4Care, Nurture
+FGA		11	BabyScreen+, BabySeq, FirstSteps, Generation Study, GUARDIAN Study, Luo et al., NEOEXOME, NewbornsInSA, Screen4Care, Mendelics, Nurture
+ENG		9	BabyScreen+, BabySeq, Lee et al., Luo et al., NESTS, NewbornsInSA, Foresite, Fulgent, PerkinElmer
+TRMU		8	BabyScreen+, BabySeq, NewbornsInSA, Foresite, Fulgent, Nurture, PerkinElmer, Sema4
+CA2		10	BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, Luo et al., NEOEXOME, NESTS, NewbornsInSA, Screen4Care, Nurture
+TCF3		9	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, Jian et al., NewbornsInSA, Prog Gen Puglia, Nurture
+BLNK		10	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, Jian et al., NewbornsInSA, Prog Gen Puglia, Nurture
+CD79A		10	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, Jian et al., NewbornsInSA, Prog Gen Puglia, Nurture
+CD79B		10	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, Jian et al., NewbornsInSA, Prog Gen Puglia, Nurture
+CORO1A		9	BabyDetect, BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, Jian et al., NewbornsInSA, Mendelics, Nurture
+DPAGT1		11	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care, Nurture
+WIPF1		8	BabyDetect, BabyScreen+, GUARDIAN Study, Jian et al., NewbornsInSA, Prog Gen Puglia, Mendelics, Nurture
+GLIS3		12	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, Lee et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Mendelics
+SGSH		9	BabyDetect, BabySeq, Chen et al., Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Wang et al., Igenomix
+MYO7A		9	BabyScreen+, BabySeq, EarlyCheck, Jian et al., Luo et al., NESTS, NewbornsInSA, Wang et al., Igenomix
+FANCB		9	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, NewbornsInSA, Prog Gen Puglia, Screen4Care, Nurture
+STAT3		8	BabyScreen+, BabySeq, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia
+PGM1		12	BabyScreen+, BabySeq, BeginNGS, Chen et al., FirstSteps, Generation Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia, Wang et al., Mendelics, Nurture
+PDHA1		9	BabyScreen+, BabySeq, FirstSteps, Lee et al., Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Nurture
+MYH7		11	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Luo et al., NEOEXOME, NESTS, NewbornsInSA, Foresite, PerkinElmer
+ENPP1		9	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, Luo et al., NEOEXOME, NewbornsInSA, Nurture
+LRP4		7	BabyDetect, BabySeq, BeginNGS, FirstSteps, NEOEXOME, Prog Gen Puglia, Screen4Care
+FLAD1		9	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, NewbornsInSA, Prog Gen Puglia, Mendelics, Nurture
+TNFRSF11A		12	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, Lee et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Nurture
+SLC18A3		10	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care
+GH1		8	BabyScreen+, BabySeq, Generation Study, GNStar, Neoseq, NewbornsInSA, Prog Gen Puglia, Nurture
+BRCA2		8	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, NewbornsInSA, Prog Gen Puglia, Foresite
+FGG		10	BabyScreen+, BabySeq, FirstSteps, Generation Study, GUARDIAN Study, Luo et al., NEOEXOME, NewbornsInSA, Screen4Care, Nurture
+PNP		8	BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, Jian et al., NewbornsInSA, Mendelics, Nurture
+HCFC1	Secondary	11	BabyDetect, BabySeq, BeginNGS, FirstSteps, GNStar, GUARDIAN Study, Jian et al., NEOEXOME, Neoseq, Prog Gen Puglia, Igenomix
+PTF1A		10	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia, Nurture
+IGF1		7	BabyScreen+, BabySeq, Generation Study, NewbornsInSA, Screen4Care, Igenomix, Nurture
+BSND		9	BabyScreen+, BabySeq, GUARDIAN Study, NEOEXOME, NESTS, NewbornsInSA, Prog Gen Puglia, Mendelics, Nurture
+COL13A1		11	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia, Screen4Care
+F2		8	BabyDetect, BabySeq, BeginNGS, FirstSteps, Generation Study, Luo et al., Prog Gen Puglia, Screen4Care
+ARPC1B		9	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, Jian et al., NewbornsInSA, Prog Gen Puglia
+CFP		9	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NESTS, NewbornsInSA, Prog Gen Puglia
+IGHM		8	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, Jian et al., NewbornsInSA, Prog Gen Puglia
+FANCI		9	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, NewbornsInSA, Prog Gen Puglia, Screen4Care, Nurture
+FANCD2		9	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, NewbornsInSA, Prog Gen Puglia, Screen4Care, Nurture
+PREPL		7	BabyDetect, BabySeq, BeginNGS, FirstSteps, Generation Study, NEOEXOME, Prog Gen Puglia
+GATA1		8	BabyDetect, BabySeq, BeginNGS, FirstSteps, NEOEXOME, Prog Gen Puglia, Screen4Care, Nurture
+GLB1		12	BabySeq, Chen et al., GUARDIAN Study, Lee et al., Luo et al., NEOEXOME, NESTS, Wang et al., Foresite, Fulgent, Igenomix, PerkinElmer
+GFPT1		9	BabyDetect, BabySeq, BeginNGS, FirstSteps, Generation Study, NEOEXOME, Prog Gen Puglia, Screen4Care, Nurture
+DHCR7		9	BabyDetect, BabyScreen+, BabySeq, Lee et al., Luo et al., NewbornsInSA, Foresite, Nurture, PerkinElmer
+CD247	Core	8	BabyDetect, BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, Jian et al., NewbornsInSA, Mendelics
+ADK	Secondary	5	BabyDetect, BabySeq, NEOEXOME, Prog Gen Puglia, Igenomix
+PKD2		9	BabySeq, BeginNGS, FirstSteps, Lee et al., Luo et al., NESTS, Foresite, Fulgent, PerkinElmer
+CUBN		10	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NESTS, NewbornsInSA, Prog Gen Puglia
+IL2RB		9	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia
+HPS1		7	BabySeq, EarlyCheck, Luo et al., NESTS, Foresite, Fulgent, PerkinElmer
+HPS4		7	BabySeq, EarlyCheck, Luo et al., NESTS, Foresite, Fulgent, PerkinElmer
+SCN8A		9	BabySeq, BeginNGS, FirstSteps, Generation Study, Prog Gen Puglia, Foresite, Fulgent, PerkinElmer, Sema4
+FGFR3		9	BabyScreen+, BabySeq, GUARDIAN Study, Lee et al., Luo et al., NESTS, NewbornsInSA, Screen4Care, Igenomix
+PCDH15		7	BabyScreen+, BabySeq, EarlyCheck, Luo et al., NESTS, NewbornsInSA, Wang et al.
+GHR		9	BabyScreen+, BabySeq, Generation Study, Luo et al., NEOEXOME, NewbornsInSA, Prog Gen Puglia, Foresite, Nurture
+HNF4A		9	BabySeq, BeginNGS, FirstSteps, NEOEXOME, Prog Gen Puglia, Foresite, Fulgent, Nurture, PerkinElmer
+TMPRSS3		11	BabyScreen+, BabySeq, EarlyCheck, Luo et al., NESTS, NewbornsInSA, Wang et al., Foresite, Fulgent, Igenomix, PerkinElmer
+CACNA1D		7	BabyDetect, BabySeq, BeginNGS, FirstSteps, NEOEXOME, Prog Gen Puglia, Nurture
+FGB		9	BabyScreen+, BabySeq, FirstSteps, Generation Study, Luo et al., NEOEXOME, NewbornsInSA, Screen4Care, Nurture
+CXCR4		8	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, NewbornsInSA, Prog Gen Puglia, Mendelics
+HSD17B10	Secondary	7	BabySeq, Jian et al., Lee et al., Luo et al., NEOEXOME, NESTS, Igenomix
+TMIE		10	BabyScreen+, BabySeq, EarlyCheck, Luo et al., NESTS, NewbornsInSA, Foresite, Fulgent, Igenomix, PerkinElmer
+TRIOBP		10	BabyScreen+, BabySeq, EarlyCheck, Luo et al., NESTS, NewbornsInSA, Foresite, Fulgent, Igenomix, PerkinElmer
+MYO15A		10	BabyScreen+, BabySeq, EarlyCheck, Luo et al., NESTS, NewbornsInSA, Wang et al., Foresite, Fulgent, PerkinElmer
+TECTA		10	BabyScreen+, BabySeq, EarlyCheck, Jian et al., Luo et al., NESTS, NewbornsInSA, Foresite, Fulgent, PerkinElmer
+RYR1		8	BabyScreen+, BabySeq, BeginNGS, FirstSteps, NewbornsInSA, Prog Gen Puglia, Foresite, PerkinElmer
+EIF2AK3		8	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia
+CA5A		9	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia, Nurture
+ADA2		7	BabyScreen+, BabySeq, FirstSteps, Generation Study, NewbornsInSA, Screen4Care, Nurture
+PCSK9		8	BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, NEOEXOME, NewbornsInSA, Foresite, Nurture
+SCN2A		9	BabySeq, BeginNGS, FirstSteps, Generation Study, Prog Gen Puglia, Foresite, Fulgent, PerkinElmer, Sema4
+FOXE1		7	BabyDetect, BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, NEOEXOME, NewbornsInSA
+SLC5A7		9	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, NEOEXOME, NewbornsInSA, Screen4Care
+CYP7B1		7	BabyScreen+, BabySeq, Generation Study, NEOEXOME, NewbornsInSA, Mendelics, Nurture
+LHX4		9	BabyScreen+, BabySeq, BeginNGS, FirstSteps, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia, Mendelics, Nurture
+AMT		8	BabyDetect, BabySeq, Chen et al., Luo et al., NEOEXOME, NESTS, Wang et al., Igenomix
+TTC7A		8	BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, Jian et al., Prog Gen Puglia, Nurture
+DOCK2		8	BabyDetect, BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, Jian et al., NewbornsInSA, Nurture
+GYS2		13	BabyDetect, BabyScreen+, BabySeq, GUARDIAN Study, Luo et al., NEOEXOME, NewbornsInSA, Foresite, Fulgent, Igenomix, Mendelics, PerkinElmer, Sema4
+LRBA		6	BabyScreen+, BabySeq, NESTS, NewbornsInSA, Prog Gen Puglia, Nurture
+SLC16A1		8	BabySeq, BeginNGS, FirstSteps, NEOEXOME, Prog Gen Puglia, Screen4Care, Mendelics, Nurture
+CARD11		7	BabyScreen+, BabySeq, GUARDIAN Study, Jian et al., NEOEXOME, NewbornsInSA, Nurture
+TK2		6	BabyScreen+, BabySeq, NewbornsInSA, Screen4Care, Mendelics, Nurture
+TPK1		8	BabyDetect, BabyScreen+, BabySeq, Generation Study, NewbornsInSA, Prog Gen Puglia, Mendelics, Nurture
+OPA3	Secondary	6	BabySeq, Lee et al., Luo et al., NEOEXOME, Prog Gen Puglia, Igenomix
+TRHR		11	BabyScreen+, BabySeq, Generation Study, NEOEXOME, NewbornsInSA, Foresite, Fulgent, Igenomix, Mendelics, PerkinElmer, Sema4
+IGLL1		8	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, Jian et al., NewbornsInSA, Prog Gen Puglia
+C3		9	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, NEOEXOME, NESTS, NewbornsInSA, Prog Gen Puglia
+MYSM1		10	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, GUARDIAN Study, Jian et al., NewbornsInSA, Prog Gen Puglia, Nurture
+CFH		8	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, NEOEXOME, NESTS, NewbornsInSA
+HK1		8	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia
+DNAJC19	Secondary	5	BabySeq, Lee et al., Luo et al., NEOEXOME, Prog Gen Puglia
+NR5A1		8	BabyScreen+, BabySeq, BeginNGS, FirstSteps, NEOEXOME, NewbornsInSA, Prog Gen Puglia, Nurture
+SLC12A3		8	BabySeq, Chen et al., GUARDIAN Study, NEOEXOME, NewbornsInSA, Screen4Care, Wang et al., Nurture
+TGFBR1		8	BabyScreen+, BabySeq, Jian et al., NewbornsInSA, Foresite, Fulgent, Nurture, PerkinElmer
+TGFBR2		8	BabyScreen+, BabySeq, Jian et al., NewbornsInSA, Foresite, Fulgent, Nurture, PerkinElmer
+MAGT1		7	BabyScreen+, BabySeq, Generation Study, NewbornsInSA, Prog Gen Puglia, Mendelics, Nurture
+ALG14		9	BabyDetect, BabySeq, BeginNGS, FirstSteps, Generation Study, NEOEXOME, Prog Gen Puglia, Screen4Care, Nurture
+TPRN		9	BabyScreen+, BabySeq, EarlyCheck, NESTS, NewbornsInSA, Foresite, Fulgent, Igenomix, PerkinElmer
+DKC1		8	BabyDetect, BabySeq, BeginNGS, FirstSteps, Luo et al., NEOEXOME, Prog Gen Puglia, Nurture
+CD40		8	BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, Jian et al., NewbornsInSA, Mendelics, Nurture
+STK4		7	BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, Jian et al., NewbornsInSA, Nurture
+ABCC6		8	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, NewbornsInSA, Prog Gen Puglia, Nurture
+FANCF		7	BabyDetect, BabySeq, BeginNGS, FirstSteps, Prog Gen Puglia, Screen4Care, Nurture
+FANCE		7	BabyDetect, BabySeq, BeginNGS, FirstSteps, Prog Gen Puglia, Screen4Care, Nurture
+PRRT2		8	BabySeq, BeginNGS, FirstSteps, NEOEXOME, Foresite, Fulgent, PerkinElmer, Sema4
+ITK		7	BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, Jian et al., NewbornsInSA, Nurture
+PAX3		9	BabyScreen+, BabySeq, EarlyCheck, Luo et al., NESTS, NewbornsInSA, Foresite, Fulgent, PerkinElmer
+FANCL		7	BabyDetect, BabySeq, BeginNGS, FirstSteps, Prog Gen Puglia, Screen4Care, Nurture
+CFI		8	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, NEOEXOME, NESTS, NewbornsInSA
+COQ8B		8	BabySeq, BeginNGS, FirstSteps, Generation Study, NESTS, Prog Gen Puglia, Screen4Care, Nurture
+GNAS		7	BabyDetect, BabyScreen+, BabySeq, Lee et al., NEOEXOME, NewbornsInSA, Screen4Care
+DSP		7	BabySeq, BeginNGS, FirstSteps, NEOEXOME, Prog Gen Puglia, Foresite, PerkinElmer
+IKBKB		7	BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, Jian et al., NewbornsInSA, Nurture
+RPL15		9	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, NewbornsInSA, Prog Gen Puglia, Nurture
+PKD1		7	BabySeq, BeginNGS, FirstSteps, Lee et al., Luo et al., NEOEXOME, Nurture
+SLX4		8	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, NewbornsInSA, Prog Gen Puglia, Nurture
+HSD11B2		7	BabyScreen+, BabySeq, EarlyCheck, Generation Study, GUARDIAN Study, NewbornsInSA, Nurture
+NKX2-5		11	BabyDetect, BabyScreen+, BabySeq, GUARDIAN Study, Jian et al., Lee et al., NEOEXOME, NESTS, NewbornsInSA, Igenomix, Mendelics
+PSAT1		7	BabyDetect, BabySeq, BeginNGS, FirstSteps, Prog Gen Puglia, Screen4Care, Mendelics
+JAGN1		7	BabyDetect, BabyScreen+, BabySeq, GUARDIAN Study, NewbornsInSA, Mendelics, Nurture
+CFD		8	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia
+NF2		8	BabySeq, Lee et al., Luo et al., NEOEXOME, NESTS, Foresite, Fulgent, PerkinElmer
+IL10RB		9	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia
+IL10RA		9	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia
+AICDA		7	BabyScreen+, BabySeq, GUARDIAN Study, Jian et al., NewbornsInSA, Mendelics, Nurture
+PDSS2		7	BabySeq, BeginNGS, FirstSteps, NESTS, Prog Gen Puglia, Screen4Care, Nurture
+AP3B1		7	BabyScreen+, BabySeq, Generation Study, Luo et al., NESTS, NewbornsInSA, Nurture
+GHRHR		8	BabyScreen+, BabySeq, Generation Study, GNStar, Neoseq, NewbornsInSA, Prog Gen Puglia, Nurture
+NF1		8	BabySeq, Lee et al., Luo et al., NEOEXOME, NESTS, Foresite, Fulgent, PerkinElmer
+UBE2T		8	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, NewbornsInSA, Prog Gen Puglia, Nurture
+CHD7		8	BabySeq, Chen et al., Jian et al., Lee et al., Luo et al., NEOEXOME, NESTS, Wang et al.
+PDHB		7	BabyScreen+, BabySeq, FirstSteps, Lee et al., NewbornsInSA, Prog Gen Puglia, Nurture
+CYP2R1		7	BabyScreen+, BabySeq, Generation Study, NewbornsInSA, Prog Gen Puglia, Mendelics, Nurture
+COL2A1		7	BabyScreen+, BabySeq, EarlyCheck, Lee et al., Luo et al., NESTS, NewbornsInSA
+POMC		6	BabyScreen+, BabySeq, Generation Study, NewbornsInSA, Prog Gen Puglia, Nurture
+PGM3		10	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, GUARDIAN Study, Jian et al., NewbornsInSA, Prog Gen Puglia, Nurture
+IRAK4		10	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia, Nurture
+BRIP1		8	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, NewbornsInSA, Prog Gen Puglia, Nurture
+CLCNKB		7	BabySeq, GUARDIAN Study, NEOEXOME, NESTS, Prog Gen Puglia, Mendelics, Nurture
+SNAP25		6	BabyDetect, BabySeq, BeginNGS, FirstSteps, NEOEXOME, Prog Gen Puglia
+ATM		6	BabySeq, Jian et al., Lee et al., Luo et al., NEOEXOME, NESTS
+NR3C2		9	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia
+SYT2		7	BabyDetect, BabyScreen+, BabySeq, Generation Study, NEOEXOME, NewbornsInSA, Screen4Care
+F7		6	BabyScreen+, BabySeq, EarlyCheck, Generation Study, NewbornsInSA, Screen4Care
+APOB		7	BabySeq, Generation Study, GUARDIAN Study, NEOEXOME, NewbornsInSA, Prog Gen Puglia, Nurture
+NADK2	Secondary	7	BabyDetect, Chen et al., Jian et al., NEOEXOME, NESTS, Prog Gen Puglia, Wang et al.
+LMNA		8	BabySeq, Lee et al., Luo et al., NEOEXOME, NESTS, Foresite, Nurture, PerkinElmer
+SERPINA1		7	BabyDetect, BabySeq, BeginNGS, FirstSteps, Lee et al., Luo et al., NEOEXOME
+CSF3R		9	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia, Nurture
+ALAS2		5	BabySeq, Generation Study, NEOEXOME, NESTS, Nurture
+JAG1		10	BabySeq, Lee et al., Luo et al., NEOEXOME, NESTS, Foresite, Fulgent, Igenomix, PerkinElmer, Sema4
+ANK1		8	BabySeq, Luo et al., NEOEXOME, NESTS, Foresite, Fulgent, PerkinElmer, Sema4
+MITF		7	BabyScreen+, BabySeq, EarlyCheck, Luo et al., NEOEXOME, NESTS, NewbornsInSA
+SOX10		7	BabySeq, EarlyCheck, NEOEXOME, NESTS, Foresite, Fulgent, PerkinElmer
+SLC25A1		7	BabyDetect, BabySeq, BeginNGS, FirstSteps, Generation Study, Prog Gen Puglia, Screen4Care
+HNF1A		7	BabySeq, BeginNGS, FirstSteps, NEOEXOME, Prog Gen Puglia, Foresite, Nurture
+PDSS1		5	BabySeq, BeginNGS, FirstSteps, Prog Gen Puglia, Nurture
+TMC1		7	BabyScreen+, BabySeq, EarlyCheck, Luo et al., NESTS, NewbornsInSA, Wang et al.
+FOXA2		7	BabyScreen+, BabySeq, BeginNGS, FirstSteps, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia
+SNX10		7	BabyScreen+, BabySeq, Generation Study, Lee et al., NEOEXOME, NewbornsInSA, Nurture
+GATA4		8	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Jian et al., NEOEXOME, NESTS, NewbornsInSA
+HGSNAT		6	BabyDetect, BabySeq, Luo et al., NEOEXOME, Igenomix, Nurture
+PHKA1		6	BabySeq, Chen et al., Luo et al., NEOEXOME, Prog Gen Puglia, Wang et al.
+COQ8A		7	BabyScreen+, BabySeq, BeginNGS, FirstSteps, NewbornsInSA, Prog Gen Puglia, Nurture
+ALDH5A1		5	BabySeq, Chen et al., Luo et al., Wang et al., Nurture
+ALDH4A1		7	BabyScreen+, BabySeq, GUARDIAN Study, Lee et al., NEOEXOME, NewbornsInSA, Igenomix
+PTCH1		7	BabyScreen+, BabySeq, NewbornsInSA, Foresite, Fulgent, Nurture, PerkinElmer
+IL21R		5	BabyScreen+, BabySeq, GUARDIAN Study, Jian et al., NewbornsInSA
+GNMT	Secondary	6	BabySeq, GUARDIAN Study, Jian et al., Luo et al., NEOEXOME, Igenomix
+CIB2		6	BabyScreen+, BabySeq, EarlyCheck, Luo et al., NESTS, NewbornsInSA
+SLC5A6		7	BabyScreen+, BabySeq, FirstSteps, NewbornsInSA, Prog Gen Puglia, Mendelics, Nurture
+ABCG8		7	BabySeq, Chen et al., GNStar, NEOEXOME, Neoseq, Wang et al., Mendelics
+IL2RA		6	BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, NewbornsInSA, Nurture
+GATA2		4	BabyScreen+, BabySeq, NewbornsInSA, Mendelics
+SERPING1		5	BabySeq, Generation Study, Luo et al., NESTS, Igenomix
+RYR2		8	BabyDetect, BabyScreen+, BabySeq, NEOEXOME, NewbornsInSA, Prog Gen Puglia, Foresite, Nurture
+ALG2		6	BabyDetect, BabySeq, Generation Study, NEOEXOME, Screen4Care, Nurture
+DNAJC21		7	BabyDetect, BabyScreen+, BabySeq, Generation Study, NewbornsInSA, Mendelics, Nurture
+MYO9A		6	BabyDetect, BabySeq, BeginNGS, FirstSteps, NEOEXOME, Prog Gen Puglia
+USH1G		9	BabyScreen+, BabySeq, EarlyCheck, NESTS, NewbornsInSA, Foresite, Fulgent, Igenomix, PerkinElmer
+SLC39A8		8	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, NewbornsInSA, Prog Gen Puglia, Nurture
+STAT1		6	BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, NewbornsInSA, Mendelics
+MAD2L2		6	BabyDetect, BabySeq, BeginNGS, FirstSteps, Prog Gen Puglia, Nurture
+MAGED2		5	BabySeq, Generation Study, NEOEXOME, Prog Gen Puglia, Nurture
+GATA6		6	BabySeq, BeginNGS, FirstSteps, Jian et al., NESTS, Nurture
+CFB		6	BabySeq, BeginNGS, FirstSteps, Generation Study, NEOEXOME, Prog Gen Puglia
+LEP		6	BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, NewbornsInSA, Nurture
+CLDN14		6	BabyScreen+, BabySeq, EarlyCheck, Luo et al., NESTS, NewbornsInSA
+CTPS1		9	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia
+SMAD4		7	BabySeq, Lee et al., Luo et al., NESTS, Foresite, Fulgent, PerkinElmer
+MTHFD1		7	BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, Jian et al., NewbornsInSA, Nurture
+IKZF1		5	BabyScreen+, BabySeq, Jian et al., NewbornsInSA, Nurture
+NFKB2		5	BabyDetect, BabySeq, Jian et al., NESTS, Nurture
+DLAT		6	BabyScreen+, BabySeq, Lee et al., NewbornsInSA, Prog Gen Puglia, Nurture
+CD3G		7	BabyDetect, BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, Jian et al., NewbornsInSA
+PDHX		5	BabyScreen+, BabySeq, NewbornsInSA, Prog Gen Puglia, Nurture
+WHRN		9	BabyScreen+, BabySeq, Luo et al., NESTS, NewbornsInSA, Foresite, Fulgent, Igenomix, PerkinElmer
+VAMP1		9	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, NewbornsInSA, Prog Gen Puglia, Screen4Care
+FECH		7	BabyScreen+, BabySeq, Generation Study, NESTS, NewbornsInSA, Igenomix, Nurture
+GFI1		7	BabyDetect, BabyScreen+, BabySeq, Luo et al., NewbornsInSA, Mendelics, Nurture
+PLG		7	BabyScreen+, BabySeq, FirstSteps, GUARDIAN Study, Luo et al., NESTS, NewbornsInSA
+ADGRV1		4	BabyScreen+, BabySeq, Luo et al., NewbornsInSA
+RFX6		4	BabySeq, BeginNGS, FirstSteps, NEOEXOME
+RPS29		6	BabyDetect, BabySeq, BeginNGS, FirstSteps, Prog Gen Puglia, Nurture
+SLC25A19		7	BabyDetect, BabyScreen+, BabySeq, NewbornsInSA, Prog Gen Puglia, Mendelics, Nurture
+F10		6	BabyScreen+, BabySeq, EarlyCheck, Generation Study, Luo et al., NewbornsInSA
+GOT2		8	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, NewbornsInSA, Prog Gen Puglia, Mendelics
+TP53		6	BabyScreen+, BabySeq, NewbornsInSA, Prog Gen Puglia, Foresite, Nurture
+MYO6		6	BabyScreen+, BabySeq, Jian et al., Luo et al., NESTS, NewbornsInSA
+TNNT2		6	BabySeq, Luo et al., NEOEXOME, NESTS, NewbornsInSA, Foresite
+MYBPC3		6	BabyDetect, BabySeq, Luo et al., NEOEXOME, NESTS, Foresite
+C8B		8	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia
+C9		8	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia
+C6		8	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia
+C7		8	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia
+DNMT3B		5	BabyScreen+, BabySeq, Generation Study, Jian et al., NewbornsInSA
+PDX1		4	BabyScreen+, BabySeq, EarlyCheck, NewbornsInSA
+SLC35A2		6	BabyScreen+, BabySeq, BeginNGS, FirstSteps, NewbornsInSA, Nurture
+GLRA1		9	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia, Mendelics
+RFWD3		5	BabyDetect, BeginNGS, FirstSteps, Prog Gen Puglia, Nurture
+RPL18		5	BabyDetect, BeginNGS, FirstSteps, Prog Gen Puglia, Nurture
+RPL35		5	BabyDetect, BeginNGS, FirstSteps, Prog Gen Puglia, Nurture
+RPS15A		5	BabyDetect, BeginNGS, FirstSteps, Prog Gen Puglia, Nurture
+GSS		7	BabySeq, Prog Gen Puglia, Foresite, Fulgent, Igenomix, PerkinElmer, Sema4
+DHFR		6	BabyScreen+, BabySeq, Generation Study, NewbornsInSA, Mendelics, Nurture
+SLC9A3		5	BabyDetect, BabySeq, Generation Study, Prog Gen Puglia, Nurture
+CDKN1C		7	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, NewbornsInSA, Prog Gen Puglia
+FGF23		6	BabyScreen+, BabySeq, Generation Study, Luo et al., NEOEXOME, NewbornsInSA
+ATP8B1		10	BabyDetect, BabySeq, Chen et al., GNStar, Lee et al., Luo et al., Neoseq, NESTS, Wang et al., Mendelics
+ABCB11		10	BabyDetect, BabySeq, Chen et al., GNStar, Luo et al., NEOEXOME, Neoseq, NESTS, Wang et al., Mendelics
+ABCB4		8	BabyDetect, BabySeq, Chen et al., Luo et al., NEOEXOME, NESTS, Wang et al., Mendelics
+GRXCR1		5	BabyScreen+, BabySeq, EarlyCheck, NESTS, NewbornsInSA
+LRTOMT		5	BabyScreen+, BabySeq, EarlyCheck, NESTS, NewbornsInSA
+MARVELD2		5	BabyScreen+, BabySeq, EarlyCheck, NESTS, NewbornsInSA
+GIPC3		5	BabyScreen+, BabySeq, EarlyCheck, NESTS, NewbornsInSA
+ILDR1		5	BabyScreen+, BabySeq, EarlyCheck, NESTS, NewbornsInSA
+BSCL2		6	BabyScreen+, BabySeq, Generation Study, Luo et al., NewbornsInSA, Nurture
+TSR2		6	BabyDetect, BabySeq, BeginNGS, FirstSteps, Prog Gen Puglia, Nurture
+RPS28		6	BabyDetect, BabySeq, BeginNGS, FirstSteps, Prog Gen Puglia, Nurture
+NFKBIA		6	BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, Jian et al., NewbornsInSA
+EDNRB		5	BabyScreen+, BabySeq, Luo et al., NESTS, NewbornsInSA
+ICOS		6	BabyScreen+, BabySeq, Jian et al., Luo et al., NESTS, NewbornsInSA
+CUL3		5	BabyDetect, BabyScreen+, BabySeq, Generation Study, NewbornsInSA
+GJB6		9	BabySeq, Luo et al., NESTS, Prog Gen Puglia, Foresite, Fulgent, Igenomix, Mendelics, PerkinElmer
+SAMD9		6	BabyScreen+, BabySeq, Generation Study, NewbornsInSA, Mendelics, Nurture
+AAAS		6	BabyScreen+, BabySeq, Generation Study, NewbornsInSA, Igenomix, Nurture
+GGCX		6	BabyScreen+, BabySeq, GUARDIAN Study, NewbornsInSA, Mendelics, Nurture
+VWF		5	BabySeq, EarlyCheck, Lee et al., NEOEXOME, Screen4Care
+C2		6	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, NewbornsInSA
+RPL27		5	BabyDetect, BeginNGS, FirstSteps, Prog Gen Puglia, Nurture
+RPS27		5	BabyDetect, BeginNGS, FirstSteps, Prog Gen Puglia, Nurture
+RPL26		5	BabyDetect, BeginNGS, FirstSteps, Prog Gen Puglia, Nurture
+ITGB3		6	BabyScreen+, BabySeq, Generation Study, Luo et al., NEOEXOME, NewbornsInSA
+PKHD1		9	BabySeq, Lee et al., Luo et al., NEOEXOME, NESTS, Foresite, Fulgent, Nurture, PerkinElmer
+UMPS		5	BabyScreen+, BabySeq, GUARDIAN Study, NewbornsInSA, Nurture
+ORAI1		6	BabyScreen+, BabySeq, GUARDIAN Study, Jian et al., NewbornsInSA, Mendelics
+TNNI3		5	BabySeq, Luo et al., NEOEXOME, NESTS, Foresite
+COQ9		5	BabySeq, BeginNGS, FirstSteps, Prog Gen Puglia, Nurture
+AIRE		5	BabyScreen+, BabySeq, Generation Study, NewbornsInSA, Prog Gen Puglia
+CACNA1S		5	BabyScreen+, BabySeq, Lee et al., Luo et al., NewbornsInSA
+NKX2-1		7	BabyDetect, BabyScreen+, BabySeq, GUARDIAN Study, Lee et al., NewbornsInSA, Screen4Care
+FUCA1		5	BabyScreen+, BabySeq, GUARDIAN Study, NEOEXOME, NewbornsInSA
+PTPN11		6	BabySeq, Lee et al., Luo et al., NEOEXOME, NESTS, Fulgent
+COL11A1		7	BabyScreen+, BabySeq, EarlyCheck, Lee et al., Luo et al., NESTS, NewbornsInSA
+CD70		5	BabyScreen+, BabySeq, Generation Study, NewbornsInSA, Nurture
+CD27		5	BabyScreen+, BabySeq, GUARDIAN Study, NewbornsInSA, Nurture
+EDN3		6	BabyScreen+, BabySeq, Luo et al., NEOEXOME, NESTS, NewbornsInSA
+PJVK		6	BabyScreen+, BabySeq, EarlyCheck, Luo et al., NESTS, NewbornsInSA
+ESPN		6	BabyScreen+, BabySeq, EarlyCheck, Luo et al., NESTS, NewbornsInSA
+LHFPL5		6	BabyScreen+, BabySeq, EarlyCheck, Luo et al., NESTS, NewbornsInSA
+SMAD3		7	BabyScreen+, BabySeq, NewbornsInSA, Foresite, Fulgent, Nurture, PerkinElmer
+SLC7A9		6	BabySeq, FirstSteps, Luo et al., NESTS, Igenomix, Mendelics
+KCNE1		8	BabyDetect, BabySeq, EarlyCheck, Luo et al., NESTS, Foresite, Fulgent, PerkinElmer
+HEXA		4	BabySeq, Luo et al., NEOEXOME, Igenomix
+VHL		7	BabyScreen+, BabySeq, Lee et al., NewbornsInSA, Foresite, Fulgent, PerkinElmer
+PDP1		5	BabyScreen+, BabySeq, FirstSteps, NewbornsInSA, Nurture
+THRB		6	BabyDetect, BabySeq, Generation Study, GNStar, NEOEXOME, Neoseq
+MECP2		6	BabySeq, Lee et al., Luo et al., NEOEXOME, NESTS, Nurture
+EPB42		6	BabySeq, NESTS, Foresite, Fulgent, PerkinElmer, Sema4
+LIG1		6	BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, Jian et al., NewbornsInSA
+C5		8	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, NewbornsInSA, Prog Gen Puglia
+PIK3CD		5	BabyScreen+, BabySeq, Jian et al., NewbornsInSA, Screen4Care
+LEPR		5	BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, NewbornsInSA
+CAD		6	BabyScreen+, BabySeq, FirstSteps, Generation Study, NewbornsInSA, Mendelics
+TRNT1		4	BabySeq, Jian et al., NEOEXOME, Nurture
+SLC45A2		7	BabySeq, Luo et al., NEOEXOME, NESTS, Foresite, Fulgent, PerkinElmer
+HIBCH		4	BabyScreen+, BabySeq, GUARDIAN Study, NewbornsInSA
+KCNT1		5	BabySeq, BeginNGS, FirstSteps, NEOEXOME, Prog Gen Puglia
+COCH		6	BabyScreen+, BabySeq, Jian et al., Luo et al., NESTS, NewbornsInSA
+PPOX		5	BabyScreen+, BabySeq, Generation Study, NESTS, NewbornsInSA
+CD19		5	BabyScreen+, BabySeq, Jian et al., NESTS, NewbornsInSA
+TRPM6		7	BabyScreen+, BabySeq, Generation Study, NEOEXOME, NewbornsInSA, Mendelics, Nurture
+MT-TL1		5	BabySeq, GNStar, NEOEXOME, Neoseq, Wang et al.
+CPOX		5	BabySeq, BeginNGS, FirstSteps, NESTS, Prog Gen Puglia
+MYD88		7	BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, NewbornsInSA, Mendelics, Nurture
+HEXB		3	BabySeq, Luo et al., NEOEXOME
+IL21		3	BabySeq, Jian et al., Nurture
+BMPR2		5	BabySeq, Lee et al., Luo et al., NEOEXOME, NESTS
+MNX1		5	BabyScreen+, BabySeq, BeginNGS, FirstSteps, NewbornsInSA
+STAT5B		5	BabySeq, BeginNGS, FirstSteps, Jian et al., Nurture
+ITGA2B		5	BabyScreen+, BabySeq, Generation Study, NEOEXOME, NewbornsInSA
+COQ7		5	BabySeq, BeginNGS, FirstSteps, Prog Gen Puglia, Nurture
+GALM		6	BabyDetect, BabyScreen+, BabySeq, NewbornsInSA, Igenomix, Nurture
+PYGM		7	BabySeq, BeginNGS, Chen et al., FirstSteps, Luo et al., NEOEXOME, Wang et al.
+C8A		6	BabySeq, BeginNGS, FirstSteps, Generation Study, GUARDIAN Study, Prog Gen Puglia
+POU3F4		5	BabyScreen+, BabySeq, Luo et al., NESTS, NewbornsInSA
+RAC2		7	BabyDetect, BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, Jian et al., NewbornsInSA
+SAMD9L		5	BabyScreen+, BabySeq, Generation Study, NewbornsInSA, Nurture
+RDX		5	BabyScreen+, BabySeq, EarlyCheck, NESTS, NewbornsInSA
+OTOGL		5	BabyScreen+, BabySeq, EarlyCheck, NESTS, NewbornsInSA
+OTOG		5	BabyScreen+, BabySeq, EarlyCheck, NESTS, NewbornsInSA
+GJB3		8	BabySeq, GNStar, Luo et al., NEOEXOME, Neoseq, NESTS, Prog Gen Puglia, Wang et al.
+AVP		4	BabyScreen+, BabySeq, Generation Study, NewbornsInSA
+SLC3A1		5	BabySeq, FirstSteps, Luo et al., NESTS, Igenomix
+FGFR1		7	BabySeq, Chen et al., Lee et al., Luo et al., NEOEXOME, NESTS, Wang et al.
+XPA		8	BabyScreen+, BabySeq, Generation Study, Luo et al., NewbornsInSA, Foresite, Fulgent, PerkinElmer
+XPC		8	BabyScreen+, BabySeq, Generation Study, Luo et al., NewbornsInSA, Foresite, Fulgent, PerkinElmer
+VKORC1		5	BabyScreen+, BabySeq, NewbornsInSA, Mendelics, Nurture
+ALMS1		2	BabySeq, NESTS
+MYH9		4	BabySeq, NEOEXOME, NESTS, Mendelics
+STRC		3	BabySeq, Luo et al., NESTS
+UNG		5	BabySeq, GUARDIAN Study, Jian et al., Mendelics, Nurture
+RNPC3		5	BabyScreen+, BabySeq, Generation Study, NewbornsInSA, Nurture
+IRF8		6	BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, NewbornsInSA, Mendelics
+WFS1		4	BabySeq, Luo et al., NESTS, Nurture
+CACNA1C		6	BabyDetect, BabySeq, BeginNGS, FirstSteps, Prog Gen Puglia, Screen4Care
+GPIHBP1		6	BabyDetect, BabyScreen+, BabySeq, Generation Study, NewbornsInSA, Mendelics
+PSPH		6	BabyDetect, BabySeq, BeginNGS, FirstSteps, Prog Gen Puglia, Mendelics
+MALT1		4	BabyScreen+, BabySeq, Jian et al., NewbornsInSA
+DICER1		4	BabyScreen+, BabySeq, NewbornsInSA, Nurture
+BMPR1A		4	BabySeq, Foresite, Fulgent, PerkinElmer
+F5		3	BabySeq, Generation Study, Luo et al.
+COL9A1		6	BabyScreen+, BabySeq, Lee et al., NEOEXOME, NESTS, NewbornsInSA
+WDR1		4	BabyScreen+, BabySeq, NewbornsInSA, Nurture
+GBE1		6	BabySeq, Chen et al., Luo et al., NEOEXOME, Wang et al., Mendelics
+SGPL1		7	BabyScreen+, BabySeq, BeginNGS, FirstSteps, Generation Study, NewbornsInSA, Nurture
+POLE		5	BabyScreen+, BabySeq, Generation Study, Jian et al., NewbornsInSA
+TERC		4	BabySeq, Luo et al., NEOEXOME, Nurture
+UCP2		4	BeginNGS, FirstSteps, NEOEXOME, Prog Gen Puglia
+LCK		4	BabyDetect, BabySeq, Generation Study, Jian et al.
+CD46		4	BabySeq, BeginNGS, FirstSteps, NEOEXOME
+TGFB3		4	BabyScreen+, BabySeq, NEOEXOME, NewbornsInSA
+STIM1		5	BabyScreen+, BabySeq, GUARDIAN Study, Jian et al., NewbornsInSA
+CAV1		5	BabyScreen+, BabySeq, Generation Study, Luo et al., NewbornsInSA
+APC		4	BabySeq, NESTS, Foresite, Nurture
+GLRB		7	BabyDetect, BabySeq, BeginNGS, FirstSteps, GUARDIAN Study, Prog Gen Puglia, Mendelics
+COL11A2		6	BabyScreen+, BabySeq, Lee et al., Luo et al., NESTS, NewbornsInSA
+CR2		2	BabySeq, Jian et al.
+LOXHD1		5	BabyScreen+, BabySeq, EarlyCheck, NESTS, NewbornsInSA
+TINF2		4	BabySeq, Luo et al., NEOEXOME, Nurture
+WNK1		5	BabyDetect, BabyScreen+, BabySeq, Generation Study, NewbornsInSA
+DNAJC12		7	BabyDetect, BabyScreen+, BabySeq, NEOEXOME, NewbornsInSA, Igenomix, Mendelics
+OTOA		4	BabyScreen+, BabySeq, NESTS, NewbornsInSA
+ESRRB		4	BabyScreen+, BabySeq, NESTS, NewbornsInSA
+AGA		3	BabySeq, NEOEXOME, Igenomix
+CAVIN1		4	BabyScreen+, BabySeq, Generation Study, NewbornsInSA
+MT-RNR1		7	BabyScreen+, BabySeq, GNStar, NEOEXOME, Neoseq, NewbornsInSA, Wang et al.
+FGF3		3	BabyScreen+, BabySeq, NewbornsInSA
+HNF1B		3	BabySeq, NewbornsInSA, Nurture
+PROC		3	BabySeq, Luo et al., NESTS
+KCNJ5		3	BabySeq, NEOEXOME, Nurture
+GATA3		3	BabyScreen+, BabySeq, NewbornsInSA
+ACSF3		5	BabyDetect, BabySeq, Lee et al., NEOEXOME, Igenomix
+STK11		4	BabySeq, Foresite, Fulgent, PerkinElmer
+PTPRQ		5	BabyScreen+, BabySeq, EarlyCheck, NESTS, NewbornsInSA
+AMACR		7	BabyScreen+, BabySeq, Generation Study, NEOEXOME, NewbornsInSA, Igenomix, Mendelics
+SLC25A38		5	BabyScreen+, BabySeq, GUARDIAN Study, NEOEXOME, NewbornsInSA
+SLC18A2		7	BabyDetect, BabyScreen+, BabySeq, BeginNGS, FirstSteps, NewbornsInSA, Prog Gen Puglia
+SLC6A5		7	BabyDetect, BabySeq, BeginNGS, FirstSteps, GUARDIAN Study, Prog Gen Puglia, Mendelics
+LRP5		7	BabyDetect, BabyScreen+, BabySeq, Generation Study, Lee et al., NEOEXOME, NewbornsInSA
+MCM4		4	BabySeq, Generation Study, GUARDIAN Study, Jian et al.
+PPT1		3	BabySeq, Luo et al., NEOEXOME
+PRKAG2		4	BabySeq, NEOEXOME, Foresite, PerkinElmer
+SLC4A4		3	BabySeq, NESTS, Nurture
+HELLS		5	BabyScreen+, BabySeq, Generation Study, Jian et al., NewbornsInSA
+HMBS		3	BabySeq, NESTS, Nurture
+TFR2		3	BabySeq, Luo et al., NEOEXOME
+IFNGR1		4	BabySeq, Generation Study, GUARDIAN Study, Mendelics
+WDR72		4	BabyScreen+, BabySeq, NewbornsInSA, Nurture
+RTEL1		4	BabySeq, Luo et al., NEOEXOME, Nurture
+LAMTOR2		4	BeginNGS, FirstSteps, Prog Gen Puglia, Nurture
+TRDN		4	BabyDetect, BabySeq, Generation Study, Nurture
+HGD		3	BabySeq, Luo et al., Igenomix
+APRT		3	BabySeq, Generation Study, GUARDIAN Study
+CDCA7		5	BabyScreen+, BabySeq, Generation Study, Jian et al., NewbornsInSA
+UROS		7	BabyScreen+, BabySeq, Generation Study, Luo et al., NESTS, NewbornsInSA, Mendelics
+KCNQ4		4	BabySeq, Jian et al., Luo et al., NESTS
+ACTG1		4	BabySeq, GUARDIAN Study, Luo et al., NESTS
+LDLRAP1		4	BabySeq, Generation Study, NEOEXOME, Nurture
+KLHL3		5	BabyDetect, BabyScreen+, BabySeq, Generation Study, NewbornsInSA
+ECHS1		4	BabyScreen+, BabySeq, NewbornsInSA, Nurture
+SAR1B		4	BabyScreen+, BabySeq, Generation Study, NewbornsInSA
+NRAS		5	BabySeq, Lee et al., Luo et al., NEOEXOME, NESTS
+SPTB		7	BabySeq, Luo et al., NEOEXOME, NESTS, Foresite, Fulgent, PerkinElmer
+CLCN1		4	BabySeq, Luo et al., NESTS, Wang et al.
+AIP		1	BabySeq
+PRODH		6	BabySeq, Chen et al., Lee et al., NEOEXOME, Wang et al., Igenomix
+BRCA1		4	BabyScreen+, BabySeq, NewbornsInSA, Foresite
+NPHS1		6	BabyDetect, BabySeq, GUARDIAN Study, Luo et al., NEOEXOME, NESTS
+IFNGR2		4	BabySeq, Generation Study, GUARDIAN Study, Mendelics
+TCOF1		4	BabySeq, Lee et al., Luo et al., NESTS
+COL3A1		4	BabySeq, Foresite, Nurture, PerkinElmer
+NFKB1		3	BabySeq, Jian et al., NEOEXOME
+MEN1		4	BabySeq, Foresite, Fulgent, PerkinElmer
+SLC30A10		5	BabyScreen+, BabySeq, Generation Study, NewbornsInSA, Nurture
+CFHR1		4	BabySeq, BeginNGS, FirstSteps, NEOEXOME
+CLPP		4	BabyScreen+, BabySeq, NESTS, NewbornsInSA
+PRDX1		7	BabyScreen+, BeginNGS, GUARDIAN Study, Jian et al., NewbornsInSA, Igenomix, Nurture
+HFE		4	BabySeq, Luo et al., NESTS, Foresite
+TNFRSF13B		4	BabySeq, Jian et al., NESTS, Nurture
+CLRN1		3	BabySeq, Luo et al., NESTS
+PROKR2		5	BabySeq, Chen et al., NEOEXOME, NESTS, Wang et al.
+HAMP		2	BabySeq, Luo et al.
+MYO3A		4	BabyScreen+, BabySeq, NESTS, NewbornsInSA
+DNAI1		4	BabySeq, Generation Study, Luo et al., NESTS
+DNAH5		4	BabySeq, Generation Study, Luo et al., NESTS
+CP		2	BabySeq, Nurture
+HPS3		3	BabySeq, Luo et al., NESTS
+ERCC5		6	BabySeq, Generation Study, Luo et al., Foresite, Fulgent, PerkinElmer
+ERCC2		6	BabySeq, Generation Study, Luo et al., Foresite, Fulgent, PerkinElmer
+PAX1		2	BabySeq, Generation Study
+ACTA2		4	BabyScreen+, BabySeq, NewbornsInSA, Foresite
+DMP1		6	BabyScreen+, BabySeq, Generation Study, Luo et al., NEOEXOME, NewbornsInSA
+SLC39A7		6	BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, Jian et al., NewbornsInSA
+GPR143		6	BabySeq, NEOEXOME, NESTS, Foresite, Fulgent, PerkinElmer
+MT-ND5		4	BabySeq, GNStar, Neoseq, Wang et al.
+CASQ2		4	BabyDetect, BabySeq, Generation Study, Nurture
+LAT		6	BabyDetect, BabyScreen+, BabySeq, Generation Study, Jian et al., NewbornsInSA
+OPA1		4	BabySeq, Foresite, Fulgent, PerkinElmer
+GP1BA		4	BabySeq, Generation Study, Luo et al., NEOEXOME
+CD320		4	BabySeq, Lee et al., Igenomix, Mendelics
+NLRP3		3	BabySeq, Generation Study, Igenomix
+LAMP2		4	BabySeq, Luo et al., NEOEXOME, Fulgent
+FAM111A		4	BabyScreen+, BabySeq, Generation Study, NewbornsInSA
+TMEM43		4	BabySeq, NEOEXOME, Foresite, PerkinElmer
+PKP2		4	BabySeq, Luo et al., NEOEXOME, Foresite
+ANOS1		5	BabySeq, Chen et al., NEOEXOME, NESTS, Wang et al.
+PDZD7		4	BabyScreen+, BabySeq, NESTS, NewbornsInSA
+MSH6		4	BabyScreen+, BabySeq, Jian et al., NewbornsInSA
+CISD2		1	BabySeq
+TAP1		5	BabySeq, GUARDIAN Study, Jian et al., NEOEXOME, Mendelics
+FCHO1		5	BabyScreen+, BabySeq, Generation Study, Jian et al., NewbornsInSA
+TTR		2	BabySeq, Igenomix
+HJV		2	BabySeq, Luo et al.
+RPL31		2	BabyDetect, Generation Study
+THBD		4	BabySeq, BeginNGS, FirstSteps, NEOEXOME
+MSH2		4	BabyScreen+, BabySeq, NewbornsInSA, Foresite
+SOS1		5	BabySeq, Lee et al., Luo et al., NEOEXOME, NESTS
+ACTC1		4	BabySeq, NEOEXOME, Foresite, PerkinElmer
+KCNJ10		3	BabyDetect, BabySeq, NESTS
+SLITRK6		3	BabyScreen+, BabySeq, NewbornsInSA
+ELN		4	BabySeq, EarlyCheck, NEOEXOME, NESTS
+IL10		5	BabyScreen+, BabySeq, Generation Study, NEOEXOME, NewbornsInSA
+EYA1		4	BabySeq, Lee et al., Luo et al., NESTS
+PHOX2B		4	BabySeq, EarlyCheck, Lee et al., NEOEXOME
+SOX3		3	BabySeq, Mendelics, Nurture
+BRAF		5	BabySeq, Lee et al., Luo et al., NEOEXOME, NESTS
+RAF1		5	BabySeq, Lee et al., Luo et al., NEOEXOME, NESTS
+KRAS		5	BabySeq, Lee et al., Luo et al., NEOEXOME, NESTS
+SCN3A		4	BabySeq, BeginNGS, FirstSteps, Prog Gen Puglia
+PALB2		4	BabyScreen+, BabySeq, NewbornsInSA, Nurture
+COMP		4	BabySeq, Lee et al., NEOEXOME, NESTS
+PC		6	BabyScreen+, BabySeq, GUARDIAN Study, Luo et al., NEOEXOME, NewbornsInSA
+NOD2		2	BabySeq, NEOEXOME
+CEP290		5	BabySeq, Lee et al., Luo et al., NEOEXOME, NESTS
+TF		4	BabyScreen+, BabySeq, Generation Study, NewbornsInSA
+UROD		3	BabySeq, Generation Study, NESTS
+SLC19A1		3	Generation Study, Mendelics, Nurture
+DSC2		4	BabySeq, NEOEXOME, Foresite, PerkinElmer
+TBL1X		6	BabyScreen+, BabySeq, Generation Study, NewbornsInSA, Igenomix, Mendelics
+P3H1		6	BabyScreen+, BabySeq, Luo et al., NEOEXOME, NESTS, NewbornsInSA
+IRS4		6	BabyScreen+, BabySeq, Generation Study, NewbornsInSA, Igenomix, Mendelics
+GNS		4	BabySeq, Luo et al., NEOEXOME, Igenomix
+GYS1		5	BabyDetect, BabySeq, Luo et al., NEOEXOME, Mendelics
+LARS1		1	BabySeq
+COL7A1		3	BabySeq, Luo et al., NEOEXOME
+RUNX1		3	BabyScreen+, BabySeq, NewbornsInSA
+KCNJ2		4	BabyDetect, BabyScreen+, BabySeq, NewbornsInSA
+GNPTAB		3	BabySeq, Luo et al., NEOEXOME
+MYL2		3	BabySeq, NEOEXOME, Foresite
+COL9A3		5	BabyScreen+, BabySeq, NEOEXOME, NESTS, NewbornsInSA
+DNAH11		3	BabySeq, Generation Study, NESTS
+CCDC39		3	BabySeq, Generation Study, NESTS
+OCRL		4	BabySeq, Luo et al., NEOEXOME, NESTS
+SDHB		3	BabySeq, Foresite, PerkinElmer
+INSR		5	BabySeq, Chen et al., Luo et al., NEOEXOME, Mendelics
+RS1		3	BabySeq, Lee et al., NEOEXOME
+LAMA2		5	BabyScreen+, BabySeq, Luo et al., NEOEXOME, NewbornsInSA
+PSAP		5	BabySeq, Lee et al., Luo et al., NEOEXOME, NESTS
+CRTAP		5	BabyScreen+, BabySeq, Luo et al., NESTS, NewbornsInSA
+CLN3		4	BabySeq, Lee et al., Luo et al., NEOEXOME
+AGPAT2		3	BabySeq, Generation Study, Nurture
+MT-TH		3	BabySeq, GNStar, Neoseq
+RASGRP1		4	BabyScreen+, BabySeq, Generation Study, NewbornsInSA
+OFD1		4	BabySeq, Lee et al., Luo et al., NESTS
+CABP2		4	BabyScreen+, BabySeq, NESTS, NewbornsInSA
+MT-ND4		2	BabySeq, Wang et al.
+GP9		3	BabySeq, Generation Study, Luo et al.
+GP1BB		3	BabySeq, Generation Study, Luo et al.
+COL9A2		5	BabyScreen+, BabySeq, NEOEXOME, NESTS, NewbornsInSA
+MUTYH		3	BabySeq, NESTS, Foresite
+CALM3		4	BabyDetect, BabyScreen+, BabySeq, NewbornsInSA
+SMARCD2		4	BabyScreen+, BabySeq, Generation Study, NewbornsInSA
+MYH11		3	BabySeq, Foresite, PerkinElmer
+HBG2		4	BabySeq, BeginNGS, FirstSteps, NEOEXOME
+NLRC4		2	BabySeq, Nurture
+WNK4		4	BabyDetect, BabyScreen+, BabySeq, NewbornsInSA
+PTEN		3	BabySeq, Jian et al., Foresite
+ALAD		3	BabySeq, NESTS, Igenomix
+HPS5		3	BabySeq, Luo et al., NESTS
+HPS6		3	BabySeq, Luo et al., NESTS
+HGF		3	BabyScreen+, BabySeq, NewbornsInSA
+HSD17B4		4	BabySeq, GUARDIAN Study, Luo et al., NESTS
+GALNT3		4	BabyScreen+, BabySeq, Generation Study, NewbornsInSA
+PIGA		3	BabySeq, Luo et al., Igenomix
+KDSR		3	BabySeq, BeginNGS, FirstSteps
+FOXI1		3	BabyDetect, BabySeq, NESTS
+POU4F3		2	BabySeq, NESTS
+GPSM2		1	BabySeq
+SDHD		3	BabySeq, Foresite, PerkinElmer
+APOC2		4	BabyDetect, BabySeq, Generation Study, Mendelics
+RSPH4A		3	BabySeq, Generation Study, NESTS
+CCDC103		3	BabySeq, Generation Study, NESTS
+ODAD2		3	BabySeq, Generation Study, NESTS
+CCDC40		3	BabySeq, Generation Study, NESTS
+DNAI2		3	BabySeq, Generation Study, NESTS
+TTN		3	BabySeq, Luo et al., Foresite
+CTSK		1	BabySeq
+AR		3	BabySeq, NEOEXOME, NESTS
+GSDME		3	BabySeq, Luo et al., NESTS
+DNAAF2		3	BabySeq, Generation Study, NESTS
+DNAAF1		3	BabySeq, Generation Study, NESTS
+DNAAF11		3	BabySeq, Generation Study, NESTS
+TPM1		3	BabySeq, NEOEXOME, Foresite
+MYL3		3	BabySeq, NEOEXOME, Foresite
+SIX1		3	BabySeq, Lee et al., NESTS
+PROS1		3	BabySeq, Luo et al., NESTS
+TUBB1		4	BabyDetect, BabyScreen+, BabySeq, NewbornsInSA
+ZBTB24		3	BabySeq, Generation Study, Jian et al.
+ZIC3		5	BabySeq, Luo et al., Foresite, Fulgent, PerkinElmer
+PRPS1		3	BabySeq, Luo et al., NESTS
+SURF1		4	BabySeq, Foresite, Fulgent, PerkinElmer
+FAS		5	BabyDetect, BabySeq, BeginNGS, FirstSteps, Prog Gen Puglia
+DTNBP1		3	BabySeq, Luo et al., NESTS
+BLOC1S6		3	BabySeq, Luo et al., NESTS
+SCARB2		2	BabySeq, NESTS
+MFSD8		2	BabySeq, NEOEXOME
+DSG2		2	BabySeq, Foresite
+SLC26A2		4	BabySeq, Luo et al., NEOEXOME, NESTS
+JUP		2	BabySeq, NEOEXOME
+IFITM5		5	BabyScreen+, BabySeq, Generation Study, NEOEXOME, NewbornsInSA
+GCM2		5	BabyScreen+, BabySeq, Generation Study, NEOEXOME, NewbornsInSA
+MLH1		3	BabyScreen+, BabySeq, NewbornsInSA
+SERPINC1		2	BabySeq, Luo et al.
+CEBPE		5	BabyScreen+, BabySeq, Generation Study, GUARDIAN Study, NewbornsInSA
+MCOLN1		3	BabySeq, Luo et al., NEOEXOME
+PEX1		3	BabySeq, Lee et al., NESTS
+SUFU		2	BabySeq, Nurture
+GNPTG		3	BabySeq, Luo et al., NEOEXOME
+ABCC9		3	BabySeq, BeginNGS, FirstSteps
+CLCN5		4	BabySeq, Luo et al., NEOEXOME, NESTS
+LMF1		4	BabyDetect, BabySeq, Generation Study, Mendelics
+APOA5		4	BabyDetect, BabySeq, Generation Study, Mendelics
+TMEM165		3	BabySeq, FirstSteps, Nurture
+PSTPIP1		4	BabyScreen+, BabySeq, Generation Study, NewbornsInSA
+TBC1D24		2	BabySeq, NESTS
+MSRB3		2	BabySeq, EarlyCheck
+CTLA4		1	BabySeq
+MYO5A		3	BabyDetect, BabySeq, NESTS
+MAP3K14		1	Jian et al.
+ASPA		3	BabySeq, Lee et al., Luo et al.
+BCAT2		4	BabySeq, Lee et al., NEOEXOME, Igenomix
+SPAG1		3	BabySeq, Generation Study, NESTS
+ODAD1		3	BabySeq, Generation Study, NESTS
+RSPH1		3	BabySeq, Generation Study, NESTS
+RPS6KA3		3	BabySeq, Lee et al., Luo et al.
+FGFR2		4	BabySeq, Lee et al., Luo et al., NESTS
+CYP1B1		5	BabyDetect, BabySeq, Luo et al., NESTS, NewbornsInSA
+AIFM1		3	BabySeq, Luo et al., NESTS
+IKBKG		3	BabySeq, Jian et al., Lee et al.
+ZMYND10		3	BabySeq, Generation Study, NESTS
+BAAT		3	BabySeq, Generation Study, Mendelics
+TBX1		4	BabySeq, Jian et al., NEOEXOME, NESTS
+OTULIN		3	BabyScreen+, BabySeq, NewbornsInSA
+CALM1		2	BabyDetect, BabySeq
+SMPX		2	BabySeq, NESTS
+CALM2		2	BabyDetect, BabySeq
+TYR		4	BabySeq, Luo et al., NEOEXOME, NESTS
+OCA2		4	BabySeq, Luo et al., NEOEXOME, NESTS
+NTRK1		4	BabySeq, Foresite, Fulgent, PerkinElmer
+TJP2		4	BabyDetect, BabySeq, NESTS, Mendelics
+OSTM1		4	BabySeq, Lee et al., Luo et al., NEOEXOME
+SKIC3		4	BabySeq, Generation Study, Jian et al., Luo et al.
+TAPBP		4	BabySeq, Jian et al., NEOEXOME, Mendelics
+TYK2		3	BabySeq, GUARDIAN Study, NEOEXOME
+NDP		4	BabyDetect, BabySeq, NEOEXOME, NESTS
+TGFB2		3	BabyScreen+, BabySeq, NewbornsInSA
+TSPEAR		2	BabySeq, NESTS
+BLOC1S3		3	BabySeq, Luo et al., NESTS
+SORD		2	BabySeq, Mendelics
+GUCY2D		4	BabySeq, Lee et al., Luo et al., NESTS
+TECRL		3	BabyDetect, BabySeq, Generation Study
+IL1RN		3	BabyScreen+, BabySeq, NewbornsInSA
+PAX6		4	BabySeq, Luo et al., NEOEXOME, NESTS
+PCDH19		4	BabySeq, Chen et al., NEOEXOME, Wang et al.
+HRAS		1	BabySeq
+MFN2		4	BabySeq, Lee et al., Luo et al., NESTS
+PMP22		4	BabySeq, Lee et al., Luo et al., NESTS
+EPS8		4	BabyScreen+, BabySeq, NESTS, NewbornsInSA
+MECOM		2	BabySeq, Nurture
+ANK2		2	BabyDetect, BabySeq
+NIPAL4		3	BabyScreen+, BabySeq, NewbornsInSA
+CA12		3	BabyScreen+, BabySeq, NewbornsInSA
+S1PR2		3	BabyScreen+, BabySeq, NewbornsInSA
+HYDIN		3	BabySeq, Generation Study, NESTS
+DNAAF3		3	BabySeq, Generation Study, NESTS
+RIT1		2	BabySeq, NEOEXOME
+CAV3		3	BabySeq, Luo et al., Foresite
+IL36RN		4	BabyScreen+, BabySeq, NEOEXOME, NewbornsInSA
+TERT		3	BabySeq, Luo et al., NEOEXOME
+MAX		2	BabySeq, Foresite
+BCHE		3	BabyScreen+, BabySeq, NewbornsInSA
+KRT5		3	BabySeq, Luo et al., NEOEXOME
+KRT14		3	BabySeq, Luo et al., NEOEXOME
+KARS1		2	BabySeq, NESTS
+CCDC50		2	BabySeq, NESTS
+PCSK1		1	BabySeq
+PFKM		3	BabySeq, Luo et al., NEOEXOME
+IRF2BP2		1	Jian et al.
+RSPH9		3	BabySeq, Generation Study, NESTS
+CLN5		3	BabySeq, Luo et al., NEOEXOME
+KIF1B		4	BabySeq, Lee et al., Luo et al., NESTS
+NKX2-2		1	BabySeq
+WRAP53		3	BabySeq, Luo et al., NEOEXOME
+DES		2	BabySeq, Lee et al.
+MOCS2		3	BabySeq, Luo et al., NEOEXOME
+PEX12		3	BabySeq, Lee et al., Luo et al.
+FXYD2		2	BabySeq, NEOEXOME
+KCNJ8		2	BabySeq, FirstSteps
+SIX5		3	BabySeq, Lee et al., NESTS
+GRIN2A		3	BabySeq, BeginNGS, FirstSteps
+BBS1		3	BabySeq, Luo et al., NEOEXOME
+BBS10		3	BabySeq, Luo et al., NEOEXOME
+UBR1		4	BabyDetect, BabySeq, Luo et al., NEOEXOME
+ALDOA		4	BabySeq, Luo et al., NEOEXOME, Mendelics
+CRLF1		4	BabySeq, Foresite, Fulgent, PerkinElmer
+NPHP1		3	BabySeq, Luo et al., NESTS
+SMARCAL1		3	BabySeq, Jian et al., NESTS
+NHP2		3	BabySeq, Luo et al., NEOEXOME
+SUCLA2		2	BabySeq, NEOEXOME
+ZFPM2		4	BabySeq, Jian et al., NEOEXOME, NESTS
+CACNA1H		2	BabySeq, NEOEXOME
+LPIN2		1	BabySeq
+PLS3		4	BabyScreen+, BabySeq, Generation Study, NewbornsInSA
+OTX2		4	BabyScreen+, BabySeq, NewbornsInSA, Mendelics
+SKIC2		4	BabySeq, Generation Study, Jian et al., Luo et al.
+SECISBP2		4	BabyDetect, BabySeq, NEOEXOME, Igenomix
+FKBP10		4	BabyScreen+, BabySeq, NEOEXOME, NewbornsInSA
+TMEM38B		4	BabyScreen+, BabySeq, NEOEXOME, NewbornsInSA
+SLC26A7		4	BabyScreen+, BabySeq, Generation Study, NewbornsInSA
+LCT		4	BabySeq, Luo et al., NEOEXOME, Mendelics
+STX16		4	BabyScreen+, BabySeq, Lee et al., NewbornsInSA
+OAS1		4	BabyScreen+, BabySeq, Generation Study, NewbornsInSA
+CD55		4	BabyScreen+, BabySeq, NESTS, NewbornsInSA
+PEX6		2	BabySeq, Lee et al.
+BCL11B		4	BabySeq, GNStar, Jian et al., Neoseq
+HARS2		2	BabySeq, NESTS
+LARS2		2	BabySeq, NESTS
+DIAPH1		2	BabySeq, NESTS
+C1QC		1	BabySeq
+C1QA		1	BabySeq
+SLC39A14		2	BabySeq, Nurture
+GDNF		2	BabySeq, NEOEXOME
+CEL		2	BabySeq, NEOEXOME
+ANKH		4	BabySeq, Foresite, Fulgent, PerkinElmer
+TANGO2		4	BabyScreen+, BabySeq, NewbornsInSA, Mendelics
+TPMT		4	BabySeq, GNStar, Neoseq, PerkinElmer
+SLC2A2		4	BabyDetect, BabySeq, NEOEXOME, Mendelics
+CD81		1	Jian et al.
+PRKAR1A		3	BabyScreen+, BabySeq, NewbornsInSA
+NEUROD1		2	BabySeq, Generation Study
+CTH		3	BabySeq, NEOEXOME, Igenomix
+ACTG2		1	BabySeq
+SLC24A5		4	BabySeq, Luo et al., NEOEXOME, NESTS
+REST		4	BabyScreen+, BabySeq, Generation Study, NewbornsInSA
+TYRP1		4	BabySeq, Luo et al., NEOEXOME, NESTS
+SMN2		4	BabySeq, Luo et al., NEOEXOME, Fulgent
+ATL1		4	BabySeq, Luo et al., NESTS, Wang et al.
+TRIM28		4	BabyScreen+, BabySeq, Generation Study, NewbornsInSA
+LMX1B		3	BabySeq, Luo et al., NESTS
+EPCAM		2	BabySeq, Generation Study
+TNNC1		2	BabySeq, NEOEXOME
+ODAD3		2	BabySeq, Generation Study
+CLCN2		1	BabySeq
+EYA4		2	BabySeq, Luo et al.
+DIABLO		2	BabySeq, NESTS
+NEFL		3	BabySeq, Luo et al., NESTS
+EGR2		3	BabySeq, Luo et al., NESTS
+MPZ		3	BabySeq, Luo et al., NESTS
+FXN		2	BabySeq, Luo et al.
+RBM8A		2	BabySeq, Luo et al.
+ACOX2		3	BabySeq, NEOEXOME, Igenomix
+PLEKHM1		3	BabySeq, Lee et al., NEOEXOME
+DDB2		3	BabySeq, Generation Study, Luo et al.
+ERCC3		3	BabySeq, Generation Study, Luo et al.
+RAB23		1	BabySeq
+BLM		2	BabySeq, Jian et al.
+TNFRSF13C		1	Jian et al.
+RELB		1	Jian et al.
+POLD1		2	BabySeq, Jian et al.
+GYG1		3	BabySeq, Luo et al., NEOEXOME
+PRX		3	BabySeq, Luo et al., NESTS
+DYSF		3	BabySeq, Luo et al., NEOEXOME
+GDAP1		3	BabySeq, Luo et al., NESTS
+HOXA11		1	Nurture
+ABCC2		3	BabySeq, Luo et al., NEOEXOME
+TNFSF11		3	BabySeq, Lee et al., NEOEXOME
+TNFRSF1A		2	BabySeq, Generation Study
+PLP1		2	BabySeq, Luo et al.
+RPGR		3	BabySeq, Luo et al., NESTS
+SFTPC		2	BabySeq, Nurture
+DSPP		2	BabySeq, NESTS
+TAP2		3	BabySeq, Jian et al., Mendelics
+RAD51C		2	BabySeq, Nurture
+SLC17A8		2	BabySeq, NESTS
+SLC13A5		3	BabySeq, BeginNGS, FirstSteps
+L1CAM		3	BabySeq, Lee et al., Luo et al.
+GJB1		3	BabySeq, Luo et al., NESTS
+PMS2		2	BabySeq, Jian et al.
+FZD4		3	BabyDetect, BabySeq, NEOEXOME
+LTBP2		3	BabyDetect, BabySeq, NESTS
+TSPAN12		3	BabyDetect, BabySeq, NEOEXOME
+MS4A1		1	Jian et al.
+ACVR1		3	BabySeq, NEOEXOME, Screen4Care
+SLC40A1		2	BabySeq, Luo et al.
+SPG11		3	BabySeq, Luo et al., Wang et al.
+IL12RB1		3	BabySeq, GUARDIAN Study, Mendelics
+GMPPB		3	BabyDetect, BabySeq, Screen4Care
+SBF2		3	BabySeq, Luo et al., NESTS
+HSPB1		3	BabySeq, Luo et al., NESTS
+NEFH		3	BabySeq, NEOEXOME, NESTS
+FLCN		1	BabySeq
+HSPB8		3	BabySeq, Luo et al., NESTS
+P2RX2		2	BabySeq, NESTS
+ADAR		1	BabySeq
+MANBA		2	BabySeq, NEOEXOME
+GPR101		2	BabySeq, Generation Study
+CDC14A		3	BabyScreen+, BabySeq, NewbornsInSA
+PRKCD		2	BabySeq, NESTS
+CDC73		1	BabySeq
+COL4A6		3	BabySeq, Luo et al., NESTS
+PGAM2		3	BabySeq, Luo et al., NEOEXOME
+PROK2		2	BabySeq, NESTS
+PRSS1		2	BabySeq, Luo et al.
+SLC34A1		2	BabySeq, NESTS
+FH		3	BabyScreen+, BabySeq, NewbornsInSA
+CEACAM16		2	BabySeq, NESTS
+NEU1		2	BabySeq, NEOEXOME
+GLUL		1	BabySeq
+MTHFS		1	BabySeq
+SDHC		2	BabySeq, Foresite
+SMAD2		3	BabyScreen+, BabySeq, NewbornsInSA
+LITAF		3	BabySeq, Luo et al., NESTS
+SGCD		2	BabySeq, Luo et al.
+COQ5		1	Nurture
+NAXE		2	BabySeq, FirstSteps
+TCAP		1	BabySeq
+GPD1L		3	BabySeq, BeginNGS, FirstSteps
+PLEC		3	BabyDetect, BabySeq, Luo et al.
+MYLK2		2	BabySeq, Foresite
+BCL10		2	BabySeq, Jian et al.
+HYAL1		3	BabySeq, Luo et al., NEOEXOME
+ACTN2		1	BabySeq
+RNF168		2	BabySeq, Jian et al.
+MSN		2	BabySeq, Jian et al.
+CAPN3		3	BabySeq, Luo et al., NEOEXOME
+ALDH3A2		3	BabySeq, Luo et al., NESTS
+FLNA		2	BabySeq, Lee et al.
+SMAD9		2	BabySeq, Luo et al.
+HAL		3	BabySeq, Lee et al., NEOEXOME
+CLN8		2	BabySeq, NEOEXOME
+CLN6		2	BabySeq, NEOEXOME
+SPTA1		3	BabySeq, Luo et al., NESTS
+POLR1D		3	BabySeq, Lee et al., NESTS
+DNAAF5		3	BabySeq, Generation Study, NESTS
+CYB561		3	BabyScreen+, BabySeq, NewbornsInSA
+SLC17A5		1	BabySeq
+COL5A1		2	BabySeq, Luo et al.
+COL5A2		2	BabySeq, Luo et al.
+MPV17		2	BabySeq, NESTS
+PEX10		2	BabySeq, Lee et al.
+PEX5		2	BabySeq, Lee et al.
+SUOX		2	BabySeq, NEOEXOME
+MOGS		2	BabySeq, Jian et al.
+NFE2L2		2	BabySeq, Jian et al.
+NOTCH2		2	BabySeq, NESTS
+GRIN2B		2	BabyDetect, BabySeq
+PEX13		2	BabySeq, Lee et al.
+PEX7		2	BabySeq, Luo et al.
+PEX19		2	BabySeq, Lee et al.
+PEX3		2	BabySeq, Lee et al.
+PEX16		2	BabySeq, Lee et al.
+SCO1		2	BabySeq, Luo et al.
+PEX14		2	BabySeq, Lee et al.
+PEX2		2	BabySeq, Lee et al.
+PEX26		2	BabySeq, Lee et al.
+SLC6A19		2	BabySeq, NESTS
+COL17A1		3	BabySeq, Luo et al., NESTS
+LAMA3		3	BabySeq, Luo et al., NESTS
+LAMC2		3	BabySeq, Luo et al., NESTS
+TGM1		3	BabySeq, Luo et al., NEOEXOME
+LAMB3		3	BabySeq, Luo et al., NESTS
+SRY		1	BabySeq
+SDHAF2		2	BabySeq, Foresite
+SLC35C1		3	BabySeq, FirstSteps, Nurture
+DPYD		3	BabySeq, GNStar, Neoseq
+ERCC8		2	BabySeq, Luo et al.
+ZMPSTE24		2	BabySeq, NESTS
+VPS13B		2	BabySeq, Luo et al.
+BBS2		2	BabySeq, NEOEXOME
+VPS33B		2	BabySeq, Lee et al.
+BBS12		2	BabySeq, NEOEXOME
+FRAS1		2	BabySeq, Luo et al.
+AHI1		2	BabySeq, Luo et al.
+ERCC6		2	BabySeq, Luo et al.
+TMEM67		2	BabySeq, Luo et al.
+MKS1		3	BabySeq, Luo et al., NEOEXOME
+EDAR		3	BabySeq, Generation Study, Luo et al.
+GCSH		3	BabySeq, Luo et al., NEOEXOME
+STS		3	BabySeq, NEOEXOME, NESTS
+ODAD4		2	BabySeq, Generation Study
+CCNO		2	BabySeq, Generation Study
+MCIDAS		2	BabySeq, Generation Study
+NPHP4		2	BabySeq, NESTS
+NPHP3		2	BabySeq, NESTS
+INVS		2	BabySeq, NESTS
+PLCE1		2	BabySeq, NESTS
+CLDN19		3	BabySeq, NEOEXOME, Mendelics
+EDA		3	BabySeq, Generation Study, Luo et al.
+AKT2		1	BabySeq
+GDF1		3	BabySeq, Jian et al., NESTS
+H19		3	BabySeq, Luo et al., NEOEXOME
+SUMF1		2	BabySeq, NEOEXOME
+MAFB		3	BabyScreen+, BabySeq, NewbornsInSA
+KCNK3		2	BabySeq, Luo et al.
+HPRT1		2	BabySeq, Luo et al.
+EDARADD		3	BabySeq, Generation Study, Luo et al.
+SALL1		3	BabySeq, Luo et al., NESTS
+SERPINF1		3	BabyScreen+, BabySeq, NewbornsInSA
+BMP1		3	BabyScreen+, BabySeq, NewbornsInSA
+KDELR2		3	BabyScreen+, BabySeq, NewbornsInSA
+SERPINH1		3	BabyScreen+, BabySeq, NewbornsInSA
+CDCA8		3	BabyScreen+, BabySeq, NewbornsInSA
+MESD		3	BabyScreen+, BabySeq, NewbornsInSA
+PLCG2		1	BabySeq
+SLC16A2		1	BabySeq
+ZNF341		3	BabySeq, Jian et al., NEOEXOME
+IL12B		3	BabySeq, GUARDIAN Study, Mendelics
+IL6ST		3	BabySeq, GUARDIAN Study, Jian et al.
+GPC3		2	BabySeq, NESTS
+OSBPL2		2	BabySeq, NESTS
+CARD9		1	BabySeq
+TMEM127		2	BabySeq, Foresite
+MYH14		2	BabySeq, NESTS
+CD36		1	BabySeq
+DNASE2		3	BabyScreen+, BabySeq, NewbornsInSA
+JAK2		3	BabySeq, Luo et al., NEOEXOME
+APOE		2	BabySeq, NEOEXOME
+KDM6A		2	BabySeq, Jian et al.
+PLOD1		2	BabySeq, Luo et al.
+DNAAF4		3	BabySeq, Generation Study, NESTS
+CCDC65		3	BabySeq, Generation Study, NESTS
+DRC1		3	BabySeq, Generation Study, NESTS
+CDKN2A		1	BabySeq
+ATP2B2		3	BabySeq, Luo et al., NESTS
+GREB1L		3	BabyScreen+, BabySeq, NewbornsInSA
+UBA1		3	BabySeq, Luo et al., NESTS
+IGFALS		1	BabySeq
+DBH		2	BabyDetect, BabySeq
+ENO3		3	BabySeq, Luo et al., NEOEXOME
+CLPB		3	BabySeq, Lee et al., Igenomix
+LDHA		3	BabySeq, Luo et al., NEOEXOME
+IER3IP1		3	BabySeq, BeginNGS, FirstSteps
+CLDN16		3	BabySeq, NEOEXOME, Mendelics
+CLCNKA		3	BabySeq, NEOEXOME, Mendelics
+F11		1	BabySeq
+L2HGDH		2	BabySeq, Luo et al.
+FASTKD2		2	BabySeq, Luo et al.
+TIMM50		2	BabySeq, Igenomix
+EIF2AK4		2	BabySeq, Luo et al.
+POLR1C		3	BabySeq, Lee et al., NESTS
+MT-ATP6		2	BabySeq, NEOEXOME
+HTRA2		2	BabySeq, NEOEXOME
+COX10		2	BabySeq, Luo et al.
+DNM1L		2	BabySeq, NEOEXOME
+MT-ND3		2	BabySeq, NEOEXOME
+COX6B1		2	BabySeq, Luo et al.
+PUS1		2	BabySeq, NEOEXOME
+COX15		2	BabySeq, Luo et al.
+KMT2D		2	BabySeq, Jian et al.
+SUCLG1		2	BabySeq, NEOEXOME
+RASA1		1	BabySeq
+MTMR2		3	BabySeq, Luo et al., NESTS
+IFIH1		1	BabySeq
+MATN3		3	BabySeq, NEOEXOME, NESTS
+RBCK1		3	BabySeq, Jian et al., NEOEXOME
+REEP1		3	BabySeq, Luo et al., Wang et al.
+CRB1		3	BabySeq, Luo et al., NESTS
+SPAST		3	BabySeq, Luo et al., Wang et al.
+MC1R		3	BabySeq, Luo et al., NEOEXOME
+UNC13A		3	BabyDetect, BabySeq, NEOEXOME
+CACNA1A		1	BabySeq
+CTSD		2	BabySeq, NEOEXOME
+TBX5		2	BabySeq, NEOEXOME
+MAP2K1		2	BabySeq, NEOEXOME
+CPLANE1		2	BabySeq, Lee et al.
+GRIP1		2	BabySeq, Luo et al.
+MID1		2	BabySeq, Luo et al.
+IGF2		2	BabySeq, NEOEXOME
+SOX9		1	BabySeq
+KCNA5		2	BabySeq, Luo et al.
+PAX2		2	BabySeq, NESTS
+MAGEL2		2	BabySeq, NEOEXOME
+UBE3A		2	BabySeq, NEOEXOME
+C2CD3		2	BabySeq, Lee et al.
+PLN		1	BabySeq
+RBM20		1	BabySeq
+BCS1L		2	BabySeq, Luo et al.
+FLNC		2	BabySeq, Foresite
+DNM2		2	BabySeq, Luo et al.
+DNAL1		2	BabySeq, NESTS
+SFTPB		2	BabySeq, Luo et al.
+MCFD2		1	BabySeq
+BAG3		1	BabySeq
+POLH		2	BabySeq, Generation Study
+CFAP300		2	BabySeq, Generation Study
+BMPR1B		2	BabySeq, Luo et al.
+P2RY12		1	BabySeq
+NBEAL2		1	BabySeq
+ITGA3		2	BabySeq, NESTS
+SLC6A6		1	Mendelics
+NR1H4		2	BabyDetect, BabySeq
+FGD4		2	BabySeq, Luo et al.
+ABCA3		2	BabySeq, Luo et al.
+SH3TC2		2	BabySeq, Luo et al.
+SGCA		2	BabySeq, Luo et al.
+NEB		2	BabySeq, Luo et al.
+SGCB		2	BabySeq, Luo et al.
+POMT1		2	BabySeq, Luo et al.
+EPM2A		2	BabySeq, NEOEXOME
+NHLRC1		2	BabySeq, NEOEXOME
+ANO5		2	BabySeq, Luo et al.
+SGCG		2	BabySeq, Luo et al.
+PINK1		2	BabySeq, Luo et al.
+POMT2		2	BabySeq, Luo et al.
+DNAJC5		2	BabySeq, NEOEXOME
+PARN		2	BabySeq, NEOEXOME
+TRH		2	NEOEXOME, Mendelics
+HSD17B3		2	BabySeq, Luo et al.
+TFRC		2	BabySeq, Jian et al.
+TOP2B		2	BabySeq, Jian et al.
+TRAC		2	BabySeq, Jian et al.
+ABCD3		2	BabySeq, NEOEXOME
+GPHN		2	BabySeq, NEOEXOME
+CTNNA3		2	BabySeq, NEOEXOME
+MTM1		2	BabySeq, Luo et al.
+DCX		2	BabySeq, Luo et al.
+ARX		2	BabySeq, Lee et al.
+THPO		2	BabySeq, NEOEXOME
+ELP1		2	BabySeq, Luo et al.
+BLK		2	BabySeq, NEOEXOME
+PAX4		1	BabySeq
+CDKL5		2	BabySeq, Lee et al.
+B2M		2	BabySeq, Jian et al.
+CD8A		2	BabySeq, Jian et al.
+IL6R		2	BabySeq, Jian et al.
+NKX2-6		2	BabySeq, Jian et al.
+AIPL1		2	BabySeq, Lee et al.
+MYOC		2	BabySeq, NESTS
+RCBTB1		2	BabyDetect, BabySeq
+CYP4V2		2	BabySeq, NEOEXOME
+MT-ND1		1	BabySeq
+MT-ND6		1	BabySeq
+EXT1		2	BabySeq, Luo et al.
+EXT2		2	BabySeq, Luo et al.
+IL17RA		1	BabySeq
+SPRED1		1	BabySeq
+KMT2A		2	BabySeq, Jian et al.
+SLC1A4		2	BabyDetect, BabySeq
+INF2		2	BabySeq, NESTS
+KIF11		2	BabyDetect, BabySeq
+ITPA		2	BabySeq, NEOEXOME
+KIF5A		2	BabySeq, NEOEXOME
+SLCO1B1		2	BabySeq, PerkinElmer
+SNCA		2	BabySeq, Luo et al.
+PRKN		2	BabySeq, Luo et al.
+DEPDC5		2	BabySeq, NEOEXOME
+ANXA11		2	BabySeq, NEOEXOME
+AFF2		2	BabySeq, Luo et al.
+ATXN2		2	BabySeq, NEOEXOME
+CNNM2		2	BabySeq, NEOEXOME
+CTSF		2	BabySeq, NEOEXOME
+PARK7		2	BabySeq, Luo et al.
+ATP13A2		2	BabySeq, NEOEXOME
+GRN		2	BabySeq, NEOEXOME
+MED13L		2	BabySeq, Jian et al.
+SOD1		2	BabySeq, NEOEXOME
+LRRK2		2	BabySeq, Luo et al.
+RAB7A		2	BabySeq, Luo et al.
+NLRP12		1	BabySeq
+MIR96		1	NESTS
+HOMER2		2	BabySeq, NESTS
+PHYH		1	BabySeq
+CFAP298		2	BabySeq, Generation Study
+NOTCH1		2	BabySeq, Jian et al.
+APTX		2	BabySeq, Luo et al.
+DCDC2		2	BabySeq, NESTS
+TGFB1		2	BabySeq, NEOEXOME
+IARS1		1	BabySeq
+SPINK5		2	BabySeq, Jian et al.
+MET		2	BabySeq, NESTS
+ELMOD3		2	BabySeq, NESTS
+CRYM		2	BabySeq, NESTS
+CSRP3		1	BabySeq
+SEMA3A		2	BabySeq, NEOEXOME
+PTH1R		2	BabySeq, Luo et al.
+WDR36		2	BabySeq, NESTS
+HAND1		2	BabySeq, Jian et al.
+FKTN		2	BabySeq, Luo et al.
+ITGB4		2	BabySeq, NESTS
+FANCM		1	BabySeq
+CDIN1		2	BabySeq, NEOEXOME
+NOP10		2	Luo et al., NEOEXOME
+LBR		2	BabySeq, NEOEXOME
+CDAN1		2	BabySeq, NEOEXOME
+SNAI2		2	BabySeq, Luo et al.
+ANKRD26		1	BabySeq
+SYNE4		1	BabySeq
+ARFGEF2		2	BabySeq, Lee et al.
+PPM1K		2	NEOEXOME, Igenomix
+SUGCT		2	BabySeq, Luo et al.
+FOXJ1		2	BabySeq, Generation Study
+KLF1		2	BabySeq, NEOEXOME
+CRYAB		2	BabySeq, NESTS
+ALDH6A1		2	BabySeq, NEOEXOME
+THAP11		2	BeginNGS, Igenomix
+FBLN5		1	BabySeq
+ACTN1		1	BabySeq
+SNTA1		1	BabySeq
+RNASEH2A		1	BabySeq
+ALG3		1	BabySeq
+ALG6		1	BabySeq
+ALG12		1	BabySeq
+NGLY1		1	BabySeq
+ACOX1		1	BabySeq
+KCNE2		1	BabySeq
+CYP7A1		2	BabySeq, Mendelics
+TREX1		1	BabySeq
+RNASEH2B		1	BabySeq
+RNASEH2C		1	BabySeq
+SAMHD1		1	BabySeq
+TYMP		1	BabySeq
+CDH1		1	BabySeq
+TRIM37		1	BabySeq
+ALG1		2	BabySeq, NESTS
+GFM1		2	BabySeq, NEOEXOME
+LAMB2		2	BabySeq, NESTS
+MACF1		2	BabyDetect, BabySeq
+DAO		2	BabySeq, NEOEXOME
+KCNA1		1	BabySeq
+REN		1	BabySeq
+CEP152		1	BabySeq
+LIFR		1	BabySeq
+ANTXR2		1	BabySeq
+VIPAS39		1	BabySeq
+RECQL4		1	BabySeq
+WNT10A		1	BabySeq
+CC2D2A		2	BabySeq, Luo et al.
+YARS2		2	BabySeq, NEOEXOME
+EVC		2	BabySeq, Luo et al.
+D2HGDH		2	BabySeq, Luo et al.
+TCTN3		2	BabySeq, Lee et al.
+FREM2		2	BabySeq, Luo et al.
+GTF2H5		2	BabySeq, Luo et al.
+ARL13B		2	BabySeq, Luo et al.
+EVC2		2	BabySeq, Luo et al.
+RPGRIP1L		2	BabySeq, Luo et al.
+MKKS		2	BabySeq, NEOEXOME
+STRA6		2	BabySeq, Luo et al.
+KAT6B		2	BabyDetect, BabySeq
+TMEM216		2	BabySeq, Luo et al.
+DGKE		2	BabySeq, NESTS
+INO80		1	Jian et al.
+INPP5E		2	BabySeq, Luo et al.
+ESCO2		1	BabySeq
+CFHR3		2	BabySeq, NEOEXOME
+MYO1E		2	BabySeq, NESTS
+TFAP2B		2	BabySeq, NEOEXOME
+FARSB		1	BabySeq
+ALK		1	BabySeq
+TBX20		2	BabySeq, NEOEXOME
+FLG		2	BabySeq, NEOEXOME
+SMAD6		2	BabySeq, Jian et al.
+CITED2		2	BabySeq, NEOEXOME
+FOXH1		2	BabySeq, Jian et al.
+CFC1		2	BabySeq, Jian et al.
+APPL1		1	BabySeq
+NOG		1	BabySeq
+GJA1		2	BabySeq, Jian et al.
+MBTPS2		1	BabySeq
+GNE		1	BabySeq
+CFHR5		2	BabySeq, NESTS
+ACTN4		2	BabySeq, NESTS
+MYO5B		2	BabyDetect, BabySeq
+KISS1R		2	BabySeq, NEOEXOME
+SPINT2		2	BabySeq, Generation Study
+IL17RD		2	BabySeq, NEOEXOME
+SRD5A2		2	BabySeq, NEOEXOME
+NSMF		2	BabySeq, NEOEXOME
+MKRN3		2	BabySeq, NEOEXOME
+DUOX1		2	BabyDetect, BabySeq
+WDR11		2	BabySeq, NEOEXOME
+GINS1		2	BabySeq, Jian et al.
+RORC		2	BabySeq, Mendelics
+CD59		2	BabySeq, NESTS
+PRNP		2	BabySeq, Luo et al.
+EFTUD2		1	BabySeq
+RPSA		2	BabySeq, GUARDIAN Study
+MPO		2	BabySeq, Mendelics
+NSMCE3		2	BabySeq, Jian et al.
+RELA		2	BabySeq, Jian et al.
+ATP6AP1		2	BabySeq, Jian et al.
+SEC61A1		2	BabySeq, Jian et al.
+RNU4ATAC		2	BabySeq, Jian et al.
+KRIT1		1	BabySeq
+LDB3		1	BabySeq
+C1QB		1	BabySeq
+ERCC6L2		2	BabySeq, Jian et al.
+HSPA9		2	BabySeq, NEOEXOME
+SH2B3		2	BabySeq, NEOEXOME
+FHL1		2	BabySeq, NEOEXOME
+EMD		2	BabySeq, Luo et al.
+SLC30A2		1	BabySeq
+SLC12A6		2	BabySeq, Luo et al.
+CYB5R3		2	BabySeq, NEOEXOME
+EPB41		2	BabySeq, NESTS
+SEC23B		2	BabySeq, NEOEXOME
+ACD		2	BabySeq, NEOEXOME
+GLRX5		2	BabySeq, NEOEXOME
+SLC25A12		1	BabySeq
+SLC34A2		2	BabySeq, NESTS
+TNFAIP3		1	BabySeq
+HDAC8		1	BabySeq
+NEK1		2	BabySeq, NEOEXOME
+PANK2		2	BabySeq, Luo et al.
+ABCA4		2	BabySeq, NEOEXOME
+IFT80		2	BabySeq, Luo et al.
+PABPN1		2	BabySeq, Luo et al.
+SACS		2	BabySeq, Luo et al.
+CTC1		2	BabySeq, Luo et al.
+EIF2B1		2	BabySeq, NESTS
+AGPS		2	BabySeq, Luo et al.
+GM2A		2	BabySeq, NEOEXOME
+NEXN		1	BabySeq
+GAS8		2	BabySeq, Generation Study
+RSPH3		2	BabySeq, Generation Study
+NARS2		2	BabySeq, NESTS
+ABCB7		2	BabySeq, NEOEXOME
+PNPT1		2	BabySeq, NESTS
+MYO1A		2	BabySeq, Luo et al.
+SLC22A4		1	BabySeq
+TRAPPC2		2	BabySeq, Luo et al.
+NOTCH3		2	BabySeq, NEOEXOME
+ASAH1		2	BabySeq, FirstSteps
+DMPK		2	BabySeq, Luo et al.
+FTL		2	BabySeq, NEOEXOME
+SMARCB1		1	BabySeq
+CTNNB1		2	BabySeq, Foresite
+PORCN		1	BabySeq
+APOA2		2	BabySeq, Foresite
+ABCA1		2	BabySeq, NEOEXOME
+MT-CO3		1	BabySeq
+EPG5		2	BabySeq, Jian et al.
+ODC1		2	BabyDetect, BabySeq
+LIAS		2	BabySeq, GUARDIAN Study
+EXTL3		2	BabySeq, Jian et al.
+DDX59		2	BabySeq, Lee et al.
+SERAC1		2	BabySeq, Lee et al.
+MAF		2	BabySeq, NESTS
+WDPCP		2	BabySeq, NEOEXOME
+SEMA3E		2	BabySeq, Jian et al.
+FAT4		2	BabySeq, Jian et al.
+POLG2		2	BabySeq, NEOEXOME
+B9D1		2	BabySeq, Luo et al.
+APEX1		2	BabySeq, NEOEXOME
+IDH2		2	BabySeq, Luo et al.
+PCK1		2	BabySeq, Mendelics
+SNRPN		2	BabySeq, NEOEXOME
+BCOR		2	BabySeq, Luo et al.
+TMEM70		2	BabySeq, Screen4Care
+CCBE1		2	BabySeq, Jian et al.
+NDUFS4		2	BabySeq, NEOEXOME
+CYB5A		2	BabySeq, NEOEXOME
+SDCCAG8		2	BabySeq, NEOEXOME
+BCAT1		2	Lee et al., NEOEXOME
+FKBP6		2	BabySeq, NEOEXOME
+ADAMTS10		2	BabySeq, Luo et al.
+NUDT15		2	GNStar, Neoseq
+KANK2		2	BabySeq, NESTS
+PIGT		2	BabySeq, Luo et al.
+LAMA5		2	BabyDetect, BabySeq
+NPHS2		2	BabySeq, NESTS
+SLC25A4		1	BabySeq
+MT-CO2		1	BabySeq
+MT-CO1		1	BabySeq
+CREBBP		1	BabySeq
+NIPBL		1	BabySeq
+SLC2A9		1	BabySeq
+ZEB2		1	BabySeq
+SETBP1		1	BabySeq
+FOXC2		1	BabySeq
+NSD1		1	BabySeq
+TWIST1		1	BabySeq
+SKI		1	BabySeq
+EZH2		1	BabySeq
+ARID1B		1	BabySeq
+RAI1		1	BabySeq
+MSX2		1	BabySeq
+SRCAP		1	BabySeq
+GNB1		2	BabySeq, NEOEXOME
+ZFYVE26		2	BabySeq, Luo et al.
+LRMDA		2	BabySeq, NEOEXOME
+PITX3		2	BabySeq, NESTS
+KCNC3		2	BabySeq, NEOEXOME
+GARS1		2	BabySeq, Luo et al.
+YARS1		2	BabySeq, Luo et al.
+REEP2		2	BabySeq, NEOEXOME
+DYNC1H1		2	BabySeq, Luo et al.
+DNAH9		2	BabySeq, Generation Study
+ADCY1		1	NESTS
+BFSP2		2	BabySeq, NESTS
+NUP214		2	BabySeq, NEOEXOME
+TBX6		2	BabySeq, NESTS
+UCHL1		2	BabySeq, Luo et al.
+CALR		2	BabySeq, NEOEXOME
+PMPCA		2	BabySeq, Luo et al.
+EIF2B3		2	BabySeq, NESTS
+GJA3		2	BabySeq, NESTS
+BCR		2	BabySeq, NEOEXOME
+RP2		2	BabySeq, Luo et al.
+MRE11		2	BabySeq, NEOEXOME
+SPATA7		2	BabySeq, Lee et al.
+CRYBB2		2	BabySeq, NESTS
+SPG7		2	BabySeq, Luo et al.
+CRYGC		2	BabySeq, NESTS
+EIF2B2		2	BabySeq, NESTS
+GJA8		2	BabySeq, NESTS
+CRYBB1		2	BabySeq, NESTS
+PDXK		2	BabyDetect, Mendelics
+SCN9A		2	BabySeq, NEOEXOME
+RHO		2	BabySeq, Luo et al.
+EIF2B4		2	BabySeq, NESTS
+NDRG1		2	BabySeq, Luo et al.
+CNBP		2	Lee et al., Luo et al.
+MIP		2	BabySeq, NESTS
+CRYGD		2	BabySeq, NESTS
+CRYBA1		2	BabySeq, NESTS
+TRPV4		2	BabySeq, Luo et al.
+DYNC2H1		2	BabySeq, Luo et al.
+ZNF408		2	BabyDetect, BabySeq
+HSF4		2	BabySeq, NESTS
+FLT3		2	BabySeq, NEOEXOME
+CCN6		2	BabySeq, Luo et al.
+TUBA1A		2	BabySeq, Luo et al.
+RPGRIP1		2	BabySeq, Lee et al.
+CRYAA		2	BabySeq, NESTS
+EIF2B5		2	BabySeq, NESTS
+POLA1		2	BabySeq, Jian et al.
+ATAD1		2	BabyDetect, BabySeq
+FIG4		2	BabySeq, Luo et al.
+VAPB		2	BabySeq, Luo et al.
+MAP2K2		1	BabySeq
+SLC2A10		1	BabySeq
+UMOD		1	BabySeq
+GJA5		1	BabySeq
+CACNB2		1	BabySeq
+TWNK		1	BabySeq
+MT-TS1		1	BabySeq
+MT-TW		1	BabySeq
+MT-TS2		1	BabySeq
+MT-TQ		1	BabySeq
+GRHL2		1	BabySeq
+GABRG2		1	BabySeq
+LTBP4		1	BabySeq
+KLF11		1	BabySeq
+WRN		1	BabySeq
+VCL		1	BabySeq
+ANKRD1		1	BabySeq
+TBCE		1	BabySeq
+FAM20C		1	BabySeq
+KCTD7		1	BabySeq
+SETX		1	BabySeq
+ALS2		1	BabySeq
+COL6A3		1	BabySeq
+PLA2G6		1	BabySeq
+SELENON		1	BabySeq
+CRPPA		1	BabySeq
+MEGF10		1	BabySeq
+COL6A1		1	BabySeq
+TRIM32		1	BabySeq
+LMOD3		1	BabySeq
+IGHMBP2		1	BabySeq
+RAB3GAP1		1	BabySeq
+WDR62		1	BabySeq
+VLDLR		1	BabySeq
+KLHL40		1	BabySeq
+TNNT1		1	BabySeq
+GAN		1	BabySeq
+SIL1		1	BabySeq
+BIN1		1	BabySeq
+CFL2		1	BabySeq
+CSTB		1	BabySeq
+COL6A2		1	BabySeq
+HSPG2		1	BabySeq
+PNKP		1	BabySeq
+MYH2		1	BabySeq
+MCPH1		1	BabySeq
+HARS1		1	BabySeq
+GP6		1	BabySeq
+PCNT		1	BabySeq
+LHB		1	BabySeq
+GUCY2C		1	BabySeq
+TNFRSF11B		1	BabySeq
+ADAM17		1	BabySeq
+CLMP		1	BabySeq
+NLRP7		1	BabySeq
+SLC27A5		1	Mendelics
+CACNA1F		1	BabySeq
+EFEMP2		1	BabySeq
+SCN1B		1	BabySeq
+REL		1	Jian et al.
+ICOSLG		1	Jian et al.
+FGD1		1	BabySeq
+GATAD1		1	BabySeq
+NME8		1	NESTS
+CHM		1	BabySeq
+PIGO		1	BabySeq
+MED12		1	BabySeq
+CARD14		1	BabySeq
+PAK3		1	BabySeq
+PQBP1		1	BabySeq
+ALB		1	BabySeq
+ANO6		1	BabySeq
+PHF6		1	BabySeq
+CASK		1	BabySeq
+TNFRSF4		1	Jian et al.
+SLC9A6		1	BabySeq
+IGKC		1	Jian et al.
+ARHGEF1		1	Jian et al.
+SH3KBP1		1	Jian et al.
+POLD2		1	Jian et al.
+MYLK		1	BabySeq
+VCAN		1	BabySeq
+RNU7-1		1	BabySeq
+FOXC1		1	BabySeq
+KIF21A		1	BabySeq
+NSDHL		1	BabySeq
+SLCO1B3		1	BabySeq
+CYP4F22		1	BabySeq
+DNAJB6		1	BabySeq
+KANSL1		1	BabySeq
+AARS1		1	BabySeq
+LRSAM1		1	BabySeq
+VCP		1	BabySeq
+ACTB		1	BabySeq
+GFAP		1	BabySeq
+SHANK3		1	BabySeq
+TPM3		1	BabySeq
+ACTA1		1	BabySeq
+CHD2		1	BabySeq
+ATP1A2		1	BabySeq
+SCN11A		1	BabySeq
+RIPOR2		1	NESTS
+STXBP1		1	BabySeq
+F12		1	BabySeq
+PAPPA2		1	BabySeq
+ACP5		1	BabySeq
+PIK3CA		1	BabySeq
+LMNB2		1	BabySeq
+MYCN		1	BabySeq
+PDE4D		1	BabySeq
+ERBB3		1	BabySeq
+MLPH		1	BabySeq
+JPH2		1	BabySeq
+SP7		1	BabySeq
+AXL		1	BabySeq
+ISL1		1	BabySeq
+ECE1		1	BabySeq
+GLI2		1	BabySeq
+IRS1		1	BabySeq
+KRT8		1	BabySeq
+KCNJ18		1	BabySeq
+PDE11A		1	BabySeq
+MYPN		1	BabySeq
+AP1S1		1	BabySeq
+AK1		1	BabySeq
+GCLC		1	BabySeq
+SLC11A2		1	BabySeq
+RHAG		1	BabySeq
+KCNE3		1	BabySeq
+BPGM		1	BabySeq
+TUBA8		1	BabySeq
+FMR1		1	BabySeq
+MYH6		1	BabySeq
+MYOZ2		1	BabySeq
+LAMA4		1	BabySeq
+RHOH		1	Jian et al.
+SCN3B		1	BabySeq
+KLHL41		1	BabySeq
+AKAP9		1	BabySeq
+PRDM16		1	BabySeq
+SLC52A1		1	BabyDetect
+MARS1		1	BabySeq
+POMGNT1		1	BabySeq
+ADGRG1		1	BabySeq
+CASP10		1	BabySeq
+ZNF143		1	BeginNGS
+ATRX		1	BabySeq
+TIMM8A		1	BabySeq
+HCN4		1	BabySeq
+AP3D1		1	Generation Study
+SLURP1		1	BabySeq
+PSEN2		1	BabySeq
+PSEN1		1	BabySeq
+SERPIND1		1	BabySeq
+CYCS		1	BabySeq
+SC5D		1	BabySeq
+SCN4B		1	BabySeq
+FOXF1		1	BabySeq
+COA8		1	BabySeq
+BDNF		1	BabySeq
+ASCL1		1	NEOEXOME
+DNAH8		1	BabySeq
+DNAH1		1	BabySeq
+SARDH		1	BabySeq
+RASGRP2		1	BabySeq
+GRIN2D		1	BabySeq
+GRIN1		1	BabySeq
+CSF2RA		1	BabySeq
+PRKACG		1	BabySeq
+NAA10		1	BabySeq
+KCND3		1	BabySeq
+NAGA		1	BabySeq
+TGIF1		1	BabySeq
+SEPTIN9		1	BabySeq
+KBTBD13		1	BabySeq
+EFHC1		1	BabySeq
+CLDN1		1	BabySeq
+HTRA1		1	BabySeq
+ST14		1	BabySeq
+MGP		1	BabySeq
+SLC27A4		1	BabySeq
+TNXB		1	BabySeq
+CSF2RB		1	BabySeq
+AMELX		1	BabySeq
+MTFMT		1	BabySeq
+ADAMTSL2		1	BabySeq
+NFATC1		1	BabySeq
+CSTA		1	BabySeq
+TGM5		1	BabySeq
+ALOX12B		1	BabySeq
+ALOXE3		1	BabySeq
+TMC8		1	BabySeq
+ADAMTS2		1	BabySeq
+PNPLA1		1	BabySeq
+ACVR2B		1	BabySeq
+ABCA12		1	BabySeq
+ITGA6		1	BabySeq
+SLC1A3		1	BabySeq
+SPTLC1		1	BabySeq
+SPTLC2		1	BabySeq
+IRF6		1	BabySeq
+SH3BP2		1	BabySeq
+PRRX1		1	BabySeq
+ALG8		1	BabySeq
+COG7		1	BabySeq
+RRM2B		1	BabySeq
+ASNS		1	BabySeq
+SLC35A1		1	BabySeq
+DHCR24		1	BabySeq
+MED25		1	BabySeq
+BANF1		1	BabySeq
+ATIC		1	BabySeq
+MGAT2		1	BabySeq
+KIFBP		1	BabySeq
+ALG11		1	BabySeq
+ATP6V0A2		1	BabySeq
+LRP2		1	BabySeq
+B4GALT1		1	BabySeq
+DPM1		1	BabySeq
+DDOST		1	BabySeq
+MRPS16		1	BabySeq
+B3GAT3		1	BabySeq
+SCO2		1	BabySeq
+CARS2		1	BabySeq
+MPDU1		1	BabySeq
+COG5		1	BabySeq
+NIN		1	BabySeq
+TSFM		1	BabySeq
+TSPYL1		1	BabySeq
+TRIP11		1	BabySeq
+ABAT		1	BabySeq
+MRPS22		1	BabySeq
+DOLK		1	BabySeq
+MTO1		1	BabySeq
+ALG9		1	BabySeq
+DGUOK		1	BabySeq
+NODAL		1	BabySeq
+ORC6		1	BabySeq
+FTCD		1	BabySeq
+TMEM237		1	BabySeq
+SLC35D1		1	BabySeq
+CTDP1		1	BabySeq
+FMO3		1	BabySeq
+IQCB1		1	BabySeq
+IFT122		1	BabySeq
+CDT1		1	BabySeq
+LRPPRC		1	BabySeq
+UQCRB		1	BabySeq
+CD96		1	BabySeq
+BBS7		1	BabySeq
+B9D2		1	BabySeq
+HOXA1		1	BabySeq
+FREM1		1	BabySeq
+BBS5		1	BabySeq
+CHRNG		1	BabySeq
+BBS4		1	BabySeq
+ORC1		1	BabySeq
+ALDH18A1		1	BabySeq
+BBS9		1	BabySeq
+COG4		1	BabySeq
+TCTN1		1	BabySeq
+AARS2		1	BabySeq
+GLE1		1	BabySeq
+ATR		1	BabySeq
+WNT3		1	Luo et al.
+IFT43		1	BabySeq
+NECTIN1		1	BabySeq
+DECR1		1	Luo et al.
+CEP41		1	BabySeq
+ORC4		1	BabySeq
+HYLS1		1	BabySeq
+POLG		1	BabySeq
+GMPPA		1	BabySeq
+PEX11B		1	BabySeq
+ERCC1		1	BabySeq
+ATXN1		1	BabySeq
+CATSPER2		1	BabySeq
+SLC5A2		1	BabySeq
+CD2AP		1	BabySeq
+WDR19		1	BabySeq
+NEK8		1	BabySeq
+ACE		1	BabySeq
+AGT		1	BabySeq
+AGTR1		1	BabySeq
+HCCS		1	BabySeq
+GREM1		1	BabySeq
+GPC4		1	BabySeq
+FAM111B		1	BabySeq
+TAB2		1	BabySeq
+CCNQ		1	BabySeq
+OSMR		1	BabySeq
+ILK		1	BabySeq
+CAVIN4		1	BabySeq
+SCN2B		1	BabySeq
+KRT6A		1	BabySeq
+CBL		1	BabySeq
+PDLIM3		1	BabySeq
+MIB1		1	BabySeq
+KIT		1	BabySeq
+GATA5		1	BabySeq
+NEBL		1	BabySeq
+SMAD1		1	BabySeq
+ALDH1A2		1	BabySeq
+KRT16		1	BabySeq
+BCL9		1	BabySeq
+TRPM4		1	BabySeq
+MYOM1		1	BabySeq
+DTNA		1	BabySeq
+KRT6B		1	BabySeq
+SHOC2		1	BabySeq
+CRELD1		1	BabySeq
+KRT17		1	BabySeq
+CNTNAP2		1	BabySeq
+KCNQ1OT1		1	BabySeq
+CNTNAP1		1	BabySeq
+CALR3		1	BabySeq
+PIEZO2		1	BabySeq
+CDSN		1	BabySeq
+SOX18		1	BabySeq
+TMLHE		1	BabySeq
+TPM2		1	BabySeq
+ARID1A		1	BabySeq
+FBN2		1	BabySeq
+WNT5A		1	BabySeq
+ARHGAP31		1	BabySeq
+TNNT3		1	BabySeq
+ALX4		1	BabySeq
+SMO		1	BabySeq
+SMC1A		1	BabySeq
+TNNI2		1	BabySeq
+ROR2		1	BabySeq
+MYH3		1	BabySeq
+LYZ		1	BabySeq
+SIX2		1	BabySeq
+LIPE		1	BabySeq
+LIPT1		1	BabySeq
+SH2B1		1	BabySeq
+ESR1		1	BabySeq
+MCM9		1	BabySeq
+MSH3		1	BabySeq
+PDE8B		1	BabySeq
+GCGR		1	BabySeq
+CEP19		1	BabySeq
+USP8		1	BabySeq
+PPARG		1	BabySeq
+LRRK1		1	BabySeq
+DCAF17		1	BabySeq
+DHH		1	BabySeq
+GHSR		1	BabySeq
+WNT4		1	BabySeq
+RSPO1		1	BabySeq
+PLIN1		1	BabySeq
+STAMBP		1	BabySeq
+TECPR2		1	BabySeq
+PODXL		1	BabySeq
+SEC63		1	BabySeq
+NHERF1		1	BabySeq
+PRKCSH		1	BabySeq
+NR3C1		1	BabySeq
+PNLIP		1	BabySeq
+PMFBP1		1	BabySeq
+TSGA10		1	BabySeq
+DUSP6		1	BabySeq
+GNRH1		1	BabySeq
+ADIPOQ		1	BabySeq
+ATG16L1		1	BabySeq
+IGSF10		1	BabySeq
+LGR4		1	BabySeq
+SOHLH1		1	BabySeq
+TRPV6		1	BabySeq
+FSHB		1	BabySeq
+SLC10A1		1	BabySeq
+MEIOB		1	BabySeq
+TACR3		1	BabySeq
+KIF12		1	BabySeq
+PPP1R3A		1	BabySeq
+SPINK1		1	BabySeq
+DNAH17		1	BabySeq
+PLCZ1		1	BabySeq
+TRIP13		1	BabySeq
+H6PD		1	BabySeq
+TAC3		1	BabySeq
+AMH		1	BabySeq
+PLVAP		1	BabySeq
+WEE2		1	BabySeq
+CFAP47		1	BabySeq
+AGRP		1	BabySeq
+CFAP251		1	BabySeq
+FSIP2		1	BabySeq
+INSL3		1	BabySeq
+NLRP5		1	BabySeq
+ZFP57		1	BabySeq
+ADCY3		1	BabySeq
+ARMC5		1	BabySeq
+TEX15		1	BabySeq
+CFAP44		1	BabySeq
+AMHR2		1	BabySeq
+DNAH6		1	BabySeq
+ERBB2		1	BabySeq
+DLK1		1	BabySeq
+SYCP2		1	BabySeq
+SUN5		1	BabySeq
+MSH5		1	BabySeq
+BTG4		1	BabySeq
+ARMC2		1	BabySeq
+IL23R		1	BabySeq
+CELA2A		1	BabySeq
+EGFR		1	BabySeq
+FKBP4		1	BabySeq
+SERPINA6		1	BabySeq
+HFM1		1	BabySeq
+ZP3		1	BabySeq
+DMRT1		1	BabySeq
+MC3R		1	BabySeq
+USP53		1	BabySeq
+KLB		1	BabySeq
+FBXO43		1	BabySeq
+FGF8		1	BabySeq
+SLC10A2		1	BabySeq
+SIM1		1	BabySeq
+MRAP2		1	BabySeq
+TENT5A		1	BabySeq
+KISS1		1	BabySeq
+TP63		1	BabySeq
+UCP3		1	BabySeq
+NOBOX		1	BabySeq
+RINT1		1	BabySeq
+KL		1	BabySeq
+NDNF		1	BabySeq
+ALPI		1	BabySeq
+KLHL10		1	BabySeq
+SRA1		1	BabySeq
+BNC1		1	BabySeq
+DNAH10		1	BabySeq
+IGF1R		1	BabySeq
+CTRC		1	BabySeq
+GCKR		1	BabySeq
+FSHR		1	BabySeq
+HSPA1L		1	BabySeq
+PGRMC1		1	BabySeq
+MAP3K1		1	BabySeq
+SERPINA7		1	BabySeq
+PNLDC1		1	BabySeq
+SPIDR		1	BabySeq
+NLRP2		1	BabySeq
+DYRK1B		1	BabySeq
+DDX24		1	BabySeq
+CPEB1		1	BabySeq
+PPIB		1	BabySeq
+XRCC2		1	BabySeq
+TEX14		1	BabySeq
+STAG3		1	BabySeq
+SPARC		1	BabySeq
+PSMC3IP		1	BabySeq
+PTH		1	BabySeq
+AURKC		1	BabySeq
+TTC29		1	BabySeq
+TUBB8		1	BabySeq
+HMGA1		1	BabySeq
+APOA4		1	BabySeq
+MSH4		1	BabySeq
+ADGRG2		1	BabySeq
+ZPBP		1	BabySeq
+GALNTL5		1	BabySeq
+MIR137		1	BabySeq
+CFAP69		1	BabySeq
+POF1B		1	BabySeq
+TXNRD2		1	BabySeq
+SPRY4		1	BabySeq
+TTC21A		1	BabySeq
+ATP2A3		1	BabySeq
+M1AP		1	BabySeq
+AP2S1		1	BabySeq
+FOCAD		1	BabySeq
+FGF17		1	BabySeq
+PATL2		1	BabySeq
+CAMK2D		1	BabySeq
+DUOXA1		1	BabyDetect
+MEI1		1	BabySeq
+SHOC1		1	BabySeq
+IRF5		1	BabySeq
+AKR1C2		1	BabySeq
+ZP2		1	BabySeq
+TEX11		1	BabySeq
+CYP24A1		1	BabySeq
+CDC20		1	BabySeq
+MC4R		1	BabySeq
+ZMYND15		1	BabySeq
+WNT1		1	BabySeq
+BMP15		1	BabySeq
+ZNF687		1	BabySeq
+MAMLD1		1	BabySeq
+CFAP58		1	BabySeq
+COL10A1		1	BabySeq
+EFNB2		1	BabySeq
+TLE6		1	BabySeq
+UNC45A		1	BabySeq
+ZFYVE19		1	BabySeq
+TCF7L2		1	BabySeq
+ZP1		1	BabySeq
+CREB3L1		1	BabySeq
+QRICH2		1	BabySeq
+WWTR1		1	Foresite
+TERB1		1	BabySeq
+IRS2		1	BabySeq
+HS6ST1		1	BabySeq
+PANX1		1	BabySeq
+GDF9		1	BabySeq
+CYP19A1		1	BabySeq
+SOX8		1	BabySeq
+SLC26A8		1	BabySeq
+SLC4A2		1	BabySeq
+NUP107		1	BabySeq
+MMP9		1	BabySeq
+IRGM		1	BabySeq
+NTHL1		1	BabySeq
+PADI6		1	BabySeq
+USP26		1	BabySeq
+DNHD1		1	BabySeq
+CPA1		1	BabySeq
+ABCB1		1	BabySeq
+SEMA3D		1	BabySeq
+KHDC3L		1	BabySeq
+FIGLA		1	BabySeq
+SYCE1		1	BabySeq
+IL37		1	BabySeq
+GNRHR		1	BabySeq
+TTF1		1	BabySeq
+MCM8		1	BabySeq
+PRLR		1	BabySeq
+DPY19L2		1	BabySeq
+ROBO1		1	BabySeq
+PLA2G4A		1	BabySeq
+GNA11		1	BabySeq
+DNAH2		1	BabySeq
+LHCGR		1	BabySeq
+SPEF2		1	BabySeq
+SSX1		1	BabySeq
+SQSTM1		1	BabySeq
+CFAP65		1	BabySeq
+FLRT3		1	BabySeq
+HLA-DQB1		1	BabySeq
+CAPN10		1	BabySeq
+HHEX		1	BabyDetect
+PPP2R3C		1	BabySeq
+PSMB8		1	BabySeq
+TPP2		1	BabySeq
+NLRP1		1	BabySeq
+VEGFC		1	BabySeq
+IRF7		1	BabySeq
+ITCH		1	BabySeq
+CARMIL2		1	BabySeq
+FCGR3A		1	BabySeq
+ISG15		1	BabySeq
+FCN3		1	BabySeq
+CASP8		1	BabySeq
+RIPK1		1	BabySeq
+COPA		1	BabySeq
+CXCR2		1	Mendelics
+MASP2		1	BabySeq
+GDF2		1	BabySeq
+PDGFRB		1	BabySeq
+FASLG		1	BabySeq
+SPI1		1	BabySeq
+IFNAR1		1	BabySeq
+IL17F		1	BabySeq
+IFNG		1	BabySeq
+TET2		1	BabySeq
+GJB4		1	BabySeq
+ERBIN		1	Jian et al.
+TLR7		1	BabySeq
+PLCL1		1	BabySeq
+PTPN22		1	BabySeq
+FCGR2A		1	NEOEXOME
+LACC1		1	BabySeq
+MBL2		1	BabySeq
+LMAN1		1	BabySeq
+ALDH2		1	BabySeq
+ITPKB		1	BabySeq
+IL17RC		1	BabySeq
+RNF31		1	Jian et al.
+MDFIC		1	BabySeq
+NCKAP1L		1	BabySeq
+FCGR2B		1	BabySeq
+ANGPT2		1	BabySeq
+DNASE1L3		1	BabySeq
+FLT4		1	BabySeq
+IL12RB2		1	BabySeq
+TPSAB1		1	BabySeq
+SOCS1		1	BabySeq
+DBR1		1	BabySeq
+ZNFX1		1	BabySeq
+TNFSF12		1	Jian et al.
+PIK3CG		1	BabySeq
+IFNAR2		1	BabySeq
+POLE2		1	Jian et al.
+MCM10		1	BabySeq
+FNIP1		1	BabySeq
+GBP1		1	BabySeq
+CFHR2		1	BabySeq
+PERP		1	BabySeq
+POMP		1	BabySeq
+TNFRSF9		1	BabySeq
+CELSR1		1	BabySeq
+LRRC8A		1	BeginNGS
+TLR3		1	BabySeq
+TRAF3IP2		1	BabySeq
+C4B		1	BabySeq
+DNASE1		1	BabySeq
+JAK1		1	BabySeq
+C4A		1	BabySeq
+SASH3		1	BabySeq
+CHEK2		1	BabySeq
+SOS2		1	BabySeq
+EXPH5		1	BabySeq
+PURA		1	BabySeq
+DDX41		1	BabySeq
+SRC		1	BabySeq
+FLI1		1	BabySeq
+TMPRSS6		1	BabySeq
+SRP72		1	BabySeq
+HMOX1		1	BabySeq
+SLFN14		1	BabySeq
+TPI1		1	BabySeq
+GPI		1	BabySeq
+EPAS1		1	BabySeq
+SERPINF2		1	BabySeq
+GSR		1	BabySeq
+PIGG		1	BabySeq
+SFTPA2		1	BabySeq
+MUC5B		1	BabySeq
+ANO10		1	BabySeq
+HINT1		1	BabySeq
+SLCO2A1		1	BabySeq
+SCP2		1	BabySeq
+DDR2		1	BabySeq
+WNT7A		1	BabySeq
+B3GLCT		1	BabySeq
+GPC6		1	BabySeq
+KPTN		1	BabySeq
+HYCC1		1	BabySeq
+SNAP29		1	BabySeq
+NKX3-2		1	BabySeq
+GJC2		1	BabySeq
+CHSY1		1	BabySeq
+CHST3		1	BabySeq
+SLC4A11		1	BabySeq
+ATP2A1		1	BabySeq
+CCDC88C		1	BabySeq
+HERC2		1	BabySeq
+TSEN54		1	BabySeq
+DDHD1		1	BabySeq
+GFER		1	BabySeq
+HEATR3		1	BabySeq
+PLA2G7		1	BabySeq
+NT5C3A		1	BabySeq
+KCNN4		1	BabySeq
+GFI1B		1	BabySeq
+TYMS		1	BabySeq
+SF3B1		1	BabySeq
+PTGS1		1	BabySeq
+TBXA2R		1	BabySeq
+KNG1		1	BabySeq
+FUT1		1	BabySeq
+HBD		1	BabySeq
+HBG1		1	BabySeq
+MPIG6B		1	BabySeq
+RPS14		1	BabySeq
+HBE1		1	BabySeq
+EGLN1		1	BabySeq
+RPL9		1	BabyDetect
+AMPD3		1	BabySeq
+SLC14A1		1	BabySeq
+ETV6		1	BabySeq
+BMP6		1	BabySeq
+SLC29A3		1	BabySeq
+TOMM70		1	BabySeq
+SERPINE1		1	BabySeq
+IKZF5		1	BabySeq
+RHCE		1	BabySeq
+KLKB1		1	BabySeq
+EPOR		1	BabySeq
+RHD		1	BabySeq
+PIEZO1		1	BabySeq
+A4GALT		1	BabySeq
+FUT2		1	BabySeq
+HRG		1	BabySeq
+RETREG1		1	BabySeq
+VPS53		1	BabySeq
+ST3GAL5		1	BabySeq
+CHKB		1	BabySeq
+FAM161A		1	BabySeq
+MESP2		1	BabySeq
+SPEG		1	BabySeq
+WDR35		1	BabySeq
+VPS13A		1	BabySeq
+PLOD2		1	BabySeq
+CNGB3		1	BabySeq
+OBSL1		1	BabySeq
+SLC25A22		1	BabySeq
+STAC3		1	BabySeq
+AP4M1		1	BabySeq
+NUP62		1	BabySeq
+CENPJ		1	BabySeq
+RELN		1	BabySeq
+FKRP		1	BabySeq
+ACO2		1	BabySeq
+TTC21B		1	BabySeq
+PRICKLE1		1	BabySeq
+ITGA7		1	BabySeq
+DLL3		1	BabySeq
+DAG1		1	BabySeq
+CUL7		1	BabySeq
+MLC1		1	BabySeq
+AMPD1		1	BabySeq
+CDK5RAP2		1	BabySeq
+ZNF469		1	BabySeq
+RAB3GAP2		1	BabySeq
+LARGE1		1	BabySeq
+TUFM		1	BabySeq
+PRKG1		1	BabySeq
+LOX		1	BabySeq
+GANAB		1	BabySeq
+DNAJB11		1	BabySeq
+DNAJB13		1	BabySeq
+FAM20A		1	BabySeq
+TEK		1	BabySeq
+ARHGEF9		1	BabySeq
+ENAM		1	BabySeq
+RELT		1	BabySeq
+SLC7A8		1	BabySeq
+SLC26A5		1	BabySeq
+MCM2		1	BabySeq
+PI4KB		1	BabySeq
+EPS8L2		1	BabySeq
+SLC24A4		1	BabySeq
+ERLEC1		1	BabySeq
+MSX1		1	BabySeq
+IL11RA		1	BabySeq
+PAX9		1	BabySeq
+KIF4A		1	BabySeq
+PLS1		1	BabySeq
+CLIC5		1	NESTS
+TNC		1	BabySeq
+ARSG		1	BabySeq
+TBX21		1	BabySeq
+BCAP31		1	BabySeq
+LMX1A		1	BabySeq
+ATP6V1B2		1	BabySeq
+A2ML1		1	BabySeq
+MMP20		1	BabySeq
+HOXA2		1	BabySeq
+KLK4		1	BabySeq
+AMBN		1	BabySeq
+GPR68		1	BabySeq
+WBP2		1	BabySeq
+PLAG1		1	BabySeq
+FAM83H		1	BabySeq
+GRXCR2		1	BabySeq
+MPZL2		1	BabySeq
+WNT10B		1	BabySeq
+ACP4		1	BabySeq
+ITGB6		1	BabySeq
+ODAPH		1	BabySeq
+AFG2B		1	BabySeq
+TSHZ1		1	BabySeq
+GRHL3		1	BabySeq
+NRXN1		1	BabySeq
+ARSL		1	BabySeq
+ATP6AP2		1	BabySeq
+MAPT		1	BabySeq
+CCDC78		1	BabySeq
+TFAP2A		1	BabySeq
+SLC16A12		1	BabySeq
+BICD2		1	BabySeq
+BVES		1	BabySeq
+MYOT		1	BabySeq
+NLGN3		1	BabySeq
+NLGN4X		1	BabySeq
+CTSA		1	BabySeq
+ZIC2		1	BabySeq
+KDM5B		1	BabySeq
+ACBD5		1	BabySeq
+MYBPC1		1	BabySeq
+CDON		1	BabySeq
+SLC33A1		1	BabySeq
+SHH		1	BabySeq
+GLI3		1	BabySeq
+FSCN2		1	BabySeq
+MAGI2		1	BabySeq
+DPP6		1	BabySeq
+SIX3		1	BabySeq
+ATP1A3		1	BabySeq
+SLC4A10		1	BabySeq
+CACNA2D1		1	BabySeq
+TFG		1	BabySeq
+BARD1		1	BabySeq
+LUM		1	BabySeq
+RAD51B		1	BabySeq
+TARDBP		1	BabySeq
+NAA15		1	BabySeq
+GABRA1		1	BabySeq
+ATN1		1	BabySeq
+NRG1		1	BabySeq
+LGI1		1	BabySeq
+DCTN1		1	BabySeq
+PNKD		1	BabySeq
+VSX1		1	BabySeq
+KIF22		1	BabySeq
+APP		1	BabySeq
+DLC1		1	BabySeq
+CSF1R		1	BabySeq
+RUNX2		1	BabySeq
+AKT3		1	BabySeq
+KCNQ3		1	BabySeq
+SLC12A5		1	BabySeq
+NEDD4L		1	BabySeq
+PHOX2A		1	BabySeq
+CHRNA2		1	BabySeq
+CENPF		1	BabySeq
+PIGQ		1	BabySeq
+OPLAH		1	BabySeq
+RAD51		1	BabySeq
+NDUFA1		1	BabySeq
+YY1AP1		1	BabySeq
+KRT2		1	BabySeq
+SLC39A13		1	BabySeq
+ELMO2		1	BabySeq
+EDNRA		1	BabySeq
+HYAL2		1	BabySeq
+KRT6C		1	BabySeq
+GPNMB		1	BabySeq
+FZD6		1	BabySeq
+AEBP1		1	BabySeq
+SERPINB7		1	BabySeq
+FKBP14		1	BabySeq
+LORICRIN		1	BabySeq
+SASH1		1	BabySeq
+USB1		1	BabySeq
+TNNI3K		1	BabySeq
+KLHL24		1	BabySeq
+B3GALT6		1	BabySeq
+NT5E		1	BabySeq
+TRAF7		1	BabySeq
+CLDN10		1	BabySeq
+ITPR2		1	BabySeq
+CYP26C1		1	BabySeq
+ADAM10		1	BabySeq
+CAST		1	BabySeq
+DPYS		1	BabySeq
+XYLT2		1	BabySeq
+B4GALT7		1	BabySeq
+NPC1L1		1	BabySeq
+PSENEN		1	BabySeq
+SIRT3		1	BabySeq
+MYH7B		1	BabySeq
+SLC17A9		1	BabySeq
+MEF2A		1	BabySeq
+NOS3		1	BabySeq
+ADAMTS19		1	BabySeq
+KRT81		1	BabySeq
+RIPK4		1	BabySeq
+GPD1		1	BabySeq
+HAND2		1	BabySeq
+CTSB		1	BabySeq
+KRT13		1	BabySeq
+KDM5A		1	BabySeq
+MAPRE2		1	BabySeq
+CFAP52		1	BabySeq
+PLCD1		1	BabySeq
+CDK13		1	BabySeq
+GLMN		1	BabySeq
+NUP210		1	BabySeq
+STING1		1	BabySeq
+CDH2		1	BabySeq
+C1S		1	BabySeq
+PEPD		1	BabySeq
+ROS1		1	BabySeq
+NR2F2		1	BabySeq
+EPHX2		1	Foresite
+DSG1		1	BabySeq
+LRP6		1	BabySeq
+ETS1		1	BabySeq
+TRPV3		1	BabySeq
+MRAS		1	BabySeq
+SUPT5H		1	BabySeq
+JMJD1C		1	BabySeq
+NRAP		1	BabySeq
+RPL3L		1	BabySeq
+CFAP45		1	BabySeq
+SYNM		1	BabySeq
+MYLK3		1	BabySeq
+CYFIP1		1	BabySeq
+KRT1		1	BabySeq
+STX1A		1	BabySeq
+COX7B		1	BabySeq
+LIPG		1	BabySeq
+CBLN2		1	Luo et al.
+STAT4		1	BabySeq
+PPA2		1	BabySeq
+PPP1R13L		1	BabySeq
+PRKACB		1	BabySeq
+KITLG		1	BabySeq
+DSE		1	BabySeq
+PLD1		1	BabySeq
+THSD4		1	BabySeq
+AQP5		1	BabySeq
+TRIM63		1	BabySeq
+PADI3		1	BabySeq
+APOA1		1	BabySeq
+CFAP53		1	BabySeq
+ANGPTL3		1	BabySeq
+APOC3		1	BabySeq
+ACTRT1		1	BabySeq
+TLL1		1	BabySeq
+FERMT1		1	BabySeq
+KRT4		1	BabySeq
+ROBO4		1	BabySeq
+RRAS2		1	BabySeq
+LMOD2		1	BabySeq
+UVSSA		1	BabySeq
+MAPK1		1	BabySeq
+CETP		1	BabySeq
+CELSR3		1	BabySeq
+TSR1		1	BabySeq
+LRP1		1	BabySeq
+SULT2B1		1	BabySeq
+CIROP		1	BabySeq
+KDR		1	BabySeq
+TMEM260		1	BabySeq
+KRT83		1	BabySeq
+RSPO4		1	BabySeq
+MTX2		1	BabySeq
+C1R		1	BabySeq
+ATP13A3		1	BabySeq
+SHOX2		1	BabySeq
+OSTC		1	BabySeq
+FDPS		1	BabySeq
+SDR9C7		1	BabySeq
+KIF21B		1	BabySeq
+KRT10		1	BabySeq
+TMC6		1	BabySeq
+PRKACA		1	BabySeq
+NCSTN		1	BabySeq
+KLF10		1	BabySeq
+RGS2		1	BabySeq
+GIMAP5		1	BabySeq
+TUBB		1	BabySeq
+PKD1L1		1	BabySeq
+PRKAG3		1	NEOEXOME
+MVD		1	BabySeq
+PMVK		1	BabySeq
+CREB3L3		1	BabySeq
+ATP2A2		1	BabySeq
+ATP2C1		1	BabySeq
+HLA-B		1	BabySeq
+POFUT1		1	BabySeq
+BMS1		1	BabySeq
+MFAP5		1	BabySeq
+CHST14		1	BabySeq
+CYLD		1	BabySeq
+PPP1CB		1	BabySeq
+ALPK3		1	BabySeq
+KRT86		1	BabySeq
+PPP1R17		1	Foresite
+SCARB1		1	BabySeq
+MNS1		1	BabySeq
+MMP21		1	BabySeq
+CERS3		1	BabySeq
+KRT9		1	BabySeq
+ABCB6		1	BabySeq
+AAGAB		1	BabySeq
+ANGPTL4		1	BabySeq
+HR		1	BabySeq
+CIB1		1	BabySeq
+KCND2		1	BabySeq
+USF1		1	NEOEXOME
+LZTR1		1	BabySeq
+LPA		1	BabySeq
+STAP1		1	BabySeq
+ITGA2		1	BabySeq
+KCNB1		1	BabySeq
+SLC25A3		1	BabySeq
+NEK9		1	BabySeq
+TBX15		1	BabySeq
+ISCA2		1	BabySeq
+PHIP		1	BabySeq
+NFU1		1	BabySeq
+MFRP		1	BabySeq
+CCDC115		1	BabySeq
+YY1		1	BabySeq
+POGZ		1	BabySeq
+SSR4		1	BabySeq
+DIS3L2		1	BabySeq
+STT3B		1	BabySeq
+MIPEP		1	BabySeq
+ANKRD11		1	BabySeq
+SLC35A3		1	BabySeq
+TBCK		1	BabySeq
+KCTD1		1	BabySeq
+SMARCAD1		1	BabySeq
+RFT1		1	BabySeq
+PGK1		1	BabySeq
+MAB21L2		1	BabySeq
+TAPT1		1	BabySeq
+SLC9A1		1	BabySeq
+PTDSS1		1	BabySeq
+TBX22		1	BabySeq
+CDC42		1	BabySeq
+BPNT2		1	BabySeq
+DLX3		1	BabySeq
+COG2		1	BabySeq
+CNOT1		1	BabySeq
+TMEM199		1	BabySeq
+PRKAR1B		1	BabySeq
+SF3B4		1	BabySeq
+VPS33A		1	BabySeq
+MEIS2		1	BabySeq
+DPM2		1	BabySeq
+ELAC2		1	BabySeq
+HHAT		1	BabySeq
+BRF1		1	BabySeq
+SPRTN		1	BabySeq
+AFF4		1	BabySeq
+FBXL4		1	BabySeq
+RPIA		1	BabySeq
+PMPCB		1	BabySeq
+STRADA		1	BabySeq
+AMER1		1	BabySeq
+CDH11		1	BabySeq
+PPP3CA		1	BabySeq
+CEP55		1	BabySeq
+SGO1		1	BabySeq
+FTO		1	BabySeq
+MGME1		1	BabySeq
+BOLA3		1	BabySeq
+DMGDH		1	BabySeq
+PPP2R5D		1	BabySeq
+PPP2R1A		1	BabySeq
+COG8		1	BabySeq
+QRSL1		1	BabySeq
+TRMT10C		1	BabySeq
+SEC23A		1	BabySeq
+EIF4A3		1	BabySeq
+TALDO1		1	BabySeq
+SLC25A26		1	BabySeq
+GPAA1		1	BabySeq
+ALX1		1	BabySeq
+EIF2S3		1	BabySeq
+RBM28		1	BabySeq
+GZF1		1	BabySeq
+PIGN		1	BabySeq
+ANAPC1		1	BabySeq
+ASXL1		1	BabySeq
+RIN2		1	BabySeq
+EBP		1	BabySeq
+ACY1		1	BabySeq
+SPG21		1	BabySeq
+SH3PXD2B		1	BabySeq
+TMCO1		1	BabySeq
+SRD5A3		1	BabySeq
+ASXL3		1	BabySeq
+DHODH		1	BabySeq
+GNB5		1	BabySeq
+NFIA		1	BabySeq
+NECTIN4		1	BabySeq
+CHD3		1	BabySeq
+STT3A		1	BabySeq
+PTRH2		1	BabySeq
+MYO18B		1	BabySeq
+PISD		1	BabySeq
+PLOD3		1	BabySeq
+IARS2		1	BabySeq
+EPHB4		1	BabySeq
+NDUFV2		1	BabySeq
+COG1		1	BabySeq
+KCNJ6		1	BabySeq
+SATB2		1	BabySeq
+MT-TK		1	BabySeq
+DSC3		1	BabySeq
+TARS2		1	BabySeq
+BMP2		1	BabySeq
+HMX1		1	BabySeq
+MFF		1	BabySeq
+SMOC1		1	BabySeq
+GFM2		1	BabySeq
+UPB1		1	BabySeq
+SON		1	BabySeq
+DDX11		1	BabySeq
+ECEL1		1	BabySeq
+PTPN14		1	BabySeq
+RMND1		1	BabySeq
+MRPL3		1	BabySeq
+CKAP2L		1	BabySeq
+SMARCA2		1	BabySeq
+PDE3A		1	BabySeq
+THOC6		1	BabySeq
+KDM1A		1	BabySeq
+CCDC88A		1	BabySeq
+SMCHD1		1	BabySeq
+PRG4		1	BabySeq
+KCNK4		1	BabySeq
+TGDS		1	BabySeq
+HDAC6		1	BabySeq
+RHOA		1	BabySeq
+GTPBP3		1	BabySeq
+CLTCL1		1	NEOEXOME
+EARS2		1	BabySeq
+ANTXR1		1	BabySeq
+IRX5		1	BabySeq
+HOXA13		1	BabySeq
+KAT6A		1	BabySeq
+MPC1		1	BabySeq
+XK		1	BabySeq
+UBE3B		1	BabySeq
+LARP7		1	BabySeq
+MRPL44		1	BabySeq
+EP300		1	BabySeq
+SNRPB		1	BabySeq
+DNMT3A		1	BabySeq
+EMG1		1	BabySeq
+SFXN4		1	BabySeq
+NR2F1		1	BabySeq
+MRPS7		1	BabySeq
+KCNK9		1	BabySeq
+DYM		1	BabySeq
+LIG3		1	BabySeq
+MT-ND2		1	BabySeq
+KHK		1	BabySeq
+DOCK6		1	BabySeq
+TCEAL1		1	BabySeq
+IPO8		1	BabySeq
+TIMMDC1		1	BabySeq
+POLRMT		1	BabySeq
+NSD2		1	BabySeq
+ACTL6A		1	BabySeq
+GNAI3		1	BabySeq
+KMT2C		1	BabySeq
+PPP2CA		1	BabySeq
+ABHD5		1	BabySeq
+BUB1B		1	BabySeq
+LRIG2		1	BabySeq
+ANKRD17		1	BabySeq
+POP1		1	BabySeq
+RBBP8		1	BabySeq
+SCLT1		1	BabySeq
+GTPBP2		1	BabySeq
+FAR1		1	BabySeq
+WDR73		1	BabySeq
+LEMD3		1	BabySeq
+NDUFA2		1	BabySeq
+PPP1R12A		1	BabySeq
+ATP5PO		1	BabySeq
+LONP1		1	BabySeq
+MARS2		1	BabySeq
+ACAD10		1	PerkinElmer
+NDUFAF5		1	BabySeq
+KCNH1		1	BabySeq
+NDUFAF4		1	BabySeq
+PIGC		1	BabySeq
+TXNDC15		1	BabySeq
+MASP1		1	BabySeq
+CANT1		1	BabySeq
+CEP63		1	BabySeq
+KCNN3		1	BabySeq
+ADNP		1	BabySeq
+PYCR1		1	BabySeq
+NDUFAF1		1	BabySeq
+NFIX		1	BabySeq
+FOXL2		1	BabySeq
+VARS2		1	BabySeq
+MT-TA		1	BabySeq
+KIF7		1	BabySeq
+FCSK		1	BabySeq
+BGN		1	BabySeq
+ATP5F1A		1	BabySeq
+NDUFB11		1	BabySeq
+DSG4		1	BabySeq
+MT-TN		1	BabySeq
+ARID2		1	BabySeq
+TRMT10A		1	BabySeq
+SMG9		1	BabySeq
+ATPAF2		1	BabySeq
+PLCB4		1	BabySeq
+TAF6		1	BabySeq
+BCL11A		1	BabySeq
+DVL1		1	BabySeq
+BMP4		1	BabySeq
+NDUFA11		1	BabySeq
+LIPH		1	BabySeq
+TTC8		1	BabySeq
+PRSS56		1	BabySeq
+SPOP		1	BabySeq
+BRD4		1	BabySeq
+HRURF		1	BabySeq
+PPM1D		1	BabySeq
+VAX1		1	BabySeq
+LSS		1	BabySeq
+P4HTM		1	BabySeq
+HNRNPK		1	BabySeq
+SOX5		1	BabySeq
+AFP		1	BabySeq
+HMGB1		1	BabySeq
+KRT71		1	BabySeq
+TTC19		1	BabySeq
+OSGEP		1	BabySeq
+TRIT1		1	BabySeq
+GDF11		1	BabySeq
+WBP11		1	BabySeq
+ARHGAP29		1	BabySeq
+TMEM107		1	BabySeq
+PRODH2		1	BabySeq
+NDUFS6		1	BabySeq
+SREBF1		1	BabySeq
+BICRA		1	BabySeq
+UBR7		1	BabySeq
+ZNHIT3		1	BabySeq
+RAD21		1	BabySeq
+EDN1		1	BabySeq
+PPP1R15B		1	BabySeq
+KIAA0753		1	BabySeq
+PET100		1	BabySeq
+TET3		1	BabySeq
+AFF3		1	BabySeq
+DCPS		1	BabySeq
+DLL4		1	BabySeq
+MYT1		1	BabySeq
+LDHB		1	BabySeq
+HOXC13		1	BabySeq
+EED		1	BabySeq
+CTSC		1	BabySeq
+LPIN1		1	BabySeq
+HAAO		1	BabySeq
+GLYCTK		1	BabySeq
+SNX27		1	BabySeq
+MRPL39		1	BabySeq
+WNT9B		1	BabySeq
+GALNT2		1	BabySeq
+WDR37		1	BabySeq
+RAD50		1	BabySeq
+ABL1		1	BabySeq
+NUBPL		1	BabySeq
+MTRFR		1	BabySeq
+LDHD		1	BabySeq
+CPE		1	BabySeq
+MT-RNR2		1	BabySeq
+SLC1A1		1	BabySeq
+AGK		1	BabySeq
+SOX4		1	BabySeq
+MEG3		1	BabySeq
+BUB3		1	BabySeq
+PRORP		1	BabySeq
+CDC42BPB		1	BabySeq
+PHKG1		1	NEOEXOME
+H3-3B		1	BabySeq
+PCK2		1	BabySeq
+KATNIP		1	BabySeq
+POLR3A		1	BabySeq
+SLC25A42		1	BabySeq
+MT-TL2		1	BabySeq
+AMMECR1		1	BabySeq
+MPLKIP		1	BabySeq
+IBA57		1	BabySeq
+NDN		1	NEOEXOME
+SLC6A9		1	BabySeq
+UNC80		1	BabySeq
+TCTN2		1	BabySeq
+H3-3A		1	BabySeq
+NDUFA9		1	BabySeq
+NDUFA10		1	BabySeq
+CEP57		1	BabySeq
+TBX2		1	BabySeq
+MAP3K7		1	BabySeq
+ALDH1A3		1	BabySeq
+TMEM218		1	BabySeq
+MT-TD		1	BabySeq
+AASS		1	BabySeq
+TMPRSS15		1	BabySeq
+C1QBP		1	BabySeq
+MT-TI		1	BabySeq
+FOXI3		1	BabySeq
+C19orf12		1	BabySeq
+CSPP1		1	BabySeq
+TACO1		1	BabySeq
+ATP6V1E1		1	BabySeq
+SLC25A10		1	BabySeq
+COLEC11		1	BabySeq
+NHS		1	BabySeq
+NDUFA6		1	BabySeq
+POU3F3		1	BabySeq
+TAMM41		1	BabySeq
+LAGE3		1	BabySeq
+ARMC9		1	BabySeq
+MT-ND4L		1	BabySeq
+VPS4A		1	BabySeq
+NSUN3		1	BabySeq
+FGF10		1	BabySeq
+TWIST2		1	BabySeq
+LYRM4		1	BabySeq
+C2orf69		1	BabySeq
+PNPLA8		1	BabySeq
+TMEM231		1	BabySeq
+ZBTB7A		1	BabySeq
+DVL3		1	BabySeq
+SDHAF1		1	BabySeq
+COLEC10		1	BabySeq
+RARB		1	BabySeq
+RECQL		1	BabySeq
+TP53RK		1	BabySeq
+RPS23		1	BabySeq
+NDUFS7		1	BabySeq
+TOGARAM1		1	BabySeq
+MYMK		1	BabySeq
+NDUFB3		1	BabySeq
+DPF2		1	BabySeq
+LTBP3		1	BabySeq
+WAC		1	BabySeq
+DGCR2		1	NEOEXOME
+PRKD1		1	BabySeq
+MT-TR		1	BabySeq
+TMEM126B		1	BabySeq
+GORAB		1	BabySeq
+MT-TC		1	BabySeq
+PDE6D		1	BabySeq
+NADSYN1		1	BabySeq
+IFT27		1	BabySeq
+MT-TE		1	BabySeq
+UBA2		1	BabySeq
+TBX4		1	BabySeq
+OBSCN		1	BabySeq
+RALA		1	BabySeq
+CTBP1		1	BabySeq
+NXN		1	BabySeq
+PNPLA6		1	BabySeq
+MN1		1	BabySeq
+FOXRED1		1	BabySeq
+DACT1		1	BabySeq
+COA6		1	BabySeq
+GTF2I		1	NEOEXOME
+SLC28A1		1	BabySeq
+MSL3		1	BabySeq
+NDUFB8		1	BabySeq
+YIF1B		1	BabySeq
+TOP3A		1	BabySeq
+ALX3		1	BabySeq
+NDUFB10		1	BabySeq
+MT-TV		1	BabySeq
+FUT8		1	BabySeq
+HS2ST1		1	BabySeq
+TMEM138		1	BabySeq
+MAN2C1		1	BabySeq
+NDUFA12		1	BabySeq
+NDUFS3		1	BabySeq
+HMGA2		1	BabySeq
+SMARCD1		1	BabySeq
+KAT8		1	BabySeq
+CHCHD10		1	BabySeq
+IFT74		1	BabySeq
+KDM3B		1	BabySeq
+LTBP1		1	BabySeq
+ADGRG6		1	BabySeq
+FARS2		1	BabySeq
+SELENBP1		1	BabySeq
+MT-ATP8		1	BabySeq
+INTU		1	BabySeq
+TRPS1		1	BabySeq
+FGFRL1		1	BabySeq
+NDUFAF2		1	BabySeq
+MAOA		1	BabySeq
+FZD5		1	BabySeq
+SCYL2		1	BabySeq
+VSX2		1	BabySeq
+ADH1B		1	BabySeq
+SALL4		1	BabySeq
+XYLT1		1	BabySeq
+HPSE2		1	BabySeq
+SCAF4		1	BabySeq
+CRIPT		1	BabySeq
+CDK10		1	BabySeq
+BLTP1		1	BabySeq
+MYL11		1	BabySeq
+ADCY6		1	BabySeq
+COPB2		1	BabySeq
+CTNND1		1	BabySeq
+MT-CYB		1	BabySeq
+PTHLH		1	BabySeq
+PIGL		1	BabySeq
+KYNU		1	BabySeq
+RNF113A		1	BabySeq
+LZTFL1		1	BabySeq
+MMP2		1	BabySeq
+RNU12-2P		1	BabySeq
+HIRA		1	NEOEXOME
+COG6		1	BabySeq
+SMC3		1	BabySeq
+SLC17A3		1	NEOEXOME
+CAT		1	BabySeq
+CCDC47		1	BabySeq
+NDUFAF6		1	BabySeq
+ABCA5		1	BabySeq
+DCXR		1	BabySeq
+BMP7		1	BabySeq
+BBIP1		1	BabySeq
+DLG5		1	BabySeq
+EFNB1		1	BabySeq
+BLOC1S5		1	BabySeq
+GTF2E2		1	BabySeq
+GLDN		1	BabySeq
+FDX2		1	BabySeq
+GK		1	BabySeq
+TULP3		1	BabySeq
+SLC25A32		1	BabyDetect
+TOR1A		1	BabySeq
+KRT85		1	BabySeq
+SYNE1		1	BabySeq
+CDH3		1	BabySeq
+ADAMTS17		1	BabySeq
+MAST1		1	BabySeq
+SMARCC2		1	BabySeq
+CAPN15		1	BabySeq
+SPECC1L		1	BabySeq
+COX14		1	BabySeq
+NEK3		1	BabySeq
+TXNL4A		1	BabySeq
+TENM3		1	BabySeq
+SNRPE		1	BabySeq
+TRAF3IP1		1	BabySeq
+COX20		1	BabySeq
+EDEM3		1	BabySeq
+NDUFAF8		1	BabySeq
+FOXP4		1	BabySeq
+TBXAS1		1	BabySeq
+EIF5A		1	BabySeq
+TREM2		1	BabySeq
+ZNF699		1	BabySeq
+NDUFV1		1	BabySeq
+MAB21L1		1	BabySeq
+NUP133		1	BabySeq
+MT-TY		1	BabySeq
+EHMT1		1	BabySeq
+CDC45		1	BabySeq
+SIAH1		1	BabySeq
+ACACA		1	BabySeq
+TYROBP		1	BabySeq
+YIPF5		1	BabySeq
+SLC36A2		1	BabySeq
+PIGW		1	BabySeq
+MT-TG		1	BabySeq
+LAS1L		1	BabySeq
+SLC25A24		1	BabySeq
+MT-TT		1	BabySeq
+RIGI		1	BabySeq
+NPAP1		1	NEOEXOME
+NDUFS1		1	BabySeq
+BCAS3		1	BabySeq
+RAX		1	BabySeq
+PIBF1		1	BabySeq
+LPAR6		1	BabySeq
+SATB1		1	BabySeq
+NDUFS2		1	BabySeq
+PIP5K1C		1	BabySeq
+NCAPG2		1	BabySeq
+CTU2		1	BabySeq
+SF3B2		1	BabySeq
+WLS		1	BabySeq
+RNASEH1		1	BabySeq
+AP1B1		1	BabySeq
+OTUD5		1	BabySeq
+WDR4		1	BabySeq
+RBPJ		1	BabySeq
+MICOS13		1	BabySeq
+UQCRC2		1	BabySeq
+SUZ12		1	BabySeq
+TBC1D32		1	BabySeq
+GNAQ		1	BabySeq
+YRDC		1	BabySeq
+MT-TM		1	BabySeq
+HEPHL1		1	BabySeq
+COX8A		1	BabySeq
+SLC12A2		1	BabySeq
+DHTKD1		1	BabySeq
+TKFC		1	BabySeq
+LYRM7		1	BabySeq
+EOGT		1	BabySeq
+NDUFS8		1	BabySeq
+PRIM1		1	BabySeq
+NDUFAF3		1	BabySeq
+PKP1		1	BabySeq
+TCF4		1	BabySeq
+RBL2		1	BabySeq
+ATP5F1E		1	BabySeq
+SNORD116@		1	BabySeq
+LGI4		1	BabySeq
+MRPS34		1	BabySeq
+CD151		1	BabySeq
+SARS2		1	BabySeq
+CRB2		1	BabySeq
+FAN1		1	BabySeq
+SDHA		1	BabySeq
+CHRM3		1	BabySeq
+NUP93		1	BabySeq
+C1GALT1C1		1	BabySeq
+GLIS2		1	BabySeq
+TNS2		1	BabySeq
+SLC26A1		1	BabySeq
+ARHGDIA		1	BabySeq
+ZNF423		1	BabySeq
+MAPKBP1		1	BabySeq
+EMP2		1	BabySeq
+SLIT2		1	BabySeq
+ITSN1		1	BabySeq
+CEP83		1	BabySeq
+FAT1		1	BabySeq
+PON1		1	BabySeq
+XDH		1	BabySeq
+UPK3A		1	BabySeq
+NOS1AP		1	BabySeq
+DAAM2		1	BabySeq
+SOX17		1	BabySeq
+ALG5		1	BabySeq
+DZIP1L		1	BabySeq
+KCNJ16		1	BabySeq
+RRAGD		1	BabySeq
+CHD1L		1	BabySeq
+EGF		1	NEOEXOME
+TRIM8		1	BabySeq
+TBC1D8B		1	BabySeq
+TRPC6		1	BabySeq
+MYOCD		1	BabySeq
+ROBO2		1	BabySeq
+ANKS6		1	BabySeq
+CHRNA3		1	BabySeq
+XPNPEP3		1	BabySeq
+TBX18		1	BabySeq
+AVIL		1	BabySeq
+NUP205		1	BabySeq
+CEP164		1	BabySeq
+VEGFA		1	BabySeq
+AQP1		1	BabySeq
+ANLN		1	BabySeq
+MUC1		1	BabySeq
+ITGA8		1	BabySeq
+SLC22A12		1	BabySeq
+PTPRO		1	NESTS
+PBX1		1	BabySeq
+NUP85		1	BabySeq
+MOCOS		1	BabySeq
+CDKN1B		1	BabySeq
+PDCD10		1	BabySeq
+CCM2		1	BabySeq
+RAD51D		1	BabySeq
+SMARCA4		1	BabySeq
+TUBGCP6		1	BabySeq
+BAP1		1	BabySeq
+GNAL		1	BabySeq
+GRID2		1	BabySeq
+NACC1		1	BabySeq
+SYNGAP1		1	BabySeq
+OCLN		1	BabySeq
+ZNF335		1	BabySeq
+RANBP2		1	BabySeq
+VPS11		1	BabySeq
+FTH1		1	BabySeq
+TGM6		1	BabySeq
+ITM2B		1	BabySeq
+TDP2		1	BabySeq
+SCARF2		1	BabySeq
+ALPK1		1	BabySeq
+LAMB1		1	BabySeq
+COASY		1	BabySeq
+HDAC4		1	BabySeq
+EMILIN1		1	BabySeq
+JPH3		1	BabySeq
+TRIO		1	BabySeq
+POMK		1	BabySeq
+STUB1		1	BabySeq
+SNX14		1	BabySeq
+HACE1		1	BabySeq
+OPHN1		1	BabySeq
+CPA6		1	BabySeq
+TRAPPC12		1	BabySeq
+PUS3		1	BabySeq
+PRKCG		1	BabySeq
+CLCN4		1	BabySeq
+CNNM4		1	BabySeq
+ADCY5		1	BabySeq
+POGLUT1		1	BabySeq
+FOXP1		1	BabySeq
+LAMA1		1	BabySeq
+SLC38A8		1	BabySeq
+MIR17HG		1	BabySeq
+CCNK		1	BabySeq
+RHBDF2		1	BabySeq
+WARS2		1	BabySeq
+TBCD		1	BabySeq
+TBXT		1	BabySeq
+CST3		1	BabySeq
+SFRP4		1	BabySeq
+JAM3		1	BabySeq
+GOSR2		1	BabySeq
+GPT2		1	BabySeq
+USP9X		1	BabySeq
+PLAA		1	BabySeq
+VPS37A		1	BabySeq
+AFG3L2		1	BabySeq
+ALG13		1	BabySeq
+SBF1		1	BabySeq
+LAMC3		1	BabySeq
+MTOR		1	BabySeq
+EEF2		1	BabySeq
+TBR1		1	BabySeq
+RTTN		1	BabySeq
+AP5Z1		1	BabySeq
+YAP1		1	BabySeq
+ADAT3		1	BabySeq
+PYCR2		1	BabySeq
+COL12A1		1	BabySeq
+NFAT5		1	BabySeq
+DARS1		1	BabySeq
+UBE2A		1	BabySeq
+MAN1B1		1	BabySeq
+ABHD12		1	BabySeq
+ADSS1		1	BabySeq
+GRIA3		1	BabySeq
+ACER3		1	BabySeq
+MBD5		1	BabySeq
+RERE		1	BabySeq
+ATAD3A		1	BabySeq
+DCT		1	BabySeq
+TRAPPC9		1	BabySeq
+CUL4B		1	BabySeq
+SHOX		1	BabySeq
+OVOL2		1	BabySeq
+PPP2R2B		1	BabySeq
+OTUD6B		1	BabySeq
+DARS2		1	BabySeq
+DMXL2		1	BabySeq
+NIPA1		1	BabySeq
+LMNB1		1	BabySeq
+DPM3		1	BabySeq
+TGFBI		1	BabySeq
+HNRNPU		1	BabySeq
+B4GALNT1		1	BabySeq
+ARL6IP1		1	BabySeq
+HOXB1		1	BabySeq
+CNOT2		1	BabySeq
+STAG1		1	BabySeq
+CAPN1		1	BabySeq
+SHROOM4		1	BabySeq
+SLC6A3		1	BabySeq
+GATAD2B		1	BabySeq
+CILK1		1	BabySeq
+CYP2U1		1	BabySeq
+KIF14		1	BabySeq
+CWF19L1		1	BabySeq
+C12orf57		1	BabySeq
+SPART		1	BabySeq
+ERLIN1		1	BabySeq
+RBM10		1	BabySeq
+PNPLA2		1	BabySeq
+HSPD1		1	BabySeq
+KIF1C		1	BabySeq
+ANK3		1	BabySeq
+COX6A1		1	BabySeq
+RAC1		1	BabySeq
+CLP1		1	BabySeq
+TELO2		1	BabySeq
+TMEM240		1	BabySeq
+PRUNE1		1	BabySeq
+PLEKHG5		1	BabySeq
+ZC4H2		1	BabySeq
+ZSWIM6		1	BabySeq
+SIX6		1	BabySeq
+MICU1		1	BabySeq
+CACNB4		1	BabySeq
+SYT1		1	BabySeq
+NT5C2		1	BabySeq
+CTCF		1	BabySeq
+CAPN5		1	BabySeq
+KDM5C		1	BabySeq
+ATP2B3		1	BabySeq
+FRMD4A		1	BabySeq
+EMC1		1	BabySeq
+BHLHA9		1	BabySeq
+MECR		1	BabySeq
+COL27A1		1	BabySeq
+TBC1D2B		1	BabySeq
+VARS1		1	BabySeq
+UBTF		1	BabySeq
+RSPRY1		1	BabySeq
+ZNF462		1	BabySeq
+NONO		1	BabySeq
+NANS		1	BabySeq
+CHUK		1	BabySeq
+MTPAP		1	BabySeq
+HPGD		1	BabySeq
+FGF14		1	BabySeq
+GNAO1		1	BabySeq
+TRIM2		1	BabySeq
+MEF2C		1	BabySeq
+MAP3K20		1	BabySeq
+PDK3		1	BabySeq
+BRAT1		1	BabySeq
+PACS1		1	BabySeq
+DCN		1	BabySeq
+PLD3		1	BabySeq
+AFG2A		1	BabySeq
+NEXMIF		1	BabySeq
+TBP		1	BabySeq
+CYP26B1		1	BabySeq
+TTI2		1	BabySeq
+USP7		1	BabySeq
+TMEM94		1	BabySeq
+CHMP1A		1	BabySeq
+DOCK7		1	BabySeq
+IRF2BPL		1	BabySeq
+PMP2		1	BabySeq
+CHD1		1	BabySeq
+ERMARD		1	BabySeq
+PRDM12		1	BabySeq
+ZBTB20		1	BabySeq
+RNF135		1	BabySeq
+TMEM126A		1	BabySeq
+FLVCR1		1	BabySeq
+TEAD1		1	BabySeq
+MAG		1	BabySeq
+CCT5		1	BabySeq
+TTBK2		1	BabySeq
+MIR204		1	BabySeq
+TBL1XR1		1	BabySeq
+ARHGEF10		1	BabySeq
+ASPH		1	BabySeq
+GUCY1A1		1	BabySeq
+THAP1		1	BabySeq
+SOX2		1	BabySeq
+DNAJC3		1	BabySeq
+PDYN		1	BabySeq
+VMA21		1	BabySeq
+MORC2		1	BabySeq
+CACNA1G		1	BabySeq
+CWC27		1	BabySeq
+CPAMD8		1	BabySeq
+RAB39B		1	BabySeq
+KIDINS220		1	BabySeq
+PCLO		1	BabySeq
+KCNV2		1	BabySeq
+KCNC1		1	BabySeq
+MSTO1		1	BabySeq
+PAM16		1	BabySeq
+HNRNPDL		1	BabySeq
+PRDM8		1	BabySeq
+ELOVL5		1	BabySeq
+CLIC2		1	BabySeq
+SIGMAR1		1	BabySeq
+CNTN1		1	BabySeq
+WDR26		1	BabySeq
+GNB4		1	BabySeq
+BMPER		1	BabySeq
+SNORD118		1	BabySeq
+RNF13		1	BabySeq
+SCYL1		1	BabySeq
+FLVCR2		1	BabySeq
+TAF1		1	BabySeq
+MYH8		1	BabySeq
+RARS1		1	BabySeq
+RARS2		1	BabySeq
+SETD5		1	BabySeq
+NAXD		1	BabySeq
+MED17		1	BabySeq
+TKT		1	BabySeq
+RDH11		1	BabySeq
+PHF8		1	BabySeq
+MSMO1		1	BabySeq
+RBP4		1	BabySeq
+AHDC1		1	BabySeq
+PRKRA		1	BabySeq
+DDHD2		1	BabySeq
+NKX6-2		1	BabySeq
+FOXG1		1	BabySeq
+FIBP		1	BabySeq
+HIKESHI		1	BabySeq
+TONSL		1	BabySeq
+PIKFYVE		1	BabySeq
+DLX5		1	BabySeq
+CASQ1		1	BabySeq
+PRMT7		1	BabySeq
+STAG2		1	BabySeq
+POC1A		1	BabySeq
+ADAMTS18		1	BabySeq
+DCAF8		1	BabySeq
+PGAP1		1	BabySeq
+ADSL		1	BabySeq
+ENTPD1		1	BabySeq
+TRMT5		1	BabySeq
+SLC6A17		1	BabySeq
+THOC2		1	BabySeq
+HERC1		1	BabySeq
+TOR1AIP1		1	BabySeq
+SMS		1	BabySeq
+TDP1		1	BabySeq
+GPX4		1	BabySeq
+CPT1C		1	BabySeq
+UBIAD1		1	BabySeq
+UROC1		1	BabySeq
+AUTS2		1	BabySeq
+CERS1		1	BabySeq
+PUM1		1	BabySeq
+TAF2		1	BabySeq
+DNAAF6		1	BabySeq
+BTNL2		1	BabySeq
+IL13		1	BabySeq
+NHLRC2		1	BabySeq
+FARSA		1	BabySeq
+BRWD1		1	BabySeq
+TP73		1	BabySeq
+CCL11		1	BabySeq
+MMP1		1	BabySeq
+LRRC56		1	BabySeq
+CFAP74		1	BabySeq
+TACC2		1	BabySeq
+NEK10		1	BabySeq
+TTC12		1	BabySeq
+DAW1		1	BabySeq
+PACS2		1	BabySeq
+SETD1B		1	BabySeq
+POC1B		1	BabySeq
+PCDH11X		1	BabySeq
+WDR45		1	BabySeq
+NPR3		1	BabySeq
+MERTK		1	BabySeq
+MED15		1	BabySeq
+DYNLT2B		1	BabySeq
+FERRY3		1	BabySeq
+TSEN2		1	BabySeq
+TMEM151A		1	BabySeq
+FBXO28		1	BabySeq
+CHST6		1	BabySeq
+OGDHL		1	BabySeq
+CNGB1		1	BabySeq
+CACNA2D4		1	BabySeq
+SORL1		1	BabySeq
+LINS1		1	BabySeq
+SAG		1	BabySeq
+GRIN2C		1	BabySeq
+PBRM1		1	BabySeq
+TTLL5		1	BabySeq
+COL25A1		1	BabySeq
+PPIL1		1	BabySeq
+ADAM22		1	BabySeq
+NYX		1	BabySeq
+INPP5K		1	BabySeq
+RNF125		1	BabySeq
+UGP2		1	BabySeq
+CCNF		1	BabySeq
+PTPRT		1	BabySeq
+ATCAY		1	BabySeq
+PRPF31		1	BabySeq
+CHMP4B		1	BabySeq
+ZNF142		1	BabySeq
+DLG4		1	BabySeq
+LRP10		1	BabySeq
+ELP3		1	NEOEXOME
+INTS1		1	BabySeq
+ARV1		1	BabySeq
+KLC2		1	BabySeq
+PUS7		1	BabySeq
+CA4		1	BabySeq
+GPR179		1	BabySeq
+TUSC3		1	BabySeq
+NR4A2		1	BabySeq
+TMEM98		1	BabySeq
+ASCC1		1	BabySeq
+TMEM106B		1	BabySeq
+DHPS		1	BabySeq
+TSEN15		1	BabySeq
+STX1B		1	BabySeq
+SGCE		1	BabySeq
+OPN1SW		1	BabySeq
+SRRM2		1	BabySeq
+GGPS1		1	BabySeq
+RDH5		1	BabySeq
+TENM4		1	BabySeq
+CC2D1A		1	BabySeq
+NCAPD2		1	BabySeq
+MMP14		1	BabySeq
+SLC20A2		1	BabySeq
+HTR2A		1	BabySeq
+CHAMP1		1	BabySeq
+ZNF407		1	BabySeq
+NFASC		1	BabySeq
+IQCE		1	BabySeq
+PRPF4		1	BabySeq
+CSNK1G1		1	BabySeq
+DAXX		1	BabySeq
+SLC10A7		1	BabySeq
+FITM2		1	BabySeq
+TUBG1		1	BabySeq
+PLA2G5		1	BabySeq
+CSGALNACT1		1	BabySeq
+CTR9		1	BabySeq
+LIPT2		1	BabySeq
+GNB2		1	BabySeq
+NCKAP1		1	BabySeq
+BRSK2		1	BabySeq
+GRK1		1	BabySeq
+KIAA1549		1	BabySeq
+GABRA3		1	BabySeq
+KCNMA1		1	BabySeq
+PAX7		1	BabySeq
+DLG2		1	BabySeq
+KNL1		1	BabySeq
+SRGAP1		1	BabySeq
+MME		1	BabySeq
+ATL3		1	BabySeq
+PRDM5		1	BabySeq
+LETM1		1	BabySeq
+DLL1		1	BabySeq
+CCDC22		1	BabySeq
+NTNG2		1	BabySeq
+TMX2		1	BabySeq
+SEMA6B		1	BabySeq
+DLG3		1	BabySeq
+TNF		1	BabySeq
+TMEM222		1	BabySeq
+SZT2		1	BabySeq
+MATR3		1	BabySeq
+RAB12		1	BabySeq
+DCC		1	BabySeq
+PTPN4		1	BabySeq
+SLC9A5		1	BabySeq
+STX3		1	BabySeq
+SUCO		1	BabySeq
+ADD3		1	BabySeq
+CHRDL1		1	BabySeq
+VPS41		1	BabySeq
+CDK4		1	BabySeq
+DRD2		1	BabySeq
+ZMYM2		1	BabySeq
+AMPD2		1	BabySeq
+TRAK1		1	BabySeq
+TRIP12		1	BabySeq
+RFX4		1	BabySeq
+KPNA3		1	BabySeq
+SMPD4		1	BabySeq
+ABCA7		1	BabySeq
+PTCH2		1	BabySeq
+BFSP1		1	BabySeq
+TBC1D20		1	BabySeq
+EWSR1		1	BabySeq
+WWOX		1	BabySeq
+PXDN		1	BabySeq
+GUCA1ANB-GUCA1A		1	BabySeq
+TMEM63C		1	BabySeq
+CAMK2B		1	BabySeq
+SLC32A1		1	BabySeq
+FZD2		1	BabySeq
+HPCA		1	BabySeq
+HCN1		1	BabySeq
+PARS2		1	BabySeq
+TIAM1		1	BabySeq
+DYNC1I1		1	BabySeq
+DYNC2I1		1	BabySeq
+ZNF526		1	BabySeq
+IFT172		1	BabySeq
+PPFIBP1		1	BabySeq
+SLC39A5		1	BabySeq
+GRIA1		1	BabySeq
+GUCA1A		1	BabySeq
+HACD1		1	BabySeq
+CACNG2		1	BabySeq
+ZFHX4		1	BabySeq
+BTRC		1	BabySeq
+COA7		1	BabySeq
+EYS		1	BabySeq
+MED27		1	BabySeq
+ZFYVE27		1	BabySeq
+MST1R		1	BabySeq
+SLC25A46		1	BabySeq
+CELF2		1	BabySeq
+SCUBE3		1	BabySeq
+DLGAP2		1	BabySeq
+ZNF711		1	BabySeq
+ARL3		1	BabySeq
+HNRNPH1		1	BabySeq
+KIRREL3		1	BabySeq
+SIN3B		1	BabySeq
+EPRS1		1	BabySeq
+EXOSC9		1	BabySeq
+TDRD7		1	BabySeq
+OPN1MW		1	BabySeq
+KATNAL2		1	BabySeq
+DSCAM		1	BabySeq
+NLGN1		1	BabySeq
+RNF216		1	BabySeq
+SLC38A3		1	BabySeq
+SLITRK2		1	BabySeq
+NPM1		1	BabySeq
+U2AF1		1	BabySeq
+STN1		1	BabySeq
+SSX2		1	BabySeq
+RP1L1		1	BabySeq
+UNC119		1	BabySeq
+TUBGCP2		1	BabySeq
+EPHA7		1	BabySeq
+CTNND2		1	BabySeq
+ARL2BP		1	BabySeq
+DDX6		1	BabySeq
+FGFR4		1	BabySeq
+SLC25A11		1	BabySeq
+ATF6		1	BabySeq
+LRAT		1	BabySeq
+CRYBA4		1	BabySeq
+CCDC8		1	BabySeq
+PDGFB		1	BabySeq
+RD3		1	BabySeq
+CABP4		1	BabySeq
+DONSON		1	BabySeq
+SETD1A		1	BabySeq
+GRM1		1	BabySeq
+POLR2A		1	BabySeq
+PLCB1		1	BabySeq
+PIGV		1	BabySeq
+EFEMP1		1	BabySeq
+PDE6C		1	BabySeq
+FOXO1		1	BabySeq
+SLC9A9		1	BabySeq
+ZDHHC9		1	BabySeq
+HNRNPR		1	BabySeq
+WDR81		1	BabySeq
+RHOT1		1	BabySeq
+ZC3H14		1	BabySeq
+PIGP		1	BabySeq
+KIF2A		1	BabySeq
+MED12L		1	BabySeq
+DYNC1I2		1	BabySeq
+WASHC5		1	BabySeq
+CRAT		1	BabySeq
+TRIM71		1	BabySeq
+SCN10A		1	BabySeq
+UBE4A		1	BabySeq
+NLGN2		1	BabySeq
+TRAP1		1	BabySeq
+NRXN2		1	BabySeq
+TRAPPC2L		1	BabySeq
+KCNN2		1	BabySeq
+ARMS2		1	BabySeq
+SLC7A14		1	BabySeq
+CSNK2A1		1	BabySeq
+CDK19		1	BabySeq
+PRPF6		1	BabySeq
+VRK1		1	BabySeq
+PAPSS2		1	BabySeq
+TUBB2A		1	BabySeq
+KRT12		1	BabySeq
+AP1G1		1	BabySeq
+GNAI1		1	BabySeq
+SEPSECS		1	BabySeq
+GSN		1	BabySeq
+ELP2		1	BabySeq
+NTRK2		1	BabySeq
+AGBL5		1	BabySeq
+TUBB4B		1	BabySeq
+LIMS2		1	BabySeq
+JAG2		1	BabySeq
+RBP3		1	BabySeq
+NRROS		1	BabySeq
+DOHH		1	BabySeq
+RBFOX1		1	BabySeq
+BRWD3		1	BabySeq
+SVIL		1	BabySeq
+RFX3		1	BabySeq
+SOX11		1	BabySeq
+ERBB4		1	BabySeq
+LGI3		1	BabySeq
+ICE2		1	BabySeq
+TMEM63A		1	BabySeq
+MYC		1	BabySeq
+CENPE		1	BabySeq
+SHANK2		1	BabySeq
+ECM1		1	BabySeq
+SMARCE1		1	BabySeq
+PRR12		1	BabySeq
+PAK1		1	BabySeq
+GUCA1B		1	BabySeq
+AGBL1		1	BabySeq
+AGMO		1	BabySeq
+PCDH12		1	BabySeq
+DDX23		1	BabySeq
+WNK3		1	BabySeq
+CRYBB3		1	BabySeq
+EIF4A2		1	BabySeq
+IMPDH1		1	BabySeq
+CEBPA		1	BabySeq
+GABRB1		1	BabySeq
+CRADD		1	BabySeq
+DDX54		1	BabySeq
+PGAP2		1	BabySeq
+PGAP3		1	BabySeq
+XRCC4		1	BabySeq
+FGF9		1	BabySeq
+MUC4		1	BabySeq
+CEP135		1	BabySeq
+CHMP2B		1	BabySeq
+FYCO1		1	BabySeq
+NCDN		1	BabySeq
+ZNF292		1	BabySeq
+KMT5B		1	BabySeq
+SASS6		1	BabySeq
+NDUFA13		1	BabySeq
+CHRNA7		1	BabySeq
+KIF5C		1	BabySeq
+COL8A2		1	BabySeq
+PKDCC		1	BabySeq
+EXOSC3		1	BabySeq
+MAP3K6		1	BabySeq
+RNF170		1	BabySeq
+ATXN3		1	BabySeq
+UBA5		1	BabySeq
+ASXL2		1	BabySeq
+ST3GAL3		1	BabySeq
+PAFAH1B1		1	BabySeq
+RGS9BP		1	BabySeq
+CNOT9		1	BabySeq
+LOXL1		1	BabySeq
+MEOX1		1	BabySeq
+SPTBN4		1	BabySeq
+FBXW11		1	BabySeq
+PHC1		1	BabySeq
+DNA2		1	BabySeq
+FBXW7		1	BabySeq
+ATP8A2		1	BabySeq
+DPH1		1	BabySeq
+DNAJC30		1	BabySeq
+RAB18		1	BabySeq
+TAOK1		1	BabySeq
+CLUAP1		1	BabySeq
+SNRNP200		1	BabySeq
+EXOSC5		1	BabySeq
+TPH2		1	BabySeq
+WNT7B		1	BabySeq
+FMN2		1	BabySeq
+ANKS1B		1	BabySeq
+FBXO7		1	BabySeq
+TNRC6B		1	BabySeq
+ITPR1		1	BabySeq
+FBXW4		1	BabySeq
+GDAP2		1	BabySeq
+NRXN3		1	BabySeq
+RALGAPA1		1	BabySeq
+NMNAT1		1	BabySeq
+GNPAT		1	BabySeq
+VPS16		1	BabySeq
+GCNT2		1	BabySeq
+PCM1		1	BabySeq
+RP9		1	BabySeq
+ARF3		1	BabySeq
+TNFRSF21		1	BabySeq
+TNPO3		1	BabySeq
+SEMA3F		1	BabySeq
+DNAJC7		1	BabySeq
+PPP1R21		1	BabySeq
+HCN2		1	BabySeq
+COLGALT1		1	BabySeq
+PTCHD1		1	BabySeq
+ARF1		1	BabySeq
+ROBO3		1	BabySeq
+SPTBN2		1	BabySeq
+PIGK		1	BabySeq
+CARS1		1	BabySeq
+IFT81		1	BabySeq
+NALCN		1	BabySeq
+MYORG		1	BabySeq
+PLK4		1	BabySeq
+WWP1		1	BabySeq
+USP27X		1	BabySeq
+XRCC1		1	BabySeq
+CDK6		1	BabySeq
+ATXN10		1	BabySeq
+ZMIZ1		1	BabySeq
+MBOAT7		1	BabySeq
+MYCBP2		1	BabySeq
+MINPP1		1	BabySeq
+PDCD1		1	BabySeq
+GPR161		1	BabySeq
+TUBA4A		1	BabySeq
+FUS		1	BabySeq
+SPEN		1	BabySeq
+PER3		1	BabySeq
+NCAPD3		1	BabySeq
+CRBN		1	BabySeq
+MYRF		1	BabySeq
+RDH12		1	BabySeq
+IL1RAPL1		1	BabySeq
+H1-4		1	BabySeq
+TFE3		1	BabySeq
+TIA1		1	BabySeq
+ASTN2		1	BabySeq
+CBFB		1	BabySeq
+SIN3A		1	BabySeq
+KDM6B		1	BabySeq
+TANC2		1	BabySeq
+SCRIB		1	BabySeq
+DNAJC13		1	BabySeq
+STIL		1	BabySeq
+GLI1		1	BabySeq
+DLST		1	BabySeq
+PAX5		1	BabySeq
+EML1		1	BabySeq
+ATG4D		1	BabySeq
+RAB33B		1	BabySeq
+FNDC3B		1	BabySeq
+KMT2B		1	BabySeq
+MSMB		1	BabySeq
+KLHL7		1	BabySeq
+NEMF		1	BabySeq
+HKDC1		1	BabySeq
+IFT52		1	BabySeq
+PDE2A		1	BabySeq
+NYNRIN		1	BabySeq
+NTF4		1	BabySeq
+ROGDI		1	BabySeq
+OXR1		1	BabySeq
+CLCN3		1	BabySeq
+ZBTB16		1	BabySeq
+BCORL1		1	BabySeq
+CFAP410		1	BabySeq
+PI4KA		1	BabySeq
+GRIN3B		1	BabySeq
+CUX1		1	BabySeq
+NOVA2		1	BabySeq
+ADPRS		1	BabySeq
+APC2		1	BabySeq
+MLH3		1	BabySeq
+ATP6V1A		1	BabySeq
+MCAT		1	BabySeq
+CRX		1	BabySeq
+PUF60		1	BabySeq
+TRAPPC4		1	BabySeq
+HPDL		1	BabySeq
+ADARB1		1	BabySeq
+PDE4DIP		1	BabySeq
+NOS1		1	BabySeq
+KERA		1	BabySeq
+DEAF1		1	BabySeq
+RHEB		1	BabySeq
+RPL10		1	BabySeq
+PRCD		1	BabySeq
+ASH1L		1	BabySeq
+KMT2E		1	BabySeq
+CFAP43		1	BabySeq
+ZBTB18		1	BabySeq
+RNASET2		1	BabySeq
+AXIN2		1	BabySeq
+ERF		1	BabySeq
+VPS13C		1	BabySeq
+KRT3		1	BabySeq
+UBQLN2		1	BabySeq
+KDM4C		1	BabySeq
+CRYGS		1	BabySeq
+GRIK2		1	BabySeq
+NBAS		1	BabySeq
+TULP1		1	BabySeq
+ASMT		1	BabySeq
+KLHL20		1	BabySeq
+HOXB13		1	BabySeq
+LIPC		1	BabySeq
+HIVEP2		1	BabySeq
+KIAA0586		1	BabySeq
+NKAP		1	BabySeq
+SUPT16H		1	BabySeq
+DNAJB2		1	BabySeq
+SETD2		1	BabySeq
+NRCAM		1	BabySeq
+CERT1		1	BabySeq
+TRIP4		1	BabySeq
+CIT		1	BabySeq
+MYH1		1	BabySeq
+GDF3		1	BabySeq
+RTN4IP1		1	BabySeq
+IMMP2L		1	BabySeq
+TCF12		1	BabySeq
+EPHA2		1	BabySeq
+C9orf72		1	BabySeq
+GEMIN5		1	BabySeq
+RARA		1	BabySeq
+SOX6		1	BabySeq
+PRDX3		1	BabySeq
+BRPF1		1	BabySeq
+PIDD1		1	BabySeq
+DISP1		1	BabySeq
+PGM2L1		1	BabySeq
+DHX30		1	BabySeq
+CPLX1		1	BabySeq
+MEGF8		1	BabySeq
+DOCK3		1	BabySeq
+USF3		1	BabySeq
+GBA2		1	BabySeq
+HMCN1		1	BabySeq
+FOXE3		1	BabySeq
+AKT1		1	BabySeq
+COL4A2		1	BabySeq
+ROM1		1	BabySeq
+VPS13D		1	BabySeq
+SNORA31		1	BabySeq
+CHD8		1	BabySeq
+RAMP2		1	BabySeq
+PIGS		1	BabySeq
+ASB10		1	BabySeq
+FLNB		1	BabySeq
+IDH3A		1	BabySeq
+GABRD		1	BabySeq
+HCRT		1	BabySeq
+WASF1		1	BabySeq
+ASTN1		1	BabySeq
+IFT140		1	BabySeq
+SNCB		1	BabySeq
+GRIA4		1	BabySeq
+TUBB3		1	BabySeq
+UGDH		1	BabySeq
+GLS		1	BabySeq
+XRCC3		1	BabySeq
+DST		1	BabySeq
+AP4S1		1	BabySeq
+CNGA1		1	BabySeq
+GABRB2		1	BabySeq
+IREB2		1	BabySeq
+EEF1A2		1	BabySeq
+POU4F1		1	BabySeq
+ZIC1		1	BabySeq
+CTNNA2		1	BabySeq
+TMEM147		1	BabySeq
+DHDDS		1	BabySeq
+TUBGCP4		1	BabySeq
+METTL5		1	BabySeq
+MED23		1	BabySeq
+SLC9A7		1	BabySeq
+TACSTD2		1	BabySeq
+GOLGA2		1	BabySeq
+ZEB1		1	BabySeq
+RLBP1		1	BabySeq
+IGF2R		1	BabySeq
+HUWE1		1	BabySeq
+DNMT1		1	BabySeq
+ACAN		1	BabySeq
+HIP1		1	BabySeq
+TMTC3		1	BabySeq
+DTYMK		1	BabySeq
+GABRA2		1	BabySeq
+HNRNPH2		1	BabySeq
+ADGRL1		1	BabySeq
+SCAMP5		1	BabySeq
+POMGNT2		1	BabySeq
+TOE1		1	BabySeq
+OPTN		1	BabySeq
+UNC45B		1	BabySeq
+ARFGEF1		1	BabySeq
+VWA8		1	BabySeq
+CUX2		1	BabySeq
+IMPG1		1	BabySeq
+LRIT3		1	BabySeq
+KCNA2		1	BabySeq
+B4GAT1		1	BabySeq
+FUZ		1	BabySeq
+WASHC4		1	BabySeq
+CHL1		1	BabySeq
+POT1		1	BabySeq
+TRPM1		1	BabySeq
+GDI1		1	BabySeq
+TAF13		1	BabySeq
+AP4B1		1	BabySeq
+RPL13		1	BabySeq
+CDKN2B		1	BabySeq
+INPPL1		1	BabySeq
+PHF21A		1	BabySeq
+RSRC1		1	BabySeq
+FTSJ1		1	BabySeq
+ELP4		1	BabySeq
+FOXP2		1	BabySeq
+LINC00299		1	BabySeq
+CPSF1		1	BabySeq
+PHACTR1		1	BabySeq
+BAX		1	NEOEXOME
+ANG		1	BabySeq
+GRM6		1	BabySeq
+OPN1LW		1	BabySeq
+RUSC2		1	BabySeq
+COL18A1		1	BabySeq
+ZMYND11		1	BabySeq
+PTPN23		1	BabySeq
+HOXD13		1	BabySeq
+CAMK2A		1	BabySeq
+FBXO11		1	BabySeq
+LIM2		1	BabySeq
+GBF1		1	BabySeq
+CACNA1I		1	BabySeq
+TRAPPC11		1	BabySeq
+FBP2		1	NEOEXOME
+LMBRD2		1	BabySeq
+EXOC6B		1	BabySeq
+GLRA2		1	BabySeq
+TPH1		1	BabySeq
+KLF7		1	BabySeq
+ATG7		1	BabySeq
+DENND5A		1	BabySeq
+RAD54L		1	BabySeq
+CCND1		1	BabySeq
+KATNB1		1	BabySeq
+MDH2		1	BabySeq
+AIMP1		1	BabySeq
+QRICH1		1	BabySeq
+ADAM9		1	BabySeq
+NEGR1		1	BabySeq
+CACNA1B		1	BabySeq
+CACNA1E		1	BabySeq
+GIGYF2		1	BabySeq
+SLC1A2		1	BabySeq
+GRIA2		1	BabySeq
+IMPG2		1	BabySeq
+PIK3R2		1	BabySeq
+FBLIM1		1	BabySeq
+VAMP2		1	BabySeq
+ATP1A1		1	BabySeq
+PRPH2		1	BabySeq
+REEP6		1	BabySeq
+TSEN34		1	BabySeq
+RPH3A		1	BabyDetect
+PSMD12		1	BabySeq
+CNPY3		1	BabySeq
+KCNT2		1	BabySeq
+CNP		1	BabySeq
+MBD4		1	BabySeq
+UFSP2		1	BabySeq
+STAT2		1	BabySeq
+PITX2		1	BabySeq
+SRPX2		1	BabySeq
+RLIM		1	BabySeq
+TRMT1		1	BabySeq
+ZNF148		1	BabySeq
+DRP2		1	BabySeq
+TAF15		1	BabySeq
+CELSR2		1	BabySeq
+PDGFRA		1	BabySeq
+VPS35		1	BabySeq
+EBF3		1	BabySeq
+ARCN1		1	BabySeq
+KDM4B		1	BabySeq
+GLT8D1		1	BabySeq
+RORB		1	BabySeq
+AXIN1		1	BabySeq
+DISC1		1	BabySeq
+TUBB4A		1	BabySeq
+CYFIP2		1	BabySeq
+KIF1A		1	BabySeq
+C1QTNF5		1	BabySeq
+DCHS1		1	BabySeq
+MLIP		1	BabySeq
+WARS1		1	BabySeq
+CNKSR2		1	BabySeq
+RFX7		1	BabySeq
+MADD		1	BabySeq
+DYRK1A		1	BabySeq
+PROM1		1	BabySeq
+CHD5		1	BabySeq
+LCA5		1	BabySeq
+SLC6A4		1	BabySeq
+UFM1		1	BabySeq
+SULF1		1	BabySeq
+CEP104		1	BabySeq
+PDE6G		1	BabySeq
+SET		1	BabySeq
+GALNT12		1	BabySeq
+COMT		1	BabySeq
+GABRE		1	BabySeq
+PIK3R5		1	BabySeq
+DIAPH3		1	BabySeq
+RIMS2		1	BabySeq
+USP45		1	BabySeq
+SLC6A1		1	BabySeq
+TAL2		1	NEOEXOME
+CHRNB2		1	BabySeq
+CHN1		1	BabySeq
+EIF2AK2		1	BabySeq
+PCYT2		1	BabySeq
+ANKLE2		1	BabySeq
+TNR		1	BabySeq
+DHX16		1	BabySeq
+ATP10B		1	BabySeq
+KCTD17		1	BabySeq
+TSHZ3		1	BabySeq
+ABHD16A		1	BabySeq
+GNAT2		1	BabySeq
+NEUROD2		1	BabySeq
+PRDM1		1	BabySeq
+CACNA2D2		1	BabySeq
+TAF8		1	BabySeq
+CNGA3		1	BabySeq
+RGR		1	BabySeq
+NUS1		1	BabySeq
+CSNK2B		1	BabySeq
+BAZ2B		1	BabySeq
+ZNF41		1	BabySeq
+CA8		1	BabySeq
+P4HA2		1	BabySeq
+PDE6H		1	BabySeq
+PCGF2		1	BabySeq
+PRPF3		1	BabySeq
+ADIPOR1		1	BabySeq
+MMP13		1	BabySeq
+AP2M1		1	BabySeq
+PITPNM3		1	BabySeq
+NSRP1		1	BabySeq
+AP1S2		1	BabySeq
+ERLIN2		1	BabySeq
+MAP1B		1	BabySeq
+YWHAG		1	BabySeq
+PITX1		1	BabySeq
+SPTBN1		1	BabySeq
+AP3B2		1	BabySeq
+KCNJ13		1	BabySeq
+ING1		1	BabySeq
+PRPF8		1	BabySeq
+CEP78		1	BabySeq
+BUB1		1	BabySeq
+CTNNA1		1	BabySeq
+GAD1		1	BabySeq
+ATXN7		1	BabySeq
+ZNF644		1	BabySeq
+NPR2		1	BabySeq
+ANO3		1	BabySeq
+SYNJ1		1	BabySeq
+FGF12		1	BabySeq
+FGF13		1	BabySeq
+DYNC2I2		1	BabySeq
+TRPM3		1	BabySeq
+LRPAP1		1	BabySeq
+SOST		1	BabySeq
+TOPORS		1	BabySeq
+MAPK8IP3		1	BabySeq
+LMBR1		1	BabySeq
+MCM3AP		1	BabySeq
+CRYGB		1	BabySeq
+AMBRA1		1	BabySeq
+P4HB		1	BabySeq
+EXOSC8		1	BabySeq
+NRL		1	BabySeq
+MPDZ		1	BabySeq
+FBXL3		1	BabySeq
+ACSL4		1	BabySeq
+ARL6		1	BabySeq
+DSTYK		1	BabySeq
+TRRAP		1	BabySeq
+DAB1		1	BabySeq
+DEGS1		1	BabySeq
+SCAPER		1	BabySeq
+RTN2		1	BabySeq
+FBXO38		1	BabySeq
+CEP250		1	BabySeq
+UPF3B		1	BabySeq
+DYNC2LI1		1	BabySeq
+PIGB		1	BabySeq
+SP9		1	BabySeq
+KCNQ5		1	BabySeq
+TAL1		1	NEOEXOME
+POLR1A		1	BabySeq
+NARS1		1	BabySeq
+EXOC7		1	BabySeq
+CHRNA4		1	BabySeq
+DDB1		1	BabySeq
+NPRL3		1	BabySeq
+GRM7		1	BabySeq
+TIMP3		1	BabySeq
+AGO2		1	BabySeq
+MCM7		1	BabySeq
+RGS9		1	BabySeq
+GIT1		1	BabySeq
+FRA10AC1		1	BabySeq
+MED13		1	BabySeq
+TNPO2		1	BabySeq
+AOPEP		1	BabySeq
+TUBB2B		1	BabySeq
+CHD4		1	BabySeq
+SLITRK1		1	BabySeq
+CDH15		1	BabySeq
+CNTN4		1	BabySeq
+GRIN3A		1	BabySeq
+JAM2		1	BabySeq
+PRICKLE2		1	BabySeq
+GABBR2		1	BabySeq
+GEN1		1	BabySeq
+TTC5		1	BabySeq
+UBXN11		1	BabySeq
+SMARCA5		1	BabySeq
+CEP120		1	BabySeq
+CHKA		1	BabySeq
+METTL23		1	BabySeq
+P3H2		1	BabySeq
+SLC24A1		1	BabySeq
+AGO1		1	BabySeq
+PDE6B		1	BabySeq
+BPTF		1	BabySeq
+AGTPBP1		1	BabySeq
+PYROXD1		1	BabySeq
+SHANK1		1	BabySeq
+ASPSCR1		1	BabySeq
+GNB3		1	BabySeq
+SYN1		1	BabySeq
+YWHAE		1	BabySeq
+VAC14		1	BabySeq
+ATOH7		1	BabySeq
+CFAP20		1	BabySeq
+KIZ		1	BabySeq
+EIF4G1		1	BabySeq
+GABRA5		1	BabySeq
+RPS20		1	BabySeq
+KANK1		1	BabySeq
+NPRL2		1	BabySeq
+HEPACAM		1	BabySeq
+CSMD1		1	BabySeq
+FA2H		1	BabySeq
+VPS54		1	NEOEXOME
+RAB28		1	BabySeq
+PLXNA1		1	BabySeq
+HTT		1	BabySeq
+TUB		1	BabySeq
+LCAT		1	BabySeq
+ATP2B4		1	Luo et al.
+HLA-DRB1		1	BabySeq
+JARID2		1	BabySeq
+POLR3B		1	BabySeq
+CDHR1		1	BabySeq
+SLC44A1		1	BabySeq
+GDF5		1	BabySeq
+CNOT3		1	BabySeq
+TMEM230		1	BabySeq
+FRRS1L		1	BabySeq
+FGF16		1	BabySeq
+UQCRC1		1	BabySeq
+LFNG		1	BabySeq
+PLEKHG2		1	BabySeq
+PRDM13		1	BabySeq
+SYP		1	BabySeq
+PON3		1	NEOEXOME
+OGG1		1	BabySeq
+THUMPD1		1	BabySeq
+PIAS4		1	BabySeq
+ATP2B1		1	BabySeq
+KCNC2		1	BabySeq
+HOXD10		1	BabySeq
+UBAP1		1	BabySeq
+ABCA2		1	BabySeq
+DHX37		1	BabySeq
+ARHGEF18		1	BabySeq
+PDE10A		1	BabySeq
+FRMPD4		1	BabySeq
+CNTN6		1	BabySeq
+RAB11A		1	BabySeq
+THSD1		1	BabySeq
+EXO1		1	BabySeq
+CIC		1	BabySeq
+RP1		1	BabySeq
+CNTN2		1	BabySeq
+PER2		1	BabySeq
+PFN1		1	BabySeq
+RYR3		1	BabySeq
+PCDHGC4		1	BabySeq
+SHMT2		1	BabySeq
+NR2E3		1	BabySeq
+RHOBTB2		1	BabySeq
+COL4A1		1	BabySeq
+EMC10		1	BabySeq
+CERKL		1	BabySeq
+CAMTA1		1	BabySeq
+NBEA		1	BabySeq
+NPPC		1	BabySeq
+SIK1		1	BabySeq
+VWA1		1	BabySeq
+ELOVL4		1	BabySeq
+KCNK18		1	BabySeq
+IQSEC2		1	BabySeq
+DNAJC6		1	BabySeq
+RNF213		1	BabySeq
+HNMT		1	BabySeq
+ACTL6B		1	BabySeq
+RAX2		1	BabySeq
+CNTNAP5		1	BabySeq
+NUDT2		1	BabySeq
+RAD9B		1	BabySeq
+HECW2		1	BabySeq
+CEP85L		1	BabySeq
+DLG1		1	BabySeq
+RXYLT1		1	BabySeq
+GABRB3		1	BabySeq
+TCF20		1	BabySeq
+IL6		1	BabySeq
+RORA		1	BabySeq
+XPR1		1	BabySeq
+IDH1		1	BabySeq
+HID1		1	BabySeq
+DRAM2		1	BabySeq
+TLK2		1	BabySeq
+CFAP418		1	BabySeq
+PCARE		1	BabySeq
+MBTPS1		1	BabySeq
+AIMP2		1	BabySeq
+MAST3		1	BabySeq
+FAM50A		1	BabySeq
+SVBP		1	BabySeq
+FDXR		1	BabySeq
+NFIB		1	BabySeq
+BTBD9		1	BabySeq
+SSBP1		1	BabySeq
+PDE6A		1	BabySeq
+ADH1C		1	BabySeq
+SPTAN1		1	BabySeq
+MAK		1	BabySeq
+ADCY10		1	BabySeq
+NUP188		1	BabySeq
+FRMD7		1	BabySeq
+NPAS3		1	BabySeq
+KCNH5		1	BabySeq
+RAC3		1	BabySeq
+SMARCC1		1	BabySeq
+POU3F2		1	BabySeq
+HNRNPA1		1	BabySeq
+STEEP1		1	BabySeq
+SEMA4A		1	BabySeq
+SGMS2		1	BabySeq
+PCYT1A		1	BabySeq
+PMS1		1	BabySeq
+MID2		1	BabySeq
+SYNCRIP		1	BabySeq
+ATP6V0A1		1	BabySeq
+REV3L		1	BabySeq
+NGF		1	BabySeq
+AP4E1		1	BabySeq
+IHH		1	BabySeq
+NRG2		1	BabySeq
+ANGPTL6		1	BabySeq
+SERPINI1		1	BabySeq
+ARHGAP35		1	BabySeq
+ARHGEF28		1	BabySeq
+ABRAXAS1		1	BabySeq
+U2AF2		1	BabySeq
+CCND2		1	BabySeq
+CLTC		1	BabySeq
+DNM1		1	BabySeq
+TASP1		1	BabySeq
+IDH3B		1	BabySeq
+RBMX		1	Lee et al.
+RIMS1		1	BabySeq
+CSDE1		1	BabySeq
+RNASEL		1	BabySeq
+B3GALNT2		1	BabySeq
+SYNE2		1	BabySeq
+TSPAN7		1	BabySeq
+VANGL1		1	BabySeq
+OGT		1	BabySeq
+TBX3		1	BabySeq
+ALKBH8		1	BabySeq
+WDFY3		1	BabySeq
+LNPK		1	BabySeq
+NDE1		1	BabySeq
+CDK8		1	BabySeq
+ADAMTSL4		1	BabySeq
+PTK7		1	BabySeq
+SEC24D		1	BabySeq
+QARS1		1	BabySeq
+ASPM		1	BabySeq
+GDF6		1	BabySeq
+CLU		1	BabySeq
+CAMK2G		1	BabySeq
+KY		1	BabySeq
+FDFT1		1	BabySeq
+NSUN2		1	BabySeq
+VIM		1	BabySeq
+NDST1		1	BabySeq
+FN1		1	BabySeq
+MYT1L		1	BabySeq
+TRAPPC6B		1	BabySeq
+BEST1		1	BabySeq
+TBC1D23		1	BabySeq
+P2RY11		1	BabySeq
+TBK1		1	BabySeq
+GNAT1		1	BabySeq
+DDX3X		1	BabySeq
+BSN		1	BabySeq
+GABRA6		1	BabySeq
+ARR3		1	BabySeq
+MFSD2A		1	BabySeq
+ZBTB11		1	BabySeq
+OTUD7A		1	BabySeq
+CHCHD2		1	BabySeq
+HES7		1	BabySeq
+SFTPA1		1	BabySeq

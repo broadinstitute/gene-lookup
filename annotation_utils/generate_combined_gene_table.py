@@ -50,6 +50,10 @@ separator = "; "
 # GWAS Catalog associations are kept only if they reach the conventional genome-wide significance level.
 GWAS_GENOME_WIDE_SIGNIFICANCE_P_VALUE_THRESHOLD = 5e-8
 
+# Open Targets gene burden associations are kept only if they reach exome-wide significance for gene-based tests
+# (0.05 divided by ~20,000 protein-coding genes).
+GENE_BURDEN_EXOME_WIDE_SIGNIFICANCE_P_VALUE_THRESHOLD = 2.5e-6
+
 def safe_max(values, default=float('nan')):
     """Return max of non-empty, non-NaN values, or default if none remain."""
     non_empty = [float(v) for v in values if v != "" and not pd.isna(v)]
@@ -778,6 +782,14 @@ df_gene_burden = df_gene_burden[
     ~df_gene_burden["disease_id"].isin(get_cancer_or_infectious_mondo_ids())
 ]
 print(f"Kept {len(df_gene_burden):,d} Open Targets gene burden associations that have rare-disease MONDO terms")
+
+# Open Targets includes each study's own significant hits, and some studies use looser cutoffs (eg. the Autism
+# Sequencing Consortium's false discovery rate threshold), so apply one exome-wide significance threshold, as the
+# GWAS Catalog associations are held to genome-wide significance.
+before_count = len(df_gene_burden)
+df_gene_burden = df_gene_burden[df_gene_burden["p_value"] < GENE_BURDEN_EXOME_WIDE_SIGNIFICANCE_P_VALUE_THRESHOLD]
+print(f"Kept {len(df_gene_burden):,d} of {before_count:,d} Open Targets gene burden associations with "
+      f"p < {GENE_BURDEN_EXOME_WIDE_SIGNIFICANCE_P_VALUE_THRESHOLD:g}")
 
 def join_distinct_non_empty_values(values):
     return " / ".join(sorted({v for v in values if isinstance(v, str) and v}))

@@ -43,6 +43,9 @@ print_example_genes = args.print_example_genes
 
 separator = "; "
 
+# GWAS Catalog associations are kept only if they reach the conventional genome-wide significance level.
+GWAS_GENOME_WIDE_SIGNIFICANCE_P_VALUE_THRESHOLD = 5e-8
+
 def safe_max(values, default=float('nan')):
     """Return max of non-empty, non-NaN values, or default if none remain."""
     non_empty = [float(v) for v in values if v != "" and not pd.isna(v)]
@@ -622,6 +625,15 @@ if include_GWAS:
     # by etiologic mechanism"), so it never equals "cancer or benign tumor" / "infectious disease" and the
     # old name-based filter silently matched nothing.
     df_gwas = df_gwas[~df_gwas["MONDO_ID"].isin(get_cancer_or_infectious_mondo_ids())]
+
+    # Keep only genome-wide significant associations. The GWAS Catalog lists every association with p < 1e-5,
+    # so without this filter many sub-threshold hits would be reported as gene-disease links. P-values too
+    # small to store as a float are read in as 0, so they pass; rows with a missing p-value fail the
+    # comparison and are dropped.
+    before_count = len(df_gwas)
+    df_gwas = df_gwas[df_gwas["P-VALUE"] < GWAS_GENOME_WIDE_SIGNIFICANCE_P_VALUE_THRESHOLD]
+    print(f"Kept {len(df_gwas):,d} of {before_count:,d} GWAS catalog gene-association rows with "
+          f"p < {GWAS_GENOME_WIDE_SIGNIFICANCE_P_VALUE_THRESHOLD:g}")
 
     df_gwas.rename(columns={
         "MONDO_ID": "GWAS_mondo_id",

@@ -182,6 +182,10 @@ def summarize_phenotypes(row):
 
     prompt = prompt_prefix1 + ", ".join(phenotypes)
     response = ask_gemini(prompt, model="2.5-flash", temperature=0, max_tokens=1000, system_prompt="", verbose=True)
+    if not response:
+        # ask_gemini returns None once its retries fail. Stop here rather than writing a blank summary, so the
+        # workflow fails before the BigQuery upload and the live table keeps its previous summaries.
+        raise RuntimeError(f"Gemini returned no phenotype summary for {row['gene_symbol']} (see the errors printed above)")
 
     return response
 

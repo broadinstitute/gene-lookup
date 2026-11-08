@@ -136,6 +136,13 @@
     <div class="ui row">
         <div class="three wide column"></div>
         <div class="ten wide column">
+            <div id="source-newborn-screening"></div>
+        </div>
+        <div class="three wide column"></div>
+    </div>
+    <div class="ui row">
+        <div class="three wide column"></div>
+        <div class="ten wide column">
             <div id="source-gencc"></div>
         </div>
         <div class="three wide column"></div>
@@ -318,6 +325,41 @@
 
     const hasAnyValue = (...values) => values.some(v => v != null && v !== '')
 
+    // The 27 genomic newborn screening programs whose gene lists Minten et al. 2025 compared
+    // (https://doi.org/10.1016/j.gim.2025.101443). `name` matches the program names in the
+    // NEWBORN_SEQUENCING_programs column (see annotation_utils/get_newborn_sequencing_gene_lists.py), links are
+    // the program websites listed in the paper or the PubMed record of the study it cites, and geneCount is the
+    // number of genes on each list in the paper's data.
+    const NEWBORN_SEQUENCING_PROGRAMS = [
+        { name: 'BabyDetect', displayName: 'BabyDetect', type: 'Research study', region: 'Belgium', url: 'https://babydetect.com/en/', geneCount: 405 },
+        { name: 'BabyScreen+', displayName: 'BabyScreen+', type: 'Research study', region: 'Australia', url: 'https://babyscreen.mcri.edu.au/', geneCount: 605 },
+        { name: 'BabySeq', displayName: 'BabySeq', type: 'Research study', region: 'United States', url: 'https://www.genomes2people.org/research/babyseq/', geneCount: 4299 },
+        { name: 'BeginNGS', displayName: 'BeginNGS', type: 'Research study', region: 'United States', url: 'https://radygenomics.org/begin-ngs-newborn-sequencing/', geneCount: 357 },
+        { name: 'Chen et al.', displayName: 'Chen et al. 2023', type: 'Research study', region: 'China', url: 'https://pubmed.ncbi.nlm.nih.gov/37656460/', geneCount: 142 },
+        { name: 'EarlyCheck', displayName: 'Early Check', type: 'Research study', region: 'United States', url: 'https://earlycheck.org/', geneCount: 169 },
+        { name: 'FirstSteps', displayName: 'FirstSteps', type: 'Research study', region: 'Greece', url: 'https://www.firststeps-ngs.gr/', geneCount: 385 },
+        { name: 'Generation Study', displayName: 'Generation Study (Genomics England)', type: 'Research study', region: 'United Kingdom (England)', url: 'https://www.genomicsengland.co.uk/initiatives/newborns', geneCount: 479 },
+        { name: 'GNStar', displayName: 'gnSTAR', type: 'Research study', region: 'China', url: 'https://pubmed.ncbi.nlm.nih.gov/36847978/', geneCount: 134 },
+        { name: 'GUARDIAN Study', displayName: 'GUARDIAN Study', type: 'Research study', region: 'United States', url: 'https://guardian-study.org/', geneCount: 314 },
+        { name: 'Jian et al.', displayName: 'Jian et al. 2022', type: 'Research study', region: 'China', url: 'https://pubmed.ncbi.nlm.nih.gov/35665479/', geneCount: 251 },
+        { name: 'Lee et al.', displayName: 'Lee et al. 2019', type: 'Research study', region: 'South Korea', url: 'https://pubmed.ncbi.nlm.nih.gov/31637888/', geneCount: 198 },
+        { name: 'Luo et al.', displayName: 'Luo et al. 2020', type: 'Research study', region: 'China', url: 'https://pubmed.ncbi.nlm.nih.gov/33145277/', geneCount: 569 },
+        { name: 'NEOEXOME', displayName: 'NeoExome', type: 'Research study', region: 'China', url: 'https://pubmed.ncbi.nlm.nih.gov/38284445/', geneCount: 601 },
+        { name: 'Neoseq', displayName: 'NeoSeq', type: 'Research study', region: 'China', url: 'https://pubmed.ncbi.nlm.nih.gov/34794485/', geneCount: 135 },
+        { name: 'NESTS', displayName: 'NESTS', type: 'Research study', region: 'China', url: 'https://pubmed.ncbi.nlm.nih.gov/34474183/', geneCount: 465 },
+        { name: 'NewbornsInSA', displayName: 'NewbornsInSA', type: 'Research study', region: 'Australia (South Australia)', url: 'https://www.wch.sa.gov.au/research/other-research-projects/newbornsinsa-research-study', geneCount: 613 },
+        { name: 'Prog Gen Puglia', displayName: 'Progetto Genoma Puglia', type: 'Research study', region: 'Italy (Puglia)', url: 'https://www.quotidianosanita.it/regioni-e-asl/parte-il-progetto-sperimentale-genoma-puglia-screening-genetico-su-mila-neonati/', geneCount: 404 },
+        { name: 'Screen4Care', displayName: 'Screen4Care', type: 'Research study', region: 'European Union', url: 'https://screen4care.eu/', geneCount: 245 },
+        { name: 'Wang et al.', displayName: 'Wang et al. 2023', type: 'Research study', region: 'China', url: 'https://pubmed.ncbi.nlm.nih.gov/37824171/', geneCount: 162 },
+        { name: 'Foresite', displayName: 'FORESITE 360 (Fore Genomics)', type: 'Company', region: 'United States', url: 'https://foresite360.com/', geneCount: 306 },
+        { name: 'Fulgent', displayName: 'Fulgent Genetics', type: 'Company', region: 'United States', url: 'https://www.fulgentgenetics.com/', geneCount: 255 },
+        { name: 'Igenomix', displayName: 'Igenomix', type: 'Company', region: 'Spain', url: 'https://www.igenomix.eu/', geneCount: 237 },
+        { name: 'Mendelics', displayName: 'Mendelics', type: 'Company', region: 'Brazil', url: 'https://mendelics.com.br/', geneCount: 284 },
+        { name: 'Nurture', displayName: 'Nurture Genomics', type: 'Company', region: 'United States', url: 'https://nurturegenomics.com/', geneCount: 412 },
+        { name: 'PerkinElmer', displayName: 'PerkinElmer (now Revvity)', type: 'Company', region: 'United States', url: 'https://www.revvity.com/be-en/category/newborn-screening', geneCount: 268 },
+        { name: 'Sema4', displayName: 'Sema4 (no longer offered)', type: 'Company', region: 'United States', url: '', geneCount: 167 },
+    ]
+
     const displaySearchResults = () => {
         const row = window.searchResults.rows[0]
 
@@ -380,13 +422,6 @@
         }
         if (row['in_ACMG_secondary_findings_list'] === true || row['in_ACMG_secondary_findings_list'] === 'true') {
             box1 += `<tr><td class="locus-info-label">ACMG SF{{ source_version_label('acmg_secondary_findings') }}:</td><td><a href="https://search.clinicalgenome.org/kb/genes/acmgsf" target="_blank" class="action-link">On the ACMG secondary findings list</a></td></tr>`
-        }
-        if (row['NEWBORN_SEQUENCING_program_count'] != null) {
-            const ruspText = row['RUSP_category'] ? `RUSP ${escapeHtml(row['RUSP_category']).toLowerCase()} condition; ` : ''
-            const programsPopup = `<div style='max-width:400px'>${escapeHtml(row['NEWBORN_SEQUENCING_programs'] || '')}</div>`.replace(/"/g, '&quot;')
-            box1 += `<tr><td class="locus-info-label">Newborn Screening:</td><td style="white-space: normal;">${ruspText}`
-            box1 += `on <span class="show-popup action-link" data-html="${programsPopup}">${Number(row['NEWBORN_SEQUENCING_program_count'])} of 27</span> genomic newborn screening gene lists `
-            box1 += `<a href="https://doi.org/10.1016/j.gim.2025.101443" target="_blank" class="action-link">(Minten et al. 2025)</a></td></tr>`
         }
         box1 += '</table>'
         $('#locus-page-row1-box1').html(box1)
@@ -501,7 +536,7 @@
         // Each section below is filled only when the gene has data for it, so clear them all first. Otherwise
         // browser Back/Forward between two genes (which re-renders without reloading the page) would leave
         // the previous gene's sections in place.
-        const sourceSectionIds = ['phenotype-summary-section', 'source-omim', 'source-clingen', 'source-clingen-actionability', 'source-gencc',
+        const sourceSectionIds = ['phenotype-summary-section', 'source-omim', 'source-clingen', 'source-clingen-actionability', 'source-newborn-screening', 'source-gencc',
             'source-panelapp-uk', 'source-panelapp-au', 'source-g2p', 'source-clinvar',
             'source-fridman', 'source-intolerome', 'source-gene-burden', 'source-dbnsfp']
         sourceSectionIds.forEach(id => $(`#${id}`).empty())
@@ -584,6 +619,28 @@
             })
             html += '</tbody></table></div>'
             $('#source-clingen-actionability').html(html)
+        }
+
+        // --- Source: genomic newborn screening gene lists (Minten et al. 2025) ---
+        if (row['NEWBORN_SEQUENCING_program_count'] != null) {
+            const programsIncludingGene = new Set(String(row['NEWBORN_SEQUENCING_programs'] || '').split(',').map(s => s.trim()).filter(Boolean))
+            const ruspText = row['RUSP_category'] ? ` Its disorder is a RUSP ${escapeHtml(row['RUSP_category']).toLowerCase()} condition.` : ''
+            let html = `<div class="source-section"><h4><a href="https://doi.org/10.1016/j.gim.2025.101443" target="_blank" class="action-link">Newborn Screening</a> <span class="source-last-updated">(Minten et al. 2025)</span></h4>`
+            html += `<div style="margin-bottom: 8px;">On ${programsIncludingGene.size} of ${NEWBORN_SEQUENCING_PROGRAMS.length} genomic newborn screening gene lists.${ruspText}</div>`
+            html += '<table class="ui very basic compact table"><thead><tr><th>Program</th><th>Includes this gene</th><th>Type</th><th>Country / region</th><th>Genes on list</th></tr></thead><tbody>'
+            // Programs that include the gene first, each group in the order of NEWBORN_SEQUENCING_PROGRAMS
+            const sortedPrograms = [...NEWBORN_SEQUENCING_PROGRAMS].sort((a, b) => programsIncludingGene.has(b.name) - programsIncludingGene.has(a.name))
+            sortedPrograms.forEach(program => {
+                const programName = program.url
+                    ? `<a href="${program.url}" target="_blank" class="action-link">${escapeHtml(program.displayName)}</a>`
+                    : escapeHtml(program.displayName)
+                const includesGene = programsIncludingGene.has(program.name)
+                html += `<tr${includesGene ? '' : ' style="color: #999;"'}><td style="white-space: normal;">${programName}</td><td>${includesGene ? '<b>Yes</b>' : 'No'}</td>`
+                html += `<td>${escapeHtml(program.type)}</td><td style="white-space: normal;">${escapeHtml(program.region)}</td><td>${program.geneCount.toLocaleString()}</td></tr>`
+            })
+            html += '</tbody></table>'
+            html += '<div class="source-last-updated">For companies, the country is where the company is based; their tests may be offered elsewhere. Gene lists as collected by Minten et al. in 2024.</div></div>'
+            $('#source-newborn-screening').html(html)
         }
 
         // --- Source: GenCC ---

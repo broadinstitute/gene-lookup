@@ -10,18 +10,22 @@ from global_constants import CONSTRAINT_THRESHOLDS
 
 from annotation_utils.get_omim_table import get_omim_table
 from annotation_utils.get_clingen_table import get_clingen_gene_disease_validity_table, get_clingen_haploinsufficient_genes_table
-from annotation_utils.get_hgnc_table import get_hgnc_table, get_hgnc_to_ensg_id_map, get_ensg_id_to_hgnc_id_map
+from annotation_utils.get_hgnc_table import get_hgnc_table, get_hgnc_to_ensg_id_map, get_ensg_id_to_hgnc_id_map, build_gene_symbol_to_ensg_id_map
 from annotation_utils.get_panel_app_table import get_panel_app_table
 from annotation_utils.get_ensembl_db_info import get_transcript_id_to_gene_id, get_gene_metadata
 from annotation_utils.get_gwas_catalog import get_gwas_catalog_rare_disease_records
-from annotation_utils.get_mondo_ontology import get_cancer_or_infectious_mondo_ids
+from annotation_utils.get_mondo_ontology import get_cancer_or_infectious_mondo_ids, get_mondo_ontology
 from annotation_utils.get_gencc_table import get_gencc_table
-from annotation_utils.get_decipher_genes import get_decipher_gene_table
 from annotation_utils.get_clinvar_table import get_clinvar_gene_disease_table
 from annotation_utils.get_constraint_scores import get_constraint_scores
 from annotation_utils.get_dbnsfp_gene_table import get_dbnsfp_gene_table, DBNSFP_VERSION
 from annotation_utils.get_MANE_table import get_MANE_ensembl_transcript_table
 from annotation_utils.get_intolerome_table import get_intolerome_table
+from annotation_utils.get_g2p_table import get_g2p_table
+from annotation_utils.get_open_targets_gene_burden_table import get_open_targets_gene_burden_table
+from annotation_utils.get_collins_dosage_sensitivity_scores import get_collins_dosage_sensitivity_scores
+from annotation_utils.get_genereviews_table import get_genereviews_table
+from annotation_utils.get_acmg_secondary_findings_genes import get_acmg_secondary_findings_genes
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--skip-gwas", action="store_true", help="Don't add columns related to GWAS catalog rare disease records")
@@ -733,30 +737,86 @@ df_gencc = df_gencc.groupby("GENCC_gene_id").agg({
 
 df_gencc.set_index("GENCC_gene_id", inplace=True)
 
-print("Getting Decipher table")
-df_decipher = get_decipher_gene_table()
+print("Getting Gene2Phenotype (G2P) table")
+df_g2p = get_g2p_table()
+df_g2p["G2P_gene_id"] = df_g2p["hgnc_gene_id"].map(HGNC_to_ENSG_map)
+no_ensg = df_g2p["G2P_gene_id"].isna()
+if no_ensg.any():
+    print("\t", f"WARNING: dropping {int(no_ensg.sum()):,d} G2P records whose HGNC id could not be mapped to an "
+                f"ENSG id: {', '.join(df_g2p.loc[no_ensg, 'hgnc_gene_id'].astype(str))}")
+    df_g2p = df_g2p[~no_ensg]
 
-# A restored DECIPHER cache written before the classifications column was added won't have it; add it empty
-# so the rename + groupby below don't KeyError. Empty classifications make the summarizer's strict DECIPHER
-# filter contribute nothing (safe) until the DECIPHER cache is rebuilt with real classifications.
-if "classifications" not in df_decipher.columns:
-    df_decipher["classifications"] = ""
+df_g2p = df_g2p.rename(columns={
+    "g2p_id": "G2P_record_id",
+    "disease_name": "G2P_disease_name",
+    "inheritance": "G2P_inheritance",
+    "confidence": "G2P_confidence",
+    "molecular_mechanism": "G2P_molecular_mechanism",
+    "variant_consequence": "G2P_variant_consequence",
+    "panel": "G2P_panel",
+})
 
-df_decipher.rename(columns={
-    "gene_id": "DECIPHER_gene_id",
-    "inheritance_modes": "DECIPHER_inheritance",
-    "disease_names": "DECIPHER_disease_names",
-    "classifications": "DECIPHER_classifications",
-}, inplace=True)
-
-df_decipher = df_decipher.groupby("DECIPHER_gene_id").agg({
-    "DECIPHER_inheritance": lambda x: separator.join(normalize_nulls(v) for v in x),
-    "DECIPHER_disease_names": lambda x: separator.join(normalize_nulls(v) for v in x),
-    # kept aligned 1:1 with DECIPHER_disease_names so the summarizer can filter to positive associations
-    "DECIPHER_classifications": lambda x: separator.join(normalize_nulls(v) for v in x),
+# Each column lists one token per G2P record, in the same record order, so that the summarizer can pair each
+# disease name with its confidence level.
+df_g2p = df_g2p.groupby("G2P_gene_id").agg({
+    column: lambda x: separator.join(normalize_nulls(v) for v in x) for column in [
+        "G2P_record_id", "G2P_disease_name", "G2P_inheritance", "G2P_confidence", "G2P_molecular_mechanism",
+        "G2P_variant_consequence", "G2P_panel",
+    ]
 }).reset_index()
 
-df_decipher.set_index("DECIPHER_gene_id", inplace=True)
+df_g2p.set_index("G2P_gene_id", inplace=True)
+
+print("Getting Open Targets gene burden table")
+df_gene_burden = get_open_targets_gene_burden_table()
+
+# Keep only associations with rare-disease MONDO terms other than cancer and infectious diseases, the same
+# subset of traits used for the GWAS Catalog. Most gene burden traits are biomarkers or common diseases.
+mondo_rare_disease_term_lookup = get_mondo_ontology()
+df_gene_burden = df_gene_burden[
+    df_gene_burden["disease_id"].isin(mondo_rare_disease_term_lookup.keys()) &
+    ~df_gene_burden["disease_id"].isin(get_cancer_or_infectious_mondo_ids())
+]
+print(f"Kept {len(df_gene_burden):,d} Open Targets gene burden associations that have rare-disease MONDO terms")
+
+def join_distinct_non_empty_values(values):
+    return " / ".join(sorted({v for v in values if isinstance(v, str) and v}))
+
+# Open Targets often lists the same gene-disease pair once per study and test method (eg. 75 times for PKD1
+# and polycystic kidney disease), so collapse those into one entry per gene and disease.
+df_gene_burden = df_gene_burden.groupby(["gene_id", "disease_id"]).agg(
+    p_value=("p_value", "min"),
+    study=("study", join_distinct_non_empty_values),
+    direction_on_trait=("direction_on_trait", join_distinct_non_empty_values),
+).reset_index()
+
+df_gene_burden = df_gene_burden.assign(
+    mondo_name=df_gene_burden["disease_id"].map(lambda mondo_id: mondo_rare_disease_term_lookup[mondo_id]["name"]),
+    p_value_text=df_gene_burden["p_value"].map(lambda p: f"{p:.2e}"),
+)
+
+# List each gene's diseases from most to least significant
+df_gene_burden = df_gene_burden.sort_values(["gene_id", "p_value", "disease_id"])
+
+df_gene_burden = df_gene_burden.rename(columns={
+    "gene_id": "GENE_BURDEN_gene_id",
+    "disease_id": "GENE_BURDEN_mondo_id",
+    "mondo_name": "GENE_BURDEN_mondo_name",
+    "study": "GENE_BURDEN_study",
+    "direction_on_trait": "GENE_BURDEN_direction_on_trait",
+    "p_value_text": "GENE_BURDEN_p_value_per_disease",
+    "p_value": "GENE_BURDEN_p_value",
+})
+
+df_gene_burden = df_gene_burden.groupby("GENE_BURDEN_gene_id").agg({
+    **{column: lambda x: separator.join(normalize_nulls(v) for v in x) for column in [
+        "GENE_BURDEN_mondo_id", "GENE_BURDEN_mondo_name", "GENE_BURDEN_study", "GENE_BURDEN_direction_on_trait",
+        "GENE_BURDEN_p_value_per_disease",
+    ]},
+    "GENE_BURDEN_p_value": lambda x: safe_min(x),
+}).reset_index()
+
+df_gene_burden.set_index("GENE_BURDEN_gene_id", inplace=True)
 
 print("Getting ClinVar table")
 df_clinvar = get_clinvar_gene_disease_table()
@@ -777,8 +837,9 @@ print(f"Merging "
       f"ClinGen ({len(df_clingen):,d} rows) "
       f"PanelApp ({len(df_panel_app):,d} rows) "
       f"GenCC ({len(df_gencc):,d} rows) "
-      f"Decipher ({len(df_decipher):,d} rows) "
-      f"ClinVar ({len(df_clinvar):,d} rows) " +
+      f"G2P ({len(df_g2p):,d} rows) "
+      f"ClinVar ({len(df_clinvar):,d} rows) "
+      f"Open Targets gene burden ({len(df_gene_burden):,d} rows) " +
       (f"GWAS catalog ({len(df_gwas):,d} rows) " if include_GWAS else "") +
       (f"Fridman ({len(df_fridman):,d} rows) " if include_Fridman else "") +
       (f"Intolerome ({len(df_intolerome):,d} rows) " if include_Intolerome else "") +
@@ -788,8 +849,9 @@ print(f"Merging "
 df_omim["InOMIM"] = True
 df_clingen["InClinGen"] = True
 df_gencc["InGenCC"] = True
-df_decipher["InDecipher"] = True
+df_g2p["InG2P"] = True
 df_clinvar["InClinVar"] = True
+df_gene_burden["InGeneBurden"] = True
 
 
 before = list(df_omim.index)
@@ -809,14 +871,19 @@ assert df_combined.index.is_unique, "The merged dataframe has duplicate gene ids
 print(f"Added {len(df_combined) - len(before):,d} genes from PanelApp" + (f" - examples: {', '.join(list(sorted(set(df_combined.index) - set(before)))[:5])}" if print_example_genes else ""))
 
 before = list(df_combined.index)
-df_combined = pd.merge(df_combined, df_decipher, how="outer", left_index=True, right_index=True)  # ANALYSIS_OK[join]: merged on unique per-gene-id index (df_combined uniqueness asserted after each merge)
-assert df_combined.index.is_unique, "The merged dataframe has duplicate gene ids after merging with Decipher"
-print(f"Added {len(df_combined) - len(before):,d} genes from Decipher" + (f" - examples: {', '.join(list(sorted(set(df_combined.index) - set(before)))[:5])}" if print_example_genes else ""))
+df_combined = pd.merge(df_combined, df_g2p, how="outer", left_index=True, right_index=True)  # ANALYSIS_OK[join]: merged on unique per-gene-id index (df_combined uniqueness asserted after each merge)
+assert df_combined.index.is_unique, "The merged dataframe has duplicate gene ids after merging with G2P"
+print(f"Added {len(df_combined) - len(before):,d} genes from G2P" + (f" - examples: {', '.join(list(sorted(set(df_combined.index) - set(before)))[:5])}" if print_example_genes else ""))
 
 before = list(df_combined.index)
 df_combined = pd.merge(df_combined, df_clinvar, how="outer", left_index=True, right_index=True)  # ANALYSIS_OK[join]: merged on unique per-gene-id index (df_combined uniqueness asserted after each merge)
 assert df_combined.index.is_unique, "The merged dataframe has duplicate gene ids after merging with ClinVar"
 print(f"Added {len(df_combined) - len(before):,d} genes from ClinVar" + (f" - examples: {', '.join(list(set(sorted(df_combined.index)) - set(sorted(before)))[:20])}" if print_example_genes else ""))
+
+before = list(df_combined.index)
+df_combined = pd.merge(df_combined, df_gene_burden, how="outer", left_index=True, right_index=True)  # ANALYSIS_OK[join]: merged on unique per-gene-id index (df_combined uniqueness asserted after each merge)
+assert df_combined.index.is_unique, "The merged dataframe has duplicate gene ids after merging with Open Targets gene burden"
+print(f"Added {len(df_combined) - len(before):,d} genes from Open Targets gene burden" + (f" - examples: {', '.join(list(sorted(set(df_combined.index) - set(before)))[:5])}" if print_example_genes else ""))
 
 if include_GWAS:
     before = list(df_combined.index)
@@ -880,6 +947,55 @@ df_combined = pd.merge(df_combined, df_gene_chrom_start_end, how="left", left_in
 df_combined["gene_start"] = df_combined["gene_start"].fillna(0).astype(int)  # ANALYSIS_OK[imputation]: 0 = coordinate unavailable (missing genes warned above); INTEGER col can't hold NaN
 df_combined["gene_end"] = df_combined["gene_end"].fillna(0).astype(int)  # ANALYSIS_OK[imputation]: 0 = coordinate unavailable (missing genes warned above); INTEGER col can't hold NaN
 
+# The next three tables annotate the genes already in the table rather than adding genes to it.
+gene_symbol_to_ensg_id = build_gene_symbol_to_ensg_id_map(df_hgnc)
+
+print("Getting Collins et al. 2022 dosage sensitivity scores")
+df_collins = get_collins_dosage_sensitivity_scores()
+df_collins["gene_id"] = df_collins["gene_symbol"].map(gene_symbol_to_ensg_id)
+print(f"Mapped {df_collins['gene_id'].notna().sum():,d} out of {len(df_collins):,d} Collins et al. 2022 gene symbols "
+      f"(GENCODE v19) to current Ensembl gene ids")
+df_collins = df_collins[df_collins["gene_id"].notna()]
+# When an outdated symbol and a current symbol resolve to the same gene, keep the scores listed under the
+# current symbol.
+df_collins = df_collins.assign(symbol_is_current=df_collins["gene_symbol"] == df_collins["gene_id"].map(ENSG_to_gene_name_map))
+df_collins = df_collins.sort_values(["gene_id", "symbol_is_current"], ascending=[True, False], kind="stable")
+duplicate_gene_ids = df_collins["gene_id"].duplicated()
+if duplicate_gene_ids.any():
+    print("\t", f"WARNING: discarding {int(duplicate_gene_ids.sum()):,d} Collins et al. 2022 rows whose symbol resolves "
+                f"to a gene that already has scores: {', '.join(df_collins.loc[duplicate_gene_ids, 'gene_symbol'])}")
+    df_collins = df_collins[~duplicate_gene_ids]
+df_collins = df_collins.set_index("gene_id")[["pHaplo", "pTriplo"]]
+df_combined = pd.merge(df_combined, df_collins, how="left", left_index=True, right_index=True)  # ANALYSIS_OK[join]: merged on unique per-gene-id index (duplicates removed above)
+assert df_combined.index.is_unique, "The merged dataframe has duplicate gene ids after merging with Collins et al. 2022 scores"
+print(f"Added Collins et al. 2022 scores to {df_combined['pHaplo'].notna().sum():,d} out of {len(df_combined):,d} genes")
+
+print("Getting GeneReviews chapters")
+df_genereviews = get_genereviews_table()
+df_genereviews["gene_id"] = df_genereviews["gene_symbol"].map(gene_symbol_to_ensg_id)
+no_ensg = df_genereviews["gene_id"].isna()
+if no_ensg.any():
+    print("\t", f"WARNING: dropping {int(no_ensg.sum()):,d} GeneReviews rows whose gene symbol could not be mapped to "
+                f"an ENSG id: {', '.join(df_genereviews.loc[no_ensg, 'gene_symbol'].astype(str))}")
+    df_genereviews = df_genereviews[~no_ensg]
+df_genereviews = df_genereviews.drop_duplicates(["gene_id", "nbk_id"]).sort_values(["gene_id", "nbk_id"])
+df_genereviews = df_genereviews.groupby("gene_id").agg(
+    GENEREVIEWS_nbk_id=("nbk_id", lambda x: separator.join(x)),
+    GENEREVIEWS_title=("title", lambda x: separator.join(x)),
+)
+df_combined = pd.merge(df_combined, df_genereviews, how="left", left_index=True, right_index=True)  # ANALYSIS_OK[join]: merged on unique per-gene-id index (groupby above)
+assert df_combined.index.is_unique, "The merged dataframe has duplicate gene ids after merging with GeneReviews"
+print(f"Added GeneReviews chapters to {df_combined['GENEREVIEWS_nbk_id'].notna().sum():,d} out of {len(df_combined):,d} genes")
+
+print("Getting ACMG secondary findings gene list")
+df_acmg_secondary_findings = get_acmg_secondary_findings_genes()
+acmg_secondary_findings_gene_ids = set(df_acmg_secondary_findings["hgnc_gene_id"].map(HGNC_to_ENSG_map).dropna())
+genes_missing_from_table = acmg_secondary_findings_gene_ids - set(df_combined.index)
+if len(acmg_secondary_findings_gene_ids) < len(df_acmg_secondary_findings) or genes_missing_from_table:
+    print("\t", f"WARNING: only {len(acmg_secondary_findings_gene_ids & set(df_combined.index)):,d} out of "
+                f"{len(df_acmg_secondary_findings):,d} ACMG secondary findings genes were found in the table")
+df_combined["in_ACMG_secondary_findings_list"] = df_combined.index.isin(acmg_secondary_findings_gene_ids)
+
 
 df_combined.reset_index(inplace=True)
 df_combined.rename(columns={
@@ -928,12 +1044,14 @@ def compute_sources_string(row):
         sources.append("PanelAppUK")
     if row["InPanelAppAU"] == True:
         sources.append("PanelAppAU")
-    if row["InDecipher"] == True:
-        sources.append("Decipher")
+    if row["InG2P"] == True:
+        sources.append("G2P")
     if row["InClinVar"] == True:
         sources.append("ClinVar")
     if include_GWAS and row["InGWAS"] == True:
         sources.append("GWAS")
+    if row["InGeneBurden"] == True:
+        sources.append("GeneBurden")
     if include_Fridman and row["InFridman"] == True:
         sources.append("Fridman")
     if include_Intolerome and row["InIntolerome"] == True:
@@ -950,7 +1068,7 @@ def compute_sources_string(row):
     return f"{len(sources)}: " + ", ".join(sources)
 
 df_combined["sources"] = df_combined.apply(compute_sources_string, axis=1)
-df_combined.drop(columns=["InOMIM", "InClinGen", "InGenCC", "InPanelAppAU", "InPanelAppUK", "InDecipher", "InClinVar"], inplace=True)
+df_combined.drop(columns=["InOMIM", "InClinGen", "InGenCC", "InPanelAppAU", "InPanelAppUK", "InG2P", "InClinVar", "InGeneBurden"], inplace=True)
 
 if include_GWAS:
     df_combined.drop(columns=["InGWAS"], inplace=True)
@@ -969,7 +1087,7 @@ def summarize_inheritance(row):
         "GENCC_inheritance",
         "PANEL_APP_UK_inheritance",
         "PANEL_APP_AU_inheritance",
-        "DECIPHER_inheritance",
+        "G2P_inheritance",
     ]
     if include_Fridman:
         columns.append("FRIDMAN_inheritance")
@@ -982,6 +1100,12 @@ def summarize_inheritance(row):
     return "" if len(inheritance) == 0 else "; ".join(sorted(inheritance))
 
 df_combined["inheritance"] = df_combined.apply(summarize_inheritance, axis=1)
+
+# DECIPHER is no longer a source, but the website pages currently deployed still query DECIPHER_inheritance and
+# DECIPHER_disease_names (DECIPHER_disease_names in every gene-symbol and disease text search). Keep the DECIPHER
+# columns, empty, until the website update that stops querying them is live.
+for decipher_column in ["DECIPHER_inheritance", "DECIPHER_disease_names", "DECIPHER_classifications"]:
+    df_combined[decipher_column] = ""
 
 # move the gene_id, hgnc_gene_id, gene_symbol, and gene_aliases columns to the front
 initial_columns = ["ensembl_gene_id", "hgnc_gene_id", "refseq_id", "ncbi_gene_id", "gene_symbol", "gene_aliases",

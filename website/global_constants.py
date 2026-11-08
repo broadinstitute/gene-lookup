@@ -11,8 +11,10 @@ GROUP_OMIM = "OMIM"
 GROUP_CLINVAR_CLINGEN_GENCC = "ClinVar, ClinGen & GenCC"
 GROUP_PANEL_APP_UK = "PanelApp UK"
 GROUP_PANEL_APP_AU = "PanelApp AU"
-GROUP_DECIPHER_OTHER = "Decipher & Other Sources"
+GROUP_G2P = "Gene2Phenotype (G2P)"
+GROUP_OTHER_SOURCES = "Other Sources"
 GROUP_GWAS = "GWAS Catalog"
+GROUP_GENE_BURDEN = "Open Targets Gene Burden"
 GROUP_DBNSFP = "dbNSFP"
 
 GROUP_ORDER = [
@@ -22,8 +24,10 @@ GROUP_ORDER = [
     GROUP_CLINVAR_CLINGEN_GENCC,
     GROUP_PANEL_APP_UK,
     GROUP_PANEL_APP_AU,
-    GROUP_DECIPHER_OTHER,
+    GROUP_G2P,
+    GROUP_OTHER_SOURCES,
     GROUP_GWAS,
+    GROUP_GENE_BURDEN,
     GROUP_DBNSFP,
 ]
 
@@ -44,6 +48,10 @@ CONSTRAINT_THRESHOLDS = {
     # Missense Z-score: gnomAD's conventional "constrained" cutoff (Samocha 2014; reused in v4.1.1
     # browser visualization).
     "Missense_Z": {"value": 3.09, "operator": ">="},
+    # Collins et al. 2022 cutoffs for calling a gene haploinsufficient (pHaplo) or triplosensitive (pTriplo).
+    # Used only for highlighting on the website; the pipeline does not add these to the source list.
+    "pHaplo": {"value": 0.86, "operator": ">="},
+    "pTriplo": {"value": 0.94, "operator": ">="},
 }
 
 BIGQUERY_COLUMNS = [
@@ -299,6 +307,24 @@ BIGQUERY_COLUMNS = [
     },
     {
         "type": "FLOAT",
+        "name": "pHaplo",
+        "description": "Predicted probability that losing one copy of this gene causes disease, from rare copy number variants (Collins et al. 2022). Genes with pHaplo >= 0.86 are considered haploinsufficient. Available for autosomal protein-coding genes only.",
+        "displayName": "pHaplo (Collins 2022)",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_CONSTRAINT,
+    },
+    {
+        "type": "FLOAT",
+        "name": "pTriplo",
+        "description": "Predicted probability that gaining a copy of this gene causes disease, from rare copy number variants (Collins et al. 2022). Genes with pTriplo >= 0.94 are considered triplosensitive. Available for autosomal protein-coding genes only.",
+        "displayName": "pTriplo (Collins 2022)",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_CONSTRAINT,
+    },
+    {
+        "type": "FLOAT",
         "name": "PEPPER_XGB_pct",
         "description": "PEPPER (XGBoost) percentile (0-100) from the gnomAD v4 flagship paper (Guez, Goodrich et al. 2026). Higher = stronger predicted clinical impact based on gene-level biological features, independent of literature evidence.",
         "displayName": "PEPPER XGB %",
@@ -454,6 +480,15 @@ BIGQUERY_COLUMNS = [
         "name": "CLINGEN_haploinsufficient",
         "description": "ClinGen haploinsufficiency classification for this gene.",
         "displayName": "ClinGen Haploinsufficiency",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_CLINVAR_CLINGEN_GENCC,
+    },
+    {
+        "type": "BOOLEAN",
+        "name": "in_ACMG_secondary_findings_list",
+        "description": "Whether the gene is on the ACMG secondary findings (SF) list of genes whose pathogenic variants should be reported from clinical exome and genome sequencing even when unrelated to the reason for testing (current list from ClinGen).",
+        "displayName": "ACMG Secondary Findings Gene",
         "allowCustomFilter": True,
         "allowExport": True,
         "group": GROUP_CLINVAR_CLINGEN_GENCC,
@@ -618,24 +653,89 @@ BIGQUERY_COLUMNS = [
         "group": GROUP_PANEL_APP_AU,
     },
 
-    # Decipher
+    # Gene2Phenotype (G2P). Each column lists one value per G2P record, in the same order.
     {
         "type": "STRING",
-        "name": "DECIPHER_inheritance",
-        "description": "Mode of inheritance from DECIPHER (semicolon-separated if multiple).",
-        "displayName": "Decipher Inheritance",
+        "name": "G2P_record_id",
+        "description": "Gene2Phenotype record ID(s), eg. G2P00001 (semicolon-separated if multiple records).",
+        "displayName": "G2P Record ID",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_DECIPHER_OTHER,
+        "group": GROUP_G2P,
     },
     {
         "type": "STRING",
-        "name": "DECIPHER_disease_names",
-        "description": "Disease name(s) from DECIPHER (semicolon-separated if multiple).",
-        "displayName": "Decipher Disease",
+        "name": "G2P_disease_name",
+        "description": "Disease name(s) from Gene2Phenotype (semicolon-separated if multiple records).",
+        "displayName": "G2P Disease",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_DECIPHER_OTHER,
+        "group": GROUP_G2P,
+    },
+    {
+        "type": "STRING",
+        "name": "G2P_inheritance",
+        "description": "Mode of inheritance from the Gene2Phenotype allelic requirement (semicolon-separated if multiple records).",
+        "displayName": "G2P Inheritance",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_G2P,
+    },
+    {
+        "type": "STRING",
+        "name": "G2P_confidence",
+        "description": "Gene2Phenotype confidence that the gene-disease association is real: definitive, strong, moderate, limited, disputed, or refuted (semicolon-separated if multiple records).",
+        "displayName": "G2P Confidence",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_G2P,
+    },
+    {
+        "type": "STRING",
+        "name": "G2P_molecular_mechanism",
+        "description": "Disease mechanism reported or inferred by Gene2Phenotype: loss of function, gain of function, dominant negative, or undetermined (semicolon-separated if multiple records).",
+        "displayName": "G2P Molecular Mechanism",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_G2P,
+    },
+    {
+        "type": "STRING",
+        "name": "G2P_variant_consequence",
+        "description": "Consequence of the disease-causing variants at the protein or RNA level, eg. absent gene product or altered gene product structure (semicolon-separated if multiple records).",
+        "displayName": "G2P Variant Consequence",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_G2P,
+    },
+    {
+        "type": "STRING",
+        "name": "G2P_panel",
+        "description": "Gene2Phenotype panel(s) the record belongs to: DD, Eye, Skin, Skeletal, Cardiac, Cancer, or Ear (semicolon-separated if multiple records).",
+        "displayName": "G2P Panel",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_G2P,
+    },
+
+    # GeneReviews
+    {
+        "type": "STRING",
+        "name": "GENEREVIEWS_nbk_id",
+        "description": "NCBI Bookshelf ID(s) of the GeneReviews chapter(s) about this gene, eg. NBK1103 (semicolon-separated if multiple).",
+        "displayName": "GeneReviews ID",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_OTHER_SOURCES,
+    },
+    {
+        "type": "STRING",
+        "name": "GENEREVIEWS_title",
+        "description": "Title(s) of the GeneReviews chapter(s) about this gene (semicolon-separated if multiple).",
+        "displayName": "GeneReviews",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_OTHER_SOURCES,
     },
 
     # Fridman
@@ -646,7 +746,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "Fridman 2025 OMIM ID",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_DECIPHER_OTHER,
+        "group": GROUP_OTHER_SOURCES,
     },
     {
         "type": "STRING",
@@ -655,7 +755,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "Fridman 2025 Category",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_DECIPHER_OTHER,
+        "group": GROUP_OTHER_SOURCES,
     },
     {
         "type": "STRING",
@@ -664,7 +764,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "Fridman 2025 Inheritance",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_DECIPHER_OTHER,
+        "group": GROUP_OTHER_SOURCES,
     },
 
     # Intolerome
@@ -675,7 +775,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "Intolerome Evidence",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_DECIPHER_OTHER,
+        "group": GROUP_OTHER_SOURCES,
     },
     {
         "type": "STRING",
@@ -684,7 +784,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "Intolerome Lethality Timing",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_DECIPHER_OTHER,
+        "group": GROUP_OTHER_SOURCES,
     },
     {
         "type": "STRING",
@@ -693,7 +793,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "Intolerome Gene Effect",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_DECIPHER_OTHER,
+        "group": GROUP_OTHER_SOURCES,
     },
     {
         "type": "STRING",
@@ -702,7 +802,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "Intolerome Inheritance",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_DECIPHER_OTHER,
+        "group": GROUP_OTHER_SOURCES,
     },
     {
         "type": "STRING",
@@ -711,7 +811,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "Intolerome Disease",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_DECIPHER_OTHER,
+        "group": GROUP_OTHER_SOURCES,
     },
     {
         "type": "STRING",
@@ -720,7 +820,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "Intolerome OMIM ID",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_DECIPHER_OTHER,
+        "group": GROUP_OTHER_SOURCES,
     },
     {
         "type": "STRING",
@@ -729,7 +829,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "Intolerome Prenatal Phenotypes",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_DECIPHER_OTHER,
+        "group": GROUP_OTHER_SOURCES,
     },
     {
         "type": "STRING",
@@ -738,7 +838,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "Intolerome System Affected",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_DECIPHER_OTHER,
+        "group": GROUP_OTHER_SOURCES,
     },
     {
         "type": "STRING",
@@ -747,7 +847,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "Intolerome PubMed IDs",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_DECIPHER_OTHER,
+        "group": GROUP_OTHER_SOURCES,
     },
 
     # GWAS Catalog
@@ -842,6 +942,63 @@ BIGQUERY_COLUMNS = [
         "group": GROUP_GWAS,
     },
 
+    # Open Targets gene burden. Each column lists one value per rare disease associated with the gene, from most
+    # to least significant.
+    {
+        "type": "STRING",
+        "name": "GENE_BURDEN_mondo_id",
+        "description": "MONDO rare-disease ID(s) associated with this gene by Open Targets gene burden tests (semicolon-separated if multiple).",
+        "displayName": "Gene Burden MONDO ID",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_GENE_BURDEN,
+    },
+    {
+        "type": "STRING",
+        "name": "GENE_BURDEN_mondo_name",
+        "description": "MONDO rare-disease name(s) associated with this gene by Open Targets gene burden tests (semicolon-separated if multiple).",
+        "displayName": "Gene Burden Disease",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_GENE_BURDEN,
+    },
+    {
+        "type": "STRING",
+        "name": "GENE_BURDEN_study",
+        "description": "Studies or portals that reported each gene burden association, eg. Genebass or Autism Sequencing Consortium, joined with ' / ' when several report the same disease (semicolon-separated if multiple diseases).",
+        "displayName": "Gene Burden Study",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_GENE_BURDEN,
+    },
+    {
+        "type": "STRING",
+        "name": "GENE_BURDEN_direction_on_trait",
+        "description": "Whether rare variants in the gene increase (risk) or decrease (protect) the risk of each disease, where reported (semicolon-separated if multiple diseases).",
+        "displayName": "Gene Burden Direction",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_GENE_BURDEN,
+    },
+    {
+        "type": "STRING",
+        "name": "GENE_BURDEN_p_value_per_disease",
+        "description": "Smallest gene burden p-value for each disease, eg. 1.68e-15 (semicolon-separated if multiple diseases).",
+        "displayName": "Gene Burden P-value per Disease",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_GENE_BURDEN,
+    },
+    {
+        "type": "FLOAT",
+        "name": "GENE_BURDEN_p_value",
+        "description": "Smallest p-value among the Open Targets gene burden associations between this gene and a rare disease.",
+        "displayName": "Gene Burden P-value (min)",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_GENE_BURDEN,
+    },
+
     # dbNSFP
     {
         "type": "STRING",
@@ -850,7 +1007,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "Orphanet Disorder ID",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_DECIPHER_OTHER,
+        "group": GROUP_OTHER_SOURCES,
     },
     {
         "type": "STRING",
@@ -859,7 +1016,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "Orphanet Disorder",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_DECIPHER_OTHER,
+        "group": GROUP_OTHER_SOURCES,
     },
     {
         "type": "STRING",
@@ -868,7 +1025,7 @@ BIGQUERY_COLUMNS = [
         "displayName": "Orphanet Association Type",
         "allowCustomFilter": True,
         "allowExport": True,
-        "group": GROUP_DECIPHER_OTHER,
+        "group": GROUP_OTHER_SOURCES,
     },
     {
         "type": "STRING",

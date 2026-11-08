@@ -44,13 +44,13 @@ SEPARATOR = "; "
 # associations that a source actually supports, never ones it disputes/refutes or rates as low-confidence.
 # The combined table intentionally retains negative-evidence rows (their level is preserved in a parallel
 # classification column), so this summarizer filters each source to its positive associations before
-# prompting (drops ClinGen/GenCC/DECIPHER "Disputed"/"Refuted", non-"Green" PanelApp, OMIM Nondisease/
+# prompting (drops ClinGen/GenCC/G2P "Disputed"/"Refuted", non-"Green" PanelApp, OMIM Nondisease/
 # Susceptibility (also where Intolerome copies OMIM's disease text), and Orphanet biomarker/susceptibility/fusion). OMIM provisional ("?") associations and
 # Orphanet "candidate" associations are intentionally KEPT (still real, if tentative). This filtering is
 # independent of what the pipeline loads into BigQuery / displays on the gene page for each source.
 CLINGEN_POSITIVE_CLASSIFICATIONS = {"Definitive", "Strong", "Moderate", "Limited"}  # drop Disputed/Refuted/No Known Disease Relationship
 GENCC_POSITIVE_CLASSIFICATIONS = {"Definitive", "Strong", "Moderate", "Limited", "Supportive"}  # drop Disputed/Refuted Evidence
-DECIPHER_POSITIVE_CLASSIFICATIONS = {"Definitive", "Strong", "Moderate", "Limited", "Supportive"}  # DECIPHER GenCC validity; drop Disputed/Refuted
+G2P_POSITIVE_CONFIDENCE = {"definitive", "strong", "moderate", "limited"}  # drop disputed/refuted
 PANELAPP_POSITIVE_CONFIDENCE = {"3"}  # PanelApp "Green" (diagnostic-grade); drop 2=Amber, 1/0=Red
 OMIM_DROP_CLASSIFICATIONS = {"Nondisease", "Susceptibility"}  # drop [] / {}; keep Confirmed, Provisional (?), and unclassified
 
@@ -75,7 +75,7 @@ def _positive_labels(labels_value, classifications_value, keep_classifications, 
     i of the classifications. On a token-count mismatch (e.g. a label that itself contains "; ", or a
     classification column missing entirely): with strict=False keep all non-empty labels (used where the
     labels are otherwise acceptable, e.g. OMIM); with strict=True drop everything (used where an unfiltered
-    label could be a disputed/refuted association we must never emit, e.g. DECIPHER).
+    label could be a disputed/refuted association we must never emit, e.g. ClinGen).
     """
     if not _has_content(labels_value):
         return []
@@ -123,10 +123,8 @@ def summarize_phenotypes(row):
     # is independent of what the pipeline loads into BigQuery / displays on the gene page for that source:
     #   - OMIM: keep Confirmed + Provisional (drop Nondisease "[]" / Susceptibility "{}") via the aligned
     #     OMIM_phenotype_classification column.
-    #   - ClinGen/GenCC/DECIPHER: keep positive validity classifications (drop Disputed/Refuted) via each
-    #     source's aligned *_classification(s) column. DECIPHER uses strict=True so that if its
-    #     classification column is ever missing/misaligned it contributes nothing rather than risk emitting
-    #     a disputed/refuted association.
+    #   - ClinGen/GenCC/G2P: keep positive validity classifications (drop Disputed/Refuted) via each
+    #     source's aligned *_classification / G2P_confidence column.
     #   - PanelApp UK/AU: keep only "Green" (confidence 3) via the aligned confidence column.
     #   - ClinVar (P/LP variants only), Fridman (curated), dbNSFP disease (UniProt involvement-in-disease) and
     #     dbNSFP HPO (HPO term NAMES, not ids) are inherently positive-only and pass through unfiltered.
@@ -150,8 +148,8 @@ def summarize_phenotypes(row):
         row.get("CLINGEN_disease_label"), row.get("CLINGEN_classification"), CLINGEN_POSITIVE_CLASSIFICATIONS, strict=True)))
     add_source("GENCC", SEPARATOR.join(_positive_labels(
         row.get("GENCC_disease_name"), row.get("GENCC_classification"), GENCC_POSITIVE_CLASSIFICATIONS, strict=True)))
-    add_source("DECIPHER", SEPARATOR.join(_positive_labels(
-        row.get("DECIPHER_disease_names"), row.get("DECIPHER_classifications"), DECIPHER_POSITIVE_CLASSIFICATIONS, strict=True)))
+    add_source("G2P", SEPARATOR.join(_positive_labels(
+        row.get("G2P_disease_name"), row.get("G2P_confidence"), G2P_POSITIVE_CONFIDENCE, strict=True)))
     add_source("PANEL_APP_UK", SEPARATOR.join(_positive_labels(
         row.get("PANEL_APP_UK_phenotypes"), row.get("PANEL_APP_UK_confidence"), PANELAPP_POSITIVE_CONFIDENCE, strict=True)))
     add_source("PANEL_APP_AU", SEPARATOR.join(_positive_labels(

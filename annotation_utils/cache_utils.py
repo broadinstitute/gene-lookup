@@ -81,6 +81,24 @@ def read_cached_table(function_name):
     return df
 
 
+def return_stale_cached_table_or_raise(function_name, source_label, download_error):
+    """Handle a failed download by returning the last cached table, or re-raising if there is none.
+
+    Args:
+        function_name (str): name of the cache_data_table function whose download failed
+        source_label (str): source name for the warning message, for example "G2P"
+        download_error (Exception): the exception the download raised
+
+    Returns:
+        pandas.DataFrame: the newest cached table for function_name (see read_cached_table)
+    """
+    df_stale = read_cached_table(function_name)
+    if df_stale is None:
+        raise download_error
+    print(f"WARNING: {source_label} download failed ({download_error!r}); reusing previously cached table ({len(df_stale):,d} rows)")
+    return df_stale
+
+
 def cache_data_table(get_table_func):
     """Decorator that caches the pandas DataFrame returned by the decorated function.
     It's intended for functions that take a relatively long time to retrieve some table over the network.

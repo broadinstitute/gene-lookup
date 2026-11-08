@@ -58,6 +58,53 @@ def get_ensg_id_to_hgnc_id_map(remove_duplicate_ensg_ids=False):
 
     return ENSG_to_HGNC_map
 
+
+def _map_each_listed_symbol_to_ensg_ids(df_hgnc, symbols_column):
+    """Return {symbol: set of ENSG ids} for the comma-separated symbols in one column of the HGNC table."""
+    symbol_to_ensg_ids = {}
+    for ensg_id, symbols in zip(df_hgnc["Ensembl gene ID"], df_hgnc[symbols_column]):
+        if not isinstance(symbols, str):
+            continue
+        for symbol in symbols.split(","):
+            if symbol.strip():
+                symbol_to_ensg_ids.setdefault(symbol.strip(), set()).add(ensg_id)
+    return symbol_to_ensg_ids
+
+
+def build_gene_symbol_to_ensg_id_map(df_hgnc):
+    """Map gene symbols, including outdated ones, to Ensembl gene ids.
+
+    For sources that identify genes only by symbol, some of which may be out of date. A symbol resolves,
+    in order of preference, to the gene that currently has it as its approved symbol, else to the one gene
+    that lists it as a previous symbol, else to the one gene that lists it as an alias. Symbols that are
+    previous symbols or aliases of more than one gene are left out because they are ambiguous.
+
+    Args:
+        df_hgnc (pandas.DataFrame): the HGNC table returned by get_hgnc_table()
+
+    Returns:
+        dict: {gene symbol: Ensembl gene id}
+    """
+    df_hgnc = df_hgnc[df_hgnc["Ensembl gene ID"].notna()]
+    previous_symbol_to_ensg_ids = _map_each_listed_symbol_to_ensg_ids(df_hgnc, "Previous symbols")
+    alias_to_ensg_ids = _map_each_listed_symbol_to_ensg_ids(df_hgnc, "Alias symbols")
+
+    symbol_to_ensg_id = {
+        alias: ensg_ids.pop() for alias, ensg_ids in alias_to_ensg_ids.items()
+        if len(ensg_ids) == 1 and alias not in previous_symbol_to_ensg_ids
+    }
+    symbol_to_ensg_id.update({
+        previous_symbol: ensg_ids.pop() for previous_symbol, ensg_ids in previous_symbol_to_ensg_ids.items()
+        if len(ensg_ids) == 1
+    })
+    # Approved symbols are applied last so that they override any gene that lists the same symbol as a
+    # previous symbol or alias. When an approved symbol appears on more than one row, the first row wins.
+    for approved_symbol, ensg_id in zip(df_hgnc["Approved symbol"][::-1], df_hgnc["Ensembl gene ID"][::-1]):
+        symbol_to_ensg_id[approved_symbol] = ensg_id
+
+    return symbol_to_ensg_id
+
+
 if __name__ == "__main__":
     pd.set_option('display.max_columns', 500)
 

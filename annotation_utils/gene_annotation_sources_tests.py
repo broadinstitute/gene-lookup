@@ -178,10 +178,11 @@ class OpenTargetsGeneBurdenTests(unittest.TestCase):
         df = convert_gene_burden_evidence_to_table(df_evidence)
         self.assertEqual(df["disease_id"].tolist(), ["EFO:0022282", "MONDO:0005258", "MONDO:0005258", "MONDO:0005258"])
         self.assertEqual(df["study"].tolist(), ["AstraZeneca PheWAS Portal", "UK Biobank, MDCS, MCPS", "PMID:35982159", ""])
+        self.assertEqual(df["study_pubmed_id"].tolist(), ["34375979", "", "35982159", ""])
         self.assertAlmostEqual(df["p_value"].tolist()[0], 1.677e-15, delta=1e-27)
         self.assertEqual(df["p_value"].tolist()[1], 0.0)
         self.assertEqual(df["direction_on_trait"].tolist(), ["protect", None, "risk", "risk"])
-        self.assertEqual(df.columns.tolist(), ["gene_id", "disease_id", "study", "p_value", "direction_on_trait"])
+        self.assertEqual(df.columns.tolist(), ["gene_id", "disease_id", "study", "study_pubmed_id", "p_value", "direction_on_trait"])
 
 
 class AcmgSecondaryFindingsTests(unittest.TestCase):

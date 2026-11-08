@@ -51,13 +51,20 @@ def find_parquet_file_names(directory_listing_html):
     return sorted(set(re.findall(r'href="([^"/]+\.parquet)"', directory_listing_html)))
 
 
+def _get_first_pubmed_id(pubmed_ids):
+    """Return the first PubMed ID in the evidence record's literature list, or "" if the list is empty."""
+    if pubmed_ids is not None and len(pubmed_ids) > 0:
+        return str(pubmed_ids[0])
+    return ""
+
+
 def _name_study(project_id, cohort_id, pubmed_ids):
     """Return the project name, else the cohort name, else "PMID:<first PubMed ID>", else ""."""
     for name in (project_id, cohort_id):
         if isinstance(name, str) and name.strip():
             return " ".join(name.split())
-    if pubmed_ids is not None and len(pubmed_ids) > 0:
-        return f"PMID:{pubmed_ids[0]}"
+    if _get_first_pubmed_id(pubmed_ids):
+        return f"PMID:{_get_first_pubmed_id(pubmed_ids)}"
     return ""
 
 
@@ -69,14 +76,16 @@ def convert_gene_burden_evidence_to_table(df_evidence):
 
     Returns:
         pandas.DataFrame: one row per association, with columns gene_id, disease_id (with ":" in place of
-            Open Targets' "_", eg. "MONDO:0005258"), study, p_value, direction_on_trait ("risk", "protect",
-            or missing)
+            Open Targets' "_", eg. "MONDO:0005258"), study, study_pubmed_id (the PubMed ID of the study's
+            paper, or "" if Open Targets lists none), p_value, direction_on_trait ("risk", "protect", or
+            missing)
     """
     return pd.DataFrame({
         "gene_id": df_evidence["targetId"],
         "disease_id": df_evidence["diseaseId"].str.replace("_", ":", n=1, regex=False),
         "study": [_name_study(project_id, cohort_id, pubmed_ids) for project_id, cohort_id, pubmed_ids in zip(
             df_evidence["projectId"], df_evidence["cohortId"], df_evidence["literature"])],
+        "study_pubmed_id": [_get_first_pubmed_id(pubmed_ids) for pubmed_ids in df_evidence["literature"]],
         # p-values below ~1e-308 underflow to 0.0, which still sorts as the most significant
         "p_value": df_evidence["pValueMantissa"] * 10.0 ** df_evidence["pValueExponent"],
         "direction_on_trait": df_evidence["directionOnTrait"],

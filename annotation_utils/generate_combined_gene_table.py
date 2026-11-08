@@ -796,15 +796,31 @@ print(f"Kept {len(df_gene_burden):,d} of {before_count:,d} Open Targets gene bur
 def join_distinct_non_empty_values(values):
     return " / ".join(sorted({v for v in values if isinstance(v, str) and v}))
 
+def format_pubmed_id(pubmed_id):
+    """Return the PubMed ID as a string, or "" if missing. A table read back from the cache stores PubMed IDs as
+    numbers, and as floats (eg. 34375979.0) when some are missing, so convert those back to "34375979"."""
+    if pd.isna(pubmed_id) or pubmed_id == "":
+        return ""
+    return str(int(float(pubmed_id)))
+
+# Pair each study name with its paper's PubMed ID so that, after collapsing below, GENE_BURDEN_study_pubmed_id
+# lists each study's PubMed ID in the same position as the study's name in GENE_BURDEN_study ("" if it has none).
+df_gene_burden["study_and_pubmed_id"] = [
+    (study, format_pubmed_id(pubmed_id)) for study, pubmed_id in zip(df_gene_burden["study"], df_gene_burden["study_pubmed_id"])
+]
+
 # Open Targets often lists the same gene-disease pair once per study and test method (eg. 75 times for PKD1
 # and polycystic kidney disease), so collapse those into one entry per gene and disease.
 df_gene_burden = df_gene_burden.groupby(["gene_id", "disease_id"]).agg(
     p_value=("p_value", "min"),
-    study=("study", join_distinct_non_empty_values),
+    studies_and_pubmed_ids=("study_and_pubmed_id", lambda pairs: tuple(sorted(
+        {(study, pubmed_id) for study, pubmed_id in pairs if isinstance(study, str) and study}))),
     direction_on_trait=("direction_on_trait", join_distinct_non_empty_values),
 ).reset_index()
 
 df_gene_burden = df_gene_burden.assign(
+    study=df_gene_burden["studies_and_pubmed_ids"].map(lambda pairs: " / ".join(study for study, _ in pairs)),
+    study_pubmed_id=df_gene_burden["studies_and_pubmed_ids"].map(lambda pairs: " / ".join(pubmed_id for _, pubmed_id in pairs)),
     mondo_name=df_gene_burden["disease_id"].map(lambda mondo_id: mondo_rare_disease_term_lookup[mondo_id]["name"]),
     p_value_text=df_gene_burden["p_value"].map(lambda p: f"{p:.2e}"),
 )
@@ -817,6 +833,7 @@ df_gene_burden = df_gene_burden.rename(columns={
     "disease_id": "GENE_BURDEN_mondo_id",
     "mondo_name": "GENE_BURDEN_mondo_name",
     "study": "GENE_BURDEN_study",
+    "study_pubmed_id": "GENE_BURDEN_study_pubmed_id",
     "direction_on_trait": "GENE_BURDEN_direction_on_trait",
     "p_value_text": "GENE_BURDEN_p_value_per_disease",
     "p_value": "GENE_BURDEN_p_value",
@@ -824,8 +841,8 @@ df_gene_burden = df_gene_burden.rename(columns={
 
 df_gene_burden = df_gene_burden.groupby("GENE_BURDEN_gene_id").agg({
     **{column: lambda x: separator.join(normalize_nulls(v) for v in x) for column in [
-        "GENE_BURDEN_mondo_id", "GENE_BURDEN_mondo_name", "GENE_BURDEN_study", "GENE_BURDEN_direction_on_trait",
-        "GENE_BURDEN_p_value_per_disease",
+        "GENE_BURDEN_mondo_id", "GENE_BURDEN_mondo_name", "GENE_BURDEN_study", "GENE_BURDEN_study_pubmed_id",
+        "GENE_BURDEN_direction_on_trait", "GENE_BURDEN_p_value_per_disease",
     ]},
     "GENE_BURDEN_p_value": lambda x: safe_min(x),
 }).reset_index()

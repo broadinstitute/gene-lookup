@@ -1051,6 +1051,15 @@ BIGQUERY_COLUMNS = [
     },
     {
         "type": "STRING",
+        "name": "GENE_BURDEN_study_pubmed_id",
+        "description": "PubMed ID of the paper for each study in Gene Burden Study, in the same order and with the same ' / ' and semicolon separators (empty where Open Targets lists no paper).",
+        "displayName": "Gene Burden Study PubMed ID",
+        "allowCustomFilter": True,
+        "allowExport": True,
+        "group": GROUP_GENE_BURDEN,
+    },
+    {
+        "type": "STRING",
         "name": "GENE_BURDEN_direction_on_trait",
         "description": "Whether rare variants in the gene increase (risk) or decrease (protect) the risk of each disease, where reported (semicolon-separated if multiple diseases).",
         "displayName": "Gene Burden Direction",

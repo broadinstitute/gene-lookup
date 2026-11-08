@@ -242,7 +242,6 @@ class NewbornSequencingGeneListsTests(unittest.TestCase):
         df_repository = pd.DataFrame({
             "gene": ["PAH", "C19ORF12", "TTN"],
             "programs_screened": [2, 1, 0],
-            "rusp": ["Core", None, None],
             "scr_babyseq": [1, None, None],
             "scr_guardian": [1, 1, None],
         })
@@ -253,13 +252,13 @@ class NewbornSequencingGeneListsTests(unittest.TestCase):
         ])
         df = convert_minten_data_repository_to_gene_table(df_repository, df_codebook)
         self.assertEqual(df.to_dict("records"), [
-            {"gene_symbol": "PAH", "rusp_category": "Core", "program_count": 2, "programs": "BabySeq, GUARDIAN Study"},
-            {"gene_symbol": "C19orf12", "rusp_category": "", "program_count": 1, "programs": "GUARDIAN Study"},
-            {"gene_symbol": "TTN", "rusp_category": "", "program_count": 0, "programs": ""},
+            {"gene_symbol": "PAH", "program_count": 2, "programs": "BabySeq, GUARDIAN Study"},
+            {"gene_symbol": "C19orf12", "program_count": 1, "programs": "GUARDIAN Study"},
+            {"gene_symbol": "TTN", "program_count": 0, "programs": ""},
         ])
 
     def test_mismatched_program_count_raises(self):
-        df_repository = pd.DataFrame({"gene": ["PAH"], "programs_screened": [5], "rusp": ["Core"], "scr_babyseq": [1]})
+        df_repository = pd.DataFrame({"gene": ["PAH"], "programs_screened": [5], "scr_babyseq": [1]})
         df_codebook = pd.DataFrame([["scr_babyseq", "Inclusion on BabySeq gene list (1 if gene is present)"]])
         with self.assertRaises(ValueError):
             convert_minten_data_repository_to_gene_table(df_repository, df_codebook)

@@ -624,9 +624,8 @@
         // --- Source: genomic newborn screening gene lists (Minten et al. 2025) ---
         if (row['NEWBORN_SEQUENCING_program_count'] != null) {
             const programsIncludingGene = new Set(String(row['NEWBORN_SEQUENCING_programs'] || '').split(',').map(s => s.trim()).filter(Boolean))
-            const ruspText = row['RUSP_category'] ? ` Its disorder is a RUSP ${escapeHtml(row['RUSP_category']).toLowerCase()} condition.` : ''
             let html = `<div class="source-section"><h4><a href="https://doi.org/10.1016/j.gim.2025.101443" target="_blank" class="action-link">Newborn Screening</a> <span class="source-last-updated">(Minten et al. 2025)</span></h4>`
-            html += `<div style="margin-bottom: 8px;">On ${programsIncludingGene.size} of ${NEWBORN_SEQUENCING_PROGRAMS.length} genomic newborn screening gene lists.${ruspText}</div>`
+            html += `<div style="margin-bottom: 8px;">On ${programsIncludingGene.size} of ${NEWBORN_SEQUENCING_PROGRAMS.length} genomic newborn screening gene lists.</div>`
             html += '<table class="ui very basic compact table"><thead><tr><th>Program</th><th>Includes this gene</th><th>Type</th><th>Country / region</th><th>Genes on list</th></tr></thead><tbody>'
             // Programs that include the gene first, each group in the order of NEWBORN_SEQUENCING_PROGRAMS
             const sortedPrograms = [...NEWBORN_SEQUENCING_PROGRAMS].sort((a, b) => programsIncludingGene.has(b.name) - programsIncludingGene.has(a.name))

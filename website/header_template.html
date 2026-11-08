@@ -1115,13 +1115,6 @@
             getSortColumns: () => ['GENEREVIEWS_title'],
             getRequiredColumns: () => ['GENEREVIEWS_nbk_id', 'GENEREVIEWS_title'],
         },
-        RUSP_category: {
-            displayName: 'RUSP',
-            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['RUSP_category'],
-            getValue: (row) => escapeHtml(row['RUSP_category'] || ''),
-            getSortColumns: () => ['RUSP_category'],
-            getRequiredColumns: () => ['RUSP_category'],
-        },
         NEWBORN_SEQUENCING_program_count: {
             displayName: 'Newborn Sequencing Programs',
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['NEWBORN_SEQUENCING_program_count'],

@@ -1058,10 +1058,9 @@ if duplicate_gene_ids.any():
     raise ValueError(f"Several newborn screening gene list rows map to the same gene: "
                      f"{', '.join(df_newborn_sequencing.loc[duplicate_gene_ids, 'gene_symbol'])}")
 df_newborn_sequencing = df_newborn_sequencing.set_index("gene_id").rename(columns={
-    "rusp_category": "RUSP_category",
     "program_count": "NEWBORN_SEQUENCING_program_count",
     "programs": "NEWBORN_SEQUENCING_programs",
-})[["RUSP_category", "NEWBORN_SEQUENCING_program_count", "NEWBORN_SEQUENCING_programs"]]
+})[["NEWBORN_SEQUENCING_program_count", "NEWBORN_SEQUENCING_programs"]]
 df_combined = pd.merge(df_combined, df_newborn_sequencing, how="left", left_index=True, right_index=True)  # ANALYSIS_OK[join]: merged on unique per-gene-id index (duplicates rejected above)
 assert df_combined.index.is_unique, "The merged dataframe has duplicate gene ids after merging with the newborn screening gene lists"
 print(f"Added newborn screening gene list counts to {df_combined['NEWBORN_SEQUENCING_program_count'].notna().sum():,d} out of {len(df_combined):,d} genes")

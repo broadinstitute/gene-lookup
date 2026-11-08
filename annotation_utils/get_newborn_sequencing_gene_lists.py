@@ -1,10 +1,9 @@
-"""Which genomic newborn screening programs include each gene, and the gene's RUSP category.
+"""Which genomic newborn screening programs include each gene.
 
 Source: Minten et al. 2025, "Data-driven consideration of genetic disorders for global genomic newborn screening
 programs", Genetics in Medicine 27:101443. The authors collected the gene lists of 27 newborn sequencing programs
-(eg. BabySeq, GUARDIAN, the Generation Study, BabyScreen+), linked each gene to one disorder, and recorded
-whether that disorder is a core or secondary condition of the US Recommended Uniform Screening Panel (RUSP).
-Their data is at https://github.com/tjminten/gim_genelist (Data_Repository.xlsx).
+(eg. BabySeq, GUARDIAN, the Generation Study, BabyScreen+). Their data is at
+https://github.com/tjminten/gim_genelist (Data_Repository.xlsx).
 
 The data is a one-time snapshot, so the table derived from it is stored in the repository
 (NEWBORN_SEQUENCING_GENE_LISTS_PATH) rather than downloaded on every run. To regenerate it, run this module
@@ -27,13 +26,13 @@ def convert_minten_data_repository_to_gene_table(df_repository, df_codebook):
 
     Args:
         df_repository (pandas.DataFrame): the "Repository" sheet: one row per gene, with a 1 in each scr_<program>
-            column whose program includes the gene, and the RUSP category in the rusp column
+            column whose program includes the gene
         df_codebook (pandas.DataFrame): the "Codebook" sheet, read without a header: column 0 is the variable name
             and column 1 its description, eg. "Inclusion on BabySeq gene list (1 if gene is present)"
 
     Returns:
-        pandas.DataFrame: columns gene_symbol, rusp_category ("Core", "Secondary" or ""), program_count, and
-            programs (the names of the programs that include the gene, joined with ", ")
+        pandas.DataFrame: columns gene_symbol, program_count, and programs (the names of the programs that include
+            the gene, joined with ", ")
     """
     program_columns = [column for column in df_repository.columns if column.startswith("scr_")]
     variable_descriptions = dict(zip(df_codebook[0].astype(str), df_codebook[1].astype(str)))
@@ -52,8 +51,6 @@ def convert_minten_data_repository_to_gene_table(df_repository, df_codebook):
     return pd.DataFrame({
         # The repository writes open reading frame symbols in upper case (C19ORF12); HGNC writes C19orf12
         "gene_symbol": df_repository["gene"].str.replace(r"^(C(?:\d+|X|Y))ORF(\d+)$", r"\1orf\2", regex=True),
-        # ANALYSIS_OK[imputation]: "" means the gene's disorder is not a RUSP condition
-        "rusp_category": df_repository["rusp"].fillna(""),
         "program_count": program_counts,
         "programs": included.apply(lambda row: ", ".join(program_names[column] for column in program_columns if row[column]), axis=1),
     })

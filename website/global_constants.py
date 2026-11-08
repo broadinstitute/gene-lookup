@@ -901,15 +901,6 @@ BIGQUERY_COLUMNS = [
 
     # Newborn screening (Minten et al. 2025)
     {
-        "type": "STRING",
-        "name": "RUSP_category",
-        "description": "Core or Secondary if the disorder linked to this gene is a condition on the US Recommended Uniform Screening Panel (RUSP) for newborn screening, as mapped to genes by Minten et al. 2025.",
-        "displayName": "RUSP Category",
-        "allowCustomFilter": True,
-        "allowExport": True,
-        "group": GROUP_NEWBORN_SCREENING,
-    },
-    {
         "type": "FLOAT",
         "name": "NEWBORN_SEQUENCING_program_count",
         "description": "Number of the 27 genomic newborn screening programs compared by Minten et al. 2025 whose gene list includes this gene (empty if none do).",

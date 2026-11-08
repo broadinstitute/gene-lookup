@@ -129,6 +129,13 @@
     <div class="ui row">
         <div class="three wide column"></div>
         <div class="ten wide column">
+            <div id="source-clingen-actionability"></div>
+        </div>
+        <div class="three wide column"></div>
+    </div>
+    <div class="ui row">
+        <div class="three wide column"></div>
+        <div class="ten wide column">
             <div id="source-gencc"></div>
         </div>
         <div class="three wide column"></div>
@@ -374,6 +381,13 @@
         if (row['in_ACMG_secondary_findings_list'] === true || row['in_ACMG_secondary_findings_list'] === 'true') {
             box1 += `<tr><td class="locus-info-label">ACMG SF{{ source_version_label('acmg_secondary_findings') }}:</td><td><a href="https://search.clinicalgenome.org/kb/genes/acmgsf" target="_blank" class="action-link">On the ACMG secondary findings list</a></td></tr>`
         }
+        if (row['NEWBORN_SEQUENCING_program_count'] != null) {
+            const ruspText = row['RUSP_category'] ? `RUSP ${escapeHtml(row['RUSP_category']).toLowerCase()} condition; ` : ''
+            const programsPopup = `<div style='max-width:400px'>${escapeHtml(row['NEWBORN_SEQUENCING_programs'] || '')}</div>`.replace(/"/g, '&quot;')
+            box1 += `<tr><td class="locus-info-label">Newborn Screening:</td><td style="white-space: normal;">${ruspText}`
+            box1 += `on <span class="show-popup action-link" data-html="${programsPopup}">${Number(row['NEWBORN_SEQUENCING_program_count'])} of 27</span> genomic newborn screening gene lists `
+            box1 += `<a href="https://doi.org/10.1016/j.gim.2025.101443" target="_blank" class="action-link">(Minten et al. 2025)</a></td></tr>`
+        }
         box1 += '</table>'
         $('#locus-page-row1-box1').html(box1)
 
@@ -487,7 +501,7 @@
         // Each section below is filled only when the gene has data for it, so clear them all first. Otherwise
         // browser Back/Forward between two genes (which re-renders without reloading the page) would leave
         // the previous gene's sections in place.
-        const sourceSectionIds = ['phenotype-summary-section', 'source-omim', 'source-clingen', 'source-gencc',
+        const sourceSectionIds = ['phenotype-summary-section', 'source-omim', 'source-clingen', 'source-clingen-actionability', 'source-gencc',
             'source-panelapp-uk', 'source-panelapp-au', 'source-g2p', 'source-clinvar',
             'source-fridman', 'source-intolerome', 'source-gene-burden', 'source-dbnsfp']
         sourceSectionIds.forEach(id => $(`#${id}`).empty())
@@ -552,6 +566,24 @@
             html += `<tr><td class="locus-info-label">Haploinsufficiency:</td><td>${dedupSemicolon(row['CLINGEN_haploinsufficient'])}</td></tr>`
             html += '</table></div>'
             $('#source-clingen').html(html)
+        }
+
+        // --- Source: ClinGen actionability ---
+        // The report id, context, condition and score columns list one value per curation report, in the same order
+        const actionabilityReportIds = String(row['CLINGEN_actionability_report_id'] || '').split('; ').map(s => s.trim()).filter(Boolean)
+        if (actionabilityReportIds.length > 0) {
+            const [contexts, conditions, scores] = ['CLINGEN_actionability_context', 'CLINGEN_actionability_disease', 'CLINGEN_actionability_overall_score']
+                .map(column => String(row[column] || '').split('; '))
+            let html = `<div class="source-section"><h4><a href="https://actionability.clinicalgenome.org/ac/" target="_blank" class="action-link">ClinGen Actionability</a>{{ source_version_label('clingen_actionability') }}</h4>`
+            html += '<table class="ui very basic compact table"><thead><tr><th>Context</th><th>Condition</th><th>Overall Score (max, 0-12)</th></tr></thead><tbody>'
+            actionabilityReportIds.forEach((reportId, i) => {
+                const context = (contexts[i] || '').trim()
+                const reportUrl = `https://actionability.clinicalgenome.org/ac/${encodeURIComponent(context)}/ui/stg2SummaryRpt?doc=${encodeURIComponent(reportId)}`
+                html += `<tr><td>${escapeHtml(context)}</td><td style="white-space: normal;"><a href="${reportUrl}" target="_blank" class="action-link">${escapeHtml((conditions[i] || '').trim() || reportId)}</a></td>`
+                html += `<td>${escapeHtml((scores[i] || '').trim())}</td></tr>`
+            })
+            html += '</tbody></table></div>'
+            $('#source-clingen-actionability').html(html)
         }
 
         // --- Source: GenCC ---

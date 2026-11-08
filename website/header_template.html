@@ -523,7 +523,7 @@
         },
         'GeneBurden': {
             color: '#d4e4c4',
-            description: '<b>Open Targets gene burden</b>: rare-variant burden test associations with MONDO rare-disease phenotypes, mostly from UK Biobank exome studies',
+            description: '<b>Open Targets gene burden</b>: exome-wide significant (p &lt; 2.5e-6) rare-variant burden test associations with MONDO rare-disease phenotypes, mostly from UK Biobank exome studies',
             url: ({ ensemblId }) => ensemblId ? `https://platform.opentargets.org/target/${encodeURIComponent(ensemblId)}` : 'https://platform.opentargets.org/',
         },
         'Fridman': {
@@ -905,6 +905,21 @@
             getSortColumns: () => ['in_ACMG_secondary_findings_list'],
             getRequiredColumns: () => ['in_ACMG_secondary_findings_list'],
         },
+        CLINGEN_actionability_context: {
+            displayName: 'ClinGen Actionability',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['CLINGEN_actionability_context'],
+            getValue: (row) => escapeHtml(dedupSemicolon(row['CLINGEN_actionability_context'])),
+            getSortColumns: () => ['CLINGEN_actionability_context'],
+            getRequiredColumns: () => ['CLINGEN_actionability_context'],
+        },
+        CLINGEN_actionability_max_overall_score: {
+            displayName: 'ClinGen Actionability Score (max)',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['CLINGEN_actionability_max_overall_score'],
+            defaultSortDirection: 'DESC',
+            getValue: (row) => row['CLINGEN_actionability_max_overall_score'] != null ? String(Number(row['CLINGEN_actionability_max_overall_score'])) : '',
+            getSortColumns: () => ['CLINGEN_actionability_max_overall_score'],
+            getRequiredColumns: () => ['CLINGEN_actionability_max_overall_score'],
+        },
         GENCC_disease_name: {
             displayName: 'GenCC Disease',
             helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['GENCC_disease_name'],
@@ -1072,6 +1087,23 @@
             getValue: (row) => renderGeneReviewsLinks(row['GENEREVIEWS_nbk_id'], row['GENEREVIEWS_title']),
             getSortColumns: () => ['GENEREVIEWS_title'],
             getRequiredColumns: () => ['GENEREVIEWS_nbk_id', 'GENEREVIEWS_title'],
+        },
+        RUSP_category: {
+            displayName: 'RUSP',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['RUSP_category'],
+            getValue: (row) => escapeHtml(row['RUSP_category'] || ''),
+            getSortColumns: () => ['RUSP_category'],
+            getRequiredColumns: () => ['RUSP_category'],
+        },
+        NEWBORN_SEQUENCING_program_count: {
+            displayName: 'Newborn Sequencing Programs',
+            helpText: RESULTS_TABLE_COLUMN_HELP_TEXTS['NEWBORN_SEQUENCING_program_count'],
+            defaultSortDirection: 'DESC',
+            getValue: (row) => row['NEWBORN_SEQUENCING_program_count'] != null
+                ? `<span class="show-popup" data-html="<div style='max-width:400px'>${escapeHtml(row['NEWBORN_SEQUENCING_programs'] || '')}</div>">${Number(row['NEWBORN_SEQUENCING_program_count'])} of 27</span>`
+                : '',
+            getSortColumns: () => ['NEWBORN_SEQUENCING_program_count'],
+            getRequiredColumns: () => ['NEWBORN_SEQUENCING_program_count', 'NEWBORN_SEQUENCING_programs'],
         },
         CLINVAR_phenotypes: {
             displayName: 'ClinVar Phenotypes',

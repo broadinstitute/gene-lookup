@@ -3014,6 +3014,10 @@
         box1 += `<tr><td class="locus-info-label">Gene ID:</td><td>${geneId ? `<a href="https://ensembl.org/Homo_sapiens/Gene/Summary?g=${geneId}" target="_blank" class="action-link">${geneId}</a>` : ''}</td></tr>`
         box1 += `<tr><td class="locus-info-label">RefSeq ID:</td><td>${refseqId ? linkIdList(refseqId, refseqLink) : ''}</td></tr>`
         box1 += `<tr><td class="locus-info-label">NCBI Gene ID:</td><td>${ncbiGeneId ? `<a href="https://www.ncbi.nlm.nih.gov/gene/${encU(ncbiGeneId)}" target="_blank" class="action-link">${ncbiGeneId}</a>` : ''}</td></tr>`
+        box1 += `<tr><td class="locus-info-label">MANE Select:</td><td>${maneSelectParts || (inMANE ? 'Yes' : 'No')}</td></tr>`
+        if (maneClinicalParts) {
+            box1 += `<tr><td class="locus-info-label">MANE Plus Clinical:</td><td>${maneClinicalParts}</td></tr>`
+        }
         box1 += `<tr><td class="locus-info-label">Aliases:</td><td>${row['gene_aliases'] || ''}</td></tr>`
         box1 += `<tr><td class="locus-info-label">Inheritance:</td><td>${renderInheritanceCell(row['inheritance'], 999)}</td></tr>`
         const sourceBadgeIds = {
@@ -3053,10 +3057,6 @@
         const omeletLlmIcon = omeletLlmPct && omeletLlmHelp ? `<i class="question circle outline icon" style="margin-left: 10px; cursor: pointer;" data-html="${enrichHelpText(omeletLlmHelp)}"></i>` : ''
         const dispoIcon = dispoPct && dispoHelp ? `<i class="question circle outline icon" style="margin-left: 10px; cursor: pointer;" data-html="${enrichHelpText(dispoHelp)}"></i>` : ''
 
-        box2 += `<tr><td class="locus-info-label">MANE Select:</td><td>${maneSelectParts || (inMANE ? 'Yes' : 'No')}</td></tr>`
-        if (maneClinicalParts) {
-            box2 += `<tr><td class="locus-info-label">MANE Plus Clinical:</td><td>${maneClinicalParts}</td></tr>`
-        }
         box2 += `<tr><td class="locus-info-label">Coordinates (hg38):</td><td>${coordinates}</td></tr>`
         box2 += `<tr><td class="locus-info-label">pLI (v2):</td><td>${pliV2}</td></tr>`
         box2 += `<tr><td class="locus-info-label">pLI (v4.1.1):</td><td>${pliV4}</td></tr>`

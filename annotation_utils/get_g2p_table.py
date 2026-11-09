@@ -44,6 +44,26 @@ G2P_ALLELIC_REQUIREMENT_TO_INHERITANCE = {
 }
 
 
+# G2P abbreviates its developmental disorders panel as "DD"; gene-lookup stores and shows the full name instead.
+G2P_PANEL_ABBREVIATION_TO_NAME = {"DD": "Developmental disorders"}
+
+
+def spell_out_abbreviated_g2p_panel_names(panel_values):
+    """Replace each abbreviated panel name in G2P_PANEL_ABBREVIATION_TO_NAME with its full name.
+
+    This runs on the table returned by get_g2p_table, so it also applies to a table read from the cache.
+
+    Args:
+        panel_values (pandas.Series): the panel column, with a record's panels joined with ", ", eg. "DD, Eye"
+
+    Returns:
+        pandas.Series: the same values with abbreviations spelled out, eg. "Developmental disorders, Eye"
+    """
+    # ANALYSIS_OK[imputation]: "" marks a record with no panel, as normalize_nulls does when records are aggregated
+    return panel_values.fillna("").astype(str).map(
+        lambda value: ", ".join(G2P_PANEL_ABBREVIATION_TO_NAME.get(panel, panel) for panel in value.split(", ")))
+
+
 def find_latest_g2p_release_date(directory_listing_html):
     """Return the newest release directory name (eg. "2026_10_28") in the G2P data downloads listing.
 

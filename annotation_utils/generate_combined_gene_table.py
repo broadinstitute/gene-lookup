@@ -21,7 +21,7 @@ from annotation_utils.get_constraint_scores import get_constraint_scores
 from annotation_utils.get_dbnsfp_gene_table import get_dbnsfp_gene_table, DBNSFP_VERSION
 from annotation_utils.get_MANE_table import get_MANE_ensembl_transcript_table
 from annotation_utils.get_intolerome_table import get_intolerome_table
-from annotation_utils.get_g2p_table import get_g2p_table
+from annotation_utils.get_g2p_table import get_g2p_table, spell_out_abbreviated_g2p_panel_names
 from annotation_utils.get_open_targets_gene_burden_table import (
     get_open_targets_gene_burden_table, OPEN_TARGETS_GENE_BURDEN_TABLE_COLUMNS_VERSION)
 from annotation_utils.get_collins_dosage_sensitivity_scores import get_collins_dosage_sensitivity_scores
@@ -731,6 +731,7 @@ df_gencc.set_index("GENCC_gene_id", inplace=True)
 
 print("Getting Gene2Phenotype (G2P) table")
 df_g2p = get_g2p_table()
+df_g2p["panel"] = spell_out_abbreviated_g2p_panel_names(df_g2p["panel"])
 df_g2p["G2P_gene_id"] = df_g2p["hgnc_gene_id"].map(HGNC_to_ENSG_map)
 no_ensg = df_g2p["G2P_gene_id"].isna()
 if no_ensg.any():

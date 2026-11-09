@@ -760,7 +760,7 @@ BIGQUERY_COLUMNS = [
     {
         "type": "STRING",
         "name": "G2P_panel",
-        "description": "Gene2Phenotype panel(s) the record belongs to: DD, Eye, Skin, Skeletal, Cardiac, Cancer, or Ear (semicolon-separated if multiple records).",
+        "description": "Gene2Phenotype panel(s) the record belongs to: Developmental disorders, Eye, Skin, Skeletal, Cardiac, Cancer, or Ear (semicolon-separated if multiple records).",
         "displayName": "G2P Panel",
         "allowCustomFilter": True,
         "allowExport": True,

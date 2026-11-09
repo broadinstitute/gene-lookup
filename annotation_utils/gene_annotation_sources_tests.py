@@ -19,7 +19,8 @@ from annotation_utils.get_clingen_actionability_table import (
     convert_actionability_summaries_to_gene_table, parse_overall_actionability_score)
 from annotation_utils.get_collins_dosage_sensitivity_scores import parse_collins_dosage_sensitivity_scores
 from annotation_utils.get_newborn_sequencing_gene_lists import convert_minten_data_repository_to_gene_table
-from annotation_utils.get_g2p_table import convert_g2p_records_to_gene_disease_table, find_latest_g2p_release_date
+from annotation_utils.get_g2p_table import (
+    convert_g2p_records_to_gene_disease_table, find_latest_g2p_release_date, spell_out_abbreviated_g2p_panel_names)
 from annotation_utils.get_genereviews_table import combine_genereviews_gene_symbols_and_titles
 from annotation_utils.get_hgnc_table import build_gene_symbol_to_ensg_id_map
 from annotation_utils.get_open_targets_gene_burden_table import (
@@ -104,6 +105,11 @@ class G2PTests(unittest.TestCase):
         self.assertTrue(pd.isna(df["confidence"].tolist()[1]))
         self.assertEqual(df["variant_consequence"].tolist()[1], "absent gene product, altered gene product structure")
         self.assertEqual(df["panel"].tolist()[0], "DD, Eye")
+
+    def test_spell_out_abbreviated_g2p_panel_names(self):
+        panel_values = pd.Series(["DD, Eye", "Skin", "DD", None])
+        self.assertEqual(spell_out_abbreviated_g2p_panel_names(panel_values).tolist(),
+                         ["Developmental disorders, Eye", "Skin", "Developmental disorders", ""])
 
 
 class CollinsDosageSensitivityScoresTests(unittest.TestCase):

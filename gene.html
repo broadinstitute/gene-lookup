@@ -2648,7 +2648,7 @@
         <a href="index.html" style="min-width:1000px; z-index: 10">Gene Lookup for Rare Disease Analysis</a>
     </div>
     <div class="seven wide column" id="header-nav" style="min-width: 700px">
-        <span style="color: rgba(255, 255, 255, 0.6); font-size: calc(1em - 2px); white-space: nowrap">Data Updated: 2026-11-02</span>
+        <span style="color: rgba(255, 255, 255, 0.6); font-size: calc(1em - 2px); white-space: nowrap">Data Updated: 2026-11-09</span>
         <a href="#" id="about-link" style="padding-left: 40px">About</a>
         <a href="#" id="faq-link">FAQ</a>
         <a href="https://github.com/broadinstitute/gene-lookup/issues" target="_blank">Issues</a>
@@ -3029,10 +3029,10 @@
         box1 += `<tr><td class="locus-info-label">Sources:</td><td>${getSourcesBadges(row['sources'], sourceBadgeIds)}</td></tr>`
         const geneReviewsLinks = renderGeneReviewsLinks(row['GENEREVIEWS_nbk_id'], row['GENEREVIEWS_title'])
         if (geneReviewsLinks) {
-            box1 += `<tr><td class="locus-info-label">GeneReviews:</td><td style="white-space: normal;">${geneReviewsLinks}</td></tr>`
+            box1 += `<tr><td class="locus-info-label">GeneReviews:</td><td style="white-space: normal;">${geneReviewsLinks}<span class="source-last-updated">(downloaded: 2026-11-08)</span></td></tr>`
         }
         if (row['in_ACMG_secondary_findings_list'] === true || row['in_ACMG_secondary_findings_list'] === 'true') {
-            box1 += `<tr><td class="locus-info-label">ACMG SF:</td><td><a href="https://search.clinicalgenome.org/kb/genes/acmgsf" target="_blank" class="action-link">On the ACMG secondary findings list</a></td></tr>`
+            box1 += `<tr><td class="locus-info-label">ACMG SF v3.3:</td><td><a href="https://search.clinicalgenome.org/kb/genes/acmgsf" target="_blank" class="action-link">On the ACMG secondary findings list</a></td></tr>`
         }
         box1 += '</table>'
         $('#locus-page-row1-box1').html(box1)
@@ -3068,8 +3068,8 @@
         const pTriplo = renderConstraintValue(row['pTriplo'], 'pTriplo', 'pTriplo (Collins 2022)')
         const pHaploHelp = BIGQUERY_COLUMN_DESCRIPTIONS['pHaplo'] || ''
         const pTriploHelp = BIGQUERY_COLUMN_DESCRIPTIONS['pTriplo'] || ''
-        const pHaploIcon = pHaplo && pHaploHelp ? `<i class="question circle outline icon" style="margin-left: 10px; cursor: pointer;" data-html="${enrichHelpText(pHaploHelp)}"></i>` : ''
-        const pTriploIcon = pTriplo && pTriploHelp ? `<i class="question circle outline icon" style="margin-left: 10px; cursor: pointer;" data-html="${enrichHelpText(pTriploHelp)}"></i>` : ''
+        const pHaploIcon = pHaplo && pHaploHelp ? `<i class="question circle outline icon" style="margin-left: 10px; cursor: pointer;" data-html="${enrichHelpText(pHaploHelp)}"></i><span class="source-last-updated">(published: 2022-03-11)</span>` : ''
+        const pTriploIcon = pTriplo && pTriploHelp ? `<i class="question circle outline icon" style="margin-left: 10px; cursor: pointer;" data-html="${enrichHelpText(pTriploHelp)}"></i><span class="source-last-updated">(published: 2022-03-11)</span>` : ''
         box2 += `<tr><td class="locus-info-label">pHaplo:</td><td>${pHaplo}${pHaploIcon}</td></tr>`
         box2 += `<tr><td class="locus-info-label">pTriplo:</td><td>${pTriplo}${pTriploIcon}</td></tr>`
 
@@ -3167,7 +3167,7 @@
             const omimTitle = mimNumbersList.length > 0
                 ? `<a href="https://omim.org/entry/${mimNumbersList[0]}" target="_blank" class="action-link">OMIM</a>`
                 : 'OMIM'
-            let html = `<div class="source-section"><h4>${omimTitle}<span class="source-last-updated">(released: 2026-11-01)</span></h4><table class="locus-info-table">`
+            let html = `<div class="source-section"><h4>${omimTitle}<span class="source-last-updated">(released: 2026-11-08)</span></h4><table class="locus-info-table">`
             const mimLinks = mimNumbersList.map(m =>
                 `<a href="https://omim.org/entry/${m}" target="_blank" class="action-link">${m}</a>`
             ).join('; ')
@@ -3181,7 +3181,7 @@
             const clingenTitle = hgncId
                 ? `<a href="https://search.clinicalgenome.org/kb/genes/${encodeURIComponent(hgncId)}" target="_blank" class="action-link">ClinGen</a>`
                 : 'ClinGen'
-            let html = `<div class="source-section"><h4>${clingenTitle}<span class="source-last-updated">(downloaded: 2026-11-02)</span></h4><table class="locus-info-table">`
+            let html = `<div class="source-section"><h4>${clingenTitle}<span class="source-last-updated">(downloaded: 2026-11-08)</span></h4><table class="locus-info-table">`
             html += `<tr><td class="locus-info-label">Disease:</td><td style="white-space: normal;">${dedupSemicolon(row['CLINGEN_disease_label'])}</td></tr>`
             const mondoLinks = dedupSemicolonArray(row['CLINGEN_disease_mondo_id']).map(id =>
                 `<a href="https://monarchinitiative.org/${id}" target="_blank" class="action-link">${id}</a>`
@@ -3216,7 +3216,7 @@
         if (actionabilityReportIds.length > 0) {
             const [contexts, conditions, scores] = ['CLINGEN_actionability_context', 'CLINGEN_actionability_disease', 'CLINGEN_actionability_overall_score']
                 .map(column => String(row[column] || '').split('; '))
-            let html = `<div class="source-section"><h4><a href="https://actionability.clinicalgenome.org/ac/" target="_blank" class="action-link">ClinGen Actionability</a></h4>`
+            let html = `<div class="source-section"><h4><a href="https://actionability.clinicalgenome.org/ac/" target="_blank" class="action-link">ClinGen Actionability</a><span class="source-last-updated">(downloaded: 2026-11-08)</span></h4>`
             html += '<table class="ui very basic compact table"><thead><tr><th>Context</th><th>Condition</th><th>Overall Score (max, 0-12)</th></tr></thead><tbody>'
             actionabilityReportIds.forEach((reportId, i) => {
                 const context = (contexts[i] || '').trim()
@@ -3254,7 +3254,7 @@
             const genccTitle = hgncId
                 ? `<a href="https://search.thegencc.org/genes/${encodeURIComponent(hgncId)}" target="_blank" class="action-link">GenCC</a>`
                 : 'GenCC'
-            let html = `<div class="source-section"><h4>${genccTitle}<span class="source-last-updated">(released: 2026-10-25)</span></h4><table class="locus-info-table">`
+            let html = `<div class="source-section"><h4>${genccTitle}<span class="source-last-updated">(released: 2026-11-08)</span></h4><table class="locus-info-table">`
             html += `<tr><td class="locus-info-label">Disease:</td><td style="white-space: normal;">${dedupSemicolon(row['GENCC_disease_name'])}</td></tr>`
             html += `<tr><td class="locus-info-label">Classification:</td><td>${dedupSemicolon(row['GENCC_classification'])}</td></tr>`
             html += `<tr><td class="locus-info-label">Inheritance:</td><td>${dedupSemicolon(row['GENCC_inheritance'])}</td></tr>`
@@ -3267,7 +3267,7 @@
             const panelAppUkTitle = geneSymbol
                 ? `<a href="https://panelapp.genomicsengland.co.uk/panels/entities/${encodeURIComponent(geneSymbol)}" target="_blank" class="action-link">PanelApp UK</a>`
                 : 'PanelApp UK'
-            let html = `<div class="source-section"><h4>${panelAppUkTitle}<span class="source-last-updated">(downloaded: 2026-11-02)</span></h4><table class="locus-info-table">`
+            let html = `<div class="source-section"><h4>${panelAppUkTitle}<span class="source-last-updated">(downloaded: 2026-11-08)</span></h4><table class="locus-info-table">`
             html += `<tr><td class="locus-info-label">Confidence:</td><td>${dedupSemicolon(row['PANEL_APP_UK_confidence'])}</td></tr>`
             html += `<tr><td class="locus-info-label">Penetrance:</td><td>${dedupSemicolon(row['PANEL_APP_UK_penetrance'])}</td></tr>`
             html += `<tr><td class="locus-info-label">Pathogenicity:</td><td>${dedupSemicolon(row['PANEL_APP_UK_mode_of_pathogenicity'])}</td></tr>`
@@ -3284,7 +3284,7 @@
             const panelAppAuTitle = geneSymbol
                 ? `<a href="https://panelapp-aus.org/panels/entities/${encodeURIComponent(geneSymbol)}" target="_blank" class="action-link">PanelApp AU</a>`
                 : 'PanelApp AU'
-            let html = `<div class="source-section"><h4>${panelAppAuTitle}<span class="source-last-updated">(downloaded: 2026-11-02)</span></h4><table class="locus-info-table">`
+            let html = `<div class="source-section"><h4>${panelAppAuTitle}<span class="source-last-updated">(downloaded: 2026-11-08)</span></h4><table class="locus-info-table">`
             html += `<tr><td class="locus-info-label">Confidence:</td><td>${dedupSemicolon(row['PANEL_APP_AU_confidence'])}</td></tr>`
             html += `<tr><td class="locus-info-label">Penetrance:</td><td>${dedupSemicolon(row['PANEL_APP_AU_penetrance'])}</td></tr>`
             html += `<tr><td class="locus-info-label">Pathogenicity:</td><td>${dedupSemicolon(row['PANEL_APP_AU_mode_of_pathogenicity'])}</td></tr>`
@@ -3305,7 +3305,7 @@
             const g2pTitle = geneSymbol
                 ? `<a href="https://www.ebi.ac.uk/gene2phenotype/gene/${encodeURIComponent(geneSymbol)}" target="_blank" class="action-link">Gene2Phenotype (G2P)</a>`
                 : 'Gene2Phenotype (G2P)'
-            let html = `<div class="source-section"><h4>${g2pTitle}</h4><table class="ui very basic compact table">`
+            let html = `<div class="source-section"><h4>${g2pTitle}<span class="source-last-updated">(released: 2026-10-28)</span></h4><table class="ui very basic compact table">`
             html += '<thead><tr><th>Disease</th><th>Inheritance</th><th>Confidence</th><th>Molecular Mechanism</th><th>Variant Consequence</th><th>Panel</th></tr></thead><tbody>'
             g2pRecordIds.forEach((recordId, i) => {
                 const [disease, inheritance, confidence, mechanism, consequence, panel] = g2pColumnValues.map(values => escapeHtml((values[i] || '').trim()))
@@ -3342,7 +3342,7 @@
 
         // --- Source: Intolerome ---
         if (hasAnyValue(row['INTOLEROME_evidence_category'], row['INTOLEROME_lethality_timing'], row['INTOLEROME_gene_effect'], row['INTOLEROME_inheritance'], row['INTOLEROME_disease'], row['INTOLEROME_omim_phenotype_id'], row['INTOLEROME_prenatal_phenotypes'], row['INTOLEROME_system_affected'], row['INTOLEROME_pmids'])) {
-            let html = `<div class="source-section"><h4><a href="https://rpldb.org/intolerome/" target="_blank" class="action-link">Intolerome</a><span class="source-last-updated">(downloaded: 2026-11-02)</span></h4><table class="locus-info-table">`
+            let html = `<div class="source-section"><h4><a href="https://rpldb.org/intolerome/" target="_blank" class="action-link">Intolerome</a><span class="source-last-updated">(downloaded: 2026-11-08)</span></h4><table class="locus-info-table">`
             html += `<tr><td class="locus-info-label">Evidence:</td><td>${dedupSemicolon(row['INTOLEROME_evidence_category'])}</td></tr>`
             html += `<tr><td class="locus-info-label">Lethality Timing:</td><td>${dedupSemicolon(row['INTOLEROME_lethality_timing'])}</td></tr>`
             html += `<tr><td class="locus-info-label">Gene Effect:</td><td>${dedupSemicolon(row['INTOLEROME_gene_effect'])}</td></tr>`
@@ -3372,7 +3372,7 @@
             const geneBurdenTitle = geneId
                 ? `<a href="https://platform.opentargets.org/target/${encodeURIComponent(geneId)}" target="_blank" class="action-link">Open Targets Gene Burden</a>`
                 : 'Open Targets Gene Burden'
-            let html = `<div class="source-section"><h4>${geneBurdenTitle}</h4>`
+            let html = `<div class="source-section"><h4>${geneBurdenTitle}<span class="source-last-updated">(release: 26.09)</span></h4>`
             html += '<table class="ui very basic compact table"><thead><tr><th>Disease</th><th>P-value (min)</th><th>Study</th><th>Direction</th></tr></thead><tbody>'
             geneBurdenMondoIds.forEach((mondoId, i) => {
                 const mondoName = escapeHtml((mondoNames[i] || '').trim())
@@ -3385,7 +3385,7 @@
 
         // --- Source: dbNSFP ---
         if (hasAnyValue(row['DBNSFP_orphanet_disorder'], row['DBNSFP_function_description'], row['DBNSFP_disease_description'], row['DBNSFP_hpo_name'], row['DBNSFP_mgi_mouse_phenotype'], row['DBNSFP_zfin_zebrafish_phenotype'])) {
-            let html = '<div class="source-section"><h4>dbNSFP v5.4<span class="source-last-updated">(downloaded: 2026-11-02)</span></h4><table class="locus-info-table">'
+            let html = '<div class="source-section"><h4>dbNSFP v5.4<span class="source-last-updated">(downloaded: 2026-11-08)</span></h4><table class="locus-info-table">'
             html += `<tr><td class="locus-info-label">Orphanet Disorder:</td><td style="white-space: normal;">${dedupSemicolon(row['DBNSFP_orphanet_disorder'])}</td></tr>`
             html += `<tr><td class="locus-info-label">Function:</td><td style="white-space: normal;">${dedupSemicolon(row['DBNSFP_function_description'])}</td></tr>`
             html += `<tr><td class="locus-info-label">Disease:</td><td style="white-space: normal;">${dedupSemicolon(row['DBNSFP_disease_description'])}</td></tr>`

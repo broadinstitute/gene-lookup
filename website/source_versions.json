@@ -1,38 +1,62 @@
 {
+  "acmg_secondary_findings": {
+    "date_label": "",
+    "version": "v3.3"
+  },
   "clingen": {
-    "date_label": "downloaded: 2026-11-02",
+    "date_label": "downloaded: 2026-11-08",
+    "version": ""
+  },
+  "clingen_actionability": {
+    "date_label": "downloaded: 2026-11-08",
     "version": ""
   },
   "clinvar": {
     "date_label": "released: 2026-10-11",
     "version": ""
   },
+  "collins_2022": {
+    "date_label": "published: 2022-03-11",
+    "version": ""
+  },
   "dbnsfp": {
-    "date_label": "downloaded: 2026-11-02",
+    "date_label": "downloaded: 2026-11-08",
     "version": "v5.4"
   },
   "decipher": {
     "date_label": "downloaded: 2026-08-10",
     "version": ""
   },
+  "g2p": {
+    "date_label": "released: 2026-10-28",
+    "version": ""
+  },
   "gencc": {
-    "date_label": "released: 2026-10-25",
+    "date_label": "released: 2026-11-08",
+    "version": ""
+  },
+  "genereviews": {
+    "date_label": "downloaded: 2026-11-08",
     "version": ""
   },
   "intolerome": {
-    "date_label": "downloaded: 2026-11-02",
+    "date_label": "downloaded: 2026-11-08",
     "version": ""
   },
   "omim": {
-    "date_label": "released: 2026-11-01",
+    "date_label": "released: 2026-11-08",
+    "version": ""
+  },
+  "open_targets_gene_burden": {
+    "date_label": "release: 26.09",
     "version": ""
   },
   "panelapp_au": {
-    "date_label": "downloaded: 2026-11-02",
+    "date_label": "downloaded: 2026-11-08",
     "version": ""
   },
   "panelapp_uk": {
-    "date_label": "downloaded: 2026-11-02",
+    "date_label": "downloaded: 2026-11-08",
     "version": ""
   }
 }

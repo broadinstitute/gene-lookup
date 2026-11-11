@@ -21,7 +21,7 @@ import io
 import pandas as pd
 import requests
 
-from annotation_utils.cache_utils import cache_data_table, record_source_version, return_stale_cached_table_or_raise
+from annotation_utils.cache_utils import cache_data_table, return_stale_cached_table_or_raise
 
 COLLINS_DOSAGE_SENSITIVITY_SCORES_URL = (
     "https://zenodo.org/records/6347673/files/Collins_rCNV_2022.dosage_sensitivity_scores.tsv.gz?download=1")
@@ -56,9 +56,6 @@ def get_collins_dosage_sensitivity_scores():
         df = parse_collins_dosage_sensitivity_scores(response.content)
     except Exception as e:
         return return_stale_cached_table_or_raise("get_collins_dosage_sensitivity_scores", "Collins et al. 2022", e)
-
-    # The scores were published once and never revised, so the publication date is the version.
-    record_source_version("collins_2022", date_label="published: 2022-03-11")
 
     return df
 

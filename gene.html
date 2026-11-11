@@ -3029,7 +3029,7 @@
         box1 += `<tr><td class="locus-info-label">Sources:</td><td>${getSourcesBadges(row['sources'], sourceBadgeIds)}</td></tr>`
         const geneReviewsLinks = renderGeneReviewsLinks(row['GENEREVIEWS_nbk_id'], row['GENEREVIEWS_title'])
         if (geneReviewsLinks) {
-            box1 += `<tr><td class="locus-info-label">GeneReviews:</td><td style="white-space: normal;">${geneReviewsLinks}<span class="source-last-updated">(downloaded: 2026-11-08)</span></td></tr>`
+            box1 += `<tr><td class="locus-info-label">GeneReviews:</td><td style="white-space: normal;">${geneReviewsLinks}</td></tr>`
         }
         if (row['in_ACMG_secondary_findings_list'] === true || row['in_ACMG_secondary_findings_list'] === 'true') {
             box1 += `<tr><td class="locus-info-label">ACMG SF v3.3:</td><td><a href="https://search.clinicalgenome.org/kb/genes/acmgsf" target="_blank" class="action-link">On the ACMG secondary findings list</a></td></tr>`
@@ -3068,8 +3068,8 @@
         const pTriplo = renderConstraintValue(row['pTriplo'], 'pTriplo', 'pTriplo (Collins 2022)')
         const pHaploHelp = BIGQUERY_COLUMN_DESCRIPTIONS['pHaplo'] || ''
         const pTriploHelp = BIGQUERY_COLUMN_DESCRIPTIONS['pTriplo'] || ''
-        const pHaploIcon = pHaplo && pHaploHelp ? `<i class="question circle outline icon" style="margin-left: 10px; cursor: pointer;" data-html="${enrichHelpText(pHaploHelp)}"></i><span class="source-last-updated">(published: 2022-03-11)</span>` : ''
-        const pTriploIcon = pTriplo && pTriploHelp ? `<i class="question circle outline icon" style="margin-left: 10px; cursor: pointer;" data-html="${enrichHelpText(pTriploHelp)}"></i><span class="source-last-updated">(published: 2022-03-11)</span>` : ''
+        const pHaploIcon = pHaplo && pHaploHelp ? `<i class="question circle outline icon" style="margin-left: 10px; cursor: pointer;" data-html="${enrichHelpText(pHaploHelp)}"></i>` : ''
+        const pTriploIcon = pTriplo && pTriploHelp ? `<i class="question circle outline icon" style="margin-left: 10px; cursor: pointer;" data-html="${enrichHelpText(pTriploHelp)}"></i>` : ''
         box2 += `<tr><td class="locus-info-label">pHaplo:</td><td>${pHaplo}${pHaploIcon}</td></tr>`
         box2 += `<tr><td class="locus-info-label">pTriplo:</td><td>${pTriplo}${pTriploIcon}</td></tr>`
 

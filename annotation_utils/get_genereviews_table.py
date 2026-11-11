@@ -17,7 +17,7 @@ import io
 import pandas as pd
 import requests
 
-from annotation_utils.cache_utils import cache_data_table, record_source_version, return_stale_cached_table_or_raise, utc_today
+from annotation_utils.cache_utils import cache_data_table, return_stale_cached_table_or_raise
 
 GENEREVIEWS_GENE_SYMBOLS_URL = "https://ftp.ncbi.nlm.nih.gov/pub/GeneReviews/NBKid_shortname_genesymbol.txt"
 GENEREVIEWS_TITLES_URL = "https://ftp.ncbi.nlm.nih.gov/pub/GeneReviews/GRtitle_shortname_NBKid.txt"
@@ -65,9 +65,6 @@ def get_genereviews_table():
             _download_latin1_table(GENEREVIEWS_GENE_SYMBOLS_URL), _download_latin1_table(GENEREVIEWS_TITLES_URL))
     except Exception as e:
         return return_stale_cached_table_or_raise("get_genereviews_table", "GeneReviews", e)
-
-    # These files carry no release date, so the download date is all we have.
-    record_source_version("genereviews", date_label=f"downloaded: {utc_today()}")
 
     return df
 
